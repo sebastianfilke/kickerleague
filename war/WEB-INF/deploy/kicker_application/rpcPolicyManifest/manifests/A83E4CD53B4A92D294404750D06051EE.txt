@@ -1,0 +1,2 @@
+serviceClass: de.kickerapp.client.services.PlayerService
+path: E446E1CB48E74251B700BE93C8802B76.gwt.rpc

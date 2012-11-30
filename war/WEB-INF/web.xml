@@ -2,12 +2,12 @@
 
 	<!-- Servlets -->
 	<servlet>
-		<servlet-name>userServlet</servlet-name>
-		<servlet-class>de.kickerapp.server.UserServiceImpl</servlet-class>
+		<servlet-name>playerServlet</servlet-name>
+		<servlet-class>de.kickerapp.server.PlayerServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>userServlet</servlet-name>
-		<url-pattern>/kickerapplication/userService</url-pattern>
+		<servlet-name>playerServlet</servlet-name>
+		<url-pattern>/kicker_application/playerService</url-pattern>
 	</servlet-mapping>
 
 	<!-- Default page to serve -->
