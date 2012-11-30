@@ -1,3 +1,7 @@
 
 syntax: regexp
 ^war/kicker_application$
+syntax: regexp
+^war/WEB-INF/deploy$
+syntax: regexp
+^war/WEB-INF/deploy$
