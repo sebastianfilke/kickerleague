@@ -24,17 +24,17 @@ import de.kickerapp.client.ui.model.data.Result;
 import de.kickerapp.client.ui.model.properties.ResultProperty;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
-import de.kickerapp.client.widgets.AppContentPanel;
 import de.kickerapp.client.widgets.AppTextField;
 
-public class MainPanel extends AppContentPanel {
+public class MainPanel extends BasePanel {
 
 	public MainPanel() {
 		initLayout();
 	}
 
 	public void initLayout() {
-		setHeadingHtml("<i>Spiel eintragen</i>");
+		setHeadingHtml("<span style='font-size:18px;'>Kickerapplication</i>");
+		setBodyBorder(true);
 
 		VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
 
