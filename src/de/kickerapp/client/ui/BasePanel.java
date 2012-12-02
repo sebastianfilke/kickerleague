@@ -10,12 +10,22 @@ import de.kickerapp.client.widgets.AppContentPanel;
 public class BasePanel extends AppContentPanel {
 
 	/**
-	 * 
+	 * Erzeugt einen neuen Basis-Controller.
 	 */
 	public BasePanel() {
 	}
 
+	/**
+	 * Initalisiert des Layout des Panels.
+	 */
 	public void initLayout() {
+		setHeaderVisible(false);
+	}
+
+	/**
+	 * Initalisiert die EventHandler des Panels.
+	 */
+	public void initHandlers() {
 
 	}
 
