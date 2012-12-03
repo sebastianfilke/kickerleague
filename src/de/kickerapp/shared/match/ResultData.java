@@ -1,4 +1,4 @@
-package de.kickerapp.client.ui.model;
+package de.kickerapp.shared.match;
 
 public interface ResultData {
 

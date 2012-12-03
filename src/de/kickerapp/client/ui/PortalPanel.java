@@ -11,11 +11,13 @@ import com.sencha.gxt.widget.core.client.container.PortalLayoutContainer;
  */
 public class PortalPanel extends BasePanel {
 
-	/** Das Portal f�r den Ergebnispanel. */
-	private Portlet portletResult;
-	/** Das Portal f�r die akutelle Tabelle. */
+	/** Das Portal für die akutelle Tabelle. */
 	private Portlet portletTable;
-	/** Das Portal f�r die Stoppuhr/Zeituhr. */
+	/** Das Portal für die zuletzt gespielten Spiele. */
+	private Portlet portletMatches;
+	/** Das Portal für den Ergebnispanel. */
+	private Portlet portletResult;
+	/** Das Portal für die Stoppuhr */
 	private Portlet portletTimer;
 
 	/**
@@ -37,6 +39,9 @@ public class PortalPanel extends BasePanel {
 
 		portletTable = createPortletTable();
 		plcMain.add(portletTable, 0);
+
+		portletMatches = createPortletMatches();
+		plcMain.add(portletMatches, 0);
 
 		portletResult = createPortletResult();
 		plcMain.add(portletResult, 1);
@@ -72,12 +77,22 @@ public class PortalPanel extends BasePanel {
 
 	private Portlet createPortletResult() {
 		final Portlet portletResult = new Portlet();
-		portletResult.setHeadingHtml("<span style='font-size:14px;'>Ergebniss eintragen</i>");
+		portletResult.setHeadingHtml("<span style='font-size:14px;'>Ergebnis eintragen</i>");
 		portletResult.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
 		portletResult.setCollapsible(true);
 		portletResult.setHeight(310);
 
 		return portletResult;
+	}
+
+	private Portlet createPortletMatches() {
+		final Portlet portletMatches = new Portlet();
+		portletMatches.setHeadingHtml("<span style='font-size:14px;'>Zuletzt Gespielt</i>");
+		portletMatches.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
+		portletMatches.setCollapsible(true);
+		portletMatches.setHeight(250);
+
+		return portletMatches;
 	}
 
 	private Portlet createPortletTimer() {
@@ -92,6 +107,10 @@ public class PortalPanel extends BasePanel {
 
 	public Portlet getPortletResult() {
 		return portletResult;
+	}
+
+	public Portlet getPortletMatches() {
+		return portletMatches;
 	}
 
 	public Portlet getPortletTable() {

@@ -13,10 +13,11 @@ public class BasePanel extends AppContentPanel {
 	 * Erzeugt einen neuen Basis-Controller.
 	 */
 	public BasePanel() {
+		initLayout();
 	}
 
 	/**
-	 * Initalisiert des Layout des Panels.
+	 * Initalisiert das Layout des Panels.
 	 */
 	public void initLayout() {
 		setHeaderVisible(false);
@@ -26,7 +27,6 @@ public class BasePanel extends AppContentPanel {
 	 * Initalisiert die EventHandler des Panels.
 	 */
 	public void initHandlers() {
-
 	}
 
 }

@@ -1,6 +1,5 @@
-package de.kickerapp.client.ui.model.data;
+package de.kickerapp.shared.match;
 
-import de.kickerapp.client.ui.model.ResultData;
 
 public class Result implements ResultData {
 

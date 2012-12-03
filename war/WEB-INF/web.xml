@@ -3,11 +3,20 @@
 	<!-- Servlets -->
 	<servlet>
 		<servlet-name>playerServlet</servlet-name>
-		<servlet-class>de.kickerapp.server.PlayerServiceImpl</servlet-class>
+		<servlet-class>de.kickerapp.server.services.PlayerServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>playerServlet</servlet-name>
 		<url-pattern>/kicker_application/playerService</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>matchServlet</servlet-name>
+		<servlet-class>de.kickerapp.server.services.MatchServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>matchServlet</servlet-name>
+		<url-pattern>/kicker_application/matchService</url-pattern>
 	</servlet-mapping>
 
 	<!-- Default page to serve -->

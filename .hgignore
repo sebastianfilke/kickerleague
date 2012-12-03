@@ -5,3 +5,7 @@ syntax: regexp
 ^war/WEB-INF/deploy$
 syntax: regexp
 ^war/WEB-INF/deploy$
+syntax: regexp
+^war/WEB-INF/appengine-generated$
+syntax: regexp
+^war/WEB-INF/deploy$

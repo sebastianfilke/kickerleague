@@ -22,6 +22,11 @@
 	<!-- Specify the app entry point class. -->
 	<entry-point class='de.kickerapp.client.KickerApplication' />
 
+	<!-- German language, independent of country -->
+	<extend-property name="locale" values="de" />
+	<!-- English language, independent of country -->
+	<extend-property name="locale" values="en" />
+
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />
 	<source path='shared' />

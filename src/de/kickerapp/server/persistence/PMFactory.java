@@ -1,4 +1,4 @@
-package de.kickerapp.shared.persistence;
+package de.kickerapp.server.persistence;
 
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManagerFactory;

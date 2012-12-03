@@ -1,21 +1,20 @@
-package de.kickerapp.server;
+package de.kickerapp.server.services;
 
 import javax.jdo.PersistenceManager;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.PlayerService;
-import de.kickerapp.shared.persistence.PMFactory;
+import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.player.Player;
 
 /**
  * The server side implementation of the RPC service.
  */
-public class PlayerServiceImpl extends RemoteServiceServlet implements
-		PlayerService {
+public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerService {
 
-	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -2286450096364102814L;
+	/** Konstante fÃ¼r die SerialVersionUID. */
+	private static final long serialVersionUID = 3828516373887924192L;
 
 	/**
 	 * {@inheritDoc}
@@ -25,6 +24,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements
 
 		try {
 			player = pm.makePersistent(player);
+
 		} finally {
 			pm.close();
 		}

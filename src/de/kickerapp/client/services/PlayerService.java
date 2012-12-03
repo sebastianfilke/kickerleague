@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import de.kickerapp.shared.player.Player;
 
 /**
- * The client side stub for the RPC service.
+ * 
  */
 @RemoteServiceRelativePath("playerService")
 public interface PlayerService extends RemoteService {
