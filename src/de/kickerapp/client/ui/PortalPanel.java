@@ -47,7 +47,7 @@ public class PortalPanel extends BasePanel {
 		plcMain.add(portletResult, 1);
 
 		portletTimer = createPortletTimer();
-		plcMain.add(portletTimer, 1);
+		plcMain.add(portletTimer, 2);
 
 		add(plcMain);
 	}
@@ -58,9 +58,8 @@ public class PortalPanel extends BasePanel {
 	private PortalLayoutContainer createPortalLayoutContainer() {
 		final PortalLayoutContainer plcMain = new PortalLayoutContainer(4);
 		plcMain.setColumnWidth(0, .40);
-		plcMain.setColumnWidth(1, .20);
+		plcMain.setColumnWidth(1, .40);
 		plcMain.setColumnWidth(2, .20);
-		plcMain.setColumnWidth(3, .20);
 
 		return plcMain;
 	}
