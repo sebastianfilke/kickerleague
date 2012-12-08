@@ -1,13 +1,19 @@
 package de.kickerapp.shared.match;
 
-public interface ResultData {
+import de.kickerapp.shared.common.BaseData;
 
-	public int getId();
+public class ResultData extends BaseData implements IResult {
 
-	public void setId(int id);
+	private String matchResult;
 
-	public String getName();
+	@Override
+	public void setMatchResult(String matchResult) {
+		this.matchResult = matchResult;
+	}
 
-	public void setName(String name);
+	@Override
+	public String getMatchResult() {
+		return matchResult;
+	}
 
 }

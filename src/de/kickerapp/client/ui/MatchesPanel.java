@@ -1,6 +1,7 @@
 package de.kickerapp.client.ui;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -11,10 +12,11 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 
-import de.kickerapp.client.model.properties.MatchProperty;
-import de.kickerapp.client.services.ServiceProvider;
+import de.kickerapp.client.model.MatchProperty;
+import de.kickerapp.client.services.KickerServices;
+import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
-import de.kickerapp.shared.match.Match;
+import de.kickerapp.shared.match.IMatch;
 import de.kickerapp.shared.match.MatchData;
 
 /**
@@ -22,7 +24,7 @@ import de.kickerapp.shared.match.MatchData;
  */
 public class MatchesPanel extends BasePanel {
 
-	private ListStore<MatchData> store;
+	private ListStore<IMatch> store;
 
 	public MatchesPanel() {
 		super();
@@ -37,25 +39,32 @@ public class MatchesPanel extends BasePanel {
 		add(createGrid());
 	}
 
-	public Grid<MatchData> createGrid() {
+	public Grid<IMatch> createGrid() {
 		MatchProperty matchProperty = GWT.create(MatchProperty.class);
 
-		ColumnConfig<MatchData, String> nameCol = new ColumnConfig<MatchData, String>(matchProperty.set1(), 200, "Ergebnis");
-		nameCol.setWidth(80);
-		ColumnConfig<MatchData, String> symbolCol = new ColumnConfig<MatchData, String>(matchProperty.player1(), 100, "Spieler 1");
-		symbolCol.setWidth(80);
-		ColumnConfig<MatchData, String> lastCol = new ColumnConfig<MatchData, String>(matchProperty.player2(), 75, "Spieler 2");
+		ColumnConfig<IMatch, String> ccNumber = new ColumnConfig<IMatch, String>(matchProperty.matchNumber(), 200, "Nr.");
+		ccNumber.setWidth(80);
+		ColumnConfig<IMatch, Date> ccMatchDate = new ColumnConfig<IMatch, Date>(matchProperty.matchDate(), 100, "Datum");
+		ccMatchDate.setWidth(80);
+		ColumnConfig<IMatch, String> ccTeam1 = new ColumnConfig<IMatch, String>(matchProperty.team1(), 75, "Team 1");
+		ccTeam1.setWidth(80);
+		ColumnConfig<IMatch, String> ccTeam2 = new ColumnConfig<IMatch, String>(matchProperty.team2(), 75, "Team 2");
+		ccTeam2.setWidth(80);
+		ColumnConfig<IMatch, String> ccResult = new ColumnConfig<IMatch, String>(matchProperty.matchResult(), 75, "Ergebnis");
+		ccResult.setWidth(80);
 
-		ArrayList<ColumnConfig<MatchData, ?>> columns = new ArrayList<ColumnConfig<MatchData, ?>>();
-		columns.add(nameCol);
-		columns.add(symbolCol);
-		columns.add(lastCol);
-		ColumnModel<MatchData> cm = new ColumnModel<MatchData>(columns);
+		ArrayList<ColumnConfig<IMatch, ?>> columns = new ArrayList<ColumnConfig<IMatch, ?>>();
+		columns.add(ccNumber);
+		columns.add(ccMatchDate);
+		columns.add(ccTeam1);
+		columns.add(ccTeam2);
+		columns.add(ccResult);
+		ColumnModel<IMatch> cm = new ColumnModel<IMatch>(columns);
 
-		store = new ListStore<MatchData>(matchProperty.id());
+		store = new ListStore<IMatch>(matchProperty.id());
 
-		final Grid<MatchData> grid = new Grid<MatchData>(store, cm);
-		grid.getView().setAutoExpandColumn(nameCol);
+		final Grid<IMatch> grid = new Grid<IMatch>(store, cm);
+		grid.getView().setAutoExpandColumn(ccResult);
 		grid.getView().setStripeRows(true);
 		grid.getView().setColumnLines(true);
 		grid.getView().setForceFit(true);
@@ -79,17 +88,19 @@ public class MatchesPanel extends BasePanel {
 	}
 
 	private void getMatches() {
+		CursorDefs.showWaitCursor();
 		store.clear();
-		ServiceProvider.get().getAllMatches(new AsyncCallback<ArrayList<Match>>() {
+
+		KickerServices.MATCH_SERVICE.getAllMatches(new AsyncCallback<ArrayList<MatchData>>() {
 			@Override
-			public void onSuccess(ArrayList<Match> result) {
+			public void onSuccess(ArrayList<MatchData> result) {
 				store.addAll(result);
+				CursorDefs.showDefaultCursor();
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
-
 			}
 		});
 	}

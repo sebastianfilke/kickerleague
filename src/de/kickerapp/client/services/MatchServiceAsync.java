@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import de.kickerapp.shared.match.Match;
+import de.kickerapp.shared.match.MatchData;
 
 public interface MatchServiceAsync {
 
-	public void createMatch(Match match, AsyncCallback<Match> callback) throws IllegalArgumentException;
+	public void createMatch(MatchData match, AsyncCallback<MatchData> callback) throws IllegalArgumentException;
 
-	public void getAllMatches(AsyncCallback<ArrayList<Match>> callback) throws IllegalArgumentException;
+	public void getAllMatches(AsyncCallback<ArrayList<MatchData>> callback) throws IllegalArgumentException;
 
 }

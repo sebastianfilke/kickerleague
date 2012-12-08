@@ -1,13 +1,14 @@
 package de.kickerapp.client.ui;
 
-import java.util.ArrayList;
-
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
-import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.core.client.util.ToggleGroup;
+import com.sencha.gxt.widget.core.client.Portlet;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
 import com.sencha.gxt.widget.core.client.container.HBoxLayoutContainer;
@@ -19,15 +20,16 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
+import com.sencha.gxt.widget.core.client.form.FormPanel.LabelAlign;
+import com.sencha.gxt.widget.core.client.form.NumberPropertyEditor.IntegerPropertyEditor;
+import com.sencha.gxt.widget.core.client.form.Radio;
 
-import de.kickerapp.client.model.properties.ResultProperty;
-import de.kickerapp.client.services.ServiceProvider;
+import de.kickerapp.client.services.KickerServices;
+import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
-import de.kickerapp.client.widgets.AppComboBox;
+import de.kickerapp.client.widgets.AppSpinnerField;
 import de.kickerapp.client.widgets.AppTextField;
-import de.kickerapp.shared.match.Match;
-import de.kickerapp.shared.match.Result;
-import de.kickerapp.shared.match.ResultData;
+import de.kickerapp.shared.match.MatchData;
 
 /**
  * Controller-Klasse zum Eintragen der Ergebnisse und Spieler eines Spiels.
@@ -37,15 +39,15 @@ import de.kickerapp.shared.match.ResultData;
 public class ResultPanel extends BasePanel {
 
 	/** Die Ergebnisse für den ersten Satz. */
-	private AppComboBox<ResultData> cbResultGame1Team1, cbResultGame1Team2;
-	/** Die Ergebnisse für Satz 2. */
-	private AppComboBox<ResultData> cbResultGame2Team1, cbResultGame2Team2;
-	/** Die Ergebnisse für Satz 3. */
-	private AppComboBox<ResultData> cbResultGame3Team1, cbResultGame3Team2;
+	private AppSpinnerField<Integer> sfResultGame1Team1, sfResultGame1Team2;
+	/** Die Ergebnisse für den zweiten Satz. */
+	private AppSpinnerField<Integer> sfResultGame2Team1, sfResultGame2Team2;
+	/** Die Ergebnisse für den dritten Satz. */
+	private AppSpinnerField<Integer> sfResultGame3Team1, sfResultGame3Team2;
 	/** Die Spieler des ersten Teams. */
-	private AppTextField tfPlayer1, tfPlayer2;
+	private AppTextField tfPlayer1Team1, tfPlayer2Team1;
 	/** Die Spieler des zweiten Teams. */
-	private AppTextField tfPlayer3, tfPlayer4;
+	private AppTextField tfPlayer1Team2, tfPlayer2Team2;
 
 	/**
 	 * Erzeugt einen neuen Controller zum Eintragen der Ergebnisse und Spieler
@@ -58,15 +60,14 @@ public class ResultPanel extends BasePanel {
 	@Override
 	public void initLayout() {
 		super.initLayout();
-		VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
+
+		final VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
 
 		final FieldSet fieldSetResult = createResultFieldSet();
 		vlcMain.add(fieldSetResult, new VerticalLayoutData(1, -1, new Margins(0, 0, 5, 0)));
 
 		final FieldSet fieldSetSetPlayers = createPlayersFieldSet();
 		vlcMain.add(fieldSetSetPlayers, new VerticalLayoutData(1, -1));
-
-		initPanelButtons();
 
 		add(vlcMain, new MarginData(10));
 	}
@@ -82,17 +83,17 @@ public class ResultPanel extends BasePanel {
 
 		VerticalLayoutContainer vlcResult = new VerticalLayoutContainer();
 
-		cbResultGame1Team1 = createResultComboBox();
-		cbResultGame1Team2 = createResultComboBox();
-		vlcResult.add(createResultContainer(cbResultGame1Team1, cbResultGame1Team2, "Satz 1"), new VerticalLayoutData(1, -1, new Margins(0, 0, 5, 0)));
+		sfResultGame1Team1 = createResultComboBox("Satz 1");
+		sfResultGame1Team2 = createResultComboBox("Satz 1");
+		vlcResult.add(createFieldSetResultContainer(sfResultGame1Team1, sfResultGame1Team2), new VerticalLayoutData(1, -1));
 
-		cbResultGame2Team1 = createResultComboBox();
-		cbResultGame2Team2 = createResultComboBox();
-		vlcResult.add(createResultContainer(cbResultGame2Team1, cbResultGame2Team2, "Satz 2"), new VerticalLayoutData(1, -1, new Margins(0, 0, 5, 0)));
+		sfResultGame2Team1 = createResultComboBox("Satz 2");
+		sfResultGame2Team2 = createResultComboBox("Satz 2");
+		vlcResult.add(createResultContainer(sfResultGame2Team1, sfResultGame2Team2), new VerticalLayoutData(1, -1, new Margins(0, 0, 4, 0)));
 
-		cbResultGame3Team1 = createResultComboBox();
-		cbResultGame3Team2 = createResultComboBox();
-		vlcResult.add(createResultContainer(cbResultGame3Team1, cbResultGame3Team2, "Satz 3"), new VerticalLayoutData(1, -1));
+		sfResultGame3Team1 = createResultComboBox("Satz 3");
+		sfResultGame3Team2 = createResultComboBox("Satz 3");
+		vlcResult.add(createResultContainer(sfResultGame3Team1, sfResultGame3Team2), new VerticalLayoutData(1, -1));
 
 		fsResult.add(vlcResult);
 
@@ -105,15 +106,40 @@ public class ResultPanel extends BasePanel {
 	 * 
 	 * @param cbResultTeam1 Die ComboBox für das erste Team.
 	 * @param cbResultTeam2 Die ComboBox für das zweite Team.
-	 * @param label Das Label zum Anzeigen des Satzes.
 	 * @return Der erzeugte Container.
 	 */
-	private HBoxLayoutContainer createResultContainer(AppComboBox<ResultData> cbResultTeam1, AppComboBox<ResultData> cbResultTeam2, String label) {
+	private HBoxLayoutContainer createFieldSetResultContainer(AppSpinnerField<Integer> cbResultTeam1, AppSpinnerField<Integer> cbResultTeam2) {
 		HBoxLayoutContainer hblcResultInput = new HBoxLayoutContainer();
 		hblcResultInput.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
 		hblcResultInput.setPack(BoxLayoutPack.CENTER);
 
-		hblcResultInput.add(new FieldLabel(cbResultTeam1, label), new BoxLayoutData(new Margins(0, 5, 0, 0)));
+		FieldLabel fieldLabel1 = new FieldLabel(cbResultTeam1, "Team 1");
+		fieldLabel1.setLabelAlign(LabelAlign.TOP);
+
+		FieldLabel fieldLabel2 = new FieldLabel(cbResultTeam2, "Team 2");
+		fieldLabel2.setLabelAlign(LabelAlign.TOP);
+
+		hblcResultInput.add(fieldLabel1, new BoxLayoutData(new Margins(0, 5, 0, 0)));
+		hblcResultInput.add(new Label(":"), new BoxLayoutData(new Margins(15, 5, 0, 0)));
+		hblcResultInput.add(fieldLabel2, new BoxLayoutData());
+
+		return hblcResultInput;
+	}
+
+	/**
+	 * Erzeugt einen horizontal ausgerichteten Container mit zwei ComboBoxen für
+	 * das Ergebnis und einem Label.
+	 * 
+	 * @param cbResultTeam1 Die ComboBox für das erste Team.
+	 * @param cbResultTeam2 Die ComboBox für das zweite Team.
+	 * @return Der erzeugte Container.
+	 */
+	private HBoxLayoutContainer createResultContainer(AppSpinnerField<Integer> cbResultTeam1, AppSpinnerField<Integer> cbResultTeam2) {
+		HBoxLayoutContainer hblcResultInput = new HBoxLayoutContainer();
+		hblcResultInput.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
+		hblcResultInput.setPack(BoxLayoutPack.CENTER);
+
+		hblcResultInput.add(cbResultTeam1, new BoxLayoutData(new Margins(0, 5, 0, 0)));
 		hblcResultInput.add(new Label(":"), new BoxLayoutData(new Margins(0, 5, 0, 0)));
 		hblcResultInput.add(cbResultTeam2, new BoxLayoutData());
 
@@ -123,23 +149,19 @@ public class ResultPanel extends BasePanel {
 	/**
 	 * Erzeugt eine ComboBox zur Eingabe des Ergebnisses.
 	 * 
+	 * @param emptyText Der Text, welcher angezeigt wird, wenn das Feld noch
+	 *            leer ist als {@link String}.
 	 * @return Die erzeugte ComboBox.
 	 */
-	private AppComboBox<ResultData> createResultComboBox() {
-		ResultProperty resultProperty = GWT.create(ResultProperty.class);
+	private AppSpinnerField<Integer> createResultComboBox(String emptyText) {
+		AppSpinnerField<Integer> spResult = new AppSpinnerField<Integer>(new IntegerPropertyEditor());
+		spResult.setEmptyText(emptyText);
+		spResult.setIncrement(1);
+		spResult.setMinValue(0);
+		spResult.setMaxValue(6);
+		spResult.setAllowBlank(false);
 
-		ListStore<ResultData> storeResult = new ListStore<ResultData>(resultProperty.id());
-		storeResult.addAll(createResultData());
-
-		AppComboBox<ResultData> cbResult = new AppComboBox<ResultData>(storeResult, resultProperty.nameLabel());
-		cbResult.setTriggerAction(TriggerAction.ALL);
-		cbResult.setAllowTextSelection(true);
-		cbResult.setForceSelection(true);
-		cbResult.setAllowBlank(false);
-		cbResult.setTypeAhead(false);
-		cbResult.setWidth(80);
-
-		return cbResult;
+		return spResult;
 	}
 
 	/**
@@ -153,17 +175,88 @@ public class ResultPanel extends BasePanel {
 
 		VerticalLayoutContainer vlcPlayers = new VerticalLayoutContainer();
 
-		tfPlayer1 = new AppTextField("Spieler 1");
-		tfPlayer2 = new AppTextField("Spieler 2");
-		vlcPlayers.add(createPlayerContainer(tfPlayer1, tfPlayer2), new VerticalLayoutData(1, -1, new Margins(0, 0, 5, 0)));
+		vlcPlayers.add(createRadioButtons(), new VerticalLayoutData(-1, -1, new Margins(0, 0, 5, 0)));
 
-		tfPlayer3 = new AppTextField("Spieler 3");
-		tfPlayer4 = new AppTextField("Spieler 4");
-		vlcPlayers.add(createPlayerContainer(tfPlayer3, tfPlayer4), new VerticalLayoutData(1, -1));
+		tfPlayer1Team1 = new AppTextField("Spieler 1");
+		tfPlayer1Team2 = new AppTextField("Spieler 1");
+		vlcPlayers.add(createFieldLabelPlayerContainer(tfPlayer1Team1, tfPlayer1Team2), new VerticalLayoutData(1, -1));
+
+		tfPlayer2Team1 = new AppTextField("Spieler 2");
+		tfPlayer2Team1.setEnabled(false);
+		tfPlayer2Team2 = new AppTextField("Spieler 2");
+		tfPlayer2Team2.setEnabled(false);
+		vlcPlayers.add(createPlayerContainer(tfPlayer2Team1, tfPlayer2Team2), new VerticalLayoutData(1, -1));
 
 		fsPlayers.add(vlcPlayers);
 
 		return fsPlayers;
+	}
+
+	private HorizontalPanel createRadioButtons() {
+		Radio radio = new Radio();
+		radio.setBoxLabel("Einzel");
+		radio.setId("single");
+		radio.setValue(true);
+
+		Radio radio2 = new Radio();
+		radio2.setBoxLabel("Doppel");
+		radio2.setId("double");
+
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.add(radio);
+		horizontalPanel.add(radio2);
+
+		ToggleGroup toggle = new ToggleGroup();
+		toggle.add(radio);
+		toggle.add(radio2);
+		toggle.addValueChangeHandler(new ValueChangeHandler<HasValue<Boolean>>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<HasValue<Boolean>> event) {
+				ToggleGroup group = (ToggleGroup) event.getSource();
+				Radio radio = (Radio) group.getValue();
+
+				tfPlayer2Team1.setValue(null);
+				tfPlayer2Team1.setEnabled(false);
+				tfPlayer2Team2.setValue(null);
+				tfPlayer2Team2.setEnabled(false);
+				if (radio.getId().equals("double")) {
+					tfPlayer2Team1.setEnabled(true);
+					tfPlayer2Team2.setEnabled(true);
+				}
+			}
+		});
+		return horizontalPanel;
+	}
+
+	/**
+	 * Erzeugt einen horizontal ausgerichteten Container mit zwei Textfeldern
+	 * für die Spieler.
+	 * 
+	 * @param tfPlayer1 Das Textfeld für den ersten Spieler.
+	 * @param tfPlayer2 Das Textfeld für den zweiten Spieler.
+	 * @return Der erzeugte Container.
+	 */
+	private HBoxLayoutContainer createFieldLabelPlayerContainer(AppTextField tfPlayer1, AppTextField tfPlayer2) {
+		HBoxLayoutContainer hblcResultInput = new HBoxLayoutContainer();
+		hblcResultInput.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
+
+		BoxLayoutData flex = new BoxLayoutData(new Margins(0, 5, 0, 0));
+		flex.setFlex(1);
+
+		BoxLayoutData flex2 = new BoxLayoutData();
+		flex2.setFlex(1);
+
+		FieldLabel fieldLabel1 = new FieldLabel(tfPlayer1, "Team 1");
+		fieldLabel1.setLabelAlign(LabelAlign.TOP);
+
+		hblcResultInput.add(fieldLabel1, flex);
+
+		FieldLabel fieldLabel2 = new FieldLabel(tfPlayer2, "Team 2");
+		fieldLabel2.setLabelAlign(LabelAlign.TOP);
+
+		hblcResultInput.add(fieldLabel2, flex2);
+
+		return hblcResultInput;
 	}
 
 	/**
@@ -193,7 +286,7 @@ public class ResultPanel extends BasePanel {
 	/**
 	 * 
 	 */
-	private void initPanelButtons() {
+	protected void initPanelButtons(Portlet portletResult) {
 		AppButton bReset = new AppButton("Eingaben zurücksetzen");
 		bReset.setToolTip("Setzt alle eingegebenen Daten zurück");
 		bReset.addSelectHandler(new SelectHandler() {
@@ -209,19 +302,17 @@ public class ResultPanel extends BasePanel {
 				createMatch();
 			}
 		});
-		addButton(bReset);
-		addButton(bReport);
+		portletResult.addButton(bReset);
+		portletResult.addButton(bReport);
 	}
 
 	private void createMatch() {
-		Match match = new Match();
-		match.setSet1(cbResultGame1Team1.getValue().getName().toString() + ":" + cbResultGame1Team2.getValue().getName().toString());
-		match.setPlayer1(tfPlayer1.getValue());
-		match.setPlayer2(tfPlayer2.getValue());
-		ServiceProvider.get().createMatch(match, new AsyncCallback<Match>() {
+		MatchData match = new MatchData();
+		CursorDefs.showWaitCursor();
+		KickerServices.MATCH_SERVICE.createMatch(match, new AsyncCallback<MatchData>() {
 			@Override
-			public void onSuccess(Match result) {
-
+			public void onSuccess(MatchData result) {
+				CursorDefs.showDefaultCursor();
 			}
 
 			@Override
@@ -230,18 +321,6 @@ public class ResultPanel extends BasePanel {
 
 			}
 		});
-	}
-
-	private ArrayList<ResultData> createResultData() {
-		ArrayList<ResultData> resultList = new ArrayList<ResultData>();
-
-		for (int i = 1; i <= 6; i++) {
-			Result result = new Result();
-			result.setId(i);
-			result.setName(Integer.toString(i));
-			resultList.add(result);
-		}
-		return resultList;
 	}
 
 }

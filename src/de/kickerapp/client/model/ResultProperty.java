@@ -1,4 +1,4 @@
-package de.kickerapp.client.model.properties;
+package de.kickerapp.client.model;
 
 import com.google.gwt.editor.client.Editor.Path;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -12,9 +12,9 @@ public interface ResultProperty extends PropertyAccess<ResultData> {
 
 	public ModelKeyProvider<ResultData> id();
 
-	@Path("name")
+	@Path("matchResult")
 	public LabelProvider<ResultData> nameLabel();
 
-	public ValueProvider<ResultData, String> name();
+	public ValueProvider<ResultData, String> matchResult();
 
 }

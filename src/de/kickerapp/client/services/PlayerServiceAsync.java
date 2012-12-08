@@ -2,7 +2,7 @@ package de.kickerapp.client.services;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import de.kickerapp.shared.player.Player;
+import de.kickerapp.server.dto.Player;
 
 /**
  * The async counterpart of <code>GreetingService</code>.

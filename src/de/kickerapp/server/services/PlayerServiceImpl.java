@@ -5,8 +5,8 @@ import javax.jdo.PersistenceManager;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.PlayerService;
+import de.kickerapp.server.dto.Player;
 import de.kickerapp.server.persistence.PMFactory;
-import de.kickerapp.shared.player.Player;
 
 /**
  * The server side implementation of the RPC service.
@@ -19,6 +19,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public Player createPlayer(Player player) throws IllegalArgumentException {
 		PersistenceManager pm = PMFactory.get().getPersistenceManager();
 

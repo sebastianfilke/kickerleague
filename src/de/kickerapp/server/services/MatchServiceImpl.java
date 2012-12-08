@@ -8,8 +8,9 @@ import javax.jdo.PersistenceManager;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.MatchService;
+import de.kickerapp.server.dto.Match;
 import de.kickerapp.server.persistence.PMFactory;
-import de.kickerapp.shared.match.Match;
+import de.kickerapp.shared.match.MatchData;
 
 public class MatchServiceImpl extends RemoteServiceServlet implements MatchService {
 
@@ -19,7 +20,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	/**
 	 * {@inheritDoc}
 	 */
-	public Match createMatch(Match match) throws IllegalArgumentException {
+	public MatchData createMatch(MatchData match) throws IllegalArgumentException {
 		PersistenceManager pm = PMFactory.get().getPersistenceManager();
 
 		try {
@@ -33,13 +34,13 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	/**
 	 * {@inheritDoc}
 	 */
-	public ArrayList<Match> getAllMatches() throws IllegalArgumentException {
+	public ArrayList<MatchData> getAllMatches() throws IllegalArgumentException {
 		PersistenceManager pm = PMFactory.get().getPersistenceManager();
 
-		ArrayList<Match> matches = new ArrayList<Match>();
+		ArrayList<MatchData> matches = new ArrayList<MatchData>();
 		Extent<Match> extent = pm.getExtent(Match.class);
 		for (Match m : extent) {
-			matches.add(m);
+			// TODO
 		}
 
 		return matches;

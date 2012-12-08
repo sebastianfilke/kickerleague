@@ -1,25 +1,69 @@
 package de.kickerapp.shared.match;
 
-public interface MatchData {
+import java.util.Date;
 
-	public int getId();
+import de.kickerapp.shared.common.BaseData;
 
-	public void setId(int id);
+public class MatchData extends BaseData implements IMatch {
 
-	public String getName();
+	private String matchNumber;
 
-	public void setName(String name);
+	private Date matchDate;
 
-	public String getSet1();
+	private String team1;
 
-	public void setSet1(String set1);
+	private String team2;
 
-	public String getPlayer1();
+	private String matchResult;
 
-	public void setPlayer1(String player1);
+	@Override
+	public void setMatchNumber(String matchNumber) {
+		this.matchNumber = matchNumber;
+	}
 
-	public String getPlayer2();
+	@Override
+	public String getMatchNumber() {
+		return matchNumber;
+	}
 
-	public void setPlayer2(String player2);
+	@Override
+	public void setMatchDate(Date matchDate) {
+		this.matchDate = matchDate;
+	}
+
+	@Override
+	public Date getMatchDate() {
+		return matchDate;
+	}
+
+	@Override
+	public void setTeam1(String team1) {
+		this.team1 = team1;
+	}
+
+	@Override
+	public String getTeam1() {
+		return team1;
+	}
+
+	@Override
+	public void setTeam2(String team2) {
+		this.team2 = team2;
+	}
+
+	@Override
+	public String getTeam2() {
+		return team2;
+	}
+
+	@Override
+	public void setMatchResult(String matchResult) {
+		this.matchResult = matchResult;
+	}
+
+	@Override
+	public String getMatchResult() {
+		return matchResult;
+	}
 
 }
