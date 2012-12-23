@@ -17,7 +17,8 @@ import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.shared.match.IMatch;
-import de.kickerapp.shared.match.MatchData;
+import de.kickerapp.shared.match.MatchDto;
+import de.kickerapp.shared.match.TeamDto;
 
 /**
  * @author Sebastian Filke
@@ -46,9 +47,9 @@ public class MatchesPanel extends BasePanel {
 		ccNumber.setWidth(80);
 		ColumnConfig<IMatch, Date> ccMatchDate = new ColumnConfig<IMatch, Date>(matchProperty.matchDate(), 100, "Datum");
 		ccMatchDate.setWidth(80);
-		ColumnConfig<IMatch, String> ccTeam1 = new ColumnConfig<IMatch, String>(matchProperty.team1(), 75, "Team 1");
+		ColumnConfig<IMatch, TeamDto> ccTeam1 = new ColumnConfig<IMatch, TeamDto>(matchProperty.team1(), 75, "Team 1");
 		ccTeam1.setWidth(80);
-		ColumnConfig<IMatch, String> ccTeam2 = new ColumnConfig<IMatch, String>(matchProperty.team2(), 75, "Team 2");
+		ColumnConfig<IMatch, TeamDto> ccTeam2 = new ColumnConfig<IMatch, TeamDto>(matchProperty.team2(), 75, "Team 2");
 		ccTeam2.setWidth(80);
 		ColumnConfig<IMatch, String> ccResult = new ColumnConfig<IMatch, String>(matchProperty.matchResult(), 75, "Ergebnis");
 		ccResult.setWidth(80);
@@ -91,18 +92,19 @@ public class MatchesPanel extends BasePanel {
 		CursorDefs.showWaitCursor();
 		store.clear();
 
-		KickerServices.MATCH_SERVICE.getAllMatches(new AsyncCallback<ArrayList<MatchData>>() {
-			@Override
-			public void onSuccess(ArrayList<MatchData> result) {
-				store.addAll(result);
-				CursorDefs.showDefaultCursor();
-			}
-
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-			}
-		});
+		// KickerServices.MATCH_SERVICE.getAllMatches(new
+		// AsyncCallback<ArrayList<MatchDto>>() {
+		// @Override
+		// public void onSuccess(ArrayList<MatchDto> result) {
+		// store.addAll(result);
+		// CursorDefs.showDefaultCursor();
+		// }
+		//
+		// @Override
+		// public void onFailure(Throwable caught) {
+		// // TODO Auto-generated method stub
+		// }
+		// });
 	}
 
 }

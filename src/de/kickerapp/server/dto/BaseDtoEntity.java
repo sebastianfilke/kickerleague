@@ -13,7 +13,7 @@ import com.google.appengine.api.datastore.Key;
  * 
  * @author Sebastian Filke
  */
-public class BaseEntity implements Serializable {
+public class BaseDtoEntity implements Serializable {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -7621677056319765775L;
@@ -26,7 +26,7 @@ public class BaseEntity implements Serializable {
 	/**
 	 * Erzeugt eine neue Basisklasse.
 	 */
-	public BaseEntity() {
+	public BaseDtoEntity() {
 		super();
 	}
 

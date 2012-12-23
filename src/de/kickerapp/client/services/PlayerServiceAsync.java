@@ -2,13 +2,12 @@ package de.kickerapp.client.services;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import de.kickerapp.server.dto.Player;
+import de.kickerapp.shared.match.PlayerDto;
 
 /**
  * The async counterpart of <code>GreetingService</code>.
  */
 public interface PlayerServiceAsync {
 
-	public void createPlayer(Player player, AsyncCallback<Player> callback)
-			throws IllegalArgumentException;
+	public void createPlayer(PlayerDto player, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
 }

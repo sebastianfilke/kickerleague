@@ -4,18 +4,23 @@ import java.util.Date;
 
 import de.kickerapp.shared.common.BaseData;
 
-public class MatchData extends BaseData implements IMatch {
+public class MatchDto extends BaseData implements IMatch {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2656034118993930642L;
 
 	private String matchNumber;
 
 	private Date matchDate;
 
-	private String team1;
-
-	private String team2;
+	private TeamDto team1;
+	
+	private TeamDto team2;
 
 	private String matchResult;
-
+	
 	@Override
 	public void setMatchNumber(String matchNumber) {
 		this.matchNumber = matchNumber;
@@ -37,22 +42,22 @@ public class MatchData extends BaseData implements IMatch {
 	}
 
 	@Override
-	public void setTeam1(String team1) {
+	public void setTeam1(TeamDto team1) {
 		this.team1 = team1;
 	}
 
 	@Override
-	public String getTeam1() {
+	public TeamDto getTeam1() {
 		return team1;
 	}
 
 	@Override
-	public void setTeam2(String team2) {
+	public void setTeam2(TeamDto team2) {
 		this.team2 = team2;
 	}
 
 	@Override
-	public String getTeam2() {
+	public TeamDto getTeam2() {
 		return team2;
 	}
 

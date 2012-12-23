@@ -2,3 +2,29 @@
 body {
 	background-color: #ededed !important;
 }
+
+.templatePagingComboBox {
+	padding: 3px 10px 3px 10px;
+	white-space: normal;
+}
+
+.templatePagingComboBox span {
+	font-weight: normal;
+	font-size: 11px;
+}
+
+.templatePagingComboBox h3 {
+	font-size: 14px;
+	display: block;
+	font: inherit;
+	font-weight: bold;
+	color: #222;
+}
+
+.templatePagingComboBox h3 span {
+	float: right;
+	margin: 0 0 5px 5px;
+	width: 100px;
+	display: block;
+	clear: none;
+}

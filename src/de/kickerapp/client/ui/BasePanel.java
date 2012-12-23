@@ -1,5 +1,7 @@
 package de.kickerapp.client.ui;
 
+import com.sencha.gxt.widget.core.client.Portlet;
+
 import de.kickerapp.client.widgets.AppContentPanel;
 
 /**
@@ -19,14 +21,23 @@ public class BasePanel extends AppContentPanel {
 	/**
 	 * Initalisiert das Layout des Panels.
 	 */
-	public void initLayout() {
+	protected void initLayout() {
 		setHeaderVisible(false);
 	}
 
 	/**
 	 * Initalisiert die EventHandler des Panels.
 	 */
-	public void initHandlers() {
+	protected void initHandlers() {
+	}
+
+	/**
+	 * Initalisiert die Aktions-Buttons für die Portale.
+	 * 
+	 * @param portlet Das Portal für das die Aktions-Buttons initalisiert werden
+	 *            sollen.
+	 */
+	protected void initPanelButtons(Portlet portlet) {
 	}
 
 }

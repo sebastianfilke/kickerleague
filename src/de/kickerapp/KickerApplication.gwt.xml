@@ -6,6 +6,7 @@
 <module rename-to='kicker_application'>
 	<!-- Inherit the core Web Toolkit stuff. -->
 	<inherits name='com.google.gwt.user.User' />
+	<inherits name="com.google.gwt.logging.Logging" />
 
 	<!-- Inherit the default GWT style sheet. You can change -->
 	<!-- the theme of your GWT application by uncommenting -->
@@ -31,7 +32,8 @@
 	<source path='client' />
 	<source path='shared' />
 
-	<!-- Logging -->
+	<!-- Set the Logging properties -->
+	<set-property name="gwt.logging.logLevel" value="SEVERE" />
 	<set-property name="gwt.logging.enabled" value="TRUE" />
 	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
 

@@ -7,9 +7,12 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import de.kickerapp.client.services.PlayerService;
 import de.kickerapp.server.dto.Player;
 import de.kickerapp.server.persistence.PMFactory;
+import de.kickerapp.shared.match.PlayerDto;
 
 /**
- * The server side implementation of the RPC service.
+ * Dienst zur Verarbeitung von Spielern im Clienten.
+ * 
+ * @author Sebastian Filke
  */
 public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerService {
 
@@ -20,11 +23,17 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Player createPlayer(Player player) throws IllegalArgumentException {
-		PersistenceManager pm = PMFactory.get().getPersistenceManager();
+	public PlayerDto createPlayer(PlayerDto player) throws IllegalArgumentException {
+		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
+
+		Player newPlayer = new Player();
+		newPlayer.setFirstName(player.getFirstName());
+		newPlayer.setLastName(player.getLastName());
+		newPlayer.setEMail(player.getEMail());
+		newPlayer.setNickName(player.getNickName());
 
 		try {
-			player = pm.makePersistent(player);
+			newPlayer = pm.makePersistent(newPlayer);
 
 		} finally {
 			pm.close();

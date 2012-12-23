@@ -4,8 +4,16 @@ import java.util.Date;
 
 import de.kickerapp.shared.common.IBase;
 
+/**
+ * @author Basti
+ */
 public interface IMatch extends IBase {
 
+	
+	
+	/**
+	 * @param matchNumber
+	 */
 	public void setMatchNumber(String matchNumber);
 
 	public String getMatchNumber();
@@ -14,13 +22,13 @@ public interface IMatch extends IBase {
 
 	public Date getMatchDate();
 
-	public void setTeam1(String team1);
+	public void setTeam1(TeamDto team1);
 
-	public String getTeam1();
+	public TeamDto getTeam1();
 
-	public void setTeam2(String team2);
+	public void setTeam2(TeamDto team2);
 
-	public String getTeam2();
+	public TeamDto getTeam2();
 
 	public void setMatchResult(String matchResult);
 

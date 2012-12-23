@@ -12,7 +12,7 @@ import javax.jdo.annotations.Persistent;
  * @author Sebastian Filke
  */
 @PersistenceCapable
-public class Match extends BaseEntity {
+public class Match extends BaseDtoEntity {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -77744879325097514L;
@@ -20,7 +20,7 @@ public class Match extends BaseEntity {
 	/** Das Spieldatum. */
 	@Persistent
 	private Date matchDate;
-	
+	/** Die Liste der Spielsätze. */
 	@Persistent(mappedBy = "match")
 	private ArrayList<Set> sets;
 
@@ -47,14 +47,23 @@ public class Match extends BaseEntity {
 	public Date getMatchDate() {
 		return matchDate;
 	}
-	
 
-	public ArrayList<Set> getSets() {
-		return sets;
-	}
-
+	/**
+	 * Setzt die Liste der Spielsätze.
+	 * 
+	 * @param sets Die Liste der Spielsätze.
+	 */
 	public void setSets(ArrayList<Set> sets) {
 		this.sets = sets;
+	}
+
+	/**
+	 * Liefert die Liste der Spielsätze.
+	 * 
+	 * @return Die Liste der Spielsätze.
+	 */
+	public ArrayList<Set> getSets() {
+		return sets;
 	}
 
 }

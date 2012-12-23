@@ -1,41 +1,34 @@
-package de.kickerapp.server.dto;
+package de.kickerapp.shared.match;
 
 import java.util.Date;
 
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
+import de.kickerapp.shared.common.BaseData;
 
 /**
- * Datenklasse zum Halten der Informationen für einen Spieler.
- * 
- * @author Sebastian Filke
+ * @author Basti
  */
-@PersistenceCapable
-public class Player extends BaseDtoEntity {
+public class PlayerDto extends BaseData implements IPlayer {
 
-	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -13034504212792103L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8362977112070597348L;
 
 	/** Der Nachname des Spielers. */
-	@Persistent
 	private String lastName;
 	/** Der Vorname des Spielers. */
-	@Persistent
 	private String firstName;
 	/** Der Nickname des Spielers. */
-	@Persistent
 	private String nickName;
 	/** Die E-Mail Adresse des Spielers. */
-	@Persistent
 	private String eMail;
 	/** Das Datum des letzten Spiels des Spielers. */
-	@Persistent
 	private Date lastMatchDate;
 
 	/**
 	 * Erzeugt einen neuen Spieler ohne Angaben.
 	 */
-	public Player() {
+	public PlayerDto() {
 		super();
 	}
 
@@ -45,10 +38,11 @@ public class Player extends BaseDtoEntity {
 	 * @param firstName Der Vornamen des Spielers.
 	 * @param lastName Der Nachname des Spielers als <code>String</code>.
 	 */
-	public Player(String lastName, String firstName) {
+	public PlayerDto(String lastName, String firstName) {
 		this();
 		this.lastName = lastName;
 		this.firstName = firstName;
+		setLabel(firstName + " " + lastName);
 	}
 
 	/**

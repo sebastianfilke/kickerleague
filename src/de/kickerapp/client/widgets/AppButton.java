@@ -3,7 +3,7 @@ package de.kickerapp.client.widgets;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 
 /**
- * Erweiterung des {@link TextButton} für die Application.
+ * Erweiterung des {@link TextButton} fÃ¼r die Application.
  * 
  * @author Sebastian Filke
  */
@@ -18,10 +18,9 @@ public class AppButton extends TextButton {
 	}
 
 	/**
-	 * Erzeugt einen neuen TextButton mit übergebenem Text.
+	 * Erzeugt einen neuen TextButton mit Ã¼bergebenem Text.
 	 * 
-	 * @param text
-	 *            Der Text des Buttons als {@link String}.
+	 * @param text Der Text des Buttons als {@link String}.
 	 */
 	public AppButton(String text) {
 		super(text);

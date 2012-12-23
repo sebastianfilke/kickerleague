@@ -9,7 +9,7 @@ import javax.jdo.annotations.Persistent;
  * @author Sebastian Filke
  */
 @PersistenceCapable
-public class Set extends BaseEntity {
+public class Set extends BaseDtoEntity {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = 106622955398483447L;
@@ -17,10 +17,10 @@ public class Set extends BaseEntity {
 	/** Das Ergebnis. */
 	@Persistent
 	private String result;
-	
+	/** Das zugehörige Spiel. */
 	@Persistent
 	private Match match;
-
+	/** Das zugehörige Team. */
 	@Persistent
 	private Team team;
 
@@ -48,20 +48,40 @@ public class Set extends BaseEntity {
 		return result;
 	}
 
-	public Match getMatch() {
-		return match;
-	}
-
+	/**
+	 * Setzt das zugehörige Spiel für den Satz.
+	 * 
+	 * @param match Das zugehörige Spiel.
+	 */
 	public void setMatch(Match match) {
 		this.match = match;
 	}
 
-	public Team getTeam() {
-		return team;
+	/**
+	 * Liefert das zugehörige Spiel für den Satz.
+	 * 
+	 * @return Das zugehörige Spiel für den Satz.
+	 */
+	public Match getMatch() {
+		return match;
 	}
 
+	/**
+	 * Setzt das zugehörige Team für den Satz.
+	 * 
+	 * @param team Das zugehörige Team.
+	 */
 	public void setTeam(Team team) {
 		this.team = team;
+	}
+
+	/**
+	 * Liefert das zugehörige Team für den Satz.
+	 * 
+	 * @return Das zugehörige Team für den Satz.
+	 */
+	public Team getTeam() {
+		return team;
 	}
 
 }

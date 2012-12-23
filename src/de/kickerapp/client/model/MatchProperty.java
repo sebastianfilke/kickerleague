@@ -9,6 +9,7 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
 import de.kickerapp.shared.match.IMatch;
+import de.kickerapp.shared.match.TeamDto;
 
 public interface MatchProperty extends PropertyAccess<IMatch> {
 
@@ -22,9 +23,9 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 
 	public ValueProvider<IMatch, Date> matchDate();
 
-	public ValueProvider<IMatch, String> team1();
-
-	public ValueProvider<IMatch, String> team2();
+	public ValueProvider<IMatch, TeamDto> team1();
+	
+	public ValueProvider<IMatch, TeamDto> team2();
 
 	public ValueProvider<IMatch, String> matchResult();
 

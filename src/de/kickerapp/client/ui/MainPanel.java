@@ -1,7 +1,7 @@
 package de.kickerapp.client.ui;
 
 import de.kickerapp.client.ui.images.KickerIcons;
-import de.kickerapp.client.ui.resources.MessageProvider;
+import de.kickerapp.client.ui.resources.KickerMessages;
 
 /**
  * Basis-Controller zur Darstellung und Verarbeitung der Applikation.
@@ -14,6 +14,8 @@ public class MainPanel extends BasePanel {
 
 	private MatchesPanel matchesPanel;
 
+	private PlayerPanel playerPanel;
+
 	public MainPanel() {
 		super();
 		initLayout();
@@ -24,8 +26,8 @@ public class MainPanel extends BasePanel {
 	 */
 	@Override
 	public void initLayout() {
-		setHeadingHtml("<span style='font-size:18px;'>" + MessageProvider.get().mainPanelTitle() + "</i>");
-		getHeader().setIcon(KickerIcons.GET.socerBall());
+		setHeadingHtml("<span style='font-size:18px;'>" + KickerMessages.MAIN_PANEL.mainPanelTitle() + "</i>");
+		getHeader().setIcon(KickerIcons.ICON.socerBall());
 		setBodyBorder(false);
 
 		final PortalPanel portalPanel = new PortalPanel();
@@ -34,12 +36,23 @@ public class MainPanel extends BasePanel {
 		add(portalPanel);
 	}
 
+	/**
+	 * @param portalPanel
+	 */
 	private void initPanels(PortalPanel portalPanel) {
+		// Ergebnispanel
 		resultPanel = new ResultPanel();
 		resultPanel.initPanelButtons(portalPanel.getPortletResult());
 		portalPanel.getPortletResult().add(resultPanel);
+
+		// Spielerergebnispanel
 		matchesPanel = new MatchesPanel();
 		portalPanel.getPortletMatches().add(matchesPanel);
+
+		// Spielerpanel
+		playerPanel = new PlayerPanel();
+		playerPanel.initPanelButtons(portalPanel.getPortletPlayer());
+		portalPanel.getPortletPlayer().add(playerPanel);
 	}
 
 }

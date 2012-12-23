@@ -11,11 +11,10 @@ import javax.jdo.PersistenceManagerFactory;
 public final class PMFactory {
 
 	/** Die einzige Instanz der {@link PersistenceManagerFactory}. */
-	private static final PersistenceManagerFactory instance = JDOHelper
-			.getPersistenceManagerFactory("transactions-optional");
+	private static final PersistenceManagerFactory INSTANCE = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 
 	/**
-	 * Privater Konstruktor zur Verhinderung externen Instantiierung.
+	 * Privater Konstruktor zur Verhinderung externe Instantiierung.
 	 */
 	private PMFactory() {
 	}
@@ -26,7 +25,7 @@ public final class PMFactory {
 	 * @return Die Instanz.
 	 */
 	public static PersistenceManagerFactory get() {
-		return instance;
+		return INSTANCE;
 	}
 
 }

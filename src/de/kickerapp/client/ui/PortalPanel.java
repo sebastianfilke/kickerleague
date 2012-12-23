@@ -11,14 +11,16 @@ import com.sencha.gxt.widget.core.client.container.PortalLayoutContainer;
  */
 public class PortalPanel extends BasePanel {
 
-	/** Das Portal für den Ergebnispanel. */
+	/** Das Portal für die Spielergebnisse. */
 	private Portlet portletResult;
 	/** Das Portal für die zuletzt gespielten Spiele. */
 	private Portlet portletMatches;
-	/** Das Portal für die akutelle Tabelle. */
+	/** Das Portal zum Anzeigen der aktuellen Tabelle. */
 	private Portlet portletTable;
-	/** Das Portal für die Stoppuhr. */
+	/** Das Portal für die Verwendung der Stoppuhr. */
 	private Portlet portletTimer;
+	/** Das Portal zum Eintragen von Spieler. */
+	private Portlet portletPlayer;
 
 	/**
 	 * Erstellt einen neuen Basis-Controller.
@@ -50,6 +52,9 @@ public class PortalPanel extends BasePanel {
 		portletTimer = createPortletTimer();
 		plcMain.add(portletTimer, 2);
 
+		portletPlayer = createPortletPlayer();
+		plcMain.add(portletPlayer, 2);
+
 		add(plcMain);
 	}
 
@@ -70,8 +75,7 @@ public class PortalPanel extends BasePanel {
 		portletResult.setHeadingHtml("<span style='font-size:14px;'>Ergebnis eintragen</i>");
 		portletResult.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
 		portletResult.setCollapsible(true);
-		portletResult.add(new ResultPanel());
-		portletResult.setSize("350px", "370px");
+		portletResult.setPixelSize(350, 440);
 
 		return portletResult;
 	}
@@ -81,7 +85,7 @@ public class PortalPanel extends BasePanel {
 		portletMatches.setHeadingHtml("<span style='font-size:14px;'>Zuletzt Gespielt</i>");
 		portletMatches.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
 		portletMatches.setCollapsible(true);
-		portletMatches.setSize("400px", "250px");
+		portletMatches.setPixelSize(400, 250);
 
 		return portletMatches;
 	}
@@ -91,7 +95,7 @@ public class PortalPanel extends BasePanel {
 		portletTable.setHeadingHtml("<span style='font-size:14px;'>Aktuelle Tabelle</i>");
 		portletTable.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
 		portletTable.setCollapsible(true);
-		portletTable.setSize("400px", "465px");
+		portletTable.setPixelSize(400, 465);
 
 		return portletTable;
 	}
@@ -101,9 +105,19 @@ public class PortalPanel extends BasePanel {
 		portletTimer.setHeadingHtml("<span style='font-size:14px;'>Stoppuhr</i>");
 		portletTimer.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
 		portletTimer.setCollapsible(true);
-		portletTimer.setSize("300px", "150px");
+		portletTimer.setPixelSize(300, 150);
 
 		return portletTimer;
+	}
+
+	private Portlet createPortletPlayer() {
+		final Portlet portletPlayer = new Portlet();
+		portletPlayer.setHeadingHtml("<span style='font-size:14px;'>Spieler</i>");
+		portletPlayer.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
+		portletPlayer.setCollapsible(true);
+		portletPlayer.setPixelSize(300, 245);
+
+		return portletPlayer;
 	}
 
 	public Portlet getPortletResult() {
@@ -120,6 +134,10 @@ public class PortalPanel extends BasePanel {
 
 	public Portlet getPortletTimer() {
 		return portletTimer;
+	}
+
+	public Portlet getPortletPlayer() {
+		return portletPlayer;
 	}
 
 }

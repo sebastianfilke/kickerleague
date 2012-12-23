@@ -6,15 +6,15 @@ import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
-import de.kickerapp.shared.match.ResultData;
+import de.kickerapp.shared.match.ResultDto;
 
-public interface ResultProperty extends PropertyAccess<ResultData> {
+public interface ResultProperty extends PropertyAccess<ResultDto> {
 
-	public ModelKeyProvider<ResultData> id();
+	public ModelKeyProvider<ResultDto> id();
 
 	@Path("matchResult")
-	public LabelProvider<ResultData> nameLabel();
+	public LabelProvider<ResultDto> nameLabel();
 
-	public ValueProvider<ResultData, String> matchResult();
+	public ValueProvider<ResultDto, String> matchResult();
 
 }
