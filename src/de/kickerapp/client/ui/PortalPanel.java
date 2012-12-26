@@ -73,7 +73,30 @@ public class PortalPanel extends BasePanel {
 	private Portlet createPortletResult() {
 		final Portlet portletResult = new Portlet();
 		portletResult.setHeadingHtml("<span style='font-size:14px;'>Ergebnis eintragen</i>");
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.CLOSE));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.COLLAPSE));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.DOUBLEDOWN));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.DOUBLELEFT));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.DOUBLERIGHT));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.DOUBLEUP));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.DOWN));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.EXPAND));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.GEAR));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.LEFT));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.MAXIMIZE));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.MINIMIZE));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.MINUS));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.PIN));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.PLUS));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.PRINT));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.QUESTION));
 		portletResult.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.RESTORE));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.RIGHT));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.SAVE));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.SEARCH));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.UNPIN));
+		portletResult.getHeader().addTool(new ToolButton(ToolButton.UP));
 		portletResult.setCollapsible(true);
 		portletResult.setPixelSize(350, 440);
 

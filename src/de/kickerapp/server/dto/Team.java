@@ -11,7 +11,7 @@ import javax.jdo.annotations.Persistent;
  * @author Sebastian Filke
  */
 @PersistenceCapable
-public class Team extends BaseDtoEntity {
+public class Team extends BaseEntity {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = 7796571017092493823L;
@@ -20,7 +20,7 @@ public class Team extends BaseDtoEntity {
 	@Persistent
 	private Player player;
 	/** Die Sätze des Spiels. */
-	@Persistent(mappedBy = "team")
+	@Persistent
 	private ArrayList<Set> sets;
 
 	/**

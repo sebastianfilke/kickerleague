@@ -17,7 +17,9 @@
 
 	<property name="lib.dir" value="${lib.dir}" />
 	<property name="war.dir" value="${war.dir}" />
+	<property name="war.generatedtracer.dir" value="${war.generatedtracer.dir}" />
 	<property name="war.kickerapp.dir" value="${war.kickerapp.dir}" />
+	<property name="war.symboltracer.dir" value="${war.symboltracer.dir}" />
 	<property name="webinf.dir" value="${webinf.dir}" />
 	<property name="webinf.generated.dir" value="${webinf.generated.dir}" />
 	<property name="webinf.deploy.dir" value="${webinf.deploy.dir}" />
@@ -29,7 +31,9 @@
 
 	<target name="clean" description="Löscht alle Caches und automatisch generierte Dateien und Ordner">
 		<delete dir="${gwt.unitcache.dir}" failonerror="true" />
+		<delete dir="${war.generatedtracer.dir}" failonerror="true" />
 		<delete dir="${war.kickerapp.dir}" failonerror="true" />
+		<delete dir="${war.symboltracer.dir}" failonerror="true" />
 		<delete dir="${webinf.generated.dir}" failonerror="true" />
 		<delete dir="${webinf.deploy.dir}" failonerror="true" />
 		<echo message="Alle Dateien wurden erfolgreich gelöscht" />

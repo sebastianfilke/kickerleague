@@ -28,8 +28,6 @@ import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutP
 import com.sencha.gxt.widget.core.client.container.HBoxLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HBoxLayoutContainer.HBoxLayoutAlign;
 import com.sencha.gxt.widget.core.client.container.MarginData;
-import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer.VBoxLayoutAlign;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -43,7 +41,6 @@ import com.sencha.gxt.widget.core.client.form.Radio;
 import de.kickerapp.client.model.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.resources.KickerTemplates;
-import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
 import de.kickerapp.client.widgets.AppSpinnerField;
@@ -65,11 +62,11 @@ public class ResultPanel extends BasePanel {
 	/** Die Ergebnisse für den dritten Satz. */
 	private AppSpinnerField<Integer> sfResultGame3Team1, sfResultGame3Team2;
 	/** Die Spieler des ersten Teams. */
-	private AppComboBox<PlayerDto> tfPlayer1Team1, tfPlayer2Team1;
+	private AppComboBox<PlayerDto> cbTeam1Player1, cbTeam1Player2;
 	/** Die Spieler des zweiten Teams. */
-	private AppComboBox<PlayerDto> tfPlayer1Team2, tfPlayer2Team2;
+	private AppComboBox<PlayerDto> cbTeam2Player1, cbTeam2Player2;
 
-	private ToggleGroup toggle;
+	private ToggleGroup tgPlayType;
 
 	/**
 	 * Erzeugt einen neuen Controller zum Eintragen der Ergebnisse und Spieler
@@ -201,144 +198,97 @@ public class ResultPanel extends BasePanel {
 
 		vlcPlayers.add(createRadioButtons(), new VerticalLayoutData(-1, -1, new Margins(0, 0, 5, 0)));
 
-		tfPlayer1Team1 = createPlayerComboBox(props, "Spieler 1");
-		tfPlayer2Team1 = createPlayerComboBox(props, "Spieler 2");
-		tfPlayer2Team1.setEnabled(false);
+		cbTeam1Player1 = createPlayerComboBox(props, "Nach Spieler 1 suchen");
+		cbTeam1Player2 = createPlayerComboBox(props, "Nach Spieler 2 suchen");
+		cbTeam1Player2.setEnabled(false);
 
-		final FieldLabel fieldLabel1 = new FieldLabel(tfPlayer1Team1, "Team 1");
+		final FieldLabel fieldLabel1 = new FieldLabel(cbTeam1Player1, "Team 1");
 		fieldLabel1.setLabelAlign(LabelAlign.TOP);
 		vlcPlayers.add(fieldLabel1, new VerticalLayoutData(1, -1));
-		vlcPlayers.add(tfPlayer2Team1, new VerticalLayoutData(1, -1, new Margins(0, 0, 8, 0)));
+		vlcPlayers.add(cbTeam1Player2, new VerticalLayoutData(1, -1, new Margins(0, 0, 8, 0)));
 
-		tfPlayer1Team2 = createPlayerComboBox(props, "Spieler 1");
-		tfPlayer2Team2 = createPlayerComboBox(props, "Spieler 2");
-		tfPlayer2Team2.setEnabled(false);
+		cbTeam2Player1 = createPlayerComboBox(props, "Nach Spieler 1 suchen");
+		cbTeam2Player2 = createPlayerComboBox(props, "Nach Spieler 2 suchen");
+		cbTeam2Player2.setEnabled(false);
 
-		final FieldLabel fieldLabel2 = new FieldLabel(tfPlayer1Team2, "Team 2");
+		final FieldLabel fieldLabel2 = new FieldLabel(cbTeam2Player1, "Team 2");
 		fieldLabel2.setLabelAlign(LabelAlign.TOP);
 		vlcPlayers.add(fieldLabel2, new VerticalLayoutData(1, -1));
-		vlcPlayers.add(tfPlayer2Team2, new VerticalLayoutData(1, -1));
+		vlcPlayers.add(cbTeam2Player2, new VerticalLayoutData(1, -1));
 
 		fsPlayers.add(vlcPlayers);
 
 		return fsPlayers;
 	}
 
-	private AppComboBox<PlayerDto> createPlayerComboBox(PlayerProperty props, String emptyText) {
-		final RpcProxy<PagingLoadConfig, PagingLoadResult<PlayerDto>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<PlayerDto>>() {
-			@Override
-			public void load(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<PlayerDto>> callback) {
-				KickerServices.PAGING_SERVICE.getPagedPlayers(loadConfig, callback);
-			}
-		};
-
-		final ListStore<PlayerDto> store = new ListStore<PlayerDto>(props.id());
-		final PagingLoader<PagingLoadConfig, PagingLoadResult<PlayerDto>> loader = new PagingLoader<PagingLoadConfig, PagingLoadResult<PlayerDto>>(proxy);
-		loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig, PlayerDto, PagingLoadResult<PlayerDto>>(store));
-
-		final ListView<PlayerDto, PlayerDto> view = new ListView<PlayerDto, PlayerDto>(store, new IdentityValueProvider<PlayerDto>());
-		view.setCell(new AbstractCell<PlayerDto>() {
-			@Override
-			public void render(com.google.gwt.cell.client.Cell.Context context, PlayerDto value, SafeHtmlBuilder sb) {
-				sb.append(KickerTemplates.TEMPLATE.renderPlayerPagingComboBox(value));
-			}
-		});
-
-		final ComboBoxCell<PlayerDto> cell = new ComboBoxCell<PlayerDto>(store, props.label(), view);
-
-		final AppComboBox<PlayerDto> tfPlayer1Team1 = new AppComboBox<PlayerDto>(cell, emptyText);
-		tfPlayer1Team1.setHideTrigger(true);
-		tfPlayer1Team1.setLoader(loader);
-		tfPlayer1Team1.setPageSize(5);
-		tfPlayer1Team1.setMinChars(2);
-
-		return tfPlayer1Team1;
-	}
-
 	private HorizontalPanel createRadioButtons() {
-		final Radio radio = new Radio();
-		radio.setBoxLabel("Einzel");
-		radio.setId("single");
-		radio.setValue(true);
+		final Radio rSingle = new Radio();
+		rSingle.setToolTip("Stellt den Spieltyp auf ein Einzelspiel (1vs1)");
+		rSingle.setBoxLabel("Einzel");
+		rSingle.setId("single");
 
-		final Radio radio2 = new Radio();
-		radio2.setBoxLabel("Doppel");
-		radio2.setId("double");
+		final Radio rDouble = new Radio();
+		rDouble.setToolTip("Stellt den Spieltyp auf ein Doppelspiel (2vs2)");
+		rDouble.setBoxLabel("Doppel");
+		rDouble.setId("double");
 
 		final HorizontalPanel horizontalPanel = new HorizontalPanel();
-		horizontalPanel.add(radio);
-		horizontalPanel.add(radio2);
+		horizontalPanel.add(rSingle);
+		horizontalPanel.add(rDouble);
 
-		toggle = new ToggleGroup();
-		toggle.add(radio);
-		toggle.add(radio2);
-		toggle.addValueChangeHandler(new ValueChangeHandler<HasValue<Boolean>>() {
+		tgPlayType = new ToggleGroup();
+		tgPlayType.add(rSingle);
+		tgPlayType.add(rDouble);
+		tgPlayType.setValue(rSingle);
+		tgPlayType.addValueChangeHandler(new ValueChangeHandler<HasValue<Boolean>>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<HasValue<Boolean>> event) {
 				final ToggleGroup group = (ToggleGroup) event.getSource();
 				final Radio radio = (Radio) group.getValue();
 
-				tfPlayer2Team1.setValue(null);
-				tfPlayer2Team1.setEnabled(false);
-				tfPlayer2Team2.setValue(null);
-				tfPlayer2Team2.setEnabled(false);
+				cbTeam1Player2.setValue(null);
+				cbTeam1Player2.setEnabled(false);
+				cbTeam2Player2.setValue(null);
+				cbTeam2Player2.setEnabled(false);
 				if (radio.getId().equals("double")) {
-					tfPlayer2Team1.setEnabled(true);
-					tfPlayer2Team2.setEnabled(true);
+					cbTeam1Player2.setEnabled(true);
+					cbTeam2Player2.setEnabled(true);
 				}
 			}
 		});
 		return horizontalPanel;
 	}
 
-	/**
-	 * Erzeugt einen horizontal ausgerichteten Container mit zwei Textfeldern
-	 * für die Spieler.
-	 * 
-	 * @param tfPlayer1 Das Textfeld für den ersten Spieler.
-	 * @param tfPlayer2 Das Textfeld für den zweiten Spieler.
-	 * @return Der erzeugte Container.
-	 */
-	private VBoxLayoutContainer createFieldLabelPlayerContainer(AppComboBox<PlayerDto> tfPlayer1, AppComboBox<PlayerDto> tfPlayer2) {
-		final VBoxLayoutContainer vblcResult = new VBoxLayoutContainer();
-		vblcResult.setVBoxLayoutAlign(VBoxLayoutAlign.LEFT);
+	private AppComboBox<PlayerDto> createPlayerComboBox(PlayerProperty props, String emptyText) {
+		final ListStore<PlayerDto> store = new ListStore<PlayerDto>(props.id());
 
-		final BoxLayoutData flex = new BoxLayoutData(new Margins(0, 5, 0, 0));
-		flex.setFlex(1);
+		final ListView<PlayerDto, PlayerDto> view = new ListView<PlayerDto, PlayerDto>(store, new IdentityValueProvider<PlayerDto>());
+		view.setCell(new AbstractCell<PlayerDto>() {
+			@Override
+			public void render(Context context, PlayerDto value, SafeHtmlBuilder sb) {
+				sb.append(KickerTemplates.TEMPLATE.renderPlayerPagingComboBox(value));
+			}
+		});
 
-		final BoxLayoutData flex2 = new BoxLayoutData();
-		flex2.setFlex(1);
+		final ComboBoxCell<PlayerDto> cell = new ComboBoxCell<PlayerDto>(store, props.label(), view);
+		final AppComboBox<PlayerDto> cbPlayer = new AppComboBox<PlayerDto>(cell, emptyText);
 
-		final FieldLabel fieldLabel1 = new FieldLabel(tfPlayer1, "Team 1");
-		fieldLabel1.setLabelAlign(LabelAlign.TOP);
+		final RpcProxy<PagingLoadConfig, PagingLoadResult<PlayerDto>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<PlayerDto>>() {
+			@Override
+			public void load(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<PlayerDto>> callback) {
+				KickerServices.PAGING_SERVICE.getPagedPlayers(cbPlayer.getText(), loadConfig, callback);
+			}
+		};
 
-		vblcResult.add(fieldLabel1);
+		final PagingLoader<PagingLoadConfig, PagingLoadResult<PlayerDto>> loader = new PagingLoader<PagingLoadConfig, PagingLoadResult<PlayerDto>>(proxy);
+		loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig, PlayerDto, PagingLoadResult<PlayerDto>>(store));
 
-		return vblcResult;
-	}
+		cbPlayer.setHideTrigger(true);
+		cbPlayer.setLoader(loader);
+		cbPlayer.setPageSize(5);
+		cbPlayer.setMinChars(2);
 
-	/**
-	 * Erzeugt einen horizontal ausgerichteten Container mit zwei Textfeldern
-	 * für die Spieler.
-	 * 
-	 * @param tfPlayer1 Das Textfeld für den ersten Spieler.
-	 * @param tfPlayer2 Das Textfeld für den zweiten Spieler.
-	 * @return Der erzeugte Container.
-	 */
-	private HBoxLayoutContainer createPlayerContainer(AppComboBox<PlayerDto> tfPlayer1, AppComboBox<PlayerDto> tfPlayer2) {
-		final HBoxLayoutContainer hblcResultInput = new HBoxLayoutContainer();
-		hblcResultInput.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
-
-		final BoxLayoutData flex = new BoxLayoutData(new Margins(0, 5, 0, 0));
-		flex.setFlex(1);
-
-		final BoxLayoutData flex2 = new BoxLayoutData();
-		flex2.setFlex(1);
-
-		hblcResultInput.add(tfPlayer1, flex);
-		hblcResultInput.add(tfPlayer2, flex2);
-
-		return hblcResultInput;
+		return cbPlayer;
 	}
 
 	/**
@@ -366,61 +316,34 @@ public class ResultPanel extends BasePanel {
 	}
 
 	private void createMatch() {
-		final MatchDto match = new MatchDto();
-		match.setMatchDate(new Date());
+		final MatchDto newMatch = new MatchDto();
+		newMatch.setMatchDate(new Date());
+		newMatch.setMatchNumber("1");
 
 		TeamDto team1 = null;
 		TeamDto team2 = null;
-		final Radio radio = (Radio) toggle.getValue();
+		final Radio radio = (Radio) tgPlayType.getValue();
 		if (radio.getId().equals("single")) {
-			final PlayerDto player1Team1 = new PlayerDto();
-			player1Team1.setFirstName("Basti");
-			player1Team1.setLastName("Filke");
-
-			team1 = new TeamDto(player1Team1);
-
-			final PlayerDto player2Team2 = new PlayerDto();
-			player2Team2.setFirstName("Dirk");
-			player2Team2.setLastName("Waltert");
-
-			team2 = new TeamDto(player2Team2);
+			team1 = new TeamDto(cbTeam1Player1.getValue());
+			team2 = new TeamDto(cbTeam2Player1.getValue());
 		} else {
-			final PlayerDto player1Team1 = new PlayerDto();
-			player1Team1.setFirstName("Basti");
-			player1Team1.setLastName("Filke");
-
-			final PlayerDto player2Team1 = new PlayerDto();
-			player2Team1.setFirstName("Dirk");
-			player2Team1.setLastName("Waltert");
-
-			team1 = new TeamDto(player1Team1, player2Team1);
-
-			final PlayerDto player1Team2 = new PlayerDto();
-			player1Team2.setFirstName("Dirk");
-			player1Team2.setLastName("Waltert");
-
-			final PlayerDto player2Team2 = new PlayerDto();
-			player2Team2.setFirstName("Basti");
-			player2Team2.setLastName("Waltert");
-
-			team2 = new TeamDto(player1Team2, player2Team2);
+			team1 = new TeamDto(cbTeam1Player1.getValue(), cbTeam1Player2.getValue());
+			team2 = new TeamDto(cbTeam2Player1.getValue(), cbTeam2Player2.getValue());
 		}
-		match.setTeam1(team1);
-		match.setTeam2(team2);
+		newMatch.setTeam1(team1);
+		newMatch.setTeam2(team2);
 
-		CursorDefs.showWaitCursor();
-		// KickerServices.MATCH_SERVICE.createMatch(match, new
-		// AsyncCallback<MatchDto>() {
-		// @Override
-		// public void onSuccess(MatchDto result) {
-		// CursorDefs.showDefaultCursor();
-		// }
-		//
-		// @Override
-		// public void onFailure(Throwable caught) {
-		// // TODO Auto-generated method stub
-		// }
-		// });
+		KickerServices.MATCH_SERVICE.createMatch(newMatch, new AsyncCallback<MatchDto>() {
+			@Override
+			public void onSuccess(MatchDto result) {
+
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+			}
+		});
 	}
 
 }

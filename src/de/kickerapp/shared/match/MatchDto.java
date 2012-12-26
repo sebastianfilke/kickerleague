@@ -6,9 +6,7 @@ import de.kickerapp.shared.common.BaseData;
 
 public class MatchDto extends BaseData implements IMatch {
 
-	/**
-	 * 
-	 */
+	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = 2656034118993930642L;
 
 	private String matchNumber;
@@ -16,11 +14,15 @@ public class MatchDto extends BaseData implements IMatch {
 	private Date matchDate;
 
 	private TeamDto team1;
-	
+
 	private TeamDto team2;
 
 	private String matchResult;
 	
+	public MatchDto(){
+		
+	}
+
 	@Override
 	public void setMatchNumber(String matchNumber) {
 		this.matchNumber = matchNumber;

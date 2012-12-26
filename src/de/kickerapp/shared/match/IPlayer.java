@@ -4,6 +4,11 @@ import java.util.Date;
 
 import de.kickerapp.shared.common.IBase;
 
+/**
+ * Interface zum Datenklasse zum Halten der Informationen eines Spielers.
+ * 
+ * @author Sebastian Filke
+ */
 public interface IPlayer extends IBase {
 
 	/**

@@ -3,13 +3,15 @@ package de.kickerapp.server.dto;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
+import com.google.appengine.datanucleus.annotations.Unowned;
+
 /**
  * Datenklasse zum Halten der Informationen für einen Satz.
  * 
  * @author Sebastian Filke
  */
 @PersistenceCapable
-public class Set extends BaseDtoEntity {
+public class Set extends BaseEntity {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = 106622955398483447L;
@@ -19,9 +21,11 @@ public class Set extends BaseDtoEntity {
 	private String result;
 	/** Das zugehörige Spiel. */
 	@Persistent
+	@Unowned
 	private Match match;
 	/** Das zugehörige Team. */
 	@Persistent
+	@Unowned
 	private Team team;
 
 	/**

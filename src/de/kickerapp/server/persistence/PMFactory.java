@@ -1,7 +1,11 @@
 package de.kickerapp.server.persistence;
 
+import java.io.Serializable;
+
 import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Transaction;
 
 /**
  * Singeltonklasse zum Halten der Instanz des PersistenceManager.
@@ -26,6 +30,22 @@ public final class PMFactory {
 	 */
 	public static PersistenceManagerFactory get() {
 		return INSTANCE;
+	}
+
+	public static <T extends Serializable> T insertObject(T object) {
+		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
+		final Transaction txn = pm.currentTransaction();
+		try {
+			txn.begin();
+			object = pm.makePersistent(object);
+			txn.commit();
+		} finally {
+			if (txn.isActive()) {
+				txn.rollback();
+			}
+			pm.close();
+		}
+		return object;
 	}
 
 }

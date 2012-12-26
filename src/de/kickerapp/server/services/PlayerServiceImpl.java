@@ -2,10 +2,14 @@ package de.kickerapp.server.services;
 
 import javax.jdo.PersistenceManager;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Transaction;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.PlayerService;
 import de.kickerapp.server.dto.Player;
+import de.kickerapp.server.persistence.Icebox;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.match.PlayerDto;
 
@@ -25,18 +29,24 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	@Override
 	public PlayerDto createPlayer(PlayerDto player) throws IllegalArgumentException {
 		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
-
-		Player newPlayer = new Player();
-		newPlayer.setFirstName(player.getFirstName());
-		newPlayer.setLastName(player.getLastName());
-		newPlayer.setEMail(player.getEMail());
-		newPlayer.setNickName(player.getNickName());
+		final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		final Transaction txn = datastore.beginTransaction();
 
 		try {
-			newPlayer = pm.makePersistent(newPlayer);
+			Player newPlayer = new Player();
+			newPlayer.setLastName(player.getLastName());
+			newPlayer.setFirstName(player.getFirstName());
+			newPlayer.setNickName(player.getNickName());
+			newPlayer.setEMail(player.getEMail());
 
+			newPlayer = pm.makePersistent(newPlayer);
+			player.setServiceObject(Icebox.freeze(newPlayer));
+
+			txn.commit();
 		} finally {
-			pm.close();
+			if (txn.isActive()) {
+				txn.rollback();
+			}
 		}
 		return player;
 	}

@@ -1,6 +1,7 @@
 /* Allgemeine Einstellungen */
 body {
-	background-color: #ededed !important;
+	background-image: url(images/lawn.jpg);
+	background-size: 100%;
 }
 
 .templatePagingComboBox {

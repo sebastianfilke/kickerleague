@@ -4,9 +4,16 @@ import de.kickerapp.shared.common.BaseData;
 
 public class TeamDto extends BaseData {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = -412089566249613806L;
+
 	private PlayerDto player1;
 
 	private PlayerDto player2;
+
+	public TeamDto() {
+
+	}
 
 	public TeamDto(PlayerDto player1) {
 		this.player1 = player1;

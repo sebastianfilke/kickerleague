@@ -45,7 +45,7 @@ public class MainPanel extends BasePanel {
 		resultPanel.initPanelButtons(portalPanel.getPortletResult());
 		portalPanel.getPortletResult().add(resultPanel);
 
-		// Spielerergebnispanel
+		// Spielergebnispanel
 		matchesPanel = new MatchesPanel();
 		portalPanel.getPortletMatches().add(matchesPanel);
 

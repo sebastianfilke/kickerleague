@@ -11,7 +11,7 @@ import javax.jdo.annotations.Persistent;
  * @author Sebastian Filke
  */
 @PersistenceCapable
-public class Player extends BaseDtoEntity {
+public class Player extends BaseEntity {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -13034504212792103L;

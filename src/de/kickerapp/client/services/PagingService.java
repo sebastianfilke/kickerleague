@@ -22,6 +22,6 @@ public interface PagingService extends RemoteService {
 	 * @param config Die Ladekonfiguration der gepufferten Liste.
 	 * @return Die gepufferte Liste.
 	 */
-	public PagingLoadResult<PlayerDto> getPagedPlayers(PagingLoadConfig loadConfig) throws IllegalArgumentException;
+	public PagingLoadResult<PlayerDto> getPagedPlayers(String query, PagingLoadConfig loadConfig) throws IllegalArgumentException;
 
 }

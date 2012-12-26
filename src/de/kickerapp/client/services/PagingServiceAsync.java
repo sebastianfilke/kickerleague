@@ -16,6 +16,6 @@ public interface PagingServiceAsync {
 	 * @param config Die Ladekonfiguration der gepufferten Liste.
 	 * @param callback Der Callback-Handler.
 	 */
-	public void getPagedPlayers(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<PlayerDto>> callback) throws IllegalArgumentException;
+	public void getPagedPlayers(String query, PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<PlayerDto>> callback) throws IllegalArgumentException;
 
 }

@@ -11,15 +11,17 @@ public class BaseData implements IBase {
 	private static final long serialVersionUID = -4326262956527591125L;
 
 	/** Die DB-ID für das Objekt. */
-	private int id = 0;
+	private long id;
 	/** Der Anzeigetext für ein ausgewähltes Objekt. */
 	private String label;
+	/** Das Serviceobjekt für den Datenspeicher. */
+	private byte[] serviceObject;
 
 	/**
 	 * Erzeugt eine neue Basisklasse.
 	 */
 	public BaseData() {
-		this.id++;
+		this.id = 0;
 		this.label = "";
 	}
 
@@ -27,7 +29,7 @@ public class BaseData implements IBase {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -35,7 +37,7 @@ public class BaseData implements IBase {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -53,6 +55,22 @@ public class BaseData implements IBase {
 	@Override
 	public String getLabel() {
 		return label;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setServiceObject(byte[] serviceObject) {
+		this.serviceObject = serviceObject;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public byte[] getServiceObject() {
+		return serviceObject;
 	}
 
 }

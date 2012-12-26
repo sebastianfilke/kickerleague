@@ -3,6 +3,9 @@ package de.kickerapp.server.dto;
 import java.io.Serializable;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.Inheritance;
+import javax.jdo.annotations.InheritanceStrategy;
+import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
@@ -13,7 +16,9 @@ import com.google.appengine.api.datastore.Key;
  * 
  * @author Sebastian Filke
  */
-public class BaseDtoEntity implements Serializable {
+@PersistenceCapable
+@Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
+public class BaseEntity implements Serializable {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -7621677056319765775L;
@@ -26,8 +31,17 @@ public class BaseDtoEntity implements Serializable {
 	/**
 	 * Erzeugt eine neue Basisklasse.
 	 */
-	public BaseDtoEntity() {
+	public BaseEntity() {
 		super();
+	}
+
+	/**
+	 * Setzt den den Primärschlüssel der Datenklasse (Datenspeicherentität).
+	 * 
+	 * @param key Der Primärschlüssel als {@link Key}.
+	 */
+	public void setKey(Key key) {
+		this.key = key;
 	}
 
 	/**
