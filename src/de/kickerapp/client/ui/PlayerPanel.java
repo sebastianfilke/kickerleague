@@ -90,7 +90,7 @@ public class PlayerPanel extends BasePanel {
 		btnReset.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
-				// TODO
+				clearInput();
 			}
 		});
 		btnReport = new AppButton("Spieler eintragen");
@@ -103,6 +103,13 @@ public class PlayerPanel extends BasePanel {
 		});
 		portletResult.addButton(btnReset);
 		portletResult.addButton(btnReport);
+	}
+
+	private void clearInput() {
+		tfNickname.clear();
+		tfFirstname.clear();
+		tfLastname.clear();
+		tfEMail.clear();
 	}
 
 	/**
@@ -126,7 +133,8 @@ public class PlayerPanel extends BasePanel {
 		KickerServices.PLAYER_SERVICE.createPlayer(newPlayer, new AsyncCallback<PlayerDto>() {
 			@Override
 			public void onSuccess(PlayerDto result) {
-				Info.display("Erfolgreich", "Neuer Spieler wurde erfolgreich erstellt");
+				Info.display("Hinweis", "Neuer Spieler wurde erfolgreich erstellt");
+				clearInput();
 				btnReport.setEnabled(true);
 				CursorDefs.showDefaultCursor();
 				unmask();
@@ -143,7 +151,7 @@ public class PlayerPanel extends BasePanel {
 	}
 
 	private PlayerDto createPlayer() {
-		PlayerDto newPlayer = new PlayerDto(tfFirstname.getText(), tfLastname.getText());
+		final PlayerDto newPlayer = new PlayerDto(tfLastname.getText(), tfFirstname.getText());
 		newPlayer.setNickName(tfNickname.getText());
 		newPlayer.setEMail(tfEMail.getText());
 

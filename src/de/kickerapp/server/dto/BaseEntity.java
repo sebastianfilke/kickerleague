@@ -36,21 +36,21 @@ public class BaseEntity implements Serializable {
 	}
 
 	/**
-	 * Setzt den den Primärschlüssel der Datenklasse (Datenspeicherentität).
-	 * 
-	 * @param key Der Primärschlüssel als {@link Key}.
-	 */
-	public void setKey(Key key) {
-		this.key = key;
-	}
-
-	/**
-	 * Liefert den den Primärschlüssel der Datenklasse (Datenspeicherentität).
+	 * Liefert den Primärschlüssel der Datenklasse (Datenspeicherentität).
 	 * 
 	 * @return Der Primärschlüssel als {@link Key}.
 	 */
 	public Key getKey() {
 		return key;
+	}
+
+	/**
+	 * Setzt den Primärschlüssel der Datenklasse (Datenspeicherentität).
+	 * 
+	 * @param key Der Primärschlüssel als {@link Key}.
+	 */
+	public void setKey(Key key) {
+		this.key = key;
 	}
 
 }

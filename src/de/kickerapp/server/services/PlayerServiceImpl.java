@@ -1,14 +1,16 @@
 package de.kickerapp.server.services;
 
-import javax.jdo.PersistenceManager;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Transaction;
+import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.PlayerService;
 import de.kickerapp.server.dto.Player;
+import de.kickerapp.server.dto.Player.PlayerStats;
 import de.kickerapp.server.persistence.Icebox;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.match.PlayerDto;
@@ -28,26 +30,74 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 */
 	@Override
 	public PlayerDto createPlayer(PlayerDto player) throws IllegalArgumentException {
+		Player newPlayer = new Player();
+		newPlayer.setLastName(player.getLastName());
+		newPlayer.setFirstName(player.getFirstName());
+		newPlayer.setNickName(player.getNickName());
+		newPlayer.setEMail(player.getEMail());
+
+		newPlayer = PMFactory.insertObject(newPlayer);
+		player.setServiceObject(Icebox.freeze(newPlayer));
+		player.setId(newPlayer.getKey().getId());
+
+		return player;
+	}
+
+	/**
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<PlayerDto> getAllPlayers() throws IllegalArgumentException {
 		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
-		final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		final Transaction txn = datastore.beginTransaction();
 
-		try {
-			Player newPlayer = new Player();
-			newPlayer.setLastName(player.getLastName());
-			newPlayer.setFirstName(player.getFirstName());
-			newPlayer.setNickName(player.getNickName());
-			newPlayer.setEMail(player.getEMail());
+		final ArrayList<PlayerDto> players = new ArrayList<PlayerDto>();
 
-			newPlayer = pm.makePersistent(newPlayer);
-			player.setServiceObject(Icebox.freeze(newPlayer));
+		final Query query = pm.newQuery(Player.class);
+		query.setOrdering("stats.points desc");
 
-			txn.commit();
-		} finally {
-			if (txn.isActive()) {
-				txn.rollback();
-			}
+		final List<Player> dbPlayers = (List<Player>) query.execute();
+		for (Player dbPlayer : dbPlayers) {
+			dbPlayer = pm.detachCopy(dbPlayer);
+			final PlayerDto player = createPlayer(dbPlayer);
+
+			players.add(player);
 		}
+		return players;
+	}
+
+	private PlayerDto createPlayer(Player dbPlayer) {
+		final PlayerDto player = new PlayerDto(dbPlayer.getLastName(), dbPlayer.getFirstName());
+		player.setId(dbPlayer.getKey().getId());
+		player.setNickName(dbPlayer.getNickName());
+		player.setEMail(dbPlayer.getEMail());
+
+		final PlayerStats playerStats = dbPlayer.getPlayerStats();
+
+		// Single Match
+		final int wins = playerStats.getSingleWins();
+		final int losses = playerStats.getSingleLosses();
+
+		player.setSingleMatches(wins + losses);
+		player.setSingleWins(wins);
+		player.setSingleLosses(losses);
+		player.setSingleGoals(playerStats.getSingleShotGoals() + ":" + playerStats.getSingleGetGoals());
+
+		final int goalDifference = playerStats.getSingleShotGoals() - playerStats.getSingleGetGoals();
+		if (goalDifference >= 0) {
+			player.setSingleGoalDifference("+" + Integer.toString(goalDifference));
+		} else {
+			player.setSingleGoalDifference(Integer.toString(goalDifference));
+		}
+
+		// Double Match
+		player.setDoubleWins(playerStats.getDoubleWins());
+		player.setDoubleLosses(playerStats.getDoubleLosses());
+		player.setDoubleGoals(playerStats.getDoubleShotGoals() + ":" + playerStats.getDoubleGetGoals());
+		player.setPoints(playerStats.getPoints());
+		player.setTendency(playerStats.getTendency());
+
+		player.setServiceObject(Icebox.freeze(dbPlayer));
+
 		return player;
 	}
 

@@ -3,6 +3,7 @@ package de.kickerapp.shared.match;
 import java.util.Date;
 
 import de.kickerapp.shared.common.BaseData;
+import de.kickerapp.shared.common.Tendency;
 
 /**
  * Datenklasse zum Halten der Informationen eines Spielers.
@@ -25,11 +26,36 @@ public class PlayerDto extends BaseData implements IPlayer {
 	/** Das Datum des letzten Spiels des Spielers. */
 	private Date lastMatchDate;
 
+	private Integer singleMatches;
+
+	private Integer singleWins;
+
+	private Integer singleLosses;
+
+	private String singleGoals;
+
+	private String singleGoalDifference;
+
+	private Integer doubleWins;
+
+	private Integer doubleLosses;
+
+	private String doubleGoals;
+
+	private Tendency tendency;
+
+	private Integer points;
+
 	/**
 	 * Erzeugt einen neuen Spieler ohne Angaben.
 	 */
 	public PlayerDto() {
 		super();
+		lastName = "";
+		firstName = "";
+		nickName = "";
+		eMail = "";
+		lastMatchDate = null;
 	}
 
 	/**
@@ -123,6 +149,166 @@ public class PlayerDto extends BaseData implements IPlayer {
 	@Override
 	public Date getLastMatchDate() {
 		return lastMatchDate;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Integer getSingleMatches() {
+		return singleMatches;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setSingleMatches(Integer singleMatches) {
+		this.singleMatches = singleMatches;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Integer getSingleWins() {
+		return singleWins;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setSingleWins(Integer singleWins) {
+		this.singleWins = singleWins;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Integer getSingleLosses() {
+		return singleLosses;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setSingleLosses(Integer singleLosses) {
+		this.singleLosses = singleLosses;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getSingleGoals() {
+		return singleGoals;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setSingleGoals(String singleGoals) {
+		this.singleGoals = singleGoals;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getSingleGoalDifference() {
+		return singleGoalDifference;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setSingleGoalDifference(String singleGoalDifference) {
+		this.singleGoalDifference = singleGoalDifference;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Integer getDoubleWins() {
+		return doubleWins;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setDoubleWins(Integer doubleWins) {
+		this.doubleWins = doubleWins;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Integer getDoubleLosses() {
+		return doubleLosses;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setDoubleLosses(Integer doubleLosses) {
+		this.doubleLosses = doubleLosses;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getDoubleGoals() {
+		return doubleGoals;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setDoubleGoals(String doubleGoals) {
+		this.doubleGoals = doubleGoals;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Tendency getTendency() {
+		return tendency;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setTendency(Tendency tendency) {
+		this.tendency = tendency;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Integer getPoints() {
+		return points;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPoints(Integer points) {
+		this.points = points;
 	}
 
 }

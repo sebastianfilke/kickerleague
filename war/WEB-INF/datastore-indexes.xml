@@ -1,26 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <datastore-indexes autoGenerate="false">
+	<datastore-index kind="Match" ancestor="false">
+		<property name="matchDate" direction="asc" />
+		<property name="team1" direction="asc" />
+		<property name="team2" direction="asc" />
+		<property name="resultTeam1" direction="asc" />
+		<property name="resultTeam2" direction="asc" />
+	</datastore-index>
+
 	<datastore-index kind="Player" ancestor="false">
 		<property name="lastName" direction="asc" />
 		<property name="firstName" direction="asc" />
 		<property name="nickName" direction="asc" />
 		<property name="eMail" direction="asc" />
+		<property name="teams" direction="asc" />
 		<property name="lastMatchDate" direction="asc" />
-	</datastore-index>
-
-	<datastore-index kind="Match" ancestor="false">
-		<property name="sets" direction="asc" />
-		<property name="matchDate" direction="asc" />
-	</datastore-index>
-
-	<datastore-index kind="Set" ancestor="false">
-		<property name="match" direction="asc" />
-		<property name="team" direction="asc" />
-		<property name="result" direction="asc" />
+		<property name="singleWins" direction="asc" />
+		<property name="singleLosses" direction="asc" />
+		<property name="singleShotGoals" direction="asc" />
+		<property name="singleGetGoals" direction="asc" />
+		<property name="doubleWins" direction="asc" />
+		<property name="doubleLosses" direction="asc" />
+		<property name="doubleShotGoals" direction="asc" />
+		<property name="doubleGetGoals" direction="asc" />
+		<property name="lastTablePlace" direction="asc" />
+		<property name="tendency" direction="asc" />
+		<property name="points" direction="asc" />
 	</datastore-index>
 
 	<datastore-index kind="Team" ancestor="false">
-		<property name="sets" direction="asc" />
-		<property name="player" direction="asc" />
+		<property name="players" direction="asc" />
 	</datastore-index>
+
 </datastore-indexes>

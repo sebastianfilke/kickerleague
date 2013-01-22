@@ -4,6 +4,8 @@ import java.util.Date;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -37,15 +39,18 @@ import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.form.FormPanel.LabelAlign;
 import com.sencha.gxt.widget.core.client.form.NumberPropertyEditor.IntegerPropertyEditor;
 import com.sencha.gxt.widget.core.client.form.Radio;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 import de.kickerapp.client.model.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.resources.KickerTemplates;
+import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
 import de.kickerapp.client.widgets.AppSpinnerField;
 import de.kickerapp.shared.match.MatchDto;
 import de.kickerapp.shared.match.PlayerDto;
+import de.kickerapp.shared.match.SetDto;
 import de.kickerapp.shared.match.TeamDto;
 
 /**
@@ -67,6 +72,8 @@ public class ResultPanel extends BasePanel {
 	private AppComboBox<PlayerDto> cbTeam2Player1, cbTeam2Player2;
 
 	private ToggleGroup tgPlayType;
+
+	private AppButton bReport;
 
 	/**
 	 * Erzeugt einen neuen Controller zum Eintragen der Ergebnisse und Spieler
@@ -103,14 +110,44 @@ public class ResultPanel extends BasePanel {
 		final VerticalLayoutContainer vlcResult = new VerticalLayoutContainer();
 
 		sfResultGame1Team1 = createResultComboBox("Satz 1");
+		sfResultGame1Team1.addChangeHandler(new ChangeHandler() {
+			@Override
+			@SuppressWarnings("unchecked")
+			public void onChange(ChangeEvent event) {
+				final AppSpinnerField<Integer> sfResult = (AppSpinnerField<Integer>) event.getSource();
+				if (sfResult.getValue() != null && sfResult.getValue() != 6) {
+					sfResultGame1Team2.setValue(6);
+				}
+			}
+		});
 		sfResultGame1Team2 = createResultComboBox("Satz 1");
 		vlcResult.add(createFieldSetResultContainer(sfResultGame1Team1, sfResultGame1Team2), new VerticalLayoutData(1, -1));
 
 		sfResultGame2Team1 = createResultComboBox("Satz 2");
+		sfResultGame2Team1.addChangeHandler(new ChangeHandler() {
+			@Override
+			@SuppressWarnings("unchecked")
+			public void onChange(ChangeEvent event) {
+				final AppSpinnerField<Integer> sfResult = (AppSpinnerField<Integer>) event.getSource();
+				if (sfResult.getValue() != null && sfResult.getValue() != 6) {
+					sfResultGame2Team2.setValue(6);
+				}
+			}
+		});
 		sfResultGame2Team2 = createResultComboBox("Satz 2");
 		vlcResult.add(createResultContainer(sfResultGame2Team1, sfResultGame2Team2), new VerticalLayoutData(1, -1, new Margins(0, 0, 4, 0)));
 
 		sfResultGame3Team1 = createResultComboBox("Satz 3");
+		sfResultGame3Team1.addChangeHandler(new ChangeHandler() {
+			@Override
+			@SuppressWarnings("unchecked")
+			public void onChange(ChangeEvent event) {
+				final AppSpinnerField<Integer> sfResult = (AppSpinnerField<Integer>) event.getSource();
+				if (sfResult.getValue() != null && sfResult.getValue() != 6) {
+					sfResultGame3Team2.setValue(6);
+				}
+			}
+		});
 		sfResultGame3Team2 = createResultComboBox("Satz 3");
 		vlcResult.add(createResultContainer(sfResultGame3Team1, sfResultGame3Team2), new VerticalLayoutData(1, -1));
 
@@ -303,7 +340,7 @@ public class ResultPanel extends BasePanel {
 			public void onSelect(SelectEvent event) {
 			}
 		});
-		final AppButton bReport = new AppButton("Ergebnis eintragen");
+		bReport = new AppButton("Ergebnis eintragen");
 		bReport.setToolTip("Speichert das Ergebnis und trägt es in die Liste ein");
 		bReport.addSelectHandler(new SelectHandler() {
 			@Override
@@ -316,9 +353,46 @@ public class ResultPanel extends BasePanel {
 	}
 
 	private void createMatch() {
+		final MatchDto newMatch = makeMatch();
+
+		mask("Spiel wird eingetragen...");
+		CursorDefs.showWaitCursor();
+		bReport.setEnabled(false);
+		KickerServices.MATCH_SERVICE.createMatch(newMatch, new AsyncCallback<MatchDto>() {
+			@Override
+			public void onSuccess(MatchDto result) {
+				Info.display("Erfolgreich", "Spiel wurde erfolgreich eingetragen");
+				clearInput();
+				bReport.setEnabled(true);
+				CursorDefs.showDefaultCursor();
+				unmask();
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				bReport.setEnabled(true);
+				CursorDefs.showDefaultCursor();
+				unmask();
+			}
+		});
+	}
+
+	private void clearInput() {
+		sfResultGame1Team1.clear();
+		sfResultGame1Team2.clear();
+		sfResultGame2Team1.clear();
+		sfResultGame2Team2.clear();
+		sfResultGame3Team1.clear();
+		sfResultGame3Team2.clear();
+		cbTeam1Player1.clear();
+		cbTeam1Player2.clear();
+		cbTeam2Player1.clear();
+		cbTeam2Player2.clear();
+	}
+
+	private MatchDto makeMatch() {
 		final MatchDto newMatch = new MatchDto();
 		newMatch.setMatchDate(new Date());
-		newMatch.setMatchNumber("1");
 
 		TeamDto team1 = null;
 		TeamDto team2 = null;
@@ -333,17 +407,17 @@ public class ResultPanel extends BasePanel {
 		newMatch.setTeam1(team1);
 		newMatch.setTeam2(team2);
 
-		KickerServices.MATCH_SERVICE.createMatch(newMatch, new AsyncCallback<MatchDto>() {
-			@Override
-			public void onSuccess(MatchDto result) {
+		final SetDto newSets = new SetDto();
+		newSets.getSetsTeam1().add(sfResultGame1Team1.getValue());
+		newSets.getSetsTeam1().add(sfResultGame2Team1.getValue());
+		newSets.getSetsTeam1().add(sfResultGame3Team1.getValue());
 
-			}
+		newSets.getSetsTeam2().add(sfResultGame1Team2.getValue());
+		newSets.getSetsTeam2().add(sfResultGame2Team2.getValue());
+		newSets.getSetsTeam2().add(sfResultGame3Team2.getValue());
+		newMatch.setSets(newSets);
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-			}
-		});
+		return newMatch;
 	}
 
 }

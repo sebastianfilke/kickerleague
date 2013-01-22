@@ -16,6 +16,8 @@ public class MainPanel extends BasePanel {
 
 	private PlayerPanel playerPanel;
 
+	private TablePanel tablePanel;
+
 	public MainPanel() {
 		super();
 		initLayout();
@@ -47,12 +49,18 @@ public class MainPanel extends BasePanel {
 
 		// Spielergebnispanel
 		matchesPanel = new MatchesPanel();
+		matchesPanel.initPanelButtons(portalPanel.getPortletMatches());
 		portalPanel.getPortletMatches().add(matchesPanel);
 
 		// Spielerpanel
 		playerPanel = new PlayerPanel();
 		playerPanel.initPanelButtons(portalPanel.getPortletPlayer());
 		portalPanel.getPortletPlayer().add(playerPanel);
+
+		// Tabellenpanel
+		tablePanel = new TablePanel();
+		tablePanel.initPanelButtons(portalPanel.getPortletTable());
+		portalPanel.getPortletTable().add(tablePanel);
 	}
 
 }

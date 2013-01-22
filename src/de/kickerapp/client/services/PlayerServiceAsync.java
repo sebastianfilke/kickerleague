@@ -1,5 +1,7 @@
 package de.kickerapp.client.services;
 
+import java.util.ArrayList;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import de.kickerapp.shared.match.PlayerDto;
@@ -10,4 +12,6 @@ import de.kickerapp.shared.match.PlayerDto;
 public interface PlayerServiceAsync {
 
 	public void createPlayer(PlayerDto player, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
+
+	public void getAllPlayers(AsyncCallback<ArrayList<PlayerDto>> callback) throws IllegalArgumentException;
 }

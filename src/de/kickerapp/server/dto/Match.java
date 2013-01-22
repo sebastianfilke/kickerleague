@@ -1,8 +1,10 @@
 package de.kickerapp.server.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.jdo.annotations.Embedded;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
@@ -20,15 +22,24 @@ public class Match extends BaseEntity {
 	/** Das Spieldatum. */
 	@Persistent
 	private Date matchDate;
-	/** Die Liste der Spielsätze. */
+
 	@Persistent
-	private ArrayList<Set> sets;
+	private ArrayList<Long> team1;
+
+	@Persistent
+	private ArrayList<Long> team2;
+	/** Die Liste der Spielsätze. */
+	@Embedded
+	@Persistent(defaultFetchGroup = "true")
+	private Set sets;
 
 	/**
 	 * Erzeugt ein neues Spiel ohne Angaben.
 	 */
 	public Match() {
-		sets = new ArrayList<Set>();
+		super();
+		team1 = new ArrayList<Long>();
+		team2 = new ArrayList<Long>();
 	}
 
 	/**
@@ -49,22 +60,79 @@ public class Match extends BaseEntity {
 		return matchDate;
 	}
 
-	/**
-	 * Setzt die Liste der Spielsätze.
-	 * 
-	 * @param sets Die Liste der Spielsätze.
-	 */
-	public void setSets(ArrayList<Set> sets) {
+	public ArrayList<Long> getTeam1() {
+		return team1;
+	}
+
+	public void setTeam1(ArrayList<Long> team1) {
+		this.team1 = team1;
+	}
+
+	public ArrayList<Long> getTeam2() {
+		return team2;
+	}
+
+	public void setTeam2(ArrayList<Long> team2) {
+		this.team2 = team2;
+	}
+
+	public Set getSets() {
+		return sets;
+	}
+
+	public void setSets(Set sets) {
 		this.sets = sets;
 	}
 
 	/**
-	 * Liefert die Liste der Spielsätze.
+	 * Datenklasse zum Halten der Informationen für einen Satz.
 	 * 
-	 * @return Die Liste der Spielsätze.
+	 * @author Sebastian Filke
 	 */
-	public ArrayList<Set> getSets() {
-		return sets;
+	@PersistenceCapable
+	public static class Set implements Serializable {
+
+		/** Konstante für die SerialVersionUID. */
+		private static final long serialVersionUID = 5964399211443702907L;
+
+		/** Das Ergebnis. */
+		@Persistent
+		private ArrayList<Integer> resultTeam1;
+		/** Das zugehörige Spiel. */
+		@Persistent
+		private ArrayList<Integer> resultTeam2;
+
+		/**
+		 * Erzeugt einen neuen Satz ohne Angaben.
+		 */
+		public Set() {
+			this.resultTeam1 = new ArrayList<Integer>();
+			this.resultTeam2 = new ArrayList<Integer>();
+		}
+
+		/**
+		 * Erzeugt einen neuen Satz ohne Angaben.
+		 */
+		public Set(ArrayList<Integer> resultTeam1, ArrayList<Integer> resultTeam2) {
+			this.resultTeam1 = resultTeam1;
+			this.resultTeam2 = resultTeam2;
+		}
+
+		public ArrayList<Integer> getResultTeam1() {
+			return resultTeam1;
+		}
+
+		public void setResultTeam1(ArrayList<Integer> resultTeam1) {
+			this.resultTeam1 = resultTeam1;
+		}
+
+		public ArrayList<Integer> getResultTeam2() {
+			return resultTeam2;
+		}
+
+		public void setResultTeam2(ArrayList<Integer> resultTeam2) {
+			this.resultTeam2 = resultTeam2;
+		}
 	}
 
 }

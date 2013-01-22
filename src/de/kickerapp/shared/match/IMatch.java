@@ -9,11 +9,6 @@ import de.kickerapp.shared.common.IBase;
  */
 public interface IMatch extends IBase {
 
-	
-	
-	/**
-	 * @param matchNumber
-	 */
 	public void setMatchNumber(String matchNumber);
 
 	public String getMatchNumber();
@@ -21,6 +16,18 @@ public interface IMatch extends IBase {
 	public void setMatchDate(Date matchDate);
 
 	public Date getMatchDate();
+
+	public void setLabelTeam1(String team1);
+
+	public String getLabelTeam1();
+
+	public void setLabelTeam2(String team2);
+
+	public String getLabelTeam2();
+
+	public void setLabelSets(String sets);
+
+	public String getLabelSets();
 
 	public void setTeam1(TeamDto team1);
 
@@ -30,8 +37,8 @@ public interface IMatch extends IBase {
 
 	public TeamDto getTeam2();
 
-	public void setMatchResult(String matchResult);
+	public void setSets(SetDto sets);
 
-	public String getMatchResult();
+	public SetDto getSets();
 
 }

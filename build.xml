@@ -11,20 +11,6 @@
 
 	<property file="${basedir}/build.properties" />
 
-	<property name="product.name" value="${product.name}" />
-	<property name="product.version" value="${product.version}" />
-	<property name="product.date" value="${product.date}" />
-
-	<property name="lib.dir" value="${lib.dir}" />
-	<property name="war.dir" value="${war.dir}" />
-	<property name="war.generatedtracer.dir" value="${war.generatedtracer.dir}" />
-	<property name="war.kickerapp.dir" value="${war.kickerapp.dir}" />
-	<property name="war.symboltracer.dir" value="${war.symboltracer.dir}" />
-	<property name="webinf.dir" value="${webinf.dir}" />
-	<property name="webinf.generated.dir" value="${webinf.generated.dir}" />
-	<property name="webinf.deploy.dir" value="${webinf.deploy.dir}" />
-	<property name="gwt.unitcache.dir" value="${gwt.unitcache.dir}" />
-
 	<!-- ================================================================== -->
 	<!-- Clean                                                              -->
 	<!-- ================================================================== -->
@@ -37,6 +23,19 @@
 		<delete dir="${webinf.generated.dir}" failonerror="true" />
 		<delete dir="${webinf.deploy.dir}" failonerror="true" />
 		<echo message="Alle Dateien wurden erfolgreich gelöscht" />
+	</target>
+
+	<!-- ================================================================== -->
+	<!-- Deleting Unused Indexes                                            -->
+	<!-- ================================================================== -->
+
+	<target name="delete_indexes" description="Löscht ungenutzte Indexe aus der Datenbank der App Engine">
+		<exec executable="cmd">
+			<arg value="/C" />
+			<arg value="C:\Program Files (x86)\Eclipse\plugins\com.google.appengine.eclipse.sdkbundle_1.7.3\appengine-java-sdk-1.7.3\bin\appcfg.cmd" />
+			<arg value="vacuum_indexes" />
+			<arg value="${war.dir}" />
+		</exec>
 	</target>
 
 </project>

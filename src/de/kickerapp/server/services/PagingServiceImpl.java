@@ -13,6 +13,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 
 import de.kickerapp.client.services.PagingService;
 import de.kickerapp.server.dto.Player;
+import de.kickerapp.server.dto.Player.PlayerStats;
 import de.kickerapp.server.persistence.Icebox;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.match.PlayerDto;
@@ -61,7 +62,7 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private ArrayList<PlayerDto> getAllPlayers() {
+	public ArrayList<PlayerDto> getAllPlayers() {
 		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
 
 		final ArrayList<PlayerDto> players = new ArrayList<PlayerDto>();
@@ -70,6 +71,7 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 
 		final List<Player> dbPlayers = (List<Player>) query.execute();
 		for (Player dbPlayer : dbPlayers) {
+			dbPlayer = pm.detachCopy(dbPlayer);
 			final PlayerDto player = createPlayer(dbPlayer);
 
 			players.add(player);
@@ -82,6 +84,32 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 		player.setId(dbPlayer.getKey().getId());
 		player.setNickName(dbPlayer.getNickName());
 		player.setEMail(dbPlayer.getEMail());
+
+		final PlayerStats playerStats = dbPlayer.getPlayerStats();
+
+		// Single Match
+		final int wins = playerStats.getSingleWins();
+		final int losses = playerStats.getSingleLosses();
+
+		player.setSingleMatches(wins + losses);
+		player.setSingleWins(wins);
+		player.setSingleLosses(losses);
+		player.setSingleGoals(playerStats.getSingleShotGoals() + ":" + playerStats.getSingleGetGoals());
+
+		final int goalDifference = playerStats.getSingleShotGoals() - playerStats.getSingleGetGoals();
+		if (goalDifference >= 0) {
+			player.setSingleGoalDifference("+" + Integer.toString(goalDifference));
+		} else {
+			player.setSingleGoalDifference(Integer.toString(goalDifference));
+		}
+
+		// Double Match
+		player.setDoubleWins(playerStats.getDoubleWins());
+		player.setDoubleLosses(playerStats.getDoubleLosses());
+		player.setDoubleGoals(playerStats.getDoubleShotGoals() + ":" + playerStats.getDoubleGetGoals());
+		player.setPoints(playerStats.getPoints());
+		player.setTendency(playerStats.getTendency());
+
 		player.setServiceObject(Icebox.freeze(dbPlayer));
 
 		return player;

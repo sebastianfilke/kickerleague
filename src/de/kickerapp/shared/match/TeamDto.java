@@ -12,7 +12,7 @@ public class TeamDto extends BaseData {
 	private PlayerDto player2;
 
 	public TeamDto() {
-
+		super();
 	}
 
 	public TeamDto(PlayerDto player1) {

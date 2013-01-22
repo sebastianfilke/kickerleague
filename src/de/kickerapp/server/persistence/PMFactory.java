@@ -32,12 +32,17 @@ public final class PMFactory {
 		return INSTANCE;
 	}
 
+	/**
+	 * @param object
+	 * @return
+	 */
 	public static <T extends Serializable> T insertObject(T object) {
 		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
 		final Transaction txn = pm.currentTransaction();
 		try {
 			txn.begin();
 			object = pm.makePersistent(object);
+			pm.detachCopy(object);
 			txn.commit();
 		} finally {
 			if (txn.isActive()) {

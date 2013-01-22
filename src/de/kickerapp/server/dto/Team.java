@@ -3,7 +3,6 @@ package de.kickerapp.server.dto;
 import java.util.ArrayList;
 
 import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
 
 /**
  * Datenklasse zum Halten der Informationen für einen Team.
@@ -17,46 +16,22 @@ public class Team extends BaseEntity {
 	private static final long serialVersionUID = 7796571017092493823L;
 
 	/** Der Spieler des Teams. */
-	@Persistent
-	private Player player;
-	/** Die Sätze des Spiels. */
-	@Persistent
-	private ArrayList<Set> sets;
+	private ArrayList<Long> players;
 
 	/**
-	 * Setzt den Spieler des Teams.
-	 * 
-	 * @param player Der Spieler.
+	 * Erzeugt ein neues Team.
 	 */
-	public void setPlayer(Player player) {
-		this.player = player;
+	public Team() {
+		super();
+		players = new ArrayList<Long>();
 	}
 
-	/**
-	 * Liefert den Spieler des Teams.
-	 * 
-	 * @return Das Spieler des Teams.
-	 */
-	public Player getPlayer() {
-		return player;
+	public ArrayList<Long> getPlayers() {
+		return players;
 	}
 
-	/**
-	 * Setzt die Sätze des Spiels.
-	 * 
-	 * @param sets Die Sätze.
-	 */
-	public void setSets(ArrayList<Set> sets) {
-		this.sets = sets;
-	}
-
-	/**
-	 * Liefert das Sätze des Spiels.
-	 * 
-	 * @return Das Sätze des Spiels.
-	 */
-	public ArrayList<Set> getSets() {
-		return sets;
+	public void setPlayers(ArrayList<Long> players) {
+		this.players = players;
 	}
 
 }

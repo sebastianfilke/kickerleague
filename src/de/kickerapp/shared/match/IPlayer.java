@@ -3,6 +3,7 @@ package de.kickerapp.shared.match;
 import java.util.Date;
 
 import de.kickerapp.shared.common.IBase;
+import de.kickerapp.shared.common.Tendency;
 
 /**
  * Interface zum Datenklasse zum Halten der Informationen eines Spielers.
@@ -81,5 +82,45 @@ public interface IPlayer extends IBase {
 	 * @return Das Datum des letzten Spiels des Spielers als {@link Date}.
 	 */
 	public Date getLastMatchDate();
+
+	public Integer getSingleMatches();
+
+	public void setSingleMatches(Integer singleMatches);
+
+	public Integer getSingleWins();
+
+	public void setSingleWins(Integer singleWins);
+
+	public Integer getSingleLosses();
+
+	public void setSingleLosses(Integer singleLosses);
+
+	public String getSingleGoals();
+
+	public void setSingleGoals(String singleGetGoals);
+
+	public String getSingleGoalDifference();
+
+	public void setSingleGoalDifference(String singleGoalDifferenz);
+
+	public Integer getDoubleWins();
+
+	public void setDoubleWins(Integer doubleWins);
+
+	public Integer getDoubleLosses();
+
+	public void setDoubleLosses(Integer doubleLosses);
+
+	public String getDoubleGoals();
+
+	public void setDoubleGoals(String doubleGoals);
+
+	public Tendency getTendency();
+
+	public void setTendency(Tendency tendency);
+
+	public Integer getPoints();
+
+	public void setPoints(Integer points);
 
 }
