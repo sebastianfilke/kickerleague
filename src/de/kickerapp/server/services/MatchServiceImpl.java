@@ -10,15 +10,15 @@ import javax.jdo.Transaction;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.MatchService;
-import de.kickerapp.server.dto.Match;
-import de.kickerapp.server.dto.Match.Set;
-import de.kickerapp.server.dto.Player;
-import de.kickerapp.server.dto.Player.PlayerStats;
-import de.kickerapp.server.persistence.Icebox;
+import de.kickerapp.server.entity.Match;
+import de.kickerapp.server.entity.Match.MatchSets;
+import de.kickerapp.server.entity.Player;
+import de.kickerapp.server.entity.Player.PlayerStats;
 import de.kickerapp.server.persistence.PMFactory;
-import de.kickerapp.shared.match.MatchDto;
-import de.kickerapp.shared.match.PlayerDto;
-import de.kickerapp.shared.match.TeamDto;
+import de.kickerapp.shared.common.MatchType;
+import de.kickerapp.shared.dto.MatchDto;
+import de.kickerapp.shared.dto.MatchSetDto;
+import de.kickerapp.shared.dto.TeamDto;
 
 /**
  * Dienst zur Verarbeitung von Spielen im Clienten.
@@ -34,7 +34,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public MatchDto createMatch(MatchDto matchDto) throws IllegalArgumentException {
+	public MatchDto createSingleMatch(MatchDto matchDto) throws IllegalArgumentException {
 		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
 
 		final Transaction txn = pm.currentTransaction();
@@ -42,9 +42,14 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 			txn.begin();
 
 			final Match match = new Match();
+
+			int matchNumber = MatchServiceHelper.getMatchCount();
+			match.setMatchNumber(++matchNumber);
 			match.setMatchDate(matchDto.getMatchDate());
-			final Set sets = new Set(matchDto.getSets().getSetsTeam1(), matchDto.getSets().getSetsTeam2());
-			match.setSets(sets);
+			match.setMatchType(MatchType.Single);
+
+			final MatchSets sets = new MatchSets(matchDto.getSets().getSetsTeam1(), matchDto.getSets().getSetsTeam2());
+			match.setMatchSets(sets);
 
 			int size = 0;
 			for (Integer result : matchDto.getSets().getSetsTeam1()) {
@@ -63,16 +68,12 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 				team1Player1 = updatePlayerStats(team1Player1, matchDto, false);
 				team2Player1 = updatePlayerStats(team2Player1, matchDto, true);
 			}
-			matchDto.getTeam1().getPlayer1().setServiceObject(Icebox.freeze(team1Player1));
-			matchDto.getTeam2().getPlayer1().setServiceObject(Icebox.freeze(team2Player1));
 
-			match.getTeam1().add(team1Player1.getKey().getId());
-			match.getTeam2().add(team2Player1.getKey().getId());
+			match.setTeam1(team1Player1.getKey().getId());
+			match.setTeam2(team2Player1.getKey().getId());
 
 			Match persistedMatch = pm.makePersistent(match);
 			persistedMatch = pm.detachCopy(persistedMatch);
-
-			matchDto.setServiceObject(Icebox.freeze(persistedMatch));
 
 			txn.commit();
 		} finally {
@@ -169,62 +170,23 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 
 		final MatchDto matchDto = new MatchDto();
 		matchDto.setId(dbMatch.getKey().getId());
-		matchDto.setMatchNumber(Long.toString(dbMatch.getKey().getId()));
+		matchDto.setMatchNumber(Long.toString(dbMatch.getMatchNumber()));
 		matchDto.setMatchDate(dbMatch.getMatchDate());
 
-		Player playerTeam1 = pm.getObjectById(Player.class, dbMatch.getTeam1().get(0));
+		Player playerTeam1 = pm.getObjectById(Player.class, dbMatch.getTeam2());
 		playerTeam1 = pm.detachCopy(playerTeam1);
-		matchDto.setTeam1(new TeamDto(createPlayer(playerTeam1)));
+		matchDto.setTeam1(new TeamDto(PlayerServiceHelper.createPlayer(playerTeam1)));
 
-		final String team1 = playerTeam1.getLastName() + " " + playerTeam1.getFirstName();
-		matchDto.setLabelTeam1(team1);
-
-		Player playerTeam2 = pm.getObjectById(Player.class, dbMatch.getTeam2().get(0));
+		Player playerTeam2 = pm.getObjectById(Player.class, dbMatch.getTeam2());
 		playerTeam2 = pm.detachCopy(playerTeam2);
-		matchDto.setTeam2(new TeamDto(createPlayer(playerTeam2)));
+		matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createPlayer(playerTeam2)));
 
-		final String team2 = playerTeam2.getLastName() + " " + playerTeam2.getFirstName();
-		matchDto.setLabelTeam2(team2);
-
-		final StringBuilder builder = new StringBuilder();
-		final int size = 3;
-		for (int i = 0; i < size; i++) {
-			final Integer setTeam1 = dbMatch.getSets().getResultTeam1().get(i);
-			final Integer setTeam2 = dbMatch.getSets().getResultTeam2().get(i);
-			if (setTeam1 != null && setTeam2 != null) {
-				builder.append(setTeam1);
-				builder.append(":");
-				builder.append(setTeam2);
-
-				if (i < size - 1) {
-					final Integer nextSetTeam1 = dbMatch.getSets().getResultTeam1().get(i + 1);
-					final Integer nextSetTeam2 = dbMatch.getSets().getResultTeam2().get(i + 1);
-					if (nextSetTeam1 != null && nextSetTeam2 != null) {
-						builder.append(", ");
-					}
-				}
-			}
-		}
-		matchDto.setLabelSets(builder.toString());
-
-		// final SetDto setDto = new SetDto();
-		// setDto.setSetsTeam1(dbMatch.getSets().getResultTeam1());
-		// setDto.setSetsTeam1(dbMatch.getSets().getResultTeam2());
-		// matchDto.setSets(setDto);
-
-		matchDto.setServiceObject(Icebox.freeze(dbMatch));
+		MatchSetDto setDto = new MatchSetDto();
+		setDto.setSetsTeam1(dbMatch.getMatchSets().getSetsTeam1());
+		setDto.setSetsTeam2(dbMatch.getMatchSets().getSetsTeam2());
+		matchDto.setSets(setDto);
 
 		return matchDto;
-	}
-
-	private PlayerDto createPlayer(Player dbPlayer) {
-		final PlayerDto player = new PlayerDto(dbPlayer.getLastName(), dbPlayer.getFirstName());
-		player.setId(dbPlayer.getKey().getId());
-		player.setNickName(dbPlayer.getNickName());
-		player.setEMail(dbPlayer.getEMail());
-		player.setServiceObject(Icebox.freeze(dbPlayer));
-
-		return player;
 	}
 
 }

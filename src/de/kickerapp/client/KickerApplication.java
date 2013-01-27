@@ -31,7 +31,7 @@ public class KickerApplication implements IsWidget, EntryPoint {
 		DOM.removeChild(RootPanel.getBodyElement(), DOM.getElementById("loading"));
 
 		final Viewport viewport = new Viewport();
-		viewport.add(asWidget(), new MarginData(30, 60, 30, 60));
+		viewport.add(asWidget(), new MarginData(30, 10, 30, 10));
 		RootPanel.get().add(viewport, 0, 0);
 	}
 

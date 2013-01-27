@@ -1,10 +1,10 @@
-package de.kickerapp.shared.match;
+package de.kickerapp.shared.dto;
 
 import java.util.ArrayList;
 
 import de.kickerapp.shared.common.BaseData;
 
-public class SetDto extends BaseData implements ISet {
+public class MatchSetDto extends BaseData implements ISet {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -2054250321124768378L;
@@ -13,7 +13,7 @@ public class SetDto extends BaseData implements ISet {
 
 	private ArrayList<Integer> setsTeam2;
 
-	public SetDto() {
+	public MatchSetDto() {
 		super();
 		setsTeam1 = new ArrayList<Integer>();
 		setsTeam2 = new ArrayList<Integer>();

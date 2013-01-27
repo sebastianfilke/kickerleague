@@ -14,13 +14,13 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.RowNumberer;
 
-import de.kickerapp.client.model.TableProperty;
+import de.kickerapp.client.properties.TableProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.shared.common.Tendency;
-import de.kickerapp.shared.match.IPlayer;
-import de.kickerapp.shared.match.PlayerDto;
+import de.kickerapp.shared.dto.IPlayer;
+import de.kickerapp.shared.dto.PlayerDto;
 
 public class TablePanel extends BasePanel {
 

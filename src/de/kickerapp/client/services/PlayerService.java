@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import de.kickerapp.shared.match.PlayerDto;
+import de.kickerapp.shared.dto.PlayerDto;
 
 /**
  * 

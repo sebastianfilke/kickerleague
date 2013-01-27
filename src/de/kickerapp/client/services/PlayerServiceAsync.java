@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import de.kickerapp.shared.match.PlayerDto;
+import de.kickerapp.shared.dto.PlayerDto;
 
 /**
  * The async counterpart of <code>GreetingService</code>.

@@ -1,8 +1,9 @@
-package de.kickerapp.shared.match;
+package de.kickerapp.shared.dto;
 
 import java.util.Date;
 
 import de.kickerapp.shared.common.BaseData;
+import de.kickerapp.shared.common.MatchType;
 
 public class MatchDto extends BaseData implements IMatch {
 
@@ -13,23 +14,17 @@ public class MatchDto extends BaseData implements IMatch {
 
 	private Date matchDate;
 
-	private String labelTeam1;
-
-	private String labelTeam2;
-
-	private String labelSets;
+	private MatchType matchType;
 
 	private TeamDto team1;
 
 	private TeamDto team2;
 
-	private SetDto sets;
+	private MatchSetDto sets;
 
 	public MatchDto() {
 		super();
 		matchNumber = "";
-		labelTeam1 = "";
-		labelTeam2 = "";
 		matchDate = null;
 	}
 
@@ -65,52 +60,12 @@ public class MatchDto extends BaseData implements IMatch {
 		return matchDate;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setLabelTeam1(String labelTeam1) {
-		this.labelTeam1 = labelTeam1;
+	public MatchType getMatchType() {
+		return matchType;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getLabelTeam1() {
-		return labelTeam1;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setLabelTeam2(String labelTeam2) {
-		this.labelTeam2 = labelTeam2;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getLabelTeam2() {
-		return labelTeam2;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setLabelSets(String labelSets) {
-		this.labelSets = labelSets;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getLabelSets() {
-		return labelSets;
+	public void setMatchType(MatchType matchType) {
+		this.matchType = matchType;
 	}
 
 	/**
@@ -149,7 +104,7 @@ public class MatchDto extends BaseData implements IMatch {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setSets(SetDto sets) {
+	public void setSets(MatchSetDto sets) {
 		this.sets = sets;
 	}
 
@@ -157,7 +112,7 @@ public class MatchDto extends BaseData implements IMatch {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SetDto getSets() {
+	public MatchSetDto getSets() {
 		return sets;
 	}
 

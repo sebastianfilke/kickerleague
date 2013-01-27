@@ -5,7 +5,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 
-import de.kickerapp.shared.match.PlayerDto;
+import de.kickerapp.shared.dto.PlayerDto;
 
 /**
  * Die Schnittstelle zur Verarbeitung der Paging-ComboBoxen.

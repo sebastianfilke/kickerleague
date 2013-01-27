@@ -41,17 +41,18 @@ import com.sencha.gxt.widget.core.client.form.NumberPropertyEditor.IntegerProper
 import com.sencha.gxt.widget.core.client.form.Radio;
 import com.sencha.gxt.widget.core.client.info.Info;
 
-import de.kickerapp.client.model.PlayerProperty;
+import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.resources.KickerTemplates;
 import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
 import de.kickerapp.client.widgets.AppSpinnerField;
-import de.kickerapp.shared.match.MatchDto;
-import de.kickerapp.shared.match.PlayerDto;
-import de.kickerapp.shared.match.SetDto;
-import de.kickerapp.shared.match.TeamDto;
+import de.kickerapp.shared.common.MatchType;
+import de.kickerapp.shared.dto.MatchDto;
+import de.kickerapp.shared.dto.MatchSetDto;
+import de.kickerapp.shared.dto.PlayerDto;
+import de.kickerapp.shared.dto.TeamDto;
 
 /**
  * Controller-Klasse zum Eintragen der Ergebnisse und Spieler eines Spiels.
@@ -213,7 +214,6 @@ public class ResultPanel extends BasePanel {
 		final AppSpinnerField<Integer> spResult = new AppSpinnerField<Integer>(new IntegerPropertyEditor());
 		spResult.setEmptyText(emptyText);
 		spResult.setAllowBlank(false);
-		// spResult.setIncrement(1);
 		spResult.setMinValue(0);
 		spResult.setMaxValue(6);
 
@@ -262,12 +262,12 @@ public class ResultPanel extends BasePanel {
 		final Radio rSingle = new Radio();
 		rSingle.setToolTip("Stellt den Spieltyp auf ein Einzelspiel (1vs1)");
 		rSingle.setBoxLabel("Einzel");
-		rSingle.setId("single");
+		rSingle.setId(MatchType.Single.getMatchType());
 
 		final Radio rDouble = new Radio();
 		rDouble.setToolTip("Stellt den Spieltyp auf ein Doppelspiel (2vs2)");
 		rDouble.setBoxLabel("Doppel");
-		rDouble.setId("double");
+		rDouble.setId(MatchType.Double.getMatchType());
 
 		final HorizontalPanel horizontalPanel = new HorizontalPanel();
 		horizontalPanel.add(rSingle);
@@ -287,7 +287,7 @@ public class ResultPanel extends BasePanel {
 				cbTeam1Player2.setEnabled(false);
 				cbTeam2Player2.setValue(null);
 				cbTeam2Player2.setEnabled(false);
-				if (radio.getId().equals("double")) {
+				if (radio.getId().equals(MatchType.Double.getMatchType())) {
 					cbTeam1Player2.setEnabled(true);
 					cbTeam2Player2.setEnabled(true);
 				}
@@ -338,6 +338,7 @@ public class ResultPanel extends BasePanel {
 		bReset.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
+				clearInput();
 			}
 		});
 		bReport = new AppButton("Ergebnis eintragen");
@@ -358,7 +359,7 @@ public class ResultPanel extends BasePanel {
 		mask("Spiel wird eingetragen...");
 		CursorDefs.showWaitCursor();
 		bReport.setEnabled(false);
-		KickerServices.MATCH_SERVICE.createMatch(newMatch, new AsyncCallback<MatchDto>() {
+		KickerServices.MATCH_SERVICE.createSingleMatch(newMatch, new AsyncCallback<MatchDto>() {
 			@Override
 			public void onSuccess(MatchDto result) {
 				Info.display("Erfolgreich", "Spiel wurde erfolgreich eingetragen");
@@ -397,17 +398,19 @@ public class ResultPanel extends BasePanel {
 		TeamDto team1 = null;
 		TeamDto team2 = null;
 		final Radio radio = (Radio) tgPlayType.getValue();
-		if (radio.getId().equals("single")) {
+		if (radio.getId().equals(MatchType.Single.getMatchType())) {
+			newMatch.setMatchType(MatchType.Single);
 			team1 = new TeamDto(cbTeam1Player1.getValue());
 			team2 = new TeamDto(cbTeam2Player1.getValue());
 		} else {
+			newMatch.setMatchType(MatchType.Double);
 			team1 = new TeamDto(cbTeam1Player1.getValue(), cbTeam1Player2.getValue());
 			team2 = new TeamDto(cbTeam2Player1.getValue(), cbTeam2Player2.getValue());
 		}
 		newMatch.setTeam1(team1);
 		newMatch.setTeam2(team2);
 
-		final SetDto newSets = new SetDto();
+		final MatchSetDto newSets = new MatchSetDto();
 		newSets.getSetsTeam1().add(sfResultGame1Team1.getValue());
 		newSets.getSetsTeam1().add(sfResultGame2Team1.getValue());
 		newSets.getSetsTeam1().add(sfResultGame3Team1.getValue());

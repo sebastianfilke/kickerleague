@@ -4,7 +4,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 
-import de.kickerapp.shared.match.PlayerDto;
+import de.kickerapp.shared.dto.PlayerDto;
 
 public interface PagingServiceAsync {
 

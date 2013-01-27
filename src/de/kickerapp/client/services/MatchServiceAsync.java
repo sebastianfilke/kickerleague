@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import de.kickerapp.shared.match.MatchDto;
+import de.kickerapp.shared.dto.MatchDto;
 
 /**
  * Die asynchrone Schnittstelle zur Verarbeitung von Spielen im Clienten.
@@ -13,7 +13,7 @@ import de.kickerapp.shared.match.MatchDto;
  */
 public interface MatchServiceAsync {
 
-	public void createMatch(MatchDto match, AsyncCallback<MatchDto> callback) throws IllegalArgumentException;
+	public void createSingleMatch(MatchDto match, AsyncCallback<MatchDto> callback) throws IllegalArgumentException;
 
 	public void getAllMatches(AsyncCallback<ArrayList<MatchDto>> callback) throws IllegalArgumentException;
 

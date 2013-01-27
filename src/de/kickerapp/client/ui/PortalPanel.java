@@ -38,7 +38,6 @@ public class PortalPanel extends BasePanel {
 		setHeaderVisible(false);
 
 		final PortalLayoutContainer plcMain = createPortalLayoutContainer();
-		// plcMain.setBorders(false);
 
 		portletResult = createPortletResult();
 		plcMain.add(portletResult, 0);

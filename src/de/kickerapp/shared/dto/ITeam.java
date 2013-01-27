@@ -1,4 +1,4 @@
-package de.kickerapp.shared.match;
+package de.kickerapp.shared.dto;
 
 import de.kickerapp.shared.common.IBase;
 

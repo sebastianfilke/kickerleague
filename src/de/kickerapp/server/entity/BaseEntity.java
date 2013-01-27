@@ -1,4 +1,4 @@
-package de.kickerapp.server.dto;
+package de.kickerapp.server.entity;
 
 import java.io.Serializable;
 

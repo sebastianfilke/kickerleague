@@ -1,4 +1,4 @@
-package de.kickerapp.server.dto;
+package de.kickerapp.server.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -7,6 +7,8 @@ import java.util.Date;
 import javax.jdo.annotations.Embedded;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+
+import de.kickerapp.shared.common.MatchType;
 
 /**
  * Datenklasse zum Halten der Informationen für ein Spiel.
@@ -19,27 +21,38 @@ public class Match extends BaseEntity {
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -77744879325097514L;
 
+	@Persistent
+	private Integer matchNumber;
 	/** Das Spieldatum. */
 	@Persistent
 	private Date matchDate;
 
 	@Persistent
-	private ArrayList<Long> team1;
+	private MatchType matchType;
 
 	@Persistent
-	private ArrayList<Long> team2;
+	private Long team1;
+
+	@Persistent
+	private Long team2;
 	/** Die Liste der Spielsätze. */
 	@Embedded
 	@Persistent(defaultFetchGroup = "true")
-	private Set sets;
+	private MatchSets matchSets;
 
 	/**
 	 * Erzeugt ein neues Spiel ohne Angaben.
 	 */
 	public Match() {
 		super();
-		team1 = new ArrayList<Long>();
-		team2 = new ArrayList<Long>();
+	}
+
+	public Integer getMatchNumber() {
+		return matchNumber;
+	}
+
+	public void setMatchNumber(Integer matchNumber) {
+		this.matchNumber = matchNumber;
 	}
 
 	/**
@@ -60,28 +73,36 @@ public class Match extends BaseEntity {
 		return matchDate;
 	}
 
-	public ArrayList<Long> getTeam1() {
+	public MatchType getMatchType() {
+		return matchType;
+	}
+
+	public void setMatchType(MatchType matchType) {
+		this.matchType = matchType;
+	}
+
+	public Long getTeam1() {
 		return team1;
 	}
 
-	public void setTeam1(ArrayList<Long> team1) {
+	public void setTeam1(Long team1) {
 		this.team1 = team1;
 	}
 
-	public ArrayList<Long> getTeam2() {
+	public Long getTeam2() {
 		return team2;
 	}
 
-	public void setTeam2(ArrayList<Long> team2) {
+	public void setTeam2(Long team2) {
 		this.team2 = team2;
 	}
 
-	public Set getSets() {
-		return sets;
+	public MatchSets getMatchSets() {
+		return matchSets;
 	}
 
-	public void setSets(Set sets) {
-		this.sets = sets;
+	public void setMatchSets(MatchSets matchSets) {
+		this.matchSets = matchSets;
 	}
 
 	/**
@@ -90,49 +111,50 @@ public class Match extends BaseEntity {
 	 * @author Sebastian Filke
 	 */
 	@PersistenceCapable
-	public static class Set implements Serializable {
+	public static class MatchSets implements Serializable {
 
 		/** Konstante für die SerialVersionUID. */
 		private static final long serialVersionUID = 5964399211443702907L;
 
 		/** Das Ergebnis. */
 		@Persistent
-		private ArrayList<Integer> resultTeam1;
+		private ArrayList<Integer> setsTeam1;
 		/** Das zugehörige Spiel. */
 		@Persistent
-		private ArrayList<Integer> resultTeam2;
+		private ArrayList<Integer> setsTeam2;
 
 		/**
 		 * Erzeugt einen neuen Satz ohne Angaben.
 		 */
-		public Set() {
-			this.resultTeam1 = new ArrayList<Integer>();
-			this.resultTeam2 = new ArrayList<Integer>();
+		public MatchSets() {
+			this.setsTeam1 = new ArrayList<Integer>();
+			this.setsTeam2 = new ArrayList<Integer>();
 		}
 
 		/**
 		 * Erzeugt einen neuen Satz ohne Angaben.
 		 */
-		public Set(ArrayList<Integer> resultTeam1, ArrayList<Integer> resultTeam2) {
-			this.resultTeam1 = resultTeam1;
-			this.resultTeam2 = resultTeam2;
+		public MatchSets(ArrayList<Integer> setsTeam1, ArrayList<Integer> setsTeam2) {
+			this.setsTeam1 = setsTeam1;
+			this.setsTeam2 = setsTeam2;
 		}
 
-		public ArrayList<Integer> getResultTeam1() {
-			return resultTeam1;
+		public ArrayList<Integer> getSetsTeam1() {
+			return setsTeam1;
 		}
 
-		public void setResultTeam1(ArrayList<Integer> resultTeam1) {
-			this.resultTeam1 = resultTeam1;
+		public void setSetsTeam1(ArrayList<Integer> setsTeam1) {
+			this.setsTeam1 = setsTeam1;
 		}
 
-		public ArrayList<Integer> getResultTeam2() {
-			return resultTeam2;
+		public ArrayList<Integer> getSetsTeam2() {
+			return setsTeam2;
 		}
 
-		public void setResultTeam2(ArrayList<Integer> resultTeam2) {
-			this.resultTeam2 = resultTeam2;
+		public void setSetsTeam2(ArrayList<Integer> setsTeam2) {
+			this.setsTeam2 = setsTeam2;
 		}
+
 	}
 
 }

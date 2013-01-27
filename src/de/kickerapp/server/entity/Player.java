@@ -1,7 +1,8 @@
-package de.kickerapp.server.dto;
+package de.kickerapp.server.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.jdo.annotations.Embedded;
@@ -42,14 +43,15 @@ public class Player extends BaseEntity {
 	/** Die Statistik des Spielers. */
 	@Embedded
 	@Persistent(defaultFetchGroup = "true")
-	private PlayerStats stats;
+	private PlayerStats playerStats;
 
 	/**
 	 * Erzeugt einen neuen Spieler ohne Angaben und einer leeren Statistik.
 	 */
 	public Player() {
 		super();
-		stats = new PlayerStats();
+		teams = new HashSet<Long>();
+		playerStats = new PlayerStats();
 	}
 
 	/**
@@ -155,12 +157,20 @@ public class Player extends BaseEntity {
 		return lastMatchDate;
 	}
 
-	public PlayerStats getPlayerStats() {
-		return stats;
+	public Set<Long> getTeams() {
+		return teams;
 	}
 
-	public void setPlayerStats(PlayerStats stats) {
-		this.stats = stats;
+	public void setTeams(Set<Long> teams) {
+		this.teams = teams;
+	}
+
+	public PlayerStats getPlayerStats() {
+		return playerStats;
+	}
+
+	public void setPlayerStats(PlayerStats playerStats) {
+		this.playerStats = playerStats;
 	}
 
 	@PersistenceCapable
@@ -194,13 +204,16 @@ public class Player extends BaseEntity {
 		private Integer doubleGetGoals;
 
 		@Persistent
-		private Integer lastTablePlace;
+		private Integer prevTablePlace;
 
 		@Persistent
-		private Tendency tendency;
+		private Integer curTablePlace;
 
 		@Persistent
 		private Integer points;
+
+		@Persistent
+		private Tendency tendency;
 
 		public PlayerStats() {
 			singleWins = 0;
@@ -212,9 +225,10 @@ public class Player extends BaseEntity {
 			doubleLosses = 0;
 			doubleShotGoals = 0;
 			doubleGetGoals = 0;
-			lastTablePlace = 0;
-			tendency = Tendency.Constant;
+			prevTablePlace = 0;
+			curTablePlace = 0;
 			points = 1000;
+			tendency = Tendency.Constant;
 		}
 
 		public Integer getSingleWins() {
@@ -281,20 +295,20 @@ public class Player extends BaseEntity {
 			this.doubleGetGoals = doubleGetGoals;
 		}
 
-		public Integer getLastTablePlace() {
-			return lastTablePlace;
+		public Integer getPrevTablePlace() {
+			return prevTablePlace;
 		}
 
-		public void setLastTablePlace(Integer lastTablePlace) {
-			this.lastTablePlace = lastTablePlace;
+		public void setPrevTablePlace(Integer prevTablePlace) {
+			this.prevTablePlace = prevTablePlace;
 		}
 
-		public Tendency getTendency() {
-			return tendency;
+		public Integer getCurTablePlace() {
+			return curTablePlace;
 		}
 
-		public void setTendency(Tendency tendency) {
-			this.tendency = tendency;
+		public void setCurTablePlace(Integer curTablePlace) {
+			this.curTablePlace = curTablePlace;
 		}
 
 		public Integer getPoints() {
@@ -304,6 +318,15 @@ public class Player extends BaseEntity {
 		public void setPoints(Integer points) {
 			this.points = points;
 		}
+
+		public Tendency getTendency() {
+			return tendency;
+		}
+
+		public void setTendency(Tendency tendency) {
+			this.tendency = tendency;
+		}
+		
 	}
 
 }

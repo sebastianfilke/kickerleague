@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import de.kickerapp.shared.match.MatchDto;
+import de.kickerapp.shared.dto.MatchDto;
 
 /**
  * Die Schnittstelle zur Verarbeitung von Spielen im Clienten.
@@ -20,7 +20,7 @@ public interface MatchService extends RemoteService {
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	public MatchDto createMatch(MatchDto match) throws IllegalArgumentException;
+	public MatchDto createSingleMatch(MatchDto match) throws IllegalArgumentException;
 
 	public ArrayList<MatchDto> getAllMatches() throws IllegalArgumentException;
 

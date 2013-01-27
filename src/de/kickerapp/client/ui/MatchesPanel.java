@@ -15,12 +15,12 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 
-import de.kickerapp.client.model.MatchProperty;
+import de.kickerapp.client.properties.MatchProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
-import de.kickerapp.shared.match.IMatch;
-import de.kickerapp.shared.match.MatchDto;
+import de.kickerapp.shared.dto.IMatch;
+import de.kickerapp.shared.dto.MatchDto;
 
 /**
  * @author Sebastian Filke
@@ -47,21 +47,23 @@ public class MatchesPanel extends BasePanel {
 		final ColumnConfig<IMatch, String> ccNumber = new ColumnConfig<IMatch, String>(matchProperty.matchNumber(), 40, "Nr.");
 		final ColumnConfig<IMatch, Date> ccMatchDate = new ColumnConfig<IMatch, Date>(matchProperty.matchDate(), 100, "Datum");
 		ccMatchDate.setCell(new DateCell(DateTimeFormat.getFormat("dd.MM.yyyy HH:mm")));
-		final ColumnConfig<IMatch, String> ccTeam1 = new ColumnConfig<IMatch, String>(matchProperty.labelTeam1(), 120, "Team 1");
-		final ColumnConfig<IMatch, String> ccTeam2 = new ColumnConfig<IMatch, String>(matchProperty.labelTeam2(), 120, "Team 2");
-		final ColumnConfig<IMatch, String> ccResult = new ColumnConfig<IMatch, String>(matchProperty.labelSets(), 120, "Ergebnis");
+		final ColumnConfig<IMatch, String> ccTeam1 = new ColumnConfig<IMatch, String>(MatchProperty.team1, 120, "Team 1");
+		final ColumnConfig<IMatch, String> ccTeam2 = new ColumnConfig<IMatch, String>(MatchProperty.team2, 120, "Team 2");
+		final ColumnConfig<IMatch, String> ccMatchResult = new ColumnConfig<IMatch, String>(MatchProperty.matchResult, 120, "Ergebnis");
+		final ColumnConfig<IMatch, String> ccMatchSets = new ColumnConfig<IMatch, String>(MatchProperty.matchSets, 120, "Sätze");
 
 		final ArrayList<ColumnConfig<IMatch, ?>> columns = new ArrayList<ColumnConfig<IMatch, ?>>();
 		columns.add(ccNumber);
 		columns.add(ccMatchDate);
 		columns.add(ccTeam1);
 		columns.add(ccTeam2);
-		columns.add(ccResult);
+		columns.add(ccMatchResult);
+		columns.add(ccMatchSets);
 
 		store = new ListStore<IMatch>(matchProperty.id());
 
 		final Grid<IMatch> grid = new Grid<IMatch>(store, new ColumnModel<IMatch>(columns));
-		grid.getView().setAutoExpandColumn(ccResult);
+		// grid.getView().setAutoExpandColumn(ccResult);
 		grid.getView().setStripeRows(true);
 		grid.getView().setColumnLines(true);
 		grid.getView().setForceFit(true);

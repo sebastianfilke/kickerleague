@@ -1,4 +1,4 @@
-package de.kickerapp.shared.match;
+package de.kickerapp.shared.dto;
 
 import java.util.Date;
 
@@ -17,18 +17,6 @@ public interface IMatch extends IBase {
 
 	public Date getMatchDate();
 
-	public void setLabelTeam1(String team1);
-
-	public String getLabelTeam1();
-
-	public void setLabelTeam2(String team2);
-
-	public String getLabelTeam2();
-
-	public void setLabelSets(String sets);
-
-	public String getLabelSets();
-
 	public void setTeam1(TeamDto team1);
 
 	public TeamDto getTeam1();
@@ -37,8 +25,8 @@ public interface IMatch extends IBase {
 
 	public TeamDto getTeam2();
 
-	public void setSets(SetDto sets);
+	public void setSets(MatchSetDto sets);
 
-	public SetDto getSets();
+	public MatchSetDto getSets();
 
 }

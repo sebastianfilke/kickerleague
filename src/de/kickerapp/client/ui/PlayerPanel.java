@@ -16,7 +16,7 @@ import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppTextField;
-import de.kickerapp.shared.match.PlayerDto;
+import de.kickerapp.shared.dto.PlayerDto;
 
 /**
  * Controller-Klasse zum Eintragen neuer Spieler für die Applikation.
