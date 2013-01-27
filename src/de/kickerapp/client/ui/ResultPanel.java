@@ -1,11 +1,10 @@
 package de.kickerapp.client.ui;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -14,11 +13,14 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell;
+import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.core.client.util.ToggleGroup;
 import com.sencha.gxt.data.client.loader.RpcProxy;
+import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.loader.LoadResultListStoreBinding;
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
@@ -37,7 +39,6 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.form.FormPanel.LabelAlign;
-import com.sencha.gxt.widget.core.client.form.NumberPropertyEditor.IntegerPropertyEditor;
 import com.sencha.gxt.widget.core.client.form.Radio;
 import com.sencha.gxt.widget.core.client.info.Info;
 
@@ -47,7 +48,6 @@ import de.kickerapp.client.ui.resources.KickerTemplates;
 import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
-import de.kickerapp.client.widgets.AppSpinnerField;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.MatchSetDto;
@@ -62,11 +62,11 @@ import de.kickerapp.shared.dto.TeamDto;
 public class ResultPanel extends BasePanel {
 
 	/** Die Ergebnisse für den ersten Satz. */
-	private AppSpinnerField<Integer> sfResultGame1Team1, sfResultGame1Team2;
+	private AppComboBox<Integer> cbSet1Team1, cbSet1Team2;
 	/** Die Ergebnisse für den zweiten Satz. */
-	private AppSpinnerField<Integer> sfResultGame2Team1, sfResultGame2Team2;
+	private AppComboBox<Integer> cbSet2Team1, cbSet2Team2;
 	/** Die Ergebnisse für den dritten Satz. */
-	private AppSpinnerField<Integer> sfResultGame3Team1, sfResultGame3Team2;
+	private AppComboBox<Integer> cbSet3Team1, cbSet3Team2;
 	/** Die Spieler des ersten Teams. */
 	private AppComboBox<PlayerDto> cbTeam1Player1, cbTeam1Player2;
 	/** Die Spieler des zweiten Teams. */
@@ -110,51 +110,87 @@ public class ResultPanel extends BasePanel {
 
 		final VerticalLayoutContainer vlcResult = new VerticalLayoutContainer();
 
-		sfResultGame1Team1 = createResultComboBox("Satz 1");
-		sfResultGame1Team1.addChangeHandler(new ChangeHandler() {
+		cbSet1Team1 = createSetComboBox("Satz 1");
+		cbSet1Team1.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
-			@SuppressWarnings("unchecked")
-			public void onChange(ChangeEvent event) {
-				final AppSpinnerField<Integer> sfResult = (AppSpinnerField<Integer>) event.getSource();
-				if (sfResult.getValue() != null && sfResult.getValue() != 6) {
-					sfResultGame1Team2.setValue(6);
-				}
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateRelatedSet(event, cbSet1Team2);
+				enableStatusForLastSet();
 			}
 		});
-		sfResultGame1Team2 = createResultComboBox("Satz 1");
-		vlcResult.add(createFieldSetResultContainer(sfResultGame1Team1, sfResultGame1Team2), new VerticalLayoutData(1, -1));
+		cbSet1Team2 = createSetComboBox("Satz 1");
+		cbSet1Team2.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateRelatedSet(event, cbSet1Team1);
+				enableStatusForLastSet();
+			}
+		});
+		vlcResult.add(createFieldSetResultContainer(cbSet1Team1, cbSet1Team2), new VerticalLayoutData(1, -1));
 
-		sfResultGame2Team1 = createResultComboBox("Satz 2");
-		sfResultGame2Team1.addChangeHandler(new ChangeHandler() {
+		cbSet2Team1 = createSetComboBox("Satz 2");
+		cbSet2Team1.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
-			@SuppressWarnings("unchecked")
-			public void onChange(ChangeEvent event) {
-				final AppSpinnerField<Integer> sfResult = (AppSpinnerField<Integer>) event.getSource();
-				if (sfResult.getValue() != null && sfResult.getValue() != 6) {
-					sfResultGame2Team2.setValue(6);
-				}
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateRelatedSet(event, cbSet2Team2);
+				enableStatusForLastSet();
 			}
 		});
-		sfResultGame2Team2 = createResultComboBox("Satz 2");
-		vlcResult.add(createResultContainer(sfResultGame2Team1, sfResultGame2Team2), new VerticalLayoutData(1, -1, new Margins(0, 0, 4, 0)));
+		cbSet2Team2 = createSetComboBox("Satz 2");
+		cbSet2Team2.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateRelatedSet(event, cbSet2Team1);
+				enableStatusForLastSet();
+			}
+		});
+		vlcResult.add(createResultContainer(cbSet2Team1, cbSet2Team2), new VerticalLayoutData(1, -1, new Margins(0, 0, 4, 0)));
 
-		sfResultGame3Team1 = createResultComboBox("Satz 3");
-		sfResultGame3Team1.addChangeHandler(new ChangeHandler() {
+		cbSet3Team1 = createSetComboBox("Satz 3");
+		cbSet3Team1.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
-			@SuppressWarnings("unchecked")
-			public void onChange(ChangeEvent event) {
-				final AppSpinnerField<Integer> sfResult = (AppSpinnerField<Integer>) event.getSource();
-				if (sfResult.getValue() != null && sfResult.getValue() != 6) {
-					sfResultGame3Team2.setValue(6);
-				}
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateRelatedSet(event, cbSet3Team2);
 			}
 		});
-		sfResultGame3Team2 = createResultComboBox("Satz 3");
-		vlcResult.add(createResultContainer(sfResultGame3Team1, sfResultGame3Team2), new VerticalLayoutData(1, -1));
+		cbSet3Team2 = createSetComboBox("Satz 3");
+		cbSet3Team2.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateRelatedSet(event, cbSet3Team1);
+			}
+		});
+		vlcResult.add(createResultContainer(cbSet3Team1, cbSet3Team2), new VerticalLayoutData(1, -1));
 
 		fsResult.add(vlcResult);
 
 		return fsResult;
+	}
+
+	protected void enableStatusForLastSet() {
+		if ((cbSet1Team1.getValue() != null && cbSet1Team1.getValue() == 6) && (cbSet2Team1.getValue() != null && cbSet2Team1.getValue() == 6)) {
+			cbSet3Team1.clear();
+			cbSet3Team2.clear();
+			cbSet3Team1.setEnabled(false);
+			cbSet3Team2.setEnabled(false);
+		} else if ((cbSet1Team2.getValue() != null && cbSet1Team2.getValue() == 6) && (cbSet2Team2.getValue() != null && cbSet2Team2.getValue() == 6)) {
+			cbSet3Team1.clear();
+			cbSet3Team2.clear();
+			cbSet3Team1.setEnabled(false);
+			cbSet3Team2.setEnabled(false);
+		} else {
+			cbSet3Team1.setEnabled(true);
+			cbSet3Team2.setEnabled(true);
+		}
+	}
+
+	private void updateRelatedSet(ValueChangeEvent<Integer> event, AppComboBox<Integer> cbSet) {
+		final Integer selectedValue = event.getValue();
+		if (selectedValue != null && selectedValue != 6) {
+			if (cbSet.getValue() == null) {
+				cbSet.setValue(6);
+			}
+		}
 	}
 
 	/**
@@ -165,7 +201,7 @@ public class ResultPanel extends BasePanel {
 	 * @param cbResultTeam2 Die ComboBox für das zweite Team.
 	 * @return Der erzeugte Container.
 	 */
-	private HBoxLayoutContainer createFieldSetResultContainer(AppSpinnerField<Integer> cbResultTeam1, AppSpinnerField<Integer> cbResultTeam2) {
+	private HBoxLayoutContainer createFieldSetResultContainer(AppComboBox<Integer> cbResultTeam1, AppComboBox<Integer> cbResultTeam2) {
 		final HBoxLayoutContainer hblcResultInput = new HBoxLayoutContainer();
 		hblcResultInput.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
 		hblcResultInput.setPack(BoxLayoutPack.CENTER);
@@ -191,7 +227,7 @@ public class ResultPanel extends BasePanel {
 	 * @param cbResultTeam2 Die ComboBox für das zweite Team.
 	 * @return Der erzeugte Container.
 	 */
-	private HBoxLayoutContainer createResultContainer(AppSpinnerField<Integer> cbResultTeam1, AppSpinnerField<Integer> cbResultTeam2) {
+	private HBoxLayoutContainer createResultContainer(AppComboBox<Integer> cbResultTeam1, AppComboBox<Integer> cbResultTeam2) {
 		final HBoxLayoutContainer hblcResultInput = new HBoxLayoutContainer();
 		hblcResultInput.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
 		hblcResultInput.setPack(BoxLayoutPack.CENTER);
@@ -210,14 +246,30 @@ public class ResultPanel extends BasePanel {
 	 *            leer ist als {@link String}.
 	 * @return Die erzeugte ComboBox.
 	 */
-	private AppSpinnerField<Integer> createResultComboBox(String emptyText) {
-		final AppSpinnerField<Integer> spResult = new AppSpinnerField<Integer>(new IntegerPropertyEditor());
-		spResult.setEmptyText(emptyText);
-		spResult.setAllowBlank(false);
-		spResult.setMinValue(0);
-		spResult.setMaxValue(6);
+	private AppComboBox<Integer> createSetComboBox(String emptyText) {
+		final ListStore<Integer> store = new ListStore<Integer>(new ModelKeyProvider<Integer>() {
+			@Override
+			public String getKey(Integer item) {
+				return Integer.toString(item);
+			}
+		});
+		ArrayList<Integer> matchSet = new ArrayList<Integer>();
+		for (int i = 0; i <= 6; i++) {
+			matchSet.add(i);
+		}
+		store.addAll(matchSet);
 
-		return spResult;
+		final AppComboBox<Integer> cbSet = new AppComboBox<Integer>(store, new LabelProvider<Integer>() {
+			@Override
+			public String getLabel(Integer item) {
+				return Integer.toString(item);
+			}
+		}, emptyText);
+		cbSet.setEmptyText(emptyText);
+		cbSet.setTriggerAction(TriggerAction.ALL);
+		cbSet.setAllowBlank(false);
+
+		return cbSet;
 	}
 
 	/**
@@ -379,12 +431,14 @@ public class ResultPanel extends BasePanel {
 	}
 
 	private void clearInput() {
-		sfResultGame1Team1.clear();
-		sfResultGame1Team2.clear();
-		sfResultGame2Team1.clear();
-		sfResultGame2Team2.clear();
-		sfResultGame3Team1.clear();
-		sfResultGame3Team2.clear();
+		cbSet1Team1.clear();
+		cbSet1Team2.clear();
+		cbSet2Team1.clear();
+		cbSet2Team2.clear();
+		cbSet3Team1.clear();
+		cbSet3Team2.clear();
+		cbSet3Team1.setEnabled(true);
+		cbSet3Team2.setEnabled(true);
 		cbTeam1Player1.clear();
 		cbTeam1Player2.clear();
 		cbTeam2Player1.clear();
@@ -411,13 +465,13 @@ public class ResultPanel extends BasePanel {
 		newMatch.setTeam2(team2);
 
 		final MatchSetDto newSets = new MatchSetDto();
-		newSets.getSetsTeam1().add(sfResultGame1Team1.getValue());
-		newSets.getSetsTeam1().add(sfResultGame2Team1.getValue());
-		newSets.getSetsTeam1().add(sfResultGame3Team1.getValue());
+		newSets.getSetsTeam1().add(cbSet1Team1.getValue());
+		newSets.getSetsTeam1().add(cbSet2Team1.getValue());
+		newSets.getSetsTeam1().add(cbSet3Team1.getValue());
 
-		newSets.getSetsTeam2().add(sfResultGame1Team2.getValue());
-		newSets.getSetsTeam2().add(sfResultGame2Team2.getValue());
-		newSets.getSetsTeam2().add(sfResultGame3Team2.getValue());
+		newSets.getSetsTeam2().add(cbSet1Team2.getValue());
+		newSets.getSetsTeam2().add(cbSet2Team2.getValue());
+		newSets.getSetsTeam2().add(cbSet3Team2.getValue());
 		newMatch.setSets(newSets);
 
 		return newMatch;
