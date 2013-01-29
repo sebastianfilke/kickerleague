@@ -14,15 +14,17 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.RowNumberer;
 
+import de.kickerapp.client.event.AppEventBus;
+import de.kickerapp.client.event.UpdatePanelEvent;
+import de.kickerapp.client.event.UpdatePanelEventHandler;
 import de.kickerapp.client.properties.TableProperty;
 import de.kickerapp.client.services.KickerServices;
-import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.shared.common.Tendency;
 import de.kickerapp.shared.dto.IPlayer;
 import de.kickerapp.shared.dto.PlayerDto;
 
-public class TablePanel extends BasePanel {
+public class TablePanel extends BasePanel implements UpdatePanelEventHandler {
 
 	private ListStore<IPlayer> store;
 	private AppButton btnUpdate;
@@ -30,6 +32,17 @@ public class TablePanel extends BasePanel {
 	public TablePanel() {
 		super();
 		initLayout();
+		initHandlers();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initHandlers() {
+		super.initHandlers();
+
+		AppEventBus.addHandler(UpdatePanelEvent.ALL_PANEL, this);
 	}
 
 	/**
@@ -48,14 +61,14 @@ public class TablePanel extends BasePanel {
 		final IdentityValueProvider<IPlayer> identity = new IdentityValueProvider<IPlayer>();
 		final RowNumberer<IPlayer> numberer = new RowNumberer<IPlayer>(identity);
 
-		final ColumnConfig<IPlayer, String> ccPlayerName = new ColumnConfig<IPlayer, String>(tableProperty.label(), 120, "Spieler");
-		final ColumnConfig<IPlayer, Integer> ccSingleMatches = new ColumnConfig<IPlayer, Integer>(tableProperty.singleMatches(), 80, "Anzahl Spiele");
-		final ColumnConfig<IPlayer, Integer> ccSingleWins = new ColumnConfig<IPlayer, Integer>(tableProperty.singleWins(), 80, "Siege");
-		final ColumnConfig<IPlayer, Integer> ccSingleLosses = new ColumnConfig<IPlayer, Integer>(tableProperty.singleLosses(), 80, "Niederlagen");
-		final ColumnConfig<IPlayer, String> ccSingleGoals = new ColumnConfig<IPlayer, String>(tableProperty.singleGoals(), 80, "Tore");
-		final ColumnConfig<IPlayer, String> ccSingleGoalDifference = new ColumnConfig<IPlayer, String>(tableProperty.singleGoalDifference(), 80, "Tordifferenz");
-		final ColumnConfig<IPlayer, Integer> ccPoints = new ColumnConfig<IPlayer, Integer>(tableProperty.points(), 80, "Punkte");
-		final ColumnConfig<IPlayer, Tendency> ccTendency = new ColumnConfig<IPlayer, Tendency>(tableProperty.tendency(), 80, "Tendenz");
+		final ColumnConfig<IPlayer, String> ccPlayerName = new ColumnConfig<IPlayer, String>(tableProperty.label(), 140, "Spieler");
+		final ColumnConfig<IPlayer, Integer> ccSingleMatches = new ColumnConfig<IPlayer, Integer>(tableProperty.singleMatches(), 100, "Anzahl Spiele");
+		final ColumnConfig<IPlayer, Integer> ccSingleWins = new ColumnConfig<IPlayer, Integer>(tableProperty.singleWins(), 100, "Siege");
+		final ColumnConfig<IPlayer, Integer> ccSingleLosses = new ColumnConfig<IPlayer, Integer>(tableProperty.singleLosses(), 100, "Niederlagen");
+		final ColumnConfig<IPlayer, String> ccSingleGoals = new ColumnConfig<IPlayer, String>(tableProperty.singleGoals(), 100, "Tore");
+		final ColumnConfig<IPlayer, String> ccSingleGoalDifference = new ColumnConfig<IPlayer, String>(tableProperty.singleGoalDifference(), 100, "Tordifferenz");
+		final ColumnConfig<IPlayer, Integer> ccPoints = new ColumnConfig<IPlayer, Integer>(tableProperty.points(), 100, "Punkte");
+		final ColumnConfig<IPlayer, Tendency> ccTendency = new ColumnConfig<IPlayer, Tendency>(tableProperty.tendency(), 60, "Tendenz");
 
 		final ArrayList<ColumnConfig<IPlayer, ?>> columns = new ArrayList<ColumnConfig<IPlayer, ?>>();
 		columns.add(numberer);
@@ -71,10 +84,10 @@ public class TablePanel extends BasePanel {
 		store = new ListStore<IPlayer>(tableProperty.id());
 
 		final Grid<IPlayer> grid = new Grid<IPlayer>(store, new ColumnModel<IPlayer>(columns));
-		grid.getView().setAutoExpandColumn(ccTendency);
+		grid.getView().setAutoExpandColumn(ccPlayerName);
+		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);
 		grid.getView().setColumnLines(true);
-		grid.getView().setForceFit(true);
 
 		return grid;
 	}
@@ -96,26 +109,31 @@ public class TablePanel extends BasePanel {
 	}
 
 	private void getTable() {
-		mask("Aktualisiere...");
-		CursorDefs.showWaitCursor();
 		btnUpdate.setEnabled(false);
+		mask("Aktualisiere...");
 		store.clear();
 		KickerServices.PLAYER_SERVICE.getAllPlayers(new AsyncCallback<ArrayList<PlayerDto>>() {
 			@Override
 			public void onSuccess(ArrayList<PlayerDto> result) {
 				store.addAll(result);
 				btnUpdate.setEnabled(true);
-				CursorDefs.showDefaultCursor();
 				unmask();
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				btnUpdate.setEnabled(true);
-				CursorDefs.showDefaultCursor();
 				unmask();
 			}
 		});
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void updatePanel() {
+		getTable();
 	}
 
 }

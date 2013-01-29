@@ -9,6 +9,11 @@
 	<!-- Configure serving/caching of GWT files -->
 	<static-files>
 		<include path="**" />
+		
+		<include path="/fonts/**.eot" />
+		<include path="/fonts/**.svg" />
+		<include path="/fonts/**.ttf" />
+		<include path="/fonts/**.woff" />
 
 		<include path="/images/**.png" />
 		<include path="/images/**.gif" />

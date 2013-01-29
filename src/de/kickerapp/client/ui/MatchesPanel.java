@@ -15,9 +15,11 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 
+import de.kickerapp.client.event.AppEventBus;
+import de.kickerapp.client.event.UpdatePanelEvent;
+import de.kickerapp.client.event.UpdatePanelEventHandler;
 import de.kickerapp.client.properties.MatchProperty;
 import de.kickerapp.client.services.KickerServices;
-import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.shared.dto.IMatch;
 import de.kickerapp.shared.dto.MatchDto;
@@ -25,13 +27,15 @@ import de.kickerapp.shared.dto.MatchDto;
 /**
  * @author Sebastian Filke
  */
-public class MatchesPanel extends BasePanel {
+public class MatchesPanel extends BasePanel implements UpdatePanelEventHandler {
 
 	private ListStore<IMatch> store;
 	private AppButton btnUpdate;
 
 	public MatchesPanel() {
 		super();
+		initLayout();
+		initHandlers();
 	}
 
 	@Override
@@ -41,16 +45,26 @@ public class MatchesPanel extends BasePanel {
 		add(createGrid());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initHandlers() {
+		super.initHandlers();
+
+		AppEventBus.addHandler(UpdatePanelEvent.ALL_PANEL, this);
+	}
+
 	public Grid<IMatch> createGrid() {
 		final MatchProperty matchProperty = GWT.create(MatchProperty.class);
 
 		final ColumnConfig<IMatch, String> ccNumber = new ColumnConfig<IMatch, String>(matchProperty.matchNumber(), 40, "Nr.");
-		final ColumnConfig<IMatch, Date> ccMatchDate = new ColumnConfig<IMatch, Date>(matchProperty.matchDate(), 100, "Datum");
+		final ColumnConfig<IMatch, Date> ccMatchDate = new ColumnConfig<IMatch, Date>(matchProperty.matchDate(), 120, "Datum");
 		ccMatchDate.setCell(new DateCell(DateTimeFormat.getFormat("dd.MM.yyyy HH:mm")));
-		final ColumnConfig<IMatch, String> ccTeam1 = new ColumnConfig<IMatch, String>(MatchProperty.team1, 120, "Team 1");
-		final ColumnConfig<IMatch, String> ccTeam2 = new ColumnConfig<IMatch, String>(MatchProperty.team2, 120, "Team 2");
-		final ColumnConfig<IMatch, String> ccMatchResult = new ColumnConfig<IMatch, String>(MatchProperty.matchResult, 120, "Ergebnis");
-		final ColumnConfig<IMatch, String> ccMatchSets = new ColumnConfig<IMatch, String>(MatchProperty.matchSets, 120, "Sätze");
+		final ColumnConfig<IMatch, String> ccTeam1 = new ColumnConfig<IMatch, String>(MatchProperty.team1, 220, "Team 1");
+		final ColumnConfig<IMatch, String> ccTeam2 = new ColumnConfig<IMatch, String>(MatchProperty.team2, 220, "Team 2");
+		final ColumnConfig<IMatch, String> ccMatchResult = new ColumnConfig<IMatch, String>(MatchProperty.matchResult, 60, "Ergebnis");
+		final ColumnConfig<IMatch, String> ccMatchSets = new ColumnConfig<IMatch, String>(MatchProperty.matchSets, 150, "Sätze");
 
 		final ArrayList<ColumnConfig<IMatch, ?>> columns = new ArrayList<ColumnConfig<IMatch, ?>>();
 		columns.add(ccNumber);
@@ -63,10 +77,10 @@ public class MatchesPanel extends BasePanel {
 		store = new ListStore<IMatch>(matchProperty.id());
 
 		final Grid<IMatch> grid = new Grid<IMatch>(store, new ColumnModel<IMatch>(columns));
-		// grid.getView().setAutoExpandColumn(ccResult);
+		grid.getView().setAutoExpandColumn(ccMatchSets);
+		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);
 		grid.getView().setColumnLines(true);
-		grid.getView().setForceFit(true);
 
 		return grid;
 	}
@@ -88,26 +102,31 @@ public class MatchesPanel extends BasePanel {
 	}
 
 	private void getMatches() {
-		mask("Aktualisiere...");
-		CursorDefs.showWaitCursor();
 		btnUpdate.setEnabled(false);
+		mask("Aktualisiere...");
 		store.clear();
 		KickerServices.MATCH_SERVICE.getAllMatches(new AsyncCallback<ArrayList<MatchDto>>() {
 			@Override
 			public void onSuccess(ArrayList<MatchDto> result) {
 				store.addAll(result);
 				btnUpdate.setEnabled(true);
-				CursorDefs.showDefaultCursor();
 				unmask();
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				btnUpdate.setEnabled(true);
-				CursorDefs.showDefaultCursor();
 				unmask();
 			}
 		});
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void updatePanel() {
+		getMatches();
 	}
 
 }

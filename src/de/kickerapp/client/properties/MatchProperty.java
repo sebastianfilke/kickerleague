@@ -22,10 +22,10 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 	public ValueProvider<IMatch, String> team1 = new ValueProvider<IMatch, String>() {
 		@Override
 		public String getValue(IMatch object) {
-			StringBuilder builder = new StringBuilder();
+			final StringBuilder builder = new StringBuilder();
 
-			PlayerDto player1 = object.getTeam1().getPlayer1();
-			builder.append(player1.getLastName()).append("");
+			final PlayerDto player1 = object.getTeam1().getPlayer1();
+			builder.append(player1.getLastName()).append(" ");
 			builder.append(player1.getFirstName());
 
 			return builder.toString();
@@ -44,10 +44,10 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 	public ValueProvider<IMatch, String> team2 = new ValueProvider<IMatch, String>() {
 		@Override
 		public String getValue(IMatch object) {
-			StringBuilder builder = new StringBuilder();
+			final StringBuilder builder = new StringBuilder();
 
-			PlayerDto player1 = object.getTeam2().getPlayer1();
-			builder.append(player1.getLastName()).append("");
+			final PlayerDto player1 = object.getTeam2().getPlayer1();
+			builder.append(player1.getLastName()).append(" ");
 			builder.append(player1.getFirstName());
 
 			return builder.toString();
@@ -66,7 +66,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 	public ValueProvider<IMatch, String> matchResult = new ValueProvider<IMatch, String>() {
 		@Override
 		public String getValue(IMatch object) {
-			StringBuilder builder = new StringBuilder();
+			final StringBuilder builder = new StringBuilder();
 
 			int setWinsTeam1 = 0;
 			for (Integer set : object.getSets().getSetsTeam1()) {
@@ -102,7 +102,20 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		@Override
 		public String getValue(IMatch object) {
 			final StringBuilder builder = new StringBuilder();
-			final int size = 3;
+
+			int setWinsTeam1 = 0;
+			for (Integer set : object.getSets().getSetsTeam1()) {
+				if (set == 6) {
+					setWinsTeam1++;
+				}
+			}
+
+			int size = 0;
+			if (setWinsTeam1 == 2 || setWinsTeam1 == 0) {
+				size = 2;
+			} else {
+				size = 3;
+			}
 			for (int i = 0; i < size; i++) {
 				final Integer setTeam1 = object.getSets().getSetsTeam1().get(i);
 				final Integer setTeam2 = object.getSets().getSetsTeam2().get(i);

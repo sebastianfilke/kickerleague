@@ -15,7 +15,7 @@ public class BasePanel extends AppContentPanel {
 	 * Erzeugt einen neuen Basis-Controller.
 	 */
 	public BasePanel() {
-		initLayout();
+		super();
 	}
 
 	/**

@@ -5,6 +5,8 @@ import java.util.Date;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -42,6 +44,8 @@ import com.sencha.gxt.widget.core.client.form.FormPanel.LabelAlign;
 import com.sencha.gxt.widget.core.client.form.Radio;
 import com.sencha.gxt.widget.core.client.info.Info;
 
+import de.kickerapp.client.event.AppEventBus;
+import de.kickerapp.client.event.UpdatePanelEvent;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.resources.KickerTemplates;
@@ -82,8 +86,12 @@ public class ResultPanel extends BasePanel {
 	 */
 	public ResultPanel() {
 		super();
+		initLayout();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void initLayout() {
 		super.initLayout();
@@ -111,69 +119,118 @@ public class ResultPanel extends BasePanel {
 		final VerticalLayoutContainer vlcResult = new VerticalLayoutContainer();
 
 		cbSet1Team1 = createSetComboBox("Satz 1");
-		cbSet1Team1.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				updateRelatedSet(event, cbSet1Team2);
-				enableStatusForLastSet();
-			}
-		});
 		cbSet1Team2 = createSetComboBox("Satz 1");
-		cbSet1Team2.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				updateRelatedSet(event, cbSet1Team1);
-				enableStatusForLastSet();
-			}
-		});
 		vlcResult.add(createFieldSetResultContainer(cbSet1Team1, cbSet1Team2), new VerticalLayoutData(1, -1));
 
 		cbSet2Team1 = createSetComboBox("Satz 2");
-		cbSet2Team1.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				updateRelatedSet(event, cbSet2Team2);
-				enableStatusForLastSet();
-			}
-		});
 		cbSet2Team2 = createSetComboBox("Satz 2");
-		cbSet2Team2.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				updateRelatedSet(event, cbSet2Team1);
-				enableStatusForLastSet();
-			}
-		});
 		vlcResult.add(createResultContainer(cbSet2Team1, cbSet2Team2), new VerticalLayoutData(1, -1, new Margins(0, 0, 4, 0)));
 
 		cbSet3Team1 = createSetComboBox("Satz 3");
-		cbSet3Team1.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				updateRelatedSet(event, cbSet3Team2);
-			}
-		});
 		cbSet3Team2 = createSetComboBox("Satz 3");
-		cbSet3Team2.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				updateRelatedSet(event, cbSet3Team1);
-			}
-		});
 		vlcResult.add(createResultContainer(cbSet3Team1, cbSet3Team2), new VerticalLayoutData(1, -1));
+
+		addValueChangedHandler();
+		addSelectionHandler();
 
 		fsResult.add(vlcResult);
 
 		return fsResult;
 	}
 
-	protected void enableStatusForLastSet() {
-		if ((cbSet1Team1.getValue() != null && cbSet1Team1.getValue() == 6) && (cbSet2Team1.getValue() != null && cbSet2Team1.getValue() == 6)) {
+	private void addValueChangedHandler() {
+		cbSet1Team1.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateRelatedSet(event.getValue(), cbSet1Team2);
+				enableStatusForLastSet(event.getValue(), cbSet2Team1.getValue(), cbSet1Team2.getValue(), cbSet2Team2.getValue());
+			}
+		});
+		cbSet1Team2.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateRelatedSet(event.getValue(), cbSet1Team1);
+				enableStatusForLastSet(cbSet1Team1.getValue(), cbSet2Team1.getValue(), event.getValue(), cbSet2Team2.getValue());
+			}
+		});
+		cbSet2Team1.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateRelatedSet(event.getValue(), cbSet2Team2);
+				enableStatusForLastSet(cbSet1Team1.getValue(), event.getValue(), cbSet1Team2.getValue(), cbSet2Team2.getValue());
+			}
+		});
+		cbSet2Team2.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateRelatedSet(event.getValue(), cbSet2Team1);
+				enableStatusForLastSet(cbSet1Team1.getValue(), cbSet2Team1.getValue(), cbSet1Team2.getValue(), event.getValue());
+			}
+		});
+		cbSet3Team1.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateRelatedSet(event.getValue(), cbSet3Team2);
+			}
+		});
+		cbSet3Team2.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateRelatedSet(event.getValue(), cbSet3Team1);
+			}
+		});
+	}
+
+	private void addSelectionHandler() {
+		cbSet1Team1.addSelectionHandler(new SelectionHandler<Integer>() {
+			@Override
+			public void onSelection(SelectionEvent<Integer> event) {
+				updateRelatedSet(event.getSelectedItem(), cbSet1Team2);
+				enableStatusForLastSet(event.getSelectedItem(), cbSet2Team1.getValue(), cbSet1Team2.getValue(), cbSet2Team2.getValue());
+			}
+		});
+		cbSet1Team2.addSelectionHandler(new SelectionHandler<Integer>() {
+			@Override
+			public void onSelection(SelectionEvent<Integer> event) {
+				updateRelatedSet(event.getSelectedItem(), cbSet1Team1);
+				enableStatusForLastSet(cbSet1Team1.getValue(), cbSet2Team1.getValue(), event.getSelectedItem(), cbSet2Team2.getValue());
+			}
+		});
+		cbSet2Team1.addSelectionHandler(new SelectionHandler<Integer>() {
+			@Override
+			public void onSelection(SelectionEvent<Integer> event) {
+				updateRelatedSet(event.getSelectedItem(), cbSet2Team2);
+				enableStatusForLastSet(cbSet1Team1.getValue(), event.getSelectedItem(), cbSet1Team2.getValue(), cbSet2Team2.getValue());
+			}
+		});
+		cbSet2Team2.addSelectionHandler(new SelectionHandler<Integer>() {
+			@Override
+			public void onSelection(SelectionEvent<Integer> event) {
+				updateRelatedSet(event.getSelectedItem(), cbSet2Team1);
+				enableStatusForLastSet(cbSet1Team1.getValue(), cbSet2Team1.getValue(), cbSet1Team2.getValue(), event.getSelectedItem());
+			}
+		});
+		cbSet3Team1.addSelectionHandler(new SelectionHandler<Integer>() {
+			@Override
+			public void onSelection(SelectionEvent<Integer> event) {
+				updateRelatedSet(event.getSelectedItem(), cbSet3Team2);
+			}
+		});
+		cbSet3Team2.addSelectionHandler(new SelectionHandler<Integer>() {
+			@Override
+			public void onSelection(SelectionEvent<Integer> event) {
+				updateRelatedSet(event.getSelectedItem(), cbSet3Team1);
+			}
+		});
+	}
+
+	protected void enableStatusForLastSet(Integer cbSet1Team1, Integer cbSet2Team1, Integer cbSet1Team2, Integer cbSet2Team2) {
+		if ((cbSet1Team1 != null && cbSet1Team1 == 6) && (cbSet2Team1 != null && cbSet2Team1 == 6)) {
 			cbSet3Team1.clear();
 			cbSet3Team2.clear();
 			cbSet3Team1.setEnabled(false);
 			cbSet3Team2.setEnabled(false);
-		} else if ((cbSet1Team2.getValue() != null && cbSet1Team2.getValue() == 6) && (cbSet2Team2.getValue() != null && cbSet2Team2.getValue() == 6)) {
+		} else if ((cbSet1Team2 != null && cbSet1Team2 == 6) && (cbSet2Team2 != null && cbSet2Team2 == 6)) {
 			cbSet3Team1.clear();
 			cbSet3Team2.clear();
 			cbSet3Team1.setEnabled(false);
@@ -184,9 +241,8 @@ public class ResultPanel extends BasePanel {
 		}
 	}
 
-	private void updateRelatedSet(ValueChangeEvent<Integer> event, AppComboBox<Integer> cbSet) {
-		final Integer selectedValue = event.getValue();
-		if (selectedValue != null && selectedValue != 6) {
+	private void updateRelatedSet(Integer value, AppComboBox<Integer> cbSet) {
+		if (value != null && value != 6) {
 			if (cbSet.getValue() == null) {
 				cbSet.setValue(6);
 			}
@@ -411,23 +467,30 @@ public class ResultPanel extends BasePanel {
 		mask("Spiel wird eingetragen...");
 		CursorDefs.showWaitCursor();
 		bReport.setEnabled(false);
-		KickerServices.MATCH_SERVICE.createSingleMatch(newMatch, new AsyncCallback<MatchDto>() {
-			@Override
-			public void onSuccess(MatchDto result) {
-				Info.display("Erfolgreich", "Spiel wurde erfolgreich eingetragen");
-				clearInput();
-				bReport.setEnabled(true);
-				CursorDefs.showDefaultCursor();
-				unmask();
-			}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				bReport.setEnabled(true);
-				CursorDefs.showDefaultCursor();
-				unmask();
-			}
-		});
+		final Radio radio = (Radio) tgPlayType.getValue();
+		if (radio.getId().equals(MatchType.Single.getMatchType())) {
+			KickerServices.MATCH_SERVICE.createSingleMatch(newMatch, new AsyncCallback<MatchDto>() {
+				@Override
+				public void onSuccess(MatchDto result) {
+					Info.display("Erfolgreich", "Spiel wurde erfolgreich eingetragen");
+					clearInput();
+					bReport.setEnabled(true);
+					CursorDefs.showDefaultCursor();
+					AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL_PANEL));
+					unmask();
+				}
+
+				@Override
+				public void onFailure(Throwable caught) {
+					bReport.setEnabled(true);
+					CursorDefs.showDefaultCursor();
+					unmask();
+				}
+			});
+		} else {
+
+		}
 	}
 
 	private void clearInput() {
@@ -439,6 +502,7 @@ public class ResultPanel extends BasePanel {
 		cbSet3Team2.clear();
 		cbSet3Team1.setEnabled(true);
 		cbSet3Team2.setEnabled(true);
+
 		cbTeam1Player1.clear();
 		cbTeam1Player2.clear();
 		cbTeam2Player1.clear();
@@ -467,11 +531,15 @@ public class ResultPanel extends BasePanel {
 		final MatchSetDto newSets = new MatchSetDto();
 		newSets.getSetsTeam1().add(cbSet1Team1.getValue());
 		newSets.getSetsTeam1().add(cbSet2Team1.getValue());
-		newSets.getSetsTeam1().add(cbSet3Team1.getValue());
+		if (cbSet3Team1.getValue() != null) {
+			newSets.getSetsTeam1().add(cbSet3Team1.getValue());
+		}
 
 		newSets.getSetsTeam2().add(cbSet1Team2.getValue());
 		newSets.getSetsTeam2().add(cbSet2Team2.getValue());
-		newSets.getSetsTeam2().add(cbSet3Team2.getValue());
+		if (cbSet3Team2.getValue() != null) {
+			newSets.getSetsTeam2().add(cbSet3Team2.getValue());
+		}
 		newMatch.setSets(newSets);
 
 		return newMatch;

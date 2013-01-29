@@ -173,7 +173,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		matchDto.setMatchNumber(Long.toString(dbMatch.getMatchNumber()));
 		matchDto.setMatchDate(dbMatch.getMatchDate());
 
-		Player playerTeam1 = pm.getObjectById(Player.class, dbMatch.getTeam2());
+		Player playerTeam1 = pm.getObjectById(Player.class, dbMatch.getTeam1());
 		playerTeam1 = pm.detachCopy(playerTeam1);
 		matchDto.setTeam1(new TeamDto(PlayerServiceHelper.createPlayer(playerTeam1)));
 
