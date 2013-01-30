@@ -7,8 +7,10 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
+import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.IMatch;
 import de.kickerapp.shared.dto.PlayerDto;
+import de.kickerapp.shared.dto.TeamDto;
 
 public interface MatchProperty extends PropertyAccess<IMatch> {
 
@@ -19,15 +21,28 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 
 	public ValueProvider<IMatch, Date> matchDate();
 
+	public ValueProvider<IMatch, MatchType> matchType();
+
 	public ValueProvider<IMatch, String> team1 = new ValueProvider<IMatch, String>() {
 		@Override
 		public String getValue(IMatch object) {
+			return getTeam(object, object.getTeam1());
+		}
+
+		private String getTeam(IMatch object, TeamDto teamDto) {
 			final StringBuilder builder = new StringBuilder();
 
-			final PlayerDto player1 = object.getTeam1().getPlayer1();
-			builder.append(player1.getLastName()).append(" ");
+			final PlayerDto player1 = teamDto.getPlayer1();
+			builder.append(player1.getLastName()).append(", ");
 			builder.append(player1.getFirstName());
 
+			if (object.getMatchType() == MatchType.Double) {
+				builder.append(" | ");
+
+				final PlayerDto player2 = teamDto.getPlayer2();
+				builder.append(player2.getLastName()).append(", ");
+				builder.append(player2.getFirstName());
+			}
 			return builder.toString();
 		}
 
@@ -44,12 +59,23 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 	public ValueProvider<IMatch, String> team2 = new ValueProvider<IMatch, String>() {
 		@Override
 		public String getValue(IMatch object) {
+			return getTeam(object, object.getTeam2());
+		}
+
+		private String getTeam(IMatch object, TeamDto teamDto) {
 			final StringBuilder builder = new StringBuilder();
 
-			final PlayerDto player1 = object.getTeam2().getPlayer1();
-			builder.append(player1.getLastName()).append(" ");
+			final PlayerDto player1 = teamDto.getPlayer1();
+			builder.append(player1.getLastName()).append(", ");
 			builder.append(player1.getFirstName());
 
+			if (object.getMatchType() == MatchType.Double) {
+				builder.append(" | ");
+
+				final PlayerDto player2 = teamDto.getPlayer2();
+				builder.append(player2.getLastName()).append(", ");
+				builder.append(player2.getFirstName());
+			}
 			return builder.toString();
 		}
 

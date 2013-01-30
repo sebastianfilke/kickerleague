@@ -21,6 +21,7 @@ import de.kickerapp.client.event.UpdatePanelEventHandler;
 import de.kickerapp.client.properties.MatchProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.widgets.AppButton;
+import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.IMatch;
 import de.kickerapp.shared.dto.MatchDto;
 
@@ -61,6 +62,7 @@ public class MatchesPanel extends BasePanel implements UpdatePanelEventHandler {
 		final ColumnConfig<IMatch, String> ccNumber = new ColumnConfig<IMatch, String>(matchProperty.matchNumber(), 40, "Nr.");
 		final ColumnConfig<IMatch, Date> ccMatchDate = new ColumnConfig<IMatch, Date>(matchProperty.matchDate(), 120, "Datum");
 		ccMatchDate.setCell(new DateCell(DateTimeFormat.getFormat("dd.MM.yyyy HH:mm")));
+		final ColumnConfig<IMatch, MatchType> ccMatchType = new ColumnConfig<IMatch, MatchType>(matchProperty.matchType(), 80, "Typ");
 		final ColumnConfig<IMatch, String> ccTeam1 = new ColumnConfig<IMatch, String>(MatchProperty.team1, 220, "Team 1");
 		final ColumnConfig<IMatch, String> ccTeam2 = new ColumnConfig<IMatch, String>(MatchProperty.team2, 220, "Team 2");
 		final ColumnConfig<IMatch, String> ccMatchResult = new ColumnConfig<IMatch, String>(MatchProperty.matchResult, 60, "Ergebnis");
@@ -69,6 +71,7 @@ public class MatchesPanel extends BasePanel implements UpdatePanelEventHandler {
 		final ArrayList<ColumnConfig<IMatch, ?>> columns = new ArrayList<ColumnConfig<IMatch, ?>>();
 		columns.add(ccNumber);
 		columns.add(ccMatchDate);
+		columns.add(ccMatchType);
 		columns.add(ccTeam1);
 		columns.add(ccTeam2);
 		columns.add(ccMatchResult);

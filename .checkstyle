@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <fileset-config file-format-version="1.2.0" simple-config="true" sync-formatter="false">
-  <local-check-config name="Kicker Checks" location="C:\Users\Basti\workspace\Kicker Application\resources\checkstyle.xml" type="external" description="Checkstyle configuration that checks the Kicker Application coding style.">
+  <local-check-config name="Kicker League Checks" location="resources/checkstyle.xml" type="project" description="Checkstyle configuration that checks the kicker league coding conventions.">
     <additional-data name="protect-config-file" value="false"/>
   </local-check-config>
-  <fileset name="all" enabled="true" check-config-name="Kicker Checks" local="true">
+  <fileset name="all" enabled="true" check-config-name="Kicker League Checks" local="true">
     <file-match-pattern match-pattern="." include-pattern="true"/>
   </fileset>
 </fileset-config>

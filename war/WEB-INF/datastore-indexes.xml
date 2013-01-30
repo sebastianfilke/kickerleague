@@ -3,45 +3,46 @@
 
 	<datastore-index kind="Match" ancestor="false">
 		<property name="matchNumer" direction="desc" />
-		<property name="matchDate" direction="asc" />
-		<property name="matchType" direction="asc" />
-		<property name="team1" direction="asc" />
-		<property name="team2" direction="asc" />
-		<property name="setsTeam1" direction="asc" />
-		<property name="setsTeam2" direction="asc" />
+		<property name="matchDate" />
+		<property name="matchType" />
+		<property name="team1" />
+		<property name="team2" />
+		<property name="setsTeam1" />
+		<property name="setsTeam2" />
 	</datastore-index>
 
 	<datastore-index kind="Player" ancestor="false">
-		<property name="lastName" direction="asc" />
-		<property name="firstName" direction="asc" />
-		<property name="nickName" direction="asc" />
-		<property name="eMail" direction="asc" />
-		<property name="lastMatchDate" direction="asc" />
-		<property name="teams" direction="asc" />
-		<property name="singleWins" direction="asc" />
-		<property name="singleLosses" direction="asc" />
-		<property name="singleShotGoals" direction="asc" />
-		<property name="singleGetGoals" direction="asc" />
-		<property name="doubleWins" direction="asc" />
-		<property name="doubleLosses" direction="asc" />
-		<property name="doubleShotGoals" direction="asc" />
-		<property name="doubleGetGoals" direction="asc" />
-		<property name="prevTablePlace" direction="asc" />
-		<property name="curTablePlace" direction="asc" />
+		<property name="lastName" />
+		<property name="firstName" />
+		<property name="nickName" />
+		<property name="eMail" />
+		<property name="lastMatchDate" />
+		<property name="teams" />
+		<property name="singleWins" />
+		<property name="singleLosses" />
+		<property name="singleShotGoals" />
+		<property name="singleGetGoals" />
+		<property name="doubleWins" />
+		<property name="doubleLosses" />
+		<property name="doubleShotGoals" />
+		<property name="doubleGetGoals" />
+		<property name="prevTablePlace" />
+		<property name="curTablePlace" />
 		<property name="points" direction="desc" />
-		<property name="tendency" direction="asc" />
+		<property name="tendency" />
 	</datastore-index>
 
 	<datastore-index kind="Team" ancestor="false">
-		<property name="players" direction="asc" />
-		<property name="wins" direction="asc" />
-		<property name="losses" direction="asc" />
-		<property name="shotGoals" direction="asc" />
-		<property name="getGoals" direction="asc" />
-		<property name="prevTablePlace" direction="asc" />
-		<property name="curTablePlace" direction="asc" />
+		<property name="lastMatchDate" />
+		<property name="players" />
+		<property name="wins" />
+		<property name="losses" />
+		<property name="shotGoals" />
+		<property name="getGoals" />
+		<property name="prevTablePlace" />
+		<property name="curTablePlace" />
 		<property name="points" direction="desc" />
-		<property name="tendency" direction="asc" />
+		<property name="tendency" />
 	</datastore-index>
 
 </datastore-indexes>

@@ -3,6 +3,7 @@ package de.kickerapp.shared.dto;
 import java.util.Date;
 
 import de.kickerapp.shared.common.IBase;
+import de.kickerapp.shared.common.MatchType;
 
 /**
  * @author Basti
@@ -16,6 +17,10 @@ public interface IMatch extends IBase {
 	public void setMatchDate(Date matchDate);
 
 	public Date getMatchDate();
+
+	public MatchType getMatchType();
+
+	public void setMatchType(MatchType matchType);
 
 	public void setTeam1(TeamDto team1);
 

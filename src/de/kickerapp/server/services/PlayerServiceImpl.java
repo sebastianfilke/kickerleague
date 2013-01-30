@@ -34,7 +34,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 		newPlayer.setNickName(player.getNickName());
 		newPlayer.setEMail(player.getEMail());
 
-		newPlayer = PMFactory.insertObject(newPlayer);
+		newPlayer = PMFactory.persistObject(newPlayer);
 		player.setId(newPlayer.getKey().getId());
 
 		return player;

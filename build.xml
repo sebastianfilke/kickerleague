@@ -22,6 +22,7 @@
 		<delete dir="${war.symboltracer.dir}" failonerror="true" />
 		<delete dir="${webinf.generated.dir}" failonerror="true" />
 		<delete dir="${webinf.deploy.dir}" failonerror="true" />
+		<eclipse.refreshLocal resource="Kicker Application" depth="infinite" />
 		<echo message="Alle Dateien wurden erfolgreich gelöscht" />
 	</target>
 

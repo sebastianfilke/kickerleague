@@ -41,7 +41,8 @@ body {
 	clear: none;
 }
 
-.headerLabel {
+#headerBackground {
+	border: 0 none;
 	background: linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
 		linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
 		linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px,
@@ -51,7 +52,12 @@ body {
 		transparent 75%, #242424 75%, #242424);
 	background-color: #131313;
 	background-size: 20px 20px;
-	font: 30px ChunkFiveRegular;
-	padding: 15px 0 15px 15px;
-	color: #ddd;
+}
+
+#headerTitle {
+	position: absolute;
+	font: 40px ChunkFiveRegular;
+	padding: 20px 0 20px 15px;
+	text-shadow: 0 -1px 1px #666, 0 1px 1px #fff;
+	color: #fff;
 }

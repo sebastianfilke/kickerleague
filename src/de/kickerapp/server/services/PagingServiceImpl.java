@@ -33,10 +33,15 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 	private ArrayList<PlayerDto> createFilteredResult(String query, ArrayList<PlayerDto> result) {
 		final ArrayList<PlayerDto> filteredResult = new ArrayList<PlayerDto>();
 
+		final String[] queries = query.split(" ");
 		for (PlayerDto player : result) {
-			if (player.getLastName().toLowerCase().contains(query.toLowerCase()) || player.getFirstName().toLowerCase().contains(query.toLowerCase())
-					|| player.getNickName().toLowerCase().contains(query.toLowerCase())) {
-				filteredResult.add(player);
+			for (String curQuery : queries) {
+				if (player.getLastName().toLowerCase().contains(curQuery.toLowerCase()) || player.getFirstName().toLowerCase().contains(curQuery.toLowerCase())
+						|| player.getNickName().toLowerCase().contains(curQuery.toLowerCase())) {
+					if (!filteredResult.contains(player)) {
+						filteredResult.add(player);
+					}
+				}
 			}
 		}
 		return filteredResult;

@@ -60,10 +60,18 @@ public class MatchDto extends BaseData implements IMatch {
 		return matchDate;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public MatchType getMatchType() {
 		return matchType;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void setMatchType(MatchType matchType) {
 		this.matchType = matchType;
 	}

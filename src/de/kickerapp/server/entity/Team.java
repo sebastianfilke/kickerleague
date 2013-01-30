@@ -1,6 +1,7 @@
 package de.kickerapp.server.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +25,9 @@ public class Team extends BaseEntity {
 	/** Die Spieler des Teams. */
 	@Persistent
 	private Set<Long> players;
+	/** Das Datum des letzten Spiels des Teams. */
+	@Persistent
+	private Date lastMatchDate;
 	/** Die Statistik des Teams. */
 	@Embedded
 	@Persistent(defaultFetchGroup = "true")
@@ -38,12 +42,37 @@ public class Team extends BaseEntity {
 		teamStats = new TeamStats();
 	}
 
+	public Team(Player player1, Player player2) {
+		this();
+		players.add(player1.getKey().getId());
+		players.add(player2.getKey().getId());
+	}
+
 	public Set<Long> getPlayers() {
 		return players;
 	}
 
 	public void setPlayers(Set<Long> players) {
 		this.players = players;
+	}
+
+	/**
+	 * Setzt das Datum des letzten Spiels des Spielers.
+	 * 
+	 * @param lastMatchDate Das Datum des letzten Spiels des Spielers als
+	 *            {@link Date}.
+	 */
+	public void setLastMatchDate(Date lastMatchDate) {
+		this.lastMatchDate = lastMatchDate;
+	}
+
+	/**
+	 * Liefert das Datum des letzten Spiels des Spielers.
+	 * 
+	 * @return Das Datum des letzten Spiels des Spielers als {@link Date}.
+	 */
+	public Date getLastMatchDate() {
+		return lastMatchDate;
 	}
 
 	public TeamStats getTeamStats() {

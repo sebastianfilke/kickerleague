@@ -32,17 +32,27 @@ public final class PMFactory {
 		return INSTANCE;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static <T extends Serializable> T getObjectById(Class<T> clazz, Long id) {
+		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
+
+		T object = (T) pm.getObjectById(clazz, id);
+		object = pm.detachCopy(object);
+
+		return object;
+	}
+
 	/**
 	 * @param object
 	 * @return
 	 */
-	public static <T extends Serializable> T insertObject(T object) {
+	public static <T extends Serializable> T persistObject(T object) {
 		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
 		final Transaction txn = pm.currentTransaction();
 		try {
 			txn.begin();
 			object = pm.makePersistent(object);
-			pm.detachCopy(object);
+			object = pm.detachCopy(object);
 			txn.commit();
 		} finally {
 			if (txn.isActive()) {

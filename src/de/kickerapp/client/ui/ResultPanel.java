@@ -49,7 +49,6 @@ import de.kickerapp.client.event.UpdatePanelEvent;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.resources.KickerTemplates;
-import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
 import de.kickerapp.shared.common.MatchType;
@@ -428,7 +427,6 @@ public class ResultPanel extends BasePanel {
 		final PagingLoader<PagingLoadConfig, PagingLoadResult<PlayerDto>> loader = new PagingLoader<PagingLoadConfig, PagingLoadResult<PlayerDto>>(proxy);
 		loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig, PlayerDto, PagingLoadResult<PlayerDto>>(store));
 
-		cbPlayer.setHideTrigger(true);
 		cbPlayer.setLoader(loader);
 		cbPlayer.setPageSize(5);
 		cbPlayer.setMinChars(2);
@@ -462,35 +460,27 @@ public class ResultPanel extends BasePanel {
 	}
 
 	private void createMatch() {
-		final MatchDto newMatch = makeMatch();
-
 		mask("Spiel wird eingetragen...");
-		CursorDefs.showWaitCursor();
 		bReport.setEnabled(false);
 
-		final Radio radio = (Radio) tgPlayType.getValue();
-		if (radio.getId().equals(MatchType.Single.getMatchType())) {
-			KickerServices.MATCH_SERVICE.createSingleMatch(newMatch, new AsyncCallback<MatchDto>() {
-				@Override
-				public void onSuccess(MatchDto result) {
-					Info.display("Erfolgreich", "Spiel wurde erfolgreich eingetragen");
-					clearInput();
-					bReport.setEnabled(true);
-					CursorDefs.showDefaultCursor();
-					AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL_PANEL));
-					unmask();
-				}
+		final MatchDto newMatch = makeMatch();
 
-				@Override
-				public void onFailure(Throwable caught) {
-					bReport.setEnabled(true);
-					CursorDefs.showDefaultCursor();
-					unmask();
-				}
-			});
-		} else {
+		KickerServices.MATCH_SERVICE.createSingleMatch(newMatch, new AsyncCallback<MatchDto>() {
+			@Override
+			public void onSuccess(MatchDto result) {
+				Info.display("Erfolgreich", "Spiel wurde erfolgreich eingetragen");
+				clearInput();
+				bReport.setEnabled(true);
+				AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL_PANEL));
+				unmask();
+			}
 
-		}
+			@Override
+			public void onFailure(Throwable caught) {
+				bReport.setEnabled(true);
+				unmask();
+			}
+		});
 	}
 
 	private void clearInput() {
