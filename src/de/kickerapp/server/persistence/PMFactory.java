@@ -1,10 +1,12 @@
 package de.kickerapp.server.persistence;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Query;
 import javax.jdo.Transaction;
 
 /**
@@ -61,6 +63,19 @@ public final class PMFactory {
 			pm.close();
 		}
 		return object;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Serializable> int getNextId(Class<T> clazz) {
+		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
+
+		final Query query = pm.newQuery(clazz);
+		final List<T> dbObject = (List<T>) query.execute();
+
+		int id = dbObject.size();
+		id++;
+
+		return id;
 	}
 
 }

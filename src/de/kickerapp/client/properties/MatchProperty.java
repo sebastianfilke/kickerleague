@@ -129,19 +129,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		public String getValue(IMatch object) {
 			final StringBuilder builder = new StringBuilder();
 
-			int setWinsTeam1 = 0;
-			for (Integer set : object.getSets().getSetsTeam1()) {
-				if (set == 6) {
-					setWinsTeam1++;
-				}
-			}
-
-			int size = 0;
-			if (setWinsTeam1 == 2 || setWinsTeam1 == 0) {
-				size = 2;
-			} else {
-				size = 3;
-			}
+			final int size = object.getSets().getSetsTeam1().size();
 			for (int i = 0; i < size; i++) {
 				final Integer setTeam1 = object.getSets().getSetsTeam1().get(i);
 				final Integer setTeam2 = object.getSets().getSetsTeam2().get(i);

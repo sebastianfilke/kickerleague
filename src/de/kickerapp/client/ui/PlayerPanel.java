@@ -11,9 +11,10 @@ import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.info.Info;
 
+import de.kickerapp.client.event.AppEventBus;
+import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.services.KickerServices;
-import de.kickerapp.client.ui.util.CursorDefs;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppTextField;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -125,7 +126,6 @@ public class PlayerPanel extends BasePanel {
 
 	private void createNewPlayer() {
 		mask("Spieler wird eingetragen...");
-		CursorDefs.showWaitCursor();
 		btnReport.setEnabled(false);
 
 		final PlayerDto newPlayer = createPlayer();
@@ -135,15 +135,18 @@ public class PlayerPanel extends BasePanel {
 			public void onSuccess(PlayerDto result) {
 				Info.display("Hinweis", "Neuer Spieler wurde erfolgreich erstellt");
 				clearInput();
+
+				final ShowDataEvent showDataEvent = new ShowDataEvent(ShowDataEvent.TABLE_PANEL);
+				showDataEvent.setActiveWidget(0);
+				AppEventBus.fireEvent(showDataEvent);
+
 				btnReport.setEnabled(true);
-				CursorDefs.showDefaultCursor();
 				unmask();
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				btnReport.setEnabled(true);
-				CursorDefs.showDefaultCursor();
 				unmask();
 				AppExceptionHandler.handleException(caught);
 			}

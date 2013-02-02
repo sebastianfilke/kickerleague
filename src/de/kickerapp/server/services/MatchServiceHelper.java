@@ -16,7 +16,7 @@ public class MatchServiceHelper {
 
 		final Query query = pm.newQuery(Match.class);
 		final List<Match> dbMatches = (List<Match>) query.execute();
-		
+
 		return dbMatches.size();
 	}
 

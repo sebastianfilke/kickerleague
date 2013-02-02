@@ -4,12 +4,16 @@ import com.sencha.gxt.widget.core.client.Portlet;
 import com.sencha.gxt.widget.core.client.button.ToolButton;
 import com.sencha.gxt.widget.core.client.container.PortalLayoutContainer;
 
+import de.kickerapp.client.event.AppEventBus;
+import de.kickerapp.client.event.UpdatePanelEvent;
+import de.kickerapp.client.event.UpdatePanelEventHandler;
+
 /**
  * Basis-Controller zur Darstellung und Verarbeitung der Panels.
  * 
  * @author Sebastian Filke
  */
-public class PortalPanel extends BasePanel {
+public class PortalPanel extends BasePanel implements UpdatePanelEventHandler {
 
 	/** Das Portal für die Spielergebnisse. */
 	private Portlet portletResult;
@@ -28,6 +32,7 @@ public class PortalPanel extends BasePanel {
 	public PortalPanel() {
 		super();
 		initLayout();
+		initHandlers();
 	}
 
 	/**
@@ -57,10 +62,20 @@ public class PortalPanel extends BasePanel {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initHandlers() {
+		super.initHandlers();
+
+		AppEventBus.addHandler(UpdatePanelEvent.TYPE, this);
+	}
+
+	/**
 	 * @return
 	 */
 	private PortalLayoutContainer createPortalLayoutContainer() {
-		final PortalLayoutContainer plcMain = new PortalLayoutContainer(3);
+		final PortalLayoutContainer plcMain = new PortalLayoutContainer(2);
 		plcMain.setColumnWidth(0, .40);
 		plcMain.setColumnWidth(1, .60);
 
@@ -69,7 +84,7 @@ public class PortalPanel extends BasePanel {
 
 	private Portlet createPortletResult() {
 		final Portlet portletResult = new Portlet();
-		portletResult.setHeadingHtml("<span style='font-size:14px;'>Ergebnis eintragen</i>");
+		portletResult.setHeadingHtml("<span id='portletHeading'>Ergebnis eintragen</i>");
 		portletResult.getHeader().addTool(new ToolButton(ToolButton.CLOSE));
 		portletResult.getHeader().addTool(new ToolButton(ToolButton.COLLAPSE));
 		portletResult.getHeader().addTool(new ToolButton(ToolButton.DOUBLEDOWN));
@@ -94,48 +109,53 @@ public class PortalPanel extends BasePanel {
 		portletResult.getHeader().addTool(new ToolButton(ToolButton.SEARCH));
 		portletResult.getHeader().addTool(new ToolButton(ToolButton.UNPIN));
 		portletResult.getHeader().addTool(new ToolButton(ToolButton.UP));
-		portletResult.setCollapsible(true);
+		portletResult.setId("portletBackground");
 		portletResult.setPixelSize(350, 440);
+		portletResult.setCollapsible(true);
 
 		return portletResult;
 	}
 
 	private Portlet createPortletMatches() {
 		final Portlet portletMatches = new Portlet();
-		portletMatches.setHeadingHtml("<span style='font-size:14px;'>Zuletzt Gespielt</i>");
+		portletMatches.setHeadingHtml("<span id='portletHeading'>Zuletzt Gespielt</i>");
 		portletMatches.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
+		portletMatches.setId("portletBackground");
+		portletMatches.setPixelSize(400, 350);
 		portletMatches.setCollapsible(true);
-		portletMatches.setPixelSize(400, 250);
 
 		return portletMatches;
 	}
 
 	private Portlet createPortletTable() {
 		final Portlet portletTable = new Portlet();
-		portletTable.setHeadingHtml("<span style='font-size:14px;'>Aktuelle Tabelle</i>");
+		portletTable.setHeadingHtml("<span id='portletHeading'>Aktuelle Spielertabelle</i>");
 		portletTable.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
+		portletTable.setId("portletBackground");
+		portletTable.setPixelSize(400, 350);
 		portletTable.setCollapsible(true);
-		portletTable.setPixelSize(400, 465);
 
 		return portletTable;
 	}
 
 	private Portlet createPortletTimer() {
 		final Portlet portletTimer = new Portlet();
-		portletTimer.setHeadingHtml("<span style='font-size:14px;'>Stoppuhr</i>");
+		portletTimer.setHeadingHtml("<span id='portletHeading'>Stoppuhr</i>");
 		portletTimer.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
-		portletTimer.setCollapsible(true);
+		portletTimer.setId("portletBackground");
 		portletTimer.setPixelSize(300, 150);
+		portletTimer.setCollapsible(true);
 
 		return portletTimer;
 	}
 
 	private Portlet createPortletPlayer() {
 		final Portlet portletPlayer = new Portlet();
-		portletPlayer.setHeadingHtml("<span style='font-size:14px;'>Spieler</i>");
+		portletPlayer.setHeadingHtml("<span id='portletHeading'>Spieler</i>");
 		portletPlayer.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
-		portletPlayer.setCollapsible(true);
+		portletPlayer.setId("portletBackground");
 		portletPlayer.setPixelSize(300, 245);
+		portletPlayer.setCollapsible(true);
 
 		return portletPlayer;
 	}
@@ -158,6 +178,15 @@ public class PortalPanel extends BasePanel {
 
 	public Portlet getPortletPlayer() {
 		return portletPlayer;
+	}
+
+	@Override
+	public void updatePanel(UpdatePanelEvent event) {
+		if (event.getActiveWidget() == 0) {
+			portletTable.setHeadingHtml("<span id='portletHeading'>Aktuelle Spielertabelle</i>");
+		} else {
+			portletTable.setHeadingHtml("<span id='portletHeading'>Aktuelle Teamtabelle</i>");
+		}
 	}
 
 }

@@ -71,6 +71,7 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 		final ArrayList<PlayerDto> players = new ArrayList<PlayerDto>();
 
 		final Query query = pm.newQuery(Player.class);
+		query.setOrdering("lastName asc");
 
 		final List<Player> dbPlayers = (List<Player>) query.execute();
 		for (Player dbPlayer : dbPlayers) {

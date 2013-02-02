@@ -45,7 +45,7 @@ import com.sencha.gxt.widget.core.client.form.Radio;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 import de.kickerapp.client.event.AppEventBus;
-import de.kickerapp.client.event.UpdatePanelEvent;
+import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.resources.KickerTemplates;
@@ -471,7 +471,15 @@ public class ResultPanel extends BasePanel {
 				Info.display("Erfolgreich", "Spiel wurde erfolgreich eingetragen");
 				clearInput();
 				bReport.setEnabled(true);
-				AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL_PANEL));
+
+				int activeWidget = 0;
+				if (result.getMatchType() == MatchType.Double) {
+					activeWidget = 1;
+				}
+				final ShowDataEvent showDataEvent = new ShowDataEvent(ShowDataEvent.TABLE_PANEL);
+				showDataEvent.setActiveWidget(activeWidget);
+				AppEventBus.fireEvent(showDataEvent);
+
 				unmask();
 			}
 

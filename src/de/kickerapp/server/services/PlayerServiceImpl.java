@@ -6,6 +6,8 @@ import java.util.List;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.PlayerService;
@@ -29,13 +31,16 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	@Override
 	public PlayerDto createPlayer(PlayerDto player) throws IllegalArgumentException {
 		Player newPlayer = new Player();
+		final int playerId = PMFactory.getNextId(Player.class);
+		final Key playerKey = KeyFactory.createKey(Player.class.getSimpleName(), playerId);
+		newPlayer.setKey(playerKey);
+
 		newPlayer.setLastName(player.getLastName());
 		newPlayer.setFirstName(player.getFirstName());
 		newPlayer.setNickName(player.getNickName());
 		newPlayer.setEMail(player.getEMail());
 
 		newPlayer = PMFactory.persistObject(newPlayer);
-		player.setId(newPlayer.getKey().getId());
 
 		return player;
 	}

@@ -42,20 +42,31 @@ public class PlayerDto extends BaseData implements IPlayer {
 
 	private String doubleGoals;
 
-	private Tendency tendency;
+	private Integer prevTablePlace;
+
+	private Integer curTablePlace;
 
 	private Integer points;
+
+	private Tendency tendency;
 
 	/**
 	 * Erzeugt einen neuen Spieler ohne Angaben.
 	 */
 	public PlayerDto() {
 		super();
+
 		lastName = "";
 		firstName = "";
 		nickName = "";
 		eMail = "";
 		lastMatchDate = null;
+		singleMatches = 0;
+		singleWins = 0;
+		singleLosses = 0;
+		singleGoals = "";
+		singleGoalDifference = "";
+		curTablePlace = 0;
 	}
 
 	/**
@@ -283,16 +294,32 @@ public class PlayerDto extends BaseData implements IPlayer {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Tendency getTendency() {
-		return tendency;
+	public Integer getPrevTablePlace() {
+		return prevTablePlace;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setTendency(Tendency tendency) {
-		this.tendency = tendency;
+	public void setPrevTablePlace(Integer prevTablePlace) {
+		this.prevTablePlace = prevTablePlace;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Integer getCurTablePlace() {
+		return curTablePlace;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setCurTablePlace(Integer curTablePlace) {
+		this.curTablePlace = curTablePlace;
 	}
 
 	/**
@@ -309,6 +336,22 @@ public class PlayerDto extends BaseData implements IPlayer {
 	@Override
 	public void setPoints(Integer points) {
 		this.points = points;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Tendency getTendency() {
+		return tendency;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setTendency(Tendency tendency) {
+		this.tendency = tendency;
 	}
 
 }

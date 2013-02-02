@@ -1,11 +1,16 @@
 package de.kickerapp.client.ui;
 
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.MarginData;
 
+import de.kickerapp.client.event.AppEventBus;
+import de.kickerapp.client.event.ShowDataEvent;
+import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.ui.resources.KickerMessages;
 import de.kickerapp.client.widgets.AppContentPanel;
 
@@ -37,10 +42,8 @@ public class MainPanel extends BasePanel {
 		setHeaderVisible(false);
 		setBodyBorder(false);
 
-		final AppContentPanel cpWest = new AppContentPanel();
-
-		final BorderLayoutContainer con = new BorderLayoutContainer();
-		con.setBorders(false);
+		final BorderLayoutContainer blcMain = new BorderLayoutContainer();
+		blcMain.setBorders(false);
 
 		final PortalPanel plCenter = new PortalPanel();
 		initPanels(plCenter);
@@ -54,23 +57,29 @@ public class MainPanel extends BasePanel {
 		westData.setMargins(new Margins(5));
 
 		final MarginData centerData = new MarginData();
-		centerData.setMargins(new Margins(5, 5, 5, 0));
+		centerData.setMargins(new Margins(5, 5, 6, 0));
 
 		final BorderLayoutData southData = new BorderLayoutData(45);
 
-		con.setNorthWidget(createHeader(), northData);
-		con.setWestWidget(cpWest, westData);
-		con.setCenterWidget(plCenter, centerData);
-		con.setSouthWidget(createFooter(), southData);
+		blcMain.setNorthWidget(createHeader(), northData);
+		blcMain.setWestWidget(new AppContentPanel(), westData);
+		blcMain.setCenterWidget(plCenter, centerData);
+		blcMain.setSouthWidget(createFooter(), southData);
 
-		add(con);
+		AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.ALL_PANEL));
+
+		add(blcMain);
 	}
 
 	private HtmlLayoutContainer createHeader() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append("<span id='headerTitle'>" + KickerMessages.MAIN_PANEL.mainPanelTitle() + "</span>");
+		final SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
-		final HtmlLayoutContainer htmlLcHeader = new HtmlLayoutContainer(sb.toString());
+		sb.appendHtmlConstant("<span id='headerIcon'>");
+		sb.append(AbstractImagePrototype.create(KickerIcons.ICON.socerBall()).getSafeHtml());
+		sb.appendHtmlConstant("</span>");
+		sb.appendHtmlConstant("<span id='headerTitle'>" + KickerMessages.MAIN_PANEL.mainPanelTitle() + "</span>");
+
+		final HtmlLayoutContainer htmlLcHeader = new HtmlLayoutContainer(sb.toSafeHtml());
 		htmlLcHeader.setId("headerBackground");
 		htmlLcHeader.setStateful(false);
 
@@ -82,7 +91,7 @@ public class MainPanel extends BasePanel {
 		sb.append("<span id='headerTitle'></span>");
 
 		final HtmlLayoutContainer htmlLcFooter = new HtmlLayoutContainer(sb.toString());
-		htmlLcFooter.setId("headerBackground");
+		htmlLcFooter.setId("footerBackground");
 		htmlLcFooter.setStateful(false);
 
 		return htmlLcFooter;

@@ -8,12 +8,12 @@ import com.google.gwt.event.shared.EventHandler;
  * 
  * @author Sebastian Filke
  */
-public interface UpdatePanelEventHandler extends EventHandler {
+public interface ShowDataEventHandler extends EventHandler {
 
 	/**
 	 * Methode zur Verarbeitung von Ereignissen zum Sprachwechsel der
 	 * Applikation.
 	 */
-	public void updatePanel();
+	public void showData(ShowDataEvent event);
 
 }

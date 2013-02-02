@@ -11,21 +11,30 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>pagingServlet</servlet-name>
-		<servlet-class>de.kickerapp.server.services.PagingServiceImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>pagingServlet</servlet-name>
-		<url-pattern>/kicker_application/pagingService</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
 		<servlet-name>playerServlet</servlet-name>
 		<servlet-class>de.kickerapp.server.services.PlayerServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>playerServlet</servlet-name>
 		<url-pattern>/kicker_application/playerService</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>teamServlet</servlet-name>
+		<servlet-class>de.kickerapp.server.services.TeamServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>teamServlet</servlet-name>
+		<url-pattern>/kicker_application/teamService</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>pagingServlet</servlet-name>
+		<servlet-class>de.kickerapp.server.services.PagingServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>pagingServlet</servlet-name>
+		<url-pattern>/kicker_application/pagingService</url-pattern>
 	</servlet-mapping>
 
 	<!-- Default page to serve -->

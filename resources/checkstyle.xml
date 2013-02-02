@@ -5,9 +5,9 @@
     This configuration file was written by the eclipse-cs plugin configuration editor
 -->
 <!--
-    Checkstyle-Configuration: Kicker Application
+    Checkstyle-Configuration: Kicker League Checks
     Description: 
-Codestylecheck für die Kicker Application.
+Checkstyle configuration that checks the kicker league coding conventions.
 -->
 <module name="Checker">
   <property name="severity" value="warning"/>
@@ -30,5 +30,7 @@ Codestylecheck für die Kicker Application.
     <module name="FinalClass"/>
     <module name="FinalLocalVariable"/>
   </module>
-  <module name="StrictDuplicateCode"/>
+  <module name="StrictDuplicateCode">
+    <property name="min" value="20"/>
+  </module>
 </module>

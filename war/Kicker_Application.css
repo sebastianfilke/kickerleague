@@ -1,6 +1,8 @@
 /* Allgemeine Einstellungen */
 body {
 	background-color: #ededed !important;
+	border: none;
+	margin: 0;
 }
 
 @font-face {
@@ -41,23 +43,32 @@ body {
 	clear: none;
 }
 
+#portletBackground {
+	box-shadow: 0 0 8px #ddd;
+}
+
+#portletHeading {
+	font: 14px ChunkFiveRegular;
+	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
+}
+
 #headerBackground {
-	border: 0 none;
-	background: linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
-		linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
-		linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px,
-		linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px,
-		linear-gradient(90deg, #1b1b1b 10px, transparent 10px),
-		linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%,
-		transparent 75%, #242424 75%, #242424);
-	background-color: #131313;
-	background-size: 20px 20px;
+	background: url("../images/backgroundHeader.png") repeat-x scroll;
+}
+
+#footerBackground {
+	background: url("../images/backgroundFooter.png") repeat-x scroll;
+}
+
+#headerIcon {
+	position: absolute;
+	padding: 8px 0px 8px 15px;
 }
 
 #headerTitle {
 	position: absolute;
 	font: 40px ChunkFiveRegular;
-	padding: 20px 0 20px 15px;
-	text-shadow: 0 -1px 1px #666, 0 1px 1px #fff;
-	color: #fff;
+	padding: 20px 0 20px 85px;
+	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
+	color: #3c3c3c;
 }

@@ -1,11 +1,12 @@
 package de.kickerapp.server.services;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
-import javax.jdo.Transaction;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -39,37 +40,25 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 */
 	@Override
 	public MatchDto createSingleMatch(MatchDto matchDto) throws IllegalArgumentException {
-		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
+		Match match = new Match();
 
-		final Transaction txn = pm.currentTransaction();
-		try {
-			txn.begin();
+		final int matchId = PMFactory.getNextId(Match.class);
+		final Key matchKey = KeyFactory.createKey(Match.class.getSimpleName(), matchId);
+		match.setKey(matchKey);
+		match.setMatchNumber(matchId);
+		match.setMatchDate(matchDto.getMatchDate());
 
-			Match match = new Match();
+		final MatchSets sets = new MatchSets(matchDto.getSets().getSetsTeam1(), matchDto.getSets().getSetsTeam2());
+		match.setMatchSets(sets);
 
-			int matchNumber = MatchServiceHelper.getMatchCount();
-			final Key matchKey = KeyFactory.createKey(Match.class.getSimpleName(), ++matchNumber);
-			match.setKey(matchKey);
-			match.setMatchNumber(matchNumber);
-			match.setMatchDate(matchDto.getMatchDate());
-
-			final MatchSets sets = new MatchSets(matchDto.getSets().getSetsTeam1(), matchDto.getSets().getSetsTeam2());
-			match.setMatchSets(sets);
-
-			if (matchDto.getMatchType() == MatchType.Single) {
-				createSingleMatch(matchDto, match);
-			} else {
-				createDoubleMatch(matchDto, pm, match);
-			}
-
-			match = PMFactory.persistObject(match);
-
-			txn.commit();
-		} finally {
-			if (txn.isActive()) {
-				txn.rollback();
-			}
+		if (matchDto.getMatchType() == MatchType.Single) {
+			createSingleMatch(matchDto, match);
+		} else {
+			createDoubleMatch(matchDto, match);
 		}
+
+		match = PMFactory.persistObject(match);
+
 		return matchDto;
 	}
 
@@ -91,20 +80,18 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		match.setTeam2(team2Player1.getKey().getId());
 	}
 
-	private void createDoubleMatch(MatchDto matchDto, final PersistenceManager pm, final Match match) {
+	private void createDoubleMatch(MatchDto matchDto, final Match match) {
 		match.setMatchType(MatchType.Double);
 
 		Player team1Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam1().getPlayer1().getId());
 		Player team1Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam1().getPlayer2().getId());
 
-		Team team1 = new Team(team1Player1, team1Player2);
-		team1 = PMFactory.persistObject(team1);
+		final Team team1 = getTeam(team1Player1, team1Player2);
 
 		Player team2Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam2().getPlayer1().getId());
 		Player team2Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam2().getPlayer2().getId());
 
-		Team team2 = new Team(team2Player1, team2Player2);
-		team2 = PMFactory.persistObject(team2);
+		final Team team2 = getTeam(team2Player1, team2Player2);
 
 		final boolean team1Winner = isTeam1Winner(matchDto);
 		if (team1Winner) {
@@ -126,6 +113,27 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		}
 		match.setTeam1(team1.getKey().getId());
 		match.setTeam2(team2.getKey().getId());
+	}
+
+	private Team getTeam(Player player1, Player player2) {
+		final Set<Long> existingTeam = new HashSet<Long>();
+		existingTeam.addAll(player1.getTeams());
+		existingTeam.retainAll(player2.getTeams());
+
+		Team team = null;
+		if (existingTeam.isEmpty()) {
+			team = new Team(player1, player2);
+			final int teamId = PMFactory.getNextId(Team.class);
+			final Key teamKey = KeyFactory.createKey(Team.class.getSimpleName(), teamId);
+			team.setKey(teamKey);
+			team = PMFactory.persistObject(team);
+
+			player1.getTeams().add(team.getKey().getId());
+			player2.getTeams().add(team.getKey().getId());
+		} else {
+			team = PMFactory.getObjectById(Team.class, (Long) existingTeam.toArray()[0]);
+		}
+		return team;
 	}
 
 	private boolean isTeam1Winner(MatchDto matchDto) {
@@ -251,6 +259,8 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		final ArrayList<MatchDto> matches = new ArrayList<MatchDto>();
 
 		final Query query = pm.newQuery(Match.class);
+		query.setOrdering("matchNumber desc");
+
 		final List<Match> dbMatches = (List<Match>) query.execute();
 		for (Match dbMatch : dbMatches) {
 			dbMatch = pm.detachCopy(dbMatch);

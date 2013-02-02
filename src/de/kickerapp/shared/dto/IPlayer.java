@@ -115,12 +115,19 @@ public interface IPlayer extends IBase {
 
 	public void setDoubleGoals(String doubleGoals);
 
-	public Tendency getTendency();
+	public Integer getPrevTablePlace();
 
-	public void setTendency(Tendency tendency);
+	public void setPrevTablePlace(Integer prevTablePlace);
+
+	public Integer getCurTablePlace();
+
+	public void setCurTablePlace(Integer curTablePlace);
 
 	public Integer getPoints();
 
 	public void setPoints(Integer points);
 
+	public Tendency getTendency();
+
+	public void setTendency(Tendency tendency);
 }
