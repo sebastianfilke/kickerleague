@@ -14,8 +14,6 @@ public class BaseData implements IBase {
 	private long id;
 	/** Der Anzeigetext für ein ausgewähltes Objekt. */
 	private String label;
-	/** Das Serviceobjekt für den Datenspeicher. */
-	private byte[] serviceObject;
 
 	/**
 	 * Erzeugt eine neue Basisklasse.
@@ -55,22 +53,6 @@ public class BaseData implements IBase {
 	@Override
 	public String getLabel() {
 		return label;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setServiceObject(byte[] serviceObject) {
-		this.serviceObject = serviceObject;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public byte[] getServiceObject() {
-		return serviceObject;
 	}
 
 }

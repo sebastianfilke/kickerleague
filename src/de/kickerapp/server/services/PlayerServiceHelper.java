@@ -1,44 +1,70 @@
 package de.kickerapp.server.services;
 
 import de.kickerapp.server.entity.Player;
-import de.kickerapp.server.entity.Player.PlayerStats;
+import de.kickerapp.server.entity.PlayerDoubleStats;
+import de.kickerapp.server.entity.PlayerSingleStats;
+import de.kickerapp.server.persistence.PMFactory;
+import de.kickerapp.shared.common.MatchType;
+import de.kickerapp.shared.dto.PlayerDoubleStatsDto;
 import de.kickerapp.shared.dto.PlayerDto;
+import de.kickerapp.shared.dto.PlayerSingleStatsDto;
 
 public class PlayerServiceHelper {
 
-	public static PlayerDto createPlayer(Player dbPlayer) {
+	public static PlayerDto createPlayer(Player dbPlayer, MatchType matchType) {
 		final PlayerDto playerDto = new PlayerDto(dbPlayer.getLastName(), dbPlayer.getFirstName());
 		playerDto.setId(dbPlayer.getKey().getId());
 		playerDto.setNickName(dbPlayer.getNickName());
 		playerDto.setEMail(dbPlayer.getEMail());
 		playerDto.setLastMatchDate(dbPlayer.getLastMatchDate());
 
-		final PlayerStats playerStats = dbPlayer.getPlayerStats();
+		switch (matchType) {
+		case Single:
+			setPlayerSingleStats(dbPlayer, playerDto);
+			break;
+		case Double:
+			setPlayerDoubleStats(dbPlayer, playerDto);
+			break;
+		default:
+			break;
+		}
+		return playerDto;
+	}
+
+	private static void setPlayerSingleStats(Player dbPlayer, final PlayerDto playerDto) {
+		final PlayerSingleStats playerSingleStats = PMFactory.getObjectById(PlayerSingleStats.class, dbPlayer.getPlayerSingleStats());
 
 		// Single Match
-		final int wins = playerStats.getSingleWins();
-		final int losses = playerStats.getSingleLosses();
+		final PlayerSingleStatsDto playerSingleStatsDto = new PlayerSingleStatsDto();
 
-		playerDto.setSingleMatches(wins + losses);
-		playerDto.setSingleWins(wins);
-		playerDto.setSingleLosses(losses);
-		playerDto.setSingleGoals(playerStats.getSingleShotGoals() + ":" + playerStats.getSingleGetGoals());
+		playerSingleStatsDto.setSingleWins(playerSingleStats.getWins());
+		playerSingleStatsDto.setSingleLosses(playerSingleStats.getLosses());
+		playerSingleStatsDto.setSingleShotGoals(playerSingleStats.getShotGoals());
+		playerSingleStatsDto.setSingleGetGoals(playerSingleStats.getGetGoals());
+		playerSingleStatsDto.setSinglePrevTablePlace(playerSingleStats.getPrevTablePlace());
+		playerSingleStatsDto.setSingleCurTablePlace(playerSingleStats.getCurTablePlace());
+		playerSingleStatsDto.setSinglePoints(playerSingleStats.getPoints());
+		playerSingleStatsDto.setSingleTendency(playerSingleStats.getTendency());
 
-		final int goalDifference = playerStats.getSingleShotGoals() - playerStats.getSingleGetGoals();
-		if (goalDifference >= 0) {
-			playerDto.setSingleGoalDifference("+" + Integer.toString(goalDifference));
-		} else {
-			playerDto.setSingleGoalDifference(Integer.toString(goalDifference));
-		}
+		playerDto.setPlayerSingleStats(playerSingleStatsDto);
+	}
+
+	private static void setPlayerDoubleStats(Player dbPlayer, PlayerDto playerDto) {
+		final PlayerDoubleStats playerDoubleStats = PMFactory.getObjectById(PlayerDoubleStats.class, dbPlayer.getPlayerDoubleStats());
 
 		// Double Match
-		playerDto.setDoubleWins(playerStats.getDoubleWins());
-		playerDto.setDoubleLosses(playerStats.getDoubleLosses());
-		playerDto.setDoubleGoals(playerStats.getDoubleShotGoals() + ":" + playerStats.getDoubleGetGoals());
-		playerDto.setPoints(playerStats.getPoints());
-		playerDto.setTendency(playerStats.getTendency());
+		final PlayerDoubleStatsDto playerDoubleStatsDto = new PlayerDoubleStatsDto();
 
-		return playerDto;
+		playerDoubleStatsDto.setDoubleWins(playerDoubleStats.getWins());
+		playerDoubleStatsDto.setDoubleLosses(playerDoubleStats.getLosses());
+		playerDoubleStatsDto.setDoubleShotGoals(playerDoubleStats.getShotGoals());
+		playerDoubleStatsDto.setDoubleGetGoals(playerDoubleStats.getGetGoals());
+		playerDoubleStatsDto.setDoublePrevTablePlace(playerDoubleStats.getPrevTablePlace());
+		playerDoubleStatsDto.setDoubleCurTablePlace(playerDoubleStats.getCurTablePlace());
+		playerDoubleStatsDto.setDoublePoints(playerDoubleStats.getPoints());
+		playerDoubleStatsDto.setDoubleTendency(playerDoubleStats.getTendency());
+
+		playerDto.setPlayerDoubleStats(playerDoubleStatsDto);
 	}
 
 }

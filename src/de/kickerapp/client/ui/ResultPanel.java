@@ -476,7 +476,7 @@ public class ResultPanel extends BasePanel {
 				if (result.getMatchType() == MatchType.Double) {
 					activeWidget = 1;
 				}
-				final ShowDataEvent showDataEvent = new ShowDataEvent(ShowDataEvent.TABLE_PANEL);
+				final ShowDataEvent showDataEvent = new ShowDataEvent(ShowDataEvent.ALL_PANEL);
 				showDataEvent.setActiveWidget(activeWidget);
 				AppEventBus.fireEvent(showDataEvent);
 

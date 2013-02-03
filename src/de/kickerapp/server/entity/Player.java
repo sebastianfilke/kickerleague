@@ -1,15 +1,11 @@
 package de.kickerapp.server.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.jdo.annotations.Embedded;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
-
-import de.kickerapp.shared.common.Tendency;
 
 /**
  * Datenklasse zum Halten der Informationen für einen Spieler.
@@ -37,21 +33,29 @@ public class Player extends BaseEntity {
 	/** Das Datum des letzten Spiels des Spielers. */
 	@Persistent
 	private Date lastMatchDate;
-	/** Die Teams zu denen der Spieler gehört. */
+	/** Die Einzelspiel-Statistik des Spielers. */
+	@Persistent
+	private Long playerSingleStats;
+	/** Die Teamspiel-Statistik des Spielers. */
+	@Persistent
+	private Long playerDoubleStats;
+	/** Die Liste der Teams zu denen der Spieler gehört. */
 	@Persistent
 	private Set<Long> teams;
-	/** Die Statistik des Spielers. */
-	@Embedded
-	@Persistent(defaultFetchGroup = "true")
-	private PlayerStats playerStats;
 
 	/**
 	 * Erzeugt einen neuen Spieler ohne Angaben und einer leeren Statistik.
 	 */
 	public Player() {
 		super();
+		lastName = "";
+		firstName = "";
+		nickName = "";
+		eMail = "";
+		lastMatchDate = null;
+		playerSingleStats = 0L;
+		playerDoubleStats = 0L;
 		teams = new HashSet<Long>();
-		playerStats = new PlayerStats();
 	}
 
 	/**
@@ -157,176 +161,28 @@ public class Player extends BaseEntity {
 		return lastMatchDate;
 	}
 
+	public Long getPlayerSingleStats() {
+		return playerSingleStats;
+	}
+
+	public void setPlayerSingleStats(Long playerSingleStats) {
+		this.playerSingleStats = playerSingleStats;
+	}
+
+	public Long getPlayerDoubleStats() {
+		return playerDoubleStats;
+	}
+
+	public void setPlayerDoubleStats(Long playerDoubleStats) {
+		this.playerDoubleStats = playerDoubleStats;
+	}
+
 	public Set<Long> getTeams() {
 		return teams;
 	}
 
 	public void setTeams(Set<Long> teams) {
 		this.teams = teams;
-	}
-
-	public PlayerStats getPlayerStats() {
-		return playerStats;
-	}
-
-	public void setPlayerStats(PlayerStats playerStats) {
-		this.playerStats = playerStats;
-	}
-
-	@PersistenceCapable
-	public static class PlayerStats implements Serializable {
-
-		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = 1947718587252967650L;
-
-		@Persistent
-		private Integer singleWins;
-
-		@Persistent
-		private Integer singleLosses;
-
-		@Persistent
-		private Integer singleShotGoals;
-
-		@Persistent
-		private Integer singleGetGoals;
-
-		@Persistent
-		private Integer doubleWins;
-
-		@Persistent
-		private Integer doubleLosses;
-
-		@Persistent
-		private Integer doubleShotGoals;
-
-		@Persistent
-		private Integer doubleGetGoals;
-
-		@Persistent
-		private Integer prevTablePlace;
-
-		@Persistent
-		private Integer curTablePlace;
-
-		@Persistent
-		private Integer points;
-
-		@Persistent
-		private Tendency tendency;
-
-		public PlayerStats() {
-			singleWins = 0;
-			singleLosses = 0;
-			singleShotGoals = 0;
-			singleGetGoals = 0;
-			doubleWins = 0;
-			doubleWins = 0;
-			doubleLosses = 0;
-			doubleShotGoals = 0;
-			doubleGetGoals = 0;
-			prevTablePlace = 0;
-			curTablePlace = 0;
-			points = 1000;
-			tendency = Tendency.Constant;
-		}
-
-		public Integer getSingleWins() {
-			return singleWins;
-		}
-
-		public void setSingleWins(Integer singleWins) {
-			this.singleWins = singleWins;
-		}
-
-		public Integer getSingleLosses() {
-			return singleLosses;
-		}
-
-		public void setSingleLosses(Integer singleLosses) {
-			this.singleLosses = singleLosses;
-		}
-
-		public Integer getSingleShotGoals() {
-			return singleShotGoals;
-		}
-
-		public void setSingleShotGoals(Integer singleShotGoals) {
-			this.singleShotGoals = singleShotGoals;
-		}
-
-		public Integer getSingleGetGoals() {
-			return singleGetGoals;
-		}
-
-		public void setSingleGetGoals(Integer singleGetGoals) {
-			this.singleGetGoals = singleGetGoals;
-		}
-
-		public Integer getDoubleWins() {
-			return doubleWins;
-		}
-
-		public void setDoubleWins(Integer doubleWins) {
-			this.doubleWins = doubleWins;
-		}
-
-		public Integer getDoubleLosses() {
-			return doubleLosses;
-		}
-
-		public void setDoubleLosses(Integer doubleLosses) {
-			this.doubleLosses = doubleLosses;
-		}
-
-		public Integer getDoubleShotGoals() {
-			return doubleShotGoals;
-		}
-
-		public void setDoubleShotGoals(Integer doubleShotGoals) {
-			this.doubleShotGoals = doubleShotGoals;
-		}
-
-		public Integer getDoubleGetGoals() {
-			return doubleGetGoals;
-		}
-
-		public void setDoubleGetGoals(Integer doubleGetGoals) {
-			this.doubleGetGoals = doubleGetGoals;
-		}
-
-		public Integer getPrevTablePlace() {
-			return prevTablePlace;
-		}
-
-		public void setPrevTablePlace(Integer prevTablePlace) {
-			this.prevTablePlace = prevTablePlace;
-		}
-
-		public Integer getCurTablePlace() {
-			return curTablePlace;
-		}
-
-		public void setCurTablePlace(Integer curTablePlace) {
-			this.curTablePlace = curTablePlace;
-		}
-
-		public Integer getPoints() {
-			return points;
-		}
-
-		public void setPoints(Integer points) {
-			this.points = points;
-		}
-
-		public Tendency getTendency() {
-			return tendency;
-		}
-
-		public void setTendency(Tendency tendency) {
-			this.tendency = tendency;
-		}
-		
 	}
 
 }

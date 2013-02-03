@@ -3,7 +3,6 @@ package de.kickerapp.shared.dto;
 import java.util.Date;
 
 import de.kickerapp.shared.common.IBase;
-import de.kickerapp.shared.common.Tendency;
 
 /**
  * Interface zum Datenklasse zum Halten der Informationen eines Spielers.
@@ -83,51 +82,24 @@ public interface IPlayer extends IBase {
 	 */
 	public Date getLastMatchDate();
 
-	public Integer getSingleMatches();
+	/**
+	 * {@inheritDoc}
+	 */
+	public PlayerSingleStatsDto getPlayerSingleStats();
 
-	public void setSingleMatches(Integer singleMatches);
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setPlayerSingleStats(PlayerSingleStatsDto playerSingleStats);
 
-	public Integer getSingleWins();
+	/**
+	 * {@inheritDoc}
+	 */
+	public PlayerDoubleStatsDto getPlayerDoubleStats();
 
-	public void setSingleWins(Integer singleWins);
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setPlayerDoubleStats(PlayerDoubleStatsDto playerDoubleStats);
 
-	public Integer getSingleLosses();
-
-	public void setSingleLosses(Integer singleLosses);
-
-	public String getSingleGoals();
-
-	public void setSingleGoals(String singleGetGoals);
-
-	public String getSingleGoalDifference();
-
-	public void setSingleGoalDifference(String singleGoalDifferenz);
-
-	public Integer getDoubleWins();
-
-	public void setDoubleWins(Integer doubleWins);
-
-	public Integer getDoubleLosses();
-
-	public void setDoubleLosses(Integer doubleLosses);
-
-	public String getDoubleGoals();
-
-	public void setDoubleGoals(String doubleGoals);
-
-	public Integer getPrevTablePlace();
-
-	public void setPrevTablePlace(Integer prevTablePlace);
-
-	public Integer getCurTablePlace();
-
-	public void setCurTablePlace(Integer curTablePlace);
-
-	public Integer getPoints();
-
-	public void setPoints(Integer points);
-
-	public Tendency getTendency();
-
-	public void setTendency(Tendency tendency);
 }

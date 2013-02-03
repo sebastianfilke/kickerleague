@@ -40,18 +40,4 @@ public interface IBase extends Serializable, IsSerializable {
 	 */
 	public String getLabel();
 
-	/**
-	 * Setzt das Serviceobjekt für den Datenspeicher.
-	 * 
-	 * @param serviceObject Das Serviceobjekt für den Datenspeicher.
-	 */
-	public void setServiceObject(byte[] serviceObject);
-
-	/**
-	 * Liefert das Serviceobjekt für den Datenspeicher.
-	 * 
-	 * @return Das Serviceobjekt für den Datenspeicher.
-	 */
-	public byte[] getServiceObject();
-
 }

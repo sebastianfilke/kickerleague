@@ -4,7 +4,9 @@ public enum MatchType {
 
 	Single("single"),
 
-	Double("double");
+	Double("double"),
+
+	None("none");
 
 	private String matchType;
 

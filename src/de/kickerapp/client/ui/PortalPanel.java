@@ -1,7 +1,6 @@
 package de.kickerapp.client.ui;
 
 import com.sencha.gxt.widget.core.client.Portlet;
-import com.sencha.gxt.widget.core.client.button.ToolButton;
 import com.sencha.gxt.widget.core.client.container.PortalLayoutContainer;
 
 import de.kickerapp.client.event.AppEventBus;
@@ -84,31 +83,41 @@ public class PortalPanel extends BasePanel implements UpdatePanelEventHandler {
 
 	private Portlet createPortletResult() {
 		final Portlet portletResult = new Portlet();
-		portletResult.setHeadingHtml("<span id='portletHeading'>Ergebnis eintragen</i>");
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.CLOSE));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.COLLAPSE));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.DOUBLEDOWN));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.DOUBLELEFT));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.DOUBLERIGHT));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.DOUBLEUP));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.DOWN));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.EXPAND));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.GEAR));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.LEFT));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.MAXIMIZE));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.MINIMIZE));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.MINUS));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.PIN));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.PLUS));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.PRINT));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.QUESTION));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.RESTORE));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.RIGHT));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.SAVE));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.SEARCH));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.UNPIN));
-		portletResult.getHeader().addTool(new ToolButton(ToolButton.UP));
+		portletResult.setHeadingHtml("<span id='portletHeading'>Ergebnis eintragen</span>");
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.CLOSE));
+		// portletResult.getHeader().addTool(new
+		// ToolButton(ToolButton.COLLAPSE));
+		// portletResult.getHeader().addTool(new
+		// ToolButton(ToolButton.DOUBLEDOWN));
+		// portletResult.getHeader().addTool(new
+		// ToolButton(ToolButton.DOUBLELEFT));
+		// portletResult.getHeader().addTool(new
+		// ToolButton(ToolButton.DOUBLERIGHT));
+		// portletResult.getHeader().addTool(new
+		// ToolButton(ToolButton.DOUBLEUP));
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.DOWN));
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.EXPAND));
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.GEAR));
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.LEFT));
+		// portletResult.getHeader().addTool(new
+		// ToolButton(ToolButton.MAXIMIZE));
+		// portletResult.getHeader().addTool(new
+		// ToolButton(ToolButton.MINIMIZE));
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.MINUS));
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.PIN));
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.PLUS));
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.PRINT));
+		// portletResult.getHeader().addTool(new
+		// ToolButton(ToolButton.QUESTION));
+		// portletResult.getHeader().addTool(new
+		// ToolButton(ToolButton.REFRESH));
+		// portletResult.getHeader().addTool(new
+		// ToolButton(ToolButton.RESTORE));
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.RIGHT));
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.SAVE));
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.SEARCH));
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.UNPIN));
+		// portletResult.getHeader().addTool(new ToolButton(ToolButton.UP));
 		portletResult.setId("portletBackground");
 		portletResult.setPixelSize(350, 440);
 		portletResult.setCollapsible(true);
@@ -118,8 +127,7 @@ public class PortalPanel extends BasePanel implements UpdatePanelEventHandler {
 
 	private Portlet createPortletMatches() {
 		final Portlet portletMatches = new Portlet();
-		portletMatches.setHeadingHtml("<span id='portletHeading'>Zuletzt Gespielt</i>");
-		portletMatches.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
+		portletMatches.setHeadingHtml("<span id='portletHeading'>Zuletzt Gespielt</span>");
 		portletMatches.setId("portletBackground");
 		portletMatches.setPixelSize(400, 350);
 		portletMatches.setCollapsible(true);
@@ -129,8 +137,7 @@ public class PortalPanel extends BasePanel implements UpdatePanelEventHandler {
 
 	private Portlet createPortletTable() {
 		final Portlet portletTable = new Portlet();
-		portletTable.setHeadingHtml("<span id='portletHeading'>Aktuelle Spielertabelle</i>");
-		portletTable.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
+		portletTable.setHeadingHtml("<span id='portletHeading'>Aktuelle Spielertabelle (Einzelansicht)</span>");
 		portletTable.setId("portletBackground");
 		portletTable.setPixelSize(400, 350);
 		portletTable.setCollapsible(true);
@@ -140,8 +147,7 @@ public class PortalPanel extends BasePanel implements UpdatePanelEventHandler {
 
 	private Portlet createPortletTimer() {
 		final Portlet portletTimer = new Portlet();
-		portletTimer.setHeadingHtml("<span id='portletHeading'>Stoppuhr</i>");
-		portletTimer.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
+		portletTimer.setHeadingHtml("<span id='portletHeading'>Stoppuhr</span>");
 		portletTimer.setId("portletBackground");
 		portletTimer.setPixelSize(300, 150);
 		portletTimer.setCollapsible(true);
@@ -151,8 +157,7 @@ public class PortalPanel extends BasePanel implements UpdatePanelEventHandler {
 
 	private Portlet createPortletPlayer() {
 		final Portlet portletPlayer = new Portlet();
-		portletPlayer.setHeadingHtml("<span id='portletHeading'>Spieler</i>");
-		portletPlayer.getHeader().addTool(new ToolButton(ToolButton.REFRESH));
+		portletPlayer.setHeadingHtml("<span id='portletHeading'>Spieler</span>");
 		portletPlayer.setId("portletBackground");
 		portletPlayer.setPixelSize(300, 245);
 		portletPlayer.setCollapsible(true);
@@ -183,9 +188,11 @@ public class PortalPanel extends BasePanel implements UpdatePanelEventHandler {
 	@Override
 	public void updatePanel(UpdatePanelEvent event) {
 		if (event.getActiveWidget() == 0) {
-			portletTable.setHeadingHtml("<span id='portletHeading'>Aktuelle Spielertabelle</i>");
+			portletTable.setHeadingHtml("<span id='portletHeading'>Aktuelle Spielertabelle (Einzelansicht)</span>");
+		} else if (event.getActiveWidget() == 1) {
+			portletTable.setHeadingHtml("<span id='portletHeading'>Aktuelle Spielertabelle (Teamansicht)</span>");
 		} else {
-			portletTable.setHeadingHtml("<span id='portletHeading'>Aktuelle Teamtabelle</i>");
+			portletTable.setHeadingHtml("<span id='portletHeading'>Aktuelle Teamtabelle</span>");
 		}
 	}
 

@@ -17,15 +17,27 @@
 		<property name="nickName" direction="asc" />
 		<property name="eMail" direction="asc" />
 		<property name="lastMatchDate" direction="asc" />
+		<property name="playerSingleStats" direction="asc" />
+		<property name="playerDoubleStats" direction="asc" />
 		<property name="teams" direction="asc" />
-		<property name="singleWins" direction="asc" />
-		<property name="singleLosses" direction="asc" />
-		<property name="singleShotGoals" direction="asc" />
-		<property name="singleGetGoals" direction="asc" />
-		<property name="doubleWins" direction="asc" />
-		<property name="doubleLosses" direction="asc" />
-		<property name="doubleShotGoals" direction="asc" />
-		<property name="doubleGetGoals" direction="asc" />
+	</datastore-index>
+
+	<datastore-index kind="PlayerSingleStats" ancestor="false">
+		<property name="wins" direction="asc" />
+		<property name="losses" direction="asc" />
+		<property name="shotGoals" direction="asc" />
+		<property name="getGoals" direction="asc" />
+		<property name="prevTablePlace" direction="asc" />
+		<property name="curTablePlace" direction="asc" />
+		<property name="points" direction="desc" />
+		<property name="tendency" direction="asc" />
+	</datastore-index>
+
+	<datastore-index kind="PlayerDoubleStats" ancestor="false">
+		<property name="wins" direction="asc" />
+		<property name="losses" direction="asc" />
+		<property name="shotGoals" direction="asc" />
+		<property name="getGoals" direction="asc" />
 		<property name="prevTablePlace" direction="asc" />
 		<property name="curTablePlace" direction="asc" />
 		<property name="points" direction="desc" />
@@ -34,7 +46,11 @@
 
 	<datastore-index kind="Team" ancestor="false">
 		<property name="lastMatchDate" direction="asc" />
+		<property name="teamStats" direction="asc" />
 		<property name="players" direction="asc" />
+	</datastore-index>
+
+	<datastore-index kind="TeamStats" ancestor="false">
 		<property name="wins" direction="asc" />
 		<property name="losses" direction="asc" />
 		<property name="shotGoals" direction="asc" />

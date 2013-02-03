@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
 
 /**
@@ -14,7 +15,7 @@ import de.kickerapp.shared.dto.PlayerDto;
 public interface PlayerService extends RemoteService {
 
 	public PlayerDto createPlayer(PlayerDto player) throws IllegalArgumentException;
-	
-	public ArrayList<PlayerDto> getAllPlayers() throws IllegalArgumentException;
+
+	public ArrayList<PlayerDto> getAllPlayers(MatchType matchType) throws IllegalArgumentException;
 
 }

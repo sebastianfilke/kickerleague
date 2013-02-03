@@ -8,8 +8,6 @@ public interface KickerProperties {
 
 	public final PlayerProperty PLAYER_PROPERTY = GWT.create(PlayerProperty.class);
 
-	public final TableProperty TABLE_PROPERTY = GWT.create(TableProperty.class);
-
 	public final TeamProperty TEAM_PROPERTY = GWT.create(TeamProperty.class);
 
 }

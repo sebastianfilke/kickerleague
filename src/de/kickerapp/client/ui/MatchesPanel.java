@@ -200,11 +200,10 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler {
 	private void getMatches() {
 		btnUpdate.setEnabled(false);
 		mask("Aktualisiere...");
-		store.clear();
+		clearInput();
 		KickerServices.MATCH_SERVICE.getAllMatches(new AsyncCallback<ArrayList<MatchDto>>() {
 			@Override
 			public void onSuccess(ArrayList<MatchDto> result) {
-				clearInput();
 				store.addAll(result);
 				btnUpdate.setEnabled(true);
 				unmask();
@@ -220,6 +219,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler {
 
 	private void clearInput() {
 		sffGrid.clear();
+		store.clear();
 	}
 
 	/**

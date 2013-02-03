@@ -78,7 +78,9 @@ public interface TeamProperty extends PropertyAccess<ITeam> {
 		public String getValue(ITeam object) {
 			final StringBuilder sb = new StringBuilder();
 
-			sb.append(object.getShotGoals() + ":" + object.getGetGoals());
+			sb.append(object.getShotGoals());
+			sb.append(":");
+			sb.append(object.getGetGoals());
 
 			return sb.toString();
 		}
