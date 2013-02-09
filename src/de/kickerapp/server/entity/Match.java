@@ -21,18 +21,19 @@ public class Match extends BaseEntity {
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -77744879325097514L;
 
+	/** Die Spielnummer. */
 	@Persistent
 	private Integer matchNumber;
 	/** Das Spieldatum. */
 	@Persistent
 	private Date matchDate;
-
+	/** Der Spieltyp. */
 	@Persistent
 	private MatchType matchType;
-
+	/** Die Datenbank-Id des ersten Teams bzw. Spielers. */
 	@Persistent
 	private Long team1;
-
+	/** Die Datenbank-Id des zweiten Teams bzw. Spielers. */
 	@Persistent
 	private Long team2;
 	/** Die Liste der Spielsätze. */

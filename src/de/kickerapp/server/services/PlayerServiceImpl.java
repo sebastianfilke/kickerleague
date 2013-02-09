@@ -20,6 +20,7 @@ import de.kickerapp.server.entity.PlayerSingleStats;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
+import de.kickerapp.shared.dto.PlayerSingleStatsDto;
 
 /**
  * Dienst zur Verarbeitung von Spielern im Clienten.
@@ -46,8 +47,19 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 		 */
 		@Override
 		public int compare(PlayerDto p1, PlayerDto p2) {
-			if (p1.getPlayerSingleStats() != null && p2.getPlayerSingleStats() != null) {
-				return p2.getPlayerSingleStats().getSinglePoints().compareTo(p1.getPlayerSingleStats().getSinglePoints());
+			final PlayerSingleStatsDto player1Stats = p1.getPlayerSingleStats();
+			final PlayerSingleStatsDto player2Stats = p2.getPlayerSingleStats();
+			if (player1Stats != null && player2Stats != null) {
+				int comp = player2Stats.getSinglePoints().compareTo(player1Stats.getSinglePoints());
+				if (comp == 0) {
+					comp = player2Stats.getSingleWins().compareTo(player1Stats.getSingleWins());
+					if (comp == 0) {
+						final Integer player1Games = player1Stats.getSingleWins() + player1Stats.getSingleLosses();
+						final Integer player2Games = player2Stats.getSingleWins() + player2Stats.getSingleLosses();
+						comp = player2Games.compareTo(player1Games);
+					}
+				}
+				return comp;
 			} else if (p1.getPlayerDoubleStats() != null && p2.getPlayerDoubleStats() != null) {
 				return p2.getPlayerDoubleStats().getDoublePoints().compareTo(p1.getPlayerDoubleStats().getDoublePoints());
 			}

@@ -55,10 +55,20 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		} else {
 			createDoubleMatch(matchDto, match);
 		}
-
 		match = PMFactory.persistObject(match);
 
+		updateTable(matchDto);
+
 		return matchDto;
+	}
+
+	private void updateTable(MatchDto matchDto) {
+		if (matchDto.getMatchType() == MatchType.Single) {
+			MatchServiceHelper.updateSingleStats();
+		} else {
+			MatchServiceHelper.updateDoubleStats();
+			MatchServiceHelper.updateTeamStats();
+		}
 	}
 
 	private void createSingleMatch(MatchDto matchDto, final Match match) {
