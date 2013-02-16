@@ -1,6 +1,7 @@
 package de.kickerapp.server.persistence;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jdo.JDOHelper;
@@ -35,12 +36,30 @@ public final class PMFactory {
 	}
 
 	@SuppressWarnings("unchecked")
+	public static <T extends Serializable> List<T> getList(Class<T> clazz) {
+		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
+
+		final Query query = pm.newQuery(clazz);
+		List<T> list = new ArrayList<T>();
+		try {
+			list = (List<T>) query.execute();
+			list = (List<T>) pm.detachCopyAll(list);
+		} finally {
+			query.closeAll();
+		}
+		return list;
+	}
+
 	public static <T extends Serializable> T getObjectById(Class<T> clazz, Long id) {
 		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
 
-		T object = (T) pm.getObjectById(clazz, id);
-		object = pm.detachCopy(object);
-
+		T object = null;
+		try {
+			object = (T) pm.getObjectById(clazz, id);
+			object = pm.detachCopy(object);
+		} finally {
+			pm.close();
+		}
 		return object;
 	}
 
@@ -70,11 +89,14 @@ public final class PMFactory {
 		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
 
 		final Query query = pm.newQuery(clazz);
-		final List<T> dbObject = (List<T>) query.execute();
-
-		int id = dbObject.size();
-		id++;
-
+		int id = 0;
+		try {
+			final List<T> dbObject = (List<T>) query.execute();
+			id = dbObject.size();
+			id++;
+		} finally {
+			query.closeAll();
+		}
 		return id;
 	}
 

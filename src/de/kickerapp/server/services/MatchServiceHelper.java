@@ -1,12 +1,10 @@
 package de.kickerapp.server.services;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 
 import de.kickerapp.server.entity.Match;
 import de.kickerapp.server.entity.Player;
@@ -39,7 +37,19 @@ public class MatchServiceHelper {
 		 */
 		@Override
 		public int compare(Stats p1, Stats p2) {
-			return compareStats(p1, p2);
+			int comp = p2.getPoints().compareTo(p1.getPoints());
+			if (comp == 0) {
+				comp = p2.getWins().compareTo(p1.getWins());
+				if (comp == 0) {
+					comp = p2.getLosses().compareTo(p1.getLosses());
+					if (comp == 0) {
+						final Integer goalDifferenceP1 = p1.getShotGoals() - p1.getGetGoals();
+						final Integer goalDifferenceP2 = p2.getShotGoals() - p2.getGetGoals();
+						comp = goalDifferenceP2.compareTo(goalDifferenceP1);
+					}
+				}
+			}
+			return comp;
 		}
 	}
 
@@ -80,64 +90,64 @@ public class MatchServiceHelper {
 		return matchDto;
 	}
 
-	@SuppressWarnings("unchecked")
 	protected static void updateSingleStats() {
-		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
-		final Query query = pm.newQuery(PlayerSingleStats.class);
-
-		final List<PlayerSingleStats> dbPlayersSingleStats = (List<PlayerSingleStats>) query.execute();
+		final List<PlayerSingleStats> dbPlayersSingleStats = PMFactory.getList(PlayerSingleStats.class);
+		removePlayerWithZeroMatches(dbPlayersSingleStats);
 
 		Collections.sort(dbPlayersSingleStats, new StatsComparator());
 		final int size = dbPlayersSingleStats.size();
 		for (int i = 0; i < size; i++) {
 			PlayerSingleStats singleStats = dbPlayersSingleStats.get(i);
 			updateStats(i, singleStats);
-			singleStats = pm.makePersistent(singleStats);
+			singleStats = PMFactory.persistObject(singleStats);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	protected static void updateDoubleStats() {
-		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
-		final Query query = pm.newQuery(PlayerDoubleStats.class);
-
-		final List<PlayerDoubleStats> dbPlayersDoubleStats = (List<PlayerDoubleStats>) query.execute();
+		final List<PlayerDoubleStats> dbPlayersDoubleStats = PMFactory.getList(PlayerDoubleStats.class);
+		removePlayerWithZeroMatches(dbPlayersDoubleStats);
 
 		Collections.sort(dbPlayersDoubleStats, new StatsComparator());
 		final int size = dbPlayersDoubleStats.size();
 		for (int i = 0; i < size; i++) {
 			PlayerDoubleStats doubleStats = dbPlayersDoubleStats.get(i);
 			updateStats(i, doubleStats);
-			doubleStats = pm.makePersistent(doubleStats);
+			doubleStats = PMFactory.persistObject(doubleStats);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	protected static void updateTeamStats() {
-		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
-		final Query query = pm.newQuery(TeamStats.class);
-
-		final List<TeamStats> dbTeamStats = (List<TeamStats>) query.execute();
+		final List<TeamStats> dbTeamStats = PMFactory.getList(TeamStats.class);
+		removePlayerWithZeroMatches(dbTeamStats);
 
 		Collections.sort(dbTeamStats, new StatsComparator());
 		final int size = dbTeamStats.size();
 		for (int i = 0; i < size; i++) {
 			TeamStats teamStats = dbTeamStats.get(i);
 			updateStats(i, teamStats);
-			teamStats = pm.makePersistent(teamStats);
+			teamStats = PMFactory.persistObject(teamStats);
 		}
 	}
 
-	private static void updateStats(int i, Stats stats) {
-		final int preTablePlace = stats.getPrevTablePlace();
+	private static void removePlayerWithZeroMatches(List<? extends Stats> dbStats) {
+		final ArrayList<Stats> statsToRemove = new ArrayList<Stats>();
+		for (Stats stat : dbStats) {
+			if (stat.getWins() == 0 && stat.getLosses() == 0) {
+				statsToRemove.add(stat);
+			}
+		}
+		dbStats.removeAll(statsToRemove);
+	}
 
+	private static void updateStats(int i, Stats stats) {
 		stats.setPrevTablePlace(stats.getCurTablePlace());
 		stats.setCurTablePlace(i + 1);
 
+		final int preTablePlace = stats.getPrevTablePlace();
 		final int curTablePlace = stats.getCurTablePlace();
 
 		if (preTablePlace == 0) {
-			stats.setTendency(Tendency.Constant);
+			stats.setTendency(Tendency.Upward);
 		} else {
 			if (curTablePlace == preTablePlace) {
 				stats.setTendency(Tendency.Constant);
@@ -149,17 +159,24 @@ public class MatchServiceHelper {
 		}
 	}
 
-	protected static int compareStats(Stats p1, Stats p2) {
-		int comp = p2.getPoints().compareTo(p1.getPoints());
-		if (comp == 0) {
-			comp = p2.getWins().compareTo(p1.getWins());
-			if (comp == 0) {
-				final Integer player1Games = p1.getWins() + p1.getLosses();
-				final Integer player2Games = p2.getWins() + p2.getLosses();
-				comp = player1Games.compareTo(player2Games);
+	private static int getPoints(boolean winner, Player dbPlayer, MatchDto matchDto) {
+		final boolean twoSetGame = matchDto.getSets().getSetsTeam1().size() == 2;
+
+		int points = 0;
+		if (winner) {
+			if (twoSetGame) {
+				points = points + 8;
+			} else {
+				points = points + 6;
+			}
+		} else {
+			if (twoSetGame) {
+				points = points - 8;
+			} else {
+				points = points - 6;
 			}
 		}
-		return comp;
+		return points;
 	}
 
 }

@@ -94,6 +94,7 @@ public class ResultPanel extends BasePanel {
 	@Override
 	public void initLayout() {
 		super.initLayout();
+		setHeadingHtml("<span id='panelHeading'>Ergebnis eintragen</span>");
 
 		final VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
 
@@ -104,6 +105,7 @@ public class ResultPanel extends BasePanel {
 		vlcMain.add(fieldSetSetPlayers, new VerticalLayoutData(1, -1));
 
 		add(vlcMain, new MarginData(10));
+		initPanelButtons(null);
 	}
 
 	/**
@@ -455,8 +457,8 @@ public class ResultPanel extends BasePanel {
 				createMatch();
 			}
 		});
-		portletResult.addButton(bReset);
-		portletResult.addButton(bReport);
+		addButton(bReset);
+		addButton(bReport);
 	}
 
 	private void createMatch() {

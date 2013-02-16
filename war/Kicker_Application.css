@@ -1,8 +1,8 @@
 /* Allgemeine Einstellungen */
 body {
-	background-color: #ededed !important;
+	background: url("../images/header_bg2.png") repeat-x scroll #fff !important;
 	border: none;
-	margin: 0;
+	margin: 0 auto;
 }
 
 @font-face {
@@ -17,6 +17,98 @@ body {
 	font-style: normal;
 }
 
+#header {
+	position: relative;
+	float: left;
+	padding: 20px 0px 0px 10px;
+}
+
+#headerIcon {
+	float: left;
+	padding-right: 10px;
+}
+
+#headerTitle {
+	float: left;
+	font: 40px ChunkFiveRegular;
+	text-shadow: 0 -1px 1px #fff, 5px 2px 2px #383838;
+	color: #dbdbdb;
+	padding: 12px 0px 0px 0px;
+}
+
+#footer {
+	font: 14px ChunkFiveRegular;
+	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
+}
+
+#pageHeaderBackground {
+	background: url("../images/header_bg.png") repeat-x scroll #616161
+		!important;
+}
+
+#transparentBackground {
+	background-color: transparent;
+}
+
+#contentBackground {
+	box-shadow: 8px 8px 20px #666;
+}
+
+#panelHeading {
+	font: 14px ChunkFiveRegular;
+	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
+}
+
+/* ---------------------- Greenslate nav ---------------------- */
+#tabs26 {
+	position: relative;
+	display: block;
+	height: 42px;
+	font-size: 11px;
+	font-weight: bold;
+	background: transparent url(../images/greenslate_background.gif)
+		repeat-x top left;
+	font-family: Arial, Verdana, Helvitica, sans-serif;
+	text-transform: uppercase;
+	width: 100%;
+	overflow: hidden;
+}
+
+#tabs26 ul {
+	position: relative;
+	margin: 0px auto;
+	padding: 0;
+	list-style-type: none;
+	left: 50%;
+	float: left;
+}
+
+#tabs26 ul li {
+	position: relative;
+	display: block;
+	float: left;
+	margin: 0 1px 0 0;
+	right: 50%;
+}
+
+#tabs26 ul li .label {
+	position: relative;
+	display: block;
+	color: #EEFFDF;
+	text-decoration: none;
+	padding: 14px 22px 0 22px;
+	height: 28px;
+	text-shadow: 1px 1px 2px #000;
+}
+
+#tabs26 ul li div.label:hover,#tabs26 ul li div.current {
+	cursor: pointer;
+	color: #fff;
+	background: transparent url(../images/greenslate_backgroundOVER.gif)
+		no-repeat top center;
+}
+/* ---------------------- END Greenslate nav ---------------------- */
+/* Paging ComboBox */
 .templatePagingComboBox {
 	padding: 3px 10px 3px 10px;
 	white-space: normal;
@@ -41,34 +133,4 @@ body {
 	width: 100px;
 	display: block;
 	clear: none;
-}
-
-#portletBackground {
-	box-shadow: 0 0 8px #ddd;
-}
-
-#portletHeading {
-	font: 14px ChunkFiveRegular;
-	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
-}
-
-#headerBackground {
-	background: url("../images/backgroundHeader.png") repeat-x scroll;
-}
-
-#footerBackground {
-	background: url("../images/backgroundFooter.png") repeat-x scroll;
-}
-
-#headerIcon {
-	position: absolute;
-	padding: 8px 0px 8px 15px;
-}
-
-#headerTitle {
-	position: absolute;
-	font: 40px ChunkFiveRegular;
-	padding: 20px 0 20px 85px;
-	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
-	color: #3c3c3c;
 }

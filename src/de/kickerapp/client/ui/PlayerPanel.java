@@ -49,8 +49,15 @@ public class PlayerPanel extends BasePanel {
 	@Override
 	public void initLayout() {
 		super.initLayout();
+		setHeadingHtml("<span id='panelHeading'>Spieler</span>");
 
-		add(createResultFieldSet(), new MarginData(10));
+		final VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
+
+		final FieldSet fieldSetResult = createPlayerFieldSet();
+		vlcMain.add(fieldSetResult, new VerticalLayoutData(1, -1));
+
+		add(fieldSetResult, new MarginData(10));
+		initPanelButtons(null);
 	}
 
 	/**
@@ -58,7 +65,7 @@ public class PlayerPanel extends BasePanel {
 	 * 
 	 * @return Das erzeugte FieldSet.
 	 */
-	private FieldSet createResultFieldSet() {
+	private FieldSet createPlayerFieldSet() {
 		final FieldSet fsPlayer = new FieldSet();
 		fsPlayer.setHeadingText("Neuer Spieler");
 
@@ -102,8 +109,8 @@ public class PlayerPanel extends BasePanel {
 				createNewPlayer();
 			}
 		});
-		portletResult.addButton(btnReset);
-		portletResult.addButton(btnReport);
+		addButton(btnReset);
+		addButton(btnReport);
 	}
 
 	private void clearInput() {

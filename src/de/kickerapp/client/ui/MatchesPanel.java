@@ -57,12 +57,15 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler {
 	@Override
 	public void initLayout() {
 		super.initLayout();
+		setHeadingHtml("<span id='panelHeading'>Zuletzt Gespielt</span>");
 
 		store = new ListStore<IMatch>(KickerProperties.MATCH_PROPERTY.id());
 
 		final VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
 		vlcMain.add(createToolBar(), new VerticalLayoutData(1, -1));
 		vlcMain.add(createGrid(), new VerticalLayoutData(1, 1));
+		
+		initPanelButtons(null);
 
 		add(vlcMain);
 	}
@@ -194,7 +197,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler {
 				getMatches();
 			}
 		});
-		portletMatches.addButton(btnUpdate);
+		addButton(btnUpdate);
 	}
 
 	private void getMatches() {

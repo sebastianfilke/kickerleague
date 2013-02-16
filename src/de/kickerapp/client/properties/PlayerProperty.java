@@ -1,12 +1,13 @@
 package de.kickerapp.client.properties;
 
 import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
-import de.kickerapp.shared.common.Tendency;
+import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.shared.dto.IMatch;
 import de.kickerapp.shared.dto.IPlayer;
 import de.kickerapp.shared.dto.PlayerDoubleStatsDto;
@@ -155,14 +156,27 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, Tendency> singleTendency = new ValueProvider<IPlayer, Tendency>() {
+	public ValueProvider<IPlayer, ImageResource> singleTendency = new ValueProvider<IPlayer, ImageResource>() {
 		@Override
-		public Tendency getValue(IPlayer object) {
-			return object.getPlayerSingleStats().getSingleTendency();
+		public ImageResource getValue(IPlayer object) {
+			ImageResource image = null;
+
+			switch (object.getPlayerSingleStats().getSingleTendency()) {
+			case Upward:
+				image = KickerIcons.ICON.tendencyUp();
+				break;
+			case Downward:
+				image = KickerIcons.ICON.tendencyDown();
+				break;
+			default:
+				image = KickerIcons.ICON.tendencyConstant();
+				break;
+			}
+			return image;
 		}
 
 		@Override
-		public void setValue(IPlayer object, Tendency value) {
+		public void setValue(IPlayer object, ImageResource value) {
 		}
 
 		@Override
@@ -284,14 +298,27 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, Tendency> doubleTendency = new ValueProvider<IPlayer, Tendency>() {
+	public ValueProvider<IPlayer, ImageResource> doubleTendency = new ValueProvider<IPlayer, ImageResource>() {
 		@Override
-		public Tendency getValue(IPlayer object) {
-			return object.getPlayerDoubleStats().getDoubleTendency();
+		public ImageResource getValue(IPlayer object) {
+			ImageResource image = null;
+
+			switch (object.getPlayerDoubleStats().getDoubleTendency()) {
+			case Upward:
+				image = KickerIcons.ICON.tendencyUp();
+				break;
+			case Downward:
+				image = KickerIcons.ICON.tendencyDown();
+				break;
+			default:
+				image = KickerIcons.ICON.tendencyConstant();
+				break;
+			}
+			return image;
 		}
 
 		@Override
-		public void setValue(IPlayer object, Tendency value) {
+		public void setValue(IPlayer object, ImageResource value) {
 		}
 
 		@Override

@@ -22,7 +22,7 @@ public class BasePanel extends AppContentPanel {
 	 * Initalisiert das Layout des Panels.
 	 */
 	protected void initLayout() {
-		setHeaderVisible(false);
+		// setHeaderVisible(false);
 	}
 
 	/**

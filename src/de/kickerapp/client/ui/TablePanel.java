@@ -3,9 +3,11 @@ package de.kickerapp.client.ui;
 import java.util.ArrayList;
 
 import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
@@ -37,7 +39,6 @@ import de.kickerapp.client.properties.TeamProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.shared.common.MatchType;
-import de.kickerapp.shared.common.Tendency;
 import de.kickerapp.shared.dto.IPlayer;
 import de.kickerapp.shared.dto.ITeam;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -86,6 +87,7 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 	@Override
 	public void initLayout() {
 		super.initLayout();
+		setHeadingHtml("<span id='panelHeading'>Aktuelle Spielertabelle (Einzelansicht)</span>");
 
 		activeWidget = 0;
 
@@ -113,6 +115,8 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 				AppEventBus.fireEvent(updateEvent);
 			}
 		});
+		tabPanel.setResizeTabs(true);
+		tabPanel.setTabWidth(200);
 
 		final VerticalLayoutContainer vlcSingleTable = new VerticalLayoutContainer();
 		vlcSingleTable.add(createSingleTableToolBar(), new VerticalLayoutData(1, -1));
@@ -131,6 +135,8 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 		tabPanel.add(vlcDoubleTableTeamView, "Teamtabelle");
 		tabPanel.setBodyBorder(false);
 		tabPanel.setBorders(false);
+
+		initPanelButtons(null);
 
 		return tabPanel;
 	}
@@ -173,7 +179,13 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 		final ColumnConfig<IPlayer, String> ccSingleGoals = new ColumnConfig<IPlayer, String>(PlayerProperty.singleGoals, 100, "Tore");
 		final ColumnConfig<IPlayer, String> ccSingleGoalDifference = new ColumnConfig<IPlayer, String>(PlayerProperty.singleGoalDifference, 100, "Tordifferenz");
 		final ColumnConfig<IPlayer, Integer> ccPoints = new ColumnConfig<IPlayer, Integer>(PlayerProperty.singlePoints, 100, "Punkte");
-		final ColumnConfig<IPlayer, Tendency> ccTendency = new ColumnConfig<IPlayer, Tendency>(PlayerProperty.singleTendency, 60, "Tendenz");
+		final ColumnConfig<IPlayer, ImageResource> ccTendency = new ColumnConfig<IPlayer, ImageResource>(PlayerProperty.singleTendency, 60, "Tendenz");
+		ccTendency.setCell(new ImageResourceCell() {
+			@Override
+			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
+				super.render(context, value, sb);
+			}
+		});
 
 		final ArrayList<ColumnConfig<IPlayer, ?>> columns = new ArrayList<ColumnConfig<IPlayer, ?>>();
 		columns.add(numberer);
@@ -233,7 +245,13 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 		final ColumnConfig<IPlayer, String> ccDoubleGoals = new ColumnConfig<IPlayer, String>(PlayerProperty.doubleGoals, 100, "Tore");
 		final ColumnConfig<IPlayer, String> ccSingleGoalDifference = new ColumnConfig<IPlayer, String>(PlayerProperty.doubleGoalDifference, 100, "Tordifferenz");
 		final ColumnConfig<IPlayer, Integer> ccPoints = new ColumnConfig<IPlayer, Integer>(PlayerProperty.doublePoints, 100, "Punkte");
-		final ColumnConfig<IPlayer, Tendency> ccTendency = new ColumnConfig<IPlayer, Tendency>(PlayerProperty.doubleTendency, 60, "Tendenz");
+		final ColumnConfig<IPlayer, ImageResource> ccTendency = new ColumnConfig<IPlayer, ImageResource>(PlayerProperty.doubleTendency, 60, "Tendenz");
+		ccTendency.setCell(new ImageResourceCell() {
+			@Override
+			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
+				super.render(context, value, sb);
+			}
+		});
 
 		final ArrayList<ColumnConfig<IPlayer, ?>> columns = new ArrayList<ColumnConfig<IPlayer, ?>>();
 		columns.add(numberer);
@@ -305,7 +323,13 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 		final ColumnConfig<ITeam, String> ccSingleGoals = new ColumnConfig<ITeam, String>(TeamProperty.goals, 100, "Tore");
 		final ColumnConfig<ITeam, String> ccSingleGoalDifference = new ColumnConfig<ITeam, String>(TeamProperty.goalDifference, 100, "Tordifferenz");
 		final ColumnConfig<ITeam, Integer> ccPoints = new ColumnConfig<ITeam, Integer>(KickerProperties.TEAM_PROPERTY.points(), 100, "Punkte");
-		final ColumnConfig<ITeam, Tendency> ccTendency = new ColumnConfig<ITeam, Tendency>(KickerProperties.TEAM_PROPERTY.tendency(), 60, "Tendenz");
+		final ColumnConfig<ITeam, ImageResource> ccTendency = new ColumnConfig<ITeam, ImageResource>(TeamProperty.tendency, 60, "Tendenz");
+		ccTendency.setCell(new ImageResourceCell() {
+			@Override
+			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
+				super.render(context, value, sb);
+			}
+		});
 
 		final ArrayList<ColumnConfig<ITeam, ?>> columns = new ArrayList<ColumnConfig<ITeam, ?>>();
 		columns.add(numberer);
@@ -340,7 +364,7 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 				getTable();
 			}
 		});
-		portletTable.addButton(btnUpdate);
+		addButton(btnUpdate);
 	}
 
 	private void getTable() {

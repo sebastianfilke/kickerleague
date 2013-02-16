@@ -62,15 +62,6 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		return matchDto;
 	}
 
-	private void updateTable(MatchDto matchDto) {
-		if (matchDto.getMatchType() == MatchType.Single) {
-			MatchServiceHelper.updateSingleStats();
-		} else {
-			MatchServiceHelper.updateDoubleStats();
-			MatchServiceHelper.updateTeamStats();
-		}
-	}
-
 	private void createSingleMatch(MatchDto matchDto, final Match match) {
 		match.setMatchType(MatchType.Single);
 
@@ -320,6 +311,15 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 			}
 		}
 		return goals;
+	}
+
+	private void updateTable(MatchDto matchDto) {
+		if (matchDto.getMatchType() == MatchType.Single) {
+			MatchServiceHelper.updateSingleStats();
+		} else {
+			MatchServiceHelper.updateDoubleStats();
+			MatchServiceHelper.updateTeamStats();
+		}
 	}
 
 	/**

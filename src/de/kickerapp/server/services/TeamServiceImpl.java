@@ -6,9 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
-
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.TeamService;
@@ -41,17 +38,11 @@ public class TeamServiceImpl extends RemoteServiceServlet implements TeamService
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public ArrayList<TeamDto> getAllTeams() throws IllegalArgumentException {
-		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
-
 		final ArrayList<TeamDto> teamDtos = new ArrayList<TeamDto>();
 
-		final Query query = pm.newQuery(Team.class);
-
-		final List<Team> dbTeams = (List<Team>) query.execute();
+		final List<Team> dbTeams = PMFactory.getList(Team.class);
 		for (Team dbTeam : dbTeams) {
-			dbTeam = pm.detachCopy(dbTeam);
 			final TeamDto player = TeamServiceHelper.createTeam(dbTeam);
 
 			teamDtos.add(player);

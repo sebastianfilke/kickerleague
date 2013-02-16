@@ -14,8 +14,16 @@ public interface KickerIcons extends ClientBundle {
 	/** Die Icons. */
 	public final KickerIcons ICON = GWT.create(KickerIcons.class);
 
-	/** Das Icon für den Ball. */
 	@Source("soccer_ball.png")
-	ImageResource socerBall();
+	ImageResource soccerBall();
+
+	@Source("tendency_up.png")
+	ImageResource tendencyUp();
+
+	@Source("tendency_down.png")
+	ImageResource tendencyDown();
+
+	@Source("tendency_constant.png")
+	ImageResource tendencyConstant();
 
 }

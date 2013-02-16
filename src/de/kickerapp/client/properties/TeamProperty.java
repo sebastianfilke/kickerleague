@@ -3,11 +3,12 @@ package de.kickerapp.client.properties;
 import java.util.Date;
 
 import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
-import de.kickerapp.shared.common.Tendency;
+import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.shared.dto.ITeam;
 import de.kickerapp.shared.dto.PlayerDto;
 
@@ -125,6 +126,33 @@ public interface TeamProperty extends PropertyAccess<ITeam> {
 
 	public ValueProvider<ITeam, Integer> points();
 
-	public ValueProvider<ITeam, Tendency> tendency();
+	public ValueProvider<ITeam, ImageResource> tendency = new ValueProvider<ITeam, ImageResource>() {
+		@Override
+		public ImageResource getValue(ITeam object) {
+			ImageResource image = null;
+
+			switch (object.getTendency()) {
+			case Upward:
+				image = KickerIcons.ICON.tendencyUp();
+				break;
+			case Downward:
+				image = KickerIcons.ICON.tendencyDown();
+				break;
+			default:
+				image = KickerIcons.ICON.tendencyConstant();
+				break;
+			}
+			return image;
+		}
+
+		@Override
+		public void setValue(ITeam object, ImageResource value) {
+		}
+
+		@Override
+		public String getPath() {
+			return null;
+		}
+	};
 
 }
