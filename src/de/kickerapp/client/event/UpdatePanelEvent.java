@@ -4,10 +4,21 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class UpdatePanelEvent extends GwtEvent<UpdatePanelEventHandler> {
 
-	/** Das Sprachwechsel-Ereignis. */
-	public static final GwtEvent.Type<UpdatePanelEventHandler> TYPE = new GwtEvent.Type<UpdatePanelEventHandler>();
+	public static final GwtEvent.Type<UpdatePanelEventHandler> ALL = new GwtEvent.Type<UpdatePanelEventHandler>();
+	public static final GwtEvent.Type<UpdatePanelEventHandler> TABLES = new GwtEvent.Type<UpdatePanelEventHandler>();
+	public static final GwtEvent.Type<UpdatePanelEventHandler> MATCHES = new GwtEvent.Type<UpdatePanelEventHandler>();
 
-	private int activeWidget;
+	/** Der Typ des Ereignisses. */
+	private Type<UpdatePanelEventHandler> eventType;
+
+	/**
+	 * Erstellt ein neues <tt>NavigationsEvent</tt> mit angegebenem Ereignistyp.
+	 * 
+	 * @param theEventType Der Typ des Ereignisses.
+	 */
+	public UpdatePanelEvent(Type<UpdatePanelEventHandler> theEventType) {
+		eventType = theEventType;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -22,15 +33,15 @@ public class UpdatePanelEvent extends GwtEvent<UpdatePanelEventHandler> {
 	 */
 	@Override
 	public Type<UpdatePanelEventHandler> getAssociatedType() {
-		return TYPE;
-	}
-
-	public int getActiveWidget() {
-		return activeWidget;
-	}
-
-	public void setActiveWidget(int activeWidget) {
-		this.activeWidget = activeWidget;
+		Type<UpdatePanelEventHandler> associatedType = null;
+		if (eventType == ALL) {
+			associatedType = ALL;
+		} else if (eventType == TABLES) {
+			associatedType = TABLES;
+		} else if (eventType == MATCHES) {
+			associatedType = MATCHES;
+		}
+		return associatedType;
 	}
 
 }

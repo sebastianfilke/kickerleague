@@ -1,5 +1,6 @@
 package de.kickerapp.client.widgets;
 
+import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 
 /**
@@ -24,6 +25,10 @@ public class AppButton extends TextButton {
 	 */
 	public AppButton(String text) {
 		super(text);
+	}
+	
+	public AppButton(String text, ImageResource icon){
+		super(text, icon);
 	}
 
 }

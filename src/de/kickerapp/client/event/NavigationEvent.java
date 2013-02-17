@@ -9,13 +9,9 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class NavigationEvent extends GwtEvent<NavigationEventHandler> {
 
-	/** Das Arbeitsvorrats-Ereignis. */
-	public static final GwtEvent.Type<NavigationEventHandler> TABLE = new GwtEvent.Type<NavigationEventHandler>();
-	/** Das Auftragsdaten-Ereignis. */
-	public static final GwtEvent.Type<NavigationEventHandler> RESULT = new GwtEvent.Type<NavigationEventHandler>();
-	/** Das Prüflings-Ereignis. */
+	public static final GwtEvent.Type<NavigationEventHandler> TABLES = new GwtEvent.Type<NavigationEventHandler>();
+	public static final GwtEvent.Type<NavigationEventHandler> MATCHES = new GwtEvent.Type<NavigationEventHandler>();
 	public static final GwtEvent.Type<NavigationEventHandler> INPUT = new GwtEvent.Type<NavigationEventHandler>();
-	/** Das Prüflingskombination-Ereignis. */
 	public static final GwtEvent.Type<NavigationEventHandler> PLAYER = new GwtEvent.Type<NavigationEventHandler>();
 
 	/** Der Typ des Ereignisses. */
@@ -44,10 +40,10 @@ public class NavigationEvent extends GwtEvent<NavigationEventHandler> {
 	@Override
 	public Type<NavigationEventHandler> getAssociatedType() {
 		Type<NavigationEventHandler> associatedType = null;
-		if (eventType == TABLE) {
-			associatedType = TABLE;
-		} else if (eventType == RESULT) {
-			associatedType = RESULT;
+		if (eventType == TABLES) {
+			associatedType = TABLES;
+		} else if (eventType == MATCHES) {
+			associatedType = MATCHES;
 		} else if (eventType == INPUT) {
 			associatedType = INPUT;
 		} else if (eventType == PLAYER) {

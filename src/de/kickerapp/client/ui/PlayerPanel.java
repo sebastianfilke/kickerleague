@@ -1,8 +1,7 @@
 package de.kickerapp.client.ui;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.sencha.gxt.widget.core.client.Portlet;
-import com.sencha.gxt.widget.core.client.container.MarginData;
+import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -10,11 +9,14 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.info.Info;
+import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 import de.kickerapp.client.event.AppEventBus;
-import de.kickerapp.client.event.ShowDataEvent;
+import de.kickerapp.client.event.TabPanelEvent;
+import de.kickerapp.client.event.UpdatePanelEvent;
 import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.services.KickerServices;
+import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppTextField;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -30,9 +32,6 @@ public class PlayerPanel extends BasePanel {
 	private AppTextField tfFirstname;
 	private AppTextField tfLastname;
 	private AppTextField tfEMail;
-
-	private AppButton btnReset;
-	private AppButton btnReport;
 
 	/**
 	 * Erzeugt einen neuen Controller zum Eintragen neuer Spieler für die
@@ -53,11 +52,22 @@ public class PlayerPanel extends BasePanel {
 
 		final VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
 
-		final FieldSet fieldSetResult = createPlayerFieldSet();
-		vlcMain.add(fieldSetResult, new VerticalLayoutData(1, -1));
+		final ToolBar toolBar = createToolBar();
+		vlcMain.add(toolBar, new VerticalLayoutData(1, -1));
 
-		add(fieldSetResult, new MarginData(10));
-		initPanelButtons(null);
+		final FieldSet fieldSetResult = createPlayerFieldSet();
+		vlcMain.add(fieldSetResult, new VerticalLayoutData(1, -1, new Margins(10)));
+
+		add(vlcMain);
+	}
+
+	private ToolBar createToolBar() {
+		final ToolBar toolBar = new ToolBar();
+		toolBar.setEnableOverflow(false);
+
+		toolBar.add(createBtnInsert());
+		toolBar.add(createBtnReset());
+		return toolBar;
 	}
 
 	/**
@@ -88,20 +98,8 @@ public class PlayerPanel extends BasePanel {
 		return fsPlayer;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initPanelButtons(Portlet portletResult) {
-		btnReset = new AppButton("Eingaben zurücksetzen");
-		btnReset.setToolTip("Setzt alle eingegebenen Daten zurück");
-		btnReset.addSelectHandler(new SelectHandler() {
-			@Override
-			public void onSelect(SelectEvent event) {
-				clearInput();
-			}
-		});
-		btnReport = new AppButton("Spieler eintragen");
+	private AppButton createBtnInsert() {
+		final AppButton btnReport = new AppButton("Spieler eintragen", KickerIcons.ICON.table_save());
 		btnReport.setToolTip("Speichert den Spieler mit den einegegeben Daten in der Datebank");
 		btnReport.addSelectHandler(new SelectHandler() {
 			@Override
@@ -109,8 +107,19 @@ public class PlayerPanel extends BasePanel {
 				createNewPlayer();
 			}
 		});
-		addButton(btnReset);
-		addButton(btnReport);
+		return btnReport;
+	}
+
+	private AppButton createBtnReset() {
+		final AppButton btnReset = new AppButton("Eingaben zurücksetzen", KickerIcons.ICON.table());
+		btnReset.setToolTip("Setzt alle eingegebenen Daten zurück");
+		btnReset.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				clearInput();
+			}
+		});
+		return btnReset;
 	}
 
 	private void clearInput() {
@@ -125,35 +134,29 @@ public class PlayerPanel extends BasePanel {
 	 * @return
 	 */
 	private AppTextField createTextField(String emptyText) {
-		final AppTextField tfPlayer = new AppTextField(emptyText);
-		tfPlayer.setAllowBlank(false);
+		final AppTextField tf = new AppTextField(emptyText);
+		tf.setAllowBlank(false);
 
-		return tfPlayer;
+		return tf;
 	}
 
 	private void createNewPlayer() {
 		mask("Spieler wird eingetragen...");
-		btnReport.setEnabled(false);
-
 		final PlayerDto newPlayer = createPlayer();
-
 		KickerServices.PLAYER_SERVICE.createPlayer(newPlayer, new AsyncCallback<PlayerDto>() {
 			@Override
 			public void onSuccess(PlayerDto result) {
 				Info.display("Hinweis", "Neuer Spieler wurde erfolgreich erstellt");
+				final TabPanelEvent tabPanelEvent = new TabPanelEvent();
+				tabPanelEvent.setActiveWidget(0);
+				AppEventBus.fireEvent(tabPanelEvent);
+				AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL));
 				clearInput();
-
-				final ShowDataEvent showDataEvent = new ShowDataEvent(ShowDataEvent.TABLE_PANEL);
-				showDataEvent.setActiveWidget(0);
-				AppEventBus.fireEvent(showDataEvent);
-
-				btnReport.setEnabled(true);
 				unmask();
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
-				btnReport.setEnabled(true);
 				unmask();
 				AppExceptionHandler.handleException(caught);
 			}

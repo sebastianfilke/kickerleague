@@ -92,7 +92,7 @@ public class MatchServiceHelper {
 
 	protected static void updateSingleStats() {
 		final List<PlayerSingleStats> dbPlayersSingleStats = PMFactory.getList(PlayerSingleStats.class);
-		removePlayerWithZeroMatches(dbPlayersSingleStats);
+		removeStatsWithZeroMatches(dbPlayersSingleStats);
 
 		Collections.sort(dbPlayersSingleStats, new StatsComparator());
 		final int size = dbPlayersSingleStats.size();
@@ -105,7 +105,7 @@ public class MatchServiceHelper {
 
 	protected static void updateDoubleStats() {
 		final List<PlayerDoubleStats> dbPlayersDoubleStats = PMFactory.getList(PlayerDoubleStats.class);
-		removePlayerWithZeroMatches(dbPlayersDoubleStats);
+		removeStatsWithZeroMatches(dbPlayersDoubleStats);
 
 		Collections.sort(dbPlayersDoubleStats, new StatsComparator());
 		final int size = dbPlayersDoubleStats.size();
@@ -118,7 +118,7 @@ public class MatchServiceHelper {
 
 	protected static void updateTeamStats() {
 		final List<TeamStats> dbTeamStats = PMFactory.getList(TeamStats.class);
-		removePlayerWithZeroMatches(dbTeamStats);
+		removeStatsWithZeroMatches(dbTeamStats);
 
 		Collections.sort(dbTeamStats, new StatsComparator());
 		final int size = dbTeamStats.size();
@@ -129,7 +129,7 @@ public class MatchServiceHelper {
 		}
 	}
 
-	private static void removePlayerWithZeroMatches(List<? extends Stats> dbStats) {
+	private static void removeStatsWithZeroMatches(List<? extends Stats> dbStats) {
 		final ArrayList<Stats> statsToRemove = new ArrayList<Stats>();
 		for (Stats stat : dbStats) {
 			if (stat.getWins() == 0 && stat.getLosses() == 0) {

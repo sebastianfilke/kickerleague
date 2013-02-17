@@ -1,6 +1,5 @@
 /* Allgemeine Einstellungen */
 body {
-	background: url("../images/header_bg2.png") repeat-x scroll #fff !important;
 	border: none;
 	margin: 0 auto;
 }
@@ -19,8 +18,9 @@ body {
 
 #header {
 	position: relative;
-	float: left;
-	padding: 20px 0px 0px 10px;
+	padding: 12px 0px 0px 0px;
+	width: 1200px;
+	margin: 0 auto;
 }
 
 #headerIcon {
@@ -36,22 +36,33 @@ body {
 	padding: 12px 0px 0px 0px;
 }
 
-#footer {
-	font: 14px ChunkFiveRegular;
-	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
-}
-
 #pageHeaderBackground {
 	background: url("../images/header_bg.png") repeat-x scroll #616161
 		!important;
+}
+
+#footerTitle {
+	font: 14px ChunkFiveRegular;
+	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
+	text-align: center;
+}
+
+#pageFooterBackground {
+	background-color: transparent;
+	margin: 0 auto;
 }
 
 #transparentBackground {
 	background-color: transparent;
 }
 
+#content {
+	box-shadow: 4px 4px 10px #666;
+	margin: 20px auto;
+}
+
 #contentBackground {
-	box-shadow: 8px 8px 20px #666;
+	background: url("../images/page_bg.png") repeat-x scroll #fff !important;
 }
 
 #panelHeading {
@@ -66,12 +77,17 @@ body {
 	height: 42px;
 	font-size: 11px;
 	font-weight: bold;
-	background: transparent url(../images/greenslate_background.gif)
-		repeat-x top left;
+	background: transparent url(../images/menu_bg.gif) repeat-x top left;
 	font-family: Arial, Verdana, Helvitica, sans-serif;
 	text-transform: uppercase;
 	width: 100%;
 	overflow: hidden;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 #tabs26 ul {
@@ -104,8 +120,8 @@ body {
 #tabs26 ul li div.label:hover,#tabs26 ul li div.current {
 	cursor: pointer;
 	color: #fff;
-	background: transparent url(../images/greenslate_backgroundOVER.gif)
-		no-repeat top center;
+	background: transparent url(../images/menu_bg_hover.gif) no-repeat top
+		center;
 }
 /* ---------------------- END Greenslate nav ---------------------- */
 /* Paging ComboBox */

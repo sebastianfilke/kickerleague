@@ -1,29 +1,24 @@
 package de.kickerapp.client.ui;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.sencha.gxt.core.client.util.Margins;
-import com.sencha.gxt.core.client.util.Padding;
-import com.sencha.gxt.core.client.util.ToggleGroup;
-import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData;
-import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer.VBoxLayoutAlign;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.ui.Label;
+import com.sencha.gxt.widget.core.client.container.AbstractHtmlLayoutContainer.HtmlData;
+import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
 import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.NavigationEvent;
-import de.kickerapp.client.widgets.AppToggleButton;
 
-public class NavigationPanel extends BasePanel {
+public class NavigationPanel extends SimpleContainer {
 
-	private AppToggleButton tbnTable;
+	private Label label1;
+	private Label label2;
+	private Label label3;
+	private Label label4;
 
-	private AppToggleButton tbnResult;
-
-	private AppToggleButton tbnInput;
-
-	private AppToggleButton tbnPlayer;
-
-	private ToggleGroup tgroup;
+	private Label current;
 
 	/**
 	 * Erzeugt einen neuen Controller zum Eintragen neuer Spieler für die
@@ -37,89 +32,73 @@ public class NavigationPanel extends BasePanel {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void initLayout() {
-		super.initLayout();
-		setHeaderVisible(true);
-
-		initButtons();
-		initButtonHandlers();
-
-		add(createButtonLayout());
+		add(createHeader());
 	}
 
-	private void initButtons() {
-		tgroup = new ToggleGroup();
+	private HtmlLayoutContainer createHeader() {
+		final SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
-		tbnTable = createButton("Tabelle");
-		tbnResult = createButton("Ergebnisse");
-		tbnInput = createButton("Spiel eintragen");
-		tbnPlayer = createButton("Spieler");
+		sb.appendHtmlConstant("<div id='tabs26'>" + "<ul><li><div class='label1'></div></li>" + "<li><div class='label2'></div></li> "
+				+ "<li><div class='label3'></div></li>" + "<li><div class='label4'></div></li>" + "</ul></div>");
 
-		tgroup.setValue(tbnTable);
-	}
+		final HtmlLayoutContainer htmlLcHeader = new HtmlLayoutContainer(sb.toSafeHtml());
+		htmlLcHeader.setStateful(false);
 
-	private void initButtonHandlers() {
-		tbnTable.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+		label1 = new Label("Tabelle");
+		label1.setStyleName("label", true);
+		label1.addClickHandler(new ClickHandler() {
 			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if (event.getValue()) {
-					AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLE));
-				}
+			public void onClick(ClickEvent event) {
+				AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
+				current.setStyleName("current", false);
+				current = label1;
+				current.setStyleName("current", true);
 			}
 		});
-		tbnResult.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+		current = label1;
+		current.setStyleName("current", true);
+		label2 = new Label("Ergebnisse");
+		label2.setStyleName("label", true);
+		label2.addClickHandler(new ClickHandler() {
 			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if (event.getValue()) {
-					AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.RESULT));
-				}
+			public void onClick(ClickEvent event) {
+				AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.MATCHES));
+				current.setStyleName("current", false);
+				current = label2;
+				current.setStyleName("current", true);
 			}
 		});
-		tbnInput.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+		label3 = new Label("Spiel eintragen");
+		label3.setStyleName("label", true);
+		label3.addClickHandler(new ClickHandler() {
 			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if (event.getValue()) {
-					AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.INPUT));
-				}
+			public void onClick(ClickEvent event) {
+				AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.INPUT));
+				current.setStyleName("current", false);
+				current = label3;
+				current.setStyleName("current", true);
 			}
 		});
-		tbnPlayer.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+		label4 = new Label("Spieler");
+		label4.setStyleName("label", true);
+		label4.addClickHandler(new ClickHandler() {
 			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if (event.getValue()) {
-					AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.PLAYER));
-				}
+			public void onClick(ClickEvent event) {
+				AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.PLAYER));
+				current.setStyleName("current", false);
+				current = label4;
+				current.setStyleName("current", true);
 			}
 		});
+
+		htmlLcHeader.add(label1, new HtmlData(".label1"));
+		htmlLcHeader.add(label2, new HtmlData(".label2"));
+		htmlLcHeader.add(label3, new HtmlData(".label3"));
+		htmlLcHeader.add(label4, new HtmlData(".label4"));
+
+		return htmlLcHeader;
 	}
 
-	/**
-	 * Hilfsmethode zum Erzeugen eines <code>Button</code> für die
-	 * Navigationsleiste.
-	 * 
-	 * @param title Der Titel des <code>Button</code> als <code>String</code>.
-	 * @return Der erzeugte <code>Button</code>.
-	 */
-	private AppToggleButton createButton(String title) {
-		final AppToggleButton button = new AppToggleButton(title);
-		button.setAllowDepress(false);
-		button.setHeight(30);
-		tgroup.add(button);
-
-		return button;
-	}
-
-	private VBoxLayoutContainer createButtonLayout() {
-		final VBoxLayoutContainer vlcButtons = new VBoxLayoutContainer();
-		vlcButtons.setPadding(new Padding(5));
-		vlcButtons.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
-
-		vlcButtons.add(tbnTable, new BoxLayoutData(new Margins(0, 0, 10, 0)));
-		vlcButtons.add(tbnResult, new BoxLayoutData(new Margins(0, 0, 10, 0)));
-		vlcButtons.add(tbnInput, new BoxLayoutData(new Margins(0, 0, 10, 0)));
-		vlcButtons.add(tbnPlayer, new BoxLayoutData(new Margins()));
-
-		return vlcButtons;
-	}
 }

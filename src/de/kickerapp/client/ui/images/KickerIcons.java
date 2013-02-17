@@ -14,6 +14,15 @@ public interface KickerIcons extends ClientBundle {
 	/** Die Icons. */
 	public final KickerIcons ICON = GWT.create(KickerIcons.class);
 
+	@Source("table.png")
+	ImageResource table();
+
+	@Source("table_save.png")
+	ImageResource table_save();
+
+	@Source("table_refresh.png")
+	ImageResource table_refresh();
+
 	@Source("soccer_ball.png")
 	ImageResource soccerBall();
 

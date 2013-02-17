@@ -29,6 +29,8 @@ public class AppComboBox<T> extends ComboBox<T> {
 	 * Erzeugt ein neues TextField mit übergebenem Standardtext, falls das
 	 * Textfield leer ist.
 	 * 
+	 * @param store Der Datenspeicher der ComboBox.
+	 * @param labelProvider Der LabelProvider der ComboBox.
 	 * @param emptyText Der Standardtext des TextFields als {@link String}.
 	 */
 	public AppComboBox(ListStore<T> store, LabelProvider<? super T> labelProvider, String emptyText) {
@@ -40,6 +42,7 @@ public class AppComboBox<T> extends ComboBox<T> {
 	   * Creates a new combo box with the given cell.
 	   * 
 	   * @param cell the cell
+	   * @param emptyText Der Standardtext des TextFields als {@link String}.
 	   */
 	  public AppComboBox(ComboBoxCell<T> cell, String emptyText) {
 	    super(cell);

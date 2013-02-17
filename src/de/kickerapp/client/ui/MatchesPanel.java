@@ -9,7 +9,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.Store;
-import com.sencha.gxt.widget.core.client.Portlet;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -21,14 +20,18 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.filters.DateFilter;
 import com.sencha.gxt.widget.core.client.grid.filters.GridFilters;
 import com.sencha.gxt.widget.core.client.grid.filters.ListFilter;
+import com.sencha.gxt.widget.core.client.toolbar.SeparatorToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.event.ShowDataEventHandler;
+import de.kickerapp.client.event.UpdatePanelEvent;
+import de.kickerapp.client.event.UpdatePanelEventHandler;
 import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.properties.MatchProperty;
 import de.kickerapp.client.services.KickerServices;
+import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.IMatch;
@@ -39,11 +42,13 @@ import de.kickerapp.shared.dto.TeamDto;
 /**
  * @author Sebastian Filke
  */
-public class MatchesPanel extends BasePanel implements ShowDataEventHandler {
+public class MatchesPanel extends BasePanel implements ShowDataEventHandler, UpdatePanelEventHandler {
 
 	private ListStore<IMatch> store;
-	private AppButton btnUpdate;
+
 	private StoreFilterField<IMatch> sffGrid;
+
+	private boolean doUpdate;
 
 	public MatchesPanel() {
 		super();
@@ -61,11 +66,11 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler {
 
 		store = new ListStore<IMatch>(KickerProperties.MATCH_PROPERTY.id());
 
+		doUpdate = true;
+
 		final VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
 		vlcMain.add(createToolBar(), new VerticalLayoutData(1, -1));
 		vlcMain.add(createGrid(), new VerticalLayoutData(1, 1));
-		
-		initPanelButtons(null);
 
 		add(vlcMain);
 	}
@@ -77,7 +82,9 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler {
 	protected void initHandlers() {
 		super.initHandlers();
 
-		AppEventBus.addHandler(ShowDataEvent.ALL_PANEL, this);
+		AppEventBus.addHandler(ShowDataEvent.MATCHES, this);
+		AppEventBus.addHandler(UpdatePanelEvent.ALL, this);
+		AppEventBus.addHandler(UpdatePanelEvent.MATCHES, this);
 	}
 
 	private ToolBar createToolBar() {
@@ -134,6 +141,8 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler {
 		sffGrid.setWidth(250);
 		sffGrid.setEmptyText("Nach Spieler/Team suchen...");
 
+		toolBar.add(createBtnUpdate());
+		toolBar.add(new SeparatorToolItem());
 		toolBar.add(sffGrid);
 		return toolBar;
 	}
@@ -184,40 +193,42 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler {
 		return grid;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initPanelButtons(Portlet portletMatches) {
-		btnUpdate = new AppButton("Aktualisieren");
+	private AppButton createBtnUpdate() {
+		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.table_refresh());
 		btnUpdate.setToolTip("Aktualisiert die Ergebnisse der zuletzt gespielten Spiele");
 		btnUpdate.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
+				setDoUpdate();
 				getMatches();
 			}
+
+			private void setDoUpdate() {
+				doUpdate = true;
+			}
 		});
-		addButton(btnUpdate);
+		return btnUpdate;
 	}
 
 	private void getMatches() {
-		btnUpdate.setEnabled(false);
-		mask("Aktualisiere...");
-		clearInput();
-		KickerServices.MATCH_SERVICE.getAllMatches(new AsyncCallback<ArrayList<MatchDto>>() {
-			@Override
-			public void onSuccess(ArrayList<MatchDto> result) {
-				store.addAll(result);
-				btnUpdate.setEnabled(true);
-				unmask();
-			}
+		if (doUpdate) {
+			mask("Aktualisiere...");
+			clearInput();
+			KickerServices.MATCH_SERVICE.getAllMatches(new AsyncCallback<ArrayList<MatchDto>>() {
+				@Override
+				public void onSuccess(ArrayList<MatchDto> result) {
+					store.addAll(result);
+					doUpdate = false;
+					unmask();
+				}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				btnUpdate.setEnabled(true);
-				unmask();
-			}
-		});
+				@Override
+				public void onFailure(Throwable caught) {
+					doUpdate = false;
+					unmask();
+				}
+			});
+		}
 	}
 
 	private void clearInput() {
@@ -231,6 +242,11 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler {
 	@Override
 	public void showData(ShowDataEvent event) {
 		getMatches();
+	}
+
+	@Override
+	public void updatePanel(UpdatePanelEvent event) {
+		doUpdate = true;
 	}
 
 }

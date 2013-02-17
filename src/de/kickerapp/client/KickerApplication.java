@@ -5,10 +5,13 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.container.MarginData;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.Viewport;
 
 import de.kickerapp.client.ui.MainPanel;
+import de.kickerapp.client.widgets.AppContentPanel;
 
 /**
  * Hauptklasse welche die Applikation initalisiert und beim Start aufgerufen

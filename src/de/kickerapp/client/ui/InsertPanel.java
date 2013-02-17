@@ -28,12 +28,10 @@ import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.ListView;
-import com.sencha.gxt.widget.core.client.Portlet;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
 import com.sencha.gxt.widget.core.client.container.HBoxLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HBoxLayoutContainer.HBoxLayoutAlign;
-import com.sencha.gxt.widget.core.client.container.MarginData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -43,11 +41,14 @@ import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.form.FormPanel.LabelAlign;
 import com.sencha.gxt.widget.core.client.form.Radio;
 import com.sencha.gxt.widget.core.client.info.Info;
+import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 import de.kickerapp.client.event.AppEventBus;
-import de.kickerapp.client.event.ShowDataEvent;
+import de.kickerapp.client.event.TabPanelEvent;
+import de.kickerapp.client.event.UpdatePanelEvent;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
+import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.ui.resources.KickerTemplates;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
@@ -62,7 +63,7 @@ import de.kickerapp.shared.dto.TeamDto;
  * 
  * @author Sebastian Filke
  */
-public class ResultPanel extends BasePanel {
+public class InsertPanel extends BasePanel {
 
 	/** Die Ergebnisse für den ersten Satz. */
 	private AppComboBox<Integer> cbSet1Team1, cbSet1Team2;
@@ -77,13 +78,11 @@ public class ResultPanel extends BasePanel {
 
 	private ToggleGroup tgPlayType;
 
-	private AppButton bReport;
-
 	/**
 	 * Erzeugt einen neuen Controller zum Eintragen der Ergebnisse und Spieler
 	 * eines Spiels.
 	 */
-	public ResultPanel() {
+	public InsertPanel() {
 		super();
 		initLayout();
 	}
@@ -94,18 +93,29 @@ public class ResultPanel extends BasePanel {
 	@Override
 	public void initLayout() {
 		super.initLayout();
-		setHeadingHtml("<span id='panelHeading'>Ergebnis eintragen</span>");
+		setHeadingHtml("<span id='panelHeading'>Spiel eintragen</span>");
 
 		final VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
 
+		final ToolBar toolBar = createToolBar();
+		vlcMain.add(toolBar, new VerticalLayoutData(1, -1));
+
 		final FieldSet fieldSetResult = createResultFieldSet();
-		vlcMain.add(fieldSetResult, new VerticalLayoutData(1, -1, new Margins(0, 0, 5, 0)));
+		vlcMain.add(fieldSetResult, new VerticalLayoutData(1, -1, new Margins(10, 10, 5, 10)));
 
 		final FieldSet fieldSetSetPlayers = createPlayersFieldSet();
-		vlcMain.add(fieldSetSetPlayers, new VerticalLayoutData(1, -1));
+		vlcMain.add(fieldSetSetPlayers, new VerticalLayoutData(1, -1, new Margins(0, 10, 10, 10)));
 
-		add(vlcMain, new MarginData(10));
-		initPanelButtons(null);
+		add(vlcMain);
+	}
+
+	private ToolBar createToolBar() {
+		final ToolBar toolBar = new ToolBar();
+		toolBar.setEnableOverflow(false);
+
+		toolBar.add(createBtnInsert());
+		toolBar.add(createBtnReset());
+		return toolBar;
 	}
 
 	/**
@@ -436,20 +446,8 @@ public class ResultPanel extends BasePanel {
 		return cbPlayer;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initPanelButtons(Portlet portletResult) {
-		final AppButton bReset = new AppButton("Eingaben zurücksetzen");
-		bReset.setToolTip("Setzt alle eingegebenen Daten zurück");
-		bReset.addSelectHandler(new SelectHandler() {
-			@Override
-			public void onSelect(SelectEvent event) {
-				clearInput();
-			}
-		});
-		bReport = new AppButton("Ergebnis eintragen");
+	private AppButton createBtnInsert() {
+		final AppButton bReport = new AppButton("Ergebnis eintragen", KickerIcons.ICON.table_save());
 		bReport.setToolTip("Speichert das Ergebnis und trägt es in die Liste ein");
 		bReport.addSelectHandler(new SelectHandler() {
 			@Override
@@ -457,37 +455,44 @@ public class ResultPanel extends BasePanel {
 				createMatch();
 			}
 		});
-		addButton(bReset);
-		addButton(bReport);
+		return bReport;
+	}
+
+	private AppButton createBtnReset() {
+		final AppButton bReset = new AppButton("Eingaben zurücksetzen", KickerIcons.ICON.table());
+		bReset.setToolTip("Setzt alle eingegebenen Daten zurück");
+		bReset.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				clearInput();
+			}
+		});
+		return bReset;
 	}
 
 	private void createMatch() {
 		mask("Spiel wird eingetragen...");
-		bReport.setEnabled(false);
-
 		final MatchDto newMatch = makeMatch();
-
 		KickerServices.MATCH_SERVICE.createSingleMatch(newMatch, new AsyncCallback<MatchDto>() {
 			@Override
 			public void onSuccess(MatchDto result) {
 				Info.display("Erfolgreich", "Spiel wurde erfolgreich eingetragen");
 				clearInput();
-				bReport.setEnabled(true);
 
 				int activeWidget = 0;
 				if (result.getMatchType() == MatchType.Double) {
 					activeWidget = 1;
 				}
-				final ShowDataEvent showDataEvent = new ShowDataEvent(ShowDataEvent.ALL_PANEL);
-				showDataEvent.setActiveWidget(activeWidget);
-				AppEventBus.fireEvent(showDataEvent);
+				final TabPanelEvent tabPanelEvent = new TabPanelEvent();
+				tabPanelEvent.setActiveWidget(activeWidget);
+				AppEventBus.fireEvent(tabPanelEvent);
+				AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL));
 
 				unmask();
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
-				bReport.setEnabled(true);
 				unmask();
 			}
 		});

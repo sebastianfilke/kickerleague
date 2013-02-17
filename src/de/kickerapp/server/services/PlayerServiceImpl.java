@@ -56,7 +56,13 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 					comp = p1.getPlayerSingleStats().getSingleCurTablePlace().compareTo(p2.getPlayerSingleStats().getSingleCurTablePlace());
 				}
 			} else if (p1.getPlayerDoubleStats() != null && p2.getPlayerDoubleStats() != null) {
-				comp = p1.getPlayerDoubleStats().getDoubleCurTablePlace().compareTo(p2.getPlayerDoubleStats().getDoubleCurTablePlace());
+				if (p1.getPlayerDoubleStats().getDoubleCurTablePlace() == 0) {
+					comp = 1;
+				} else if (p2.getPlayerDoubleStats().getDoubleCurTablePlace() == 0) {
+					comp = -1;
+				} else {
+					comp = p1.getPlayerDoubleStats().getDoubleCurTablePlace().compareTo(p2.getPlayerDoubleStats().getDoubleCurTablePlace());
+				}
 			}
 			return comp;
 		}

@@ -26,6 +26,8 @@ public class TeamServiceHelper {
 		teamDto.setLosses(teamStats.getLosses());
 		teamDto.setShotGoals(teamStats.getShotGoals());
 		teamDto.setGetGoals(teamStats.getGetGoals());
+		teamDto.setPrevTablePlace(teamStats.getPrevTablePlace());
+		teamDto.setCurTablePlace(teamStats.getCurTablePlace());
 		teamDto.setPoints(teamStats.getPoints());
 		teamDto.setTendency(teamStats.getTendency());
 

@@ -15,7 +15,6 @@ import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.Store;
 import com.sencha.gxt.theme.gray.client.tabs.GrayTabPanelBottomAppearance;
-import com.sencha.gxt.widget.core.client.Portlet;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.TabPanel.TabPanelAppearance;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -27,16 +26,21 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.RowNumberer;
+import com.sencha.gxt.widget.core.client.toolbar.SeparatorToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.event.ShowDataEventHandler;
+import de.kickerapp.client.event.TabPanelEvent;
+import de.kickerapp.client.event.TabPanelEventHandler;
 import de.kickerapp.client.event.UpdatePanelEvent;
+import de.kickerapp.client.event.UpdatePanelEventHandler;
 import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.properties.TeamProperty;
 import de.kickerapp.client.services.KickerServices;
+import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.IPlayer;
@@ -44,7 +48,7 @@ import de.kickerapp.shared.dto.ITeam;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
 
-public class TablePanel extends BasePanel implements ShowDataEventHandler {
+public class TablesPanel extends BasePanel implements ShowDataEventHandler, UpdatePanelEventHandler, TabPanelEventHandler {
 
 	private ListStore<IPlayer> storeSingleTable;
 
@@ -58,13 +62,13 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 
 	private StoreFilterField<ITeam> sffDoubleTableTeamView;
 
-	private AppButton btnUpdate;
-
 	private int activeWidget;
 
 	private TabPanel tabPanel;
 
-	public TablePanel() {
+	private boolean doUpdateSingleTable, doUpdateDoubleTableSingleView, doUpdateDoubleTableTeamView;
+
+	public TablesPanel() {
 		super();
 		initLayout();
 		initHandlers();
@@ -77,8 +81,10 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 	protected void initHandlers() {
 		super.initHandlers();
 
-		AppEventBus.addHandler(ShowDataEvent.ALL_PANEL, this);
-		AppEventBus.addHandler(ShowDataEvent.TABLE_PANEL, this);
+		AppEventBus.addHandler(ShowDataEvent.TABLES, this);
+		AppEventBus.addHandler(TabPanelEvent.TYPE, this);
+		AppEventBus.addHandler(UpdatePanelEvent.ALL, this);
+		AppEventBus.addHandler(UpdatePanelEvent.TABLES, this);
 	}
 
 	/**
@@ -89,6 +95,9 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 		super.initLayout();
 		setHeadingHtml("<span id='panelHeading'>Aktuelle Spielertabelle (Einzelansicht)</span>");
 
+		doUpdateSingleTable = true;
+		doUpdateDoubleTableSingleView = true;
+		doUpdateDoubleTableTeamView = true;
 		activeWidget = 0;
 
 		storeSingleTable = new ListStore<IPlayer>(KickerProperties.PLAYER_PROPERTY.id());
@@ -109,10 +118,18 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 				final Widget w = event.getSelectedItem();
 
 				activeWidget = panel.getWidgetIndex(w);
+				setHeading();
+				getTable();
+			}
 
-				final UpdatePanelEvent updateEvent = new UpdatePanelEvent();
-				updateEvent.setActiveWidget(activeWidget);
-				AppEventBus.fireEvent(updateEvent);
+			private void setHeading() {
+				if (activeWidget == 0) {
+					setHeadingHtml("<span id='panelHeading'>Aktuelle Spielertabelle (Einzelansicht)</span>");
+				} else if (activeWidget == 1) {
+					setHeadingHtml("<span id='panelHeading'>Aktuelle Spielertabelle (Teamansicht)</span>");
+				} else {
+					setHeadingHtml("<span id='panelHeading'>Aktuelle Teamtabelle</span>");
+				}
 			}
 		});
 		tabPanel.setResizeTabs(true);
@@ -136,8 +153,6 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 		tabPanel.setBodyBorder(false);
 		tabPanel.setBorders(false);
 
-		initPanelButtons(null);
-
 		return tabPanel;
 	}
 
@@ -158,6 +173,8 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 		sffSingleTable.setWidth(250);
 		sffSingleTable.setEmptyText("Nach Spieler suchen...");
 
+		toolBar.add(createBtnUpdate());
+		toolBar.add(new SeparatorToolItem());
 		toolBar.add(sffSingleTable);
 		return toolBar;
 	}
@@ -224,6 +241,8 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 		sffDoubleTableSingleView.setWidth(250);
 		sffDoubleTableSingleView.setEmptyText("Nach Spieler suchen...");
 
+		toolBar.add(createBtnUpdate());
+		toolBar.add(new SeparatorToolItem());
 		toolBar.add(sffDoubleTableSingleView);
 		return toolBar;
 	}
@@ -302,6 +321,8 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 		sffDoubleTableTeamView.setWidth(250);
 		sffDoubleTableTeamView.setEmptyText("Nach Spieler/Team suchen...");
 
+		toolBar.add(createBtnUpdate());
+		toolBar.add(new SeparatorToolItem());
 		toolBar.add(sffDoubleTableTeamView);
 		return toolBar;
 	}
@@ -351,22 +372,6 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 		return grid;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initPanelButtons(Portlet portletTable) {
-		btnUpdate = new AppButton("Aktualisieren");
-		btnUpdate.setToolTip("Aktualisiert die Tabelle");
-		btnUpdate.addSelectHandler(new SelectHandler() {
-			@Override
-			public void onSelect(SelectEvent event) {
-				getTable();
-			}
-		});
-		addButton(btnUpdate);
-	}
-
 	private void getTable() {
 		if (activeWidget == 0) {
 			getSingleTable();
@@ -378,66 +383,89 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private void getSingleTable() {
-		btnUpdate.setEnabled(false);
-		mask("Aktualisiere...");
-		storeSingleTable.clear();
+		if (doUpdateSingleTable) {
+			mask("Aktualisiere...");
+			storeSingleTable.clear();
+			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.Single, new AsyncCallback<ArrayList<PlayerDto>>() {
+				@Override
+				public void onSuccess(ArrayList<PlayerDto> result) {
+					storeSingleTable.addAll(result);
+					doUpdateSingleTable = false;
+					unmask();
+				}
 
-		KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.Single, new AsyncCallback<ArrayList<PlayerDto>>() {
-			@Override
-			public void onSuccess(ArrayList<PlayerDto> result) {
-				storeSingleTable.addAll(result);
-				btnUpdate.setEnabled(true);
-				unmask();
-			}
-
-			@Override
-			public void onFailure(Throwable caught) {
-				btnUpdate.setEnabled(true);
-				unmask();
-			}
-		});
+				@Override
+				public void onFailure(Throwable caught) {
+					doUpdateSingleTable = false;
+					unmask();
+				}
+			});
+		}
 	}
 
 	private void getDoubleTableSingleView() {
-		btnUpdate.setEnabled(false);
-		mask("Aktualisiere...");
-		storeDoubleTableSingleView.clear();
+		if (doUpdateDoubleTableSingleView) {
+			mask("Aktualisiere...");
+			storeDoubleTableSingleView.clear();
+			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.Double, new AsyncCallback<ArrayList<PlayerDto>>() {
+				@Override
+				public void onSuccess(ArrayList<PlayerDto> result) {
+					storeDoubleTableSingleView.addAll(result);
+					doUpdateDoubleTableSingleView = false;
+					unmask();
+				}
 
-		KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.Double, new AsyncCallback<ArrayList<PlayerDto>>() {
-			@Override
-			public void onSuccess(ArrayList<PlayerDto> result) {
-				storeDoubleTableSingleView.addAll(result);
-				btnUpdate.setEnabled(true);
-				unmask();
-			}
-
-			@Override
-			public void onFailure(Throwable caught) {
-				btnUpdate.setEnabled(true);
-				unmask();
-			}
-		});
+				@Override
+				public void onFailure(Throwable caught) {
+					doUpdateDoubleTableSingleView = false;
+					unmask();
+				}
+			});
+		}
 	}
 
 	private void getDoubleTableTeamView() {
-		btnUpdate.setEnabled(false);
-		mask("Aktualisiere...");
-		storeDoubleTableTeamView.clear();
+		if (doUpdateDoubleTableTeamView) {
+			mask("Aktualisiere...");
+			storeDoubleTableTeamView.clear();
+			KickerServices.TEAM_SERVICE.getAllTeams(new AsyncCallback<ArrayList<TeamDto>>() {
+				@Override
+				public void onSuccess(ArrayList<TeamDto> result) {
+					storeDoubleTableTeamView.addAll(result);
+					doUpdateDoubleTableTeamView = false;
+					unmask();
+				}
 
-		KickerServices.TEAM_SERVICE.getAllTeams(new AsyncCallback<ArrayList<TeamDto>>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					doUpdateDoubleTableTeamView = false;
+					unmask();
+				}
+			});
+		}
+	}
+
+	private AppButton createBtnUpdate() {
+		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.table_refresh());
+		btnUpdate.setToolTip("Aktualisiert die Tabelle");
+		btnUpdate.addSelectHandler(new SelectHandler() {
 			@Override
-			public void onSuccess(ArrayList<TeamDto> result) {
-				storeDoubleTableTeamView.addAll(result);
-				btnUpdate.setEnabled(true);
-				unmask();
+			public void onSelect(SelectEvent event) {
+				setDoUpdate();
+				getTable();
 			}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				btnUpdate.setEnabled(true);
-				unmask();
+			private void setDoUpdate() {
+				if (activeWidget == 0) {
+					doUpdateSingleTable = true;
+				} else if (activeWidget == 1) {
+					doUpdateDoubleTableSingleView = true;
+				} else {
+					doUpdateDoubleTableTeamView = true;
+				}
 			}
 		});
+		return btnUpdate;
 	}
 
 	/**
@@ -445,11 +473,28 @@ public class TablePanel extends BasePanel implements ShowDataEventHandler {
 	 */
 	@Override
 	public void showData(ShowDataEvent event) {
+		getTable();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setActiveWidget(TabPanelEvent event) {
 		if (activeWidget != event.getActiveWidget()) {
 			activeWidget = event.getActiveWidget();
 			tabPanel.setActiveWidget(tabPanel.getWidget(activeWidget));
 		}
-		getTable();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void updatePanel(UpdatePanelEvent event) {
+		doUpdateSingleTable = true;
+		doUpdateDoubleTableSingleView = true;
+		doUpdateDoubleTableTeamView = true;
 	}
 
 }
