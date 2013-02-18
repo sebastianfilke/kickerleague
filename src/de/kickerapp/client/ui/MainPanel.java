@@ -17,11 +17,13 @@ import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.ui.resources.KickerMessages;
 
 /**
- * Basis-Controller zur Darstellung und Verarbeitung der Applikation.
+ * Basis-Layout zur Darstellung und Verarbeitung der Applikation.
  * 
  * @author Sebastian Filke
  */
 public class MainPanel extends VerticalLayoutContainer implements NavigationEventHandler {
+
+	private CardLayoutContainer clcContent;
 
 	private TablesPanel tablePanel;
 
@@ -31,10 +33,6 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 
 	private PlayerPanel playerPanel;
 
-	private NavigationPanel navigationPanel;
-
-	private CardLayoutContainer clcContent;
-
 	public MainPanel() {
 		super();
 		initLayout();
@@ -42,29 +40,22 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * 
 	 */
 	public void initLayout() {
-		setId("transparentBackground");
-		setBorders(false);
-
 		tablePanel = new TablesPanel();
 		matchesPanel = new MatchesPanel();
 		resultPanel = new InsertPanel();
 		playerPanel = new PlayerPanel();
-		navigationPanel = new NavigationPanel();
 
-		clcContent = new CardLayoutContainer();
-		clcContent.add(tablePanel);
-		clcContent.add(matchesPanel);
-		clcContent.add(resultPanel);
-		clcContent.add(playerPanel);
-
-		add(createPageHeader(), new VerticalLayoutData(1, 92));
-		add(navigationPanel, new VerticalLayoutData(1, 42));
-		add(createContentLayout(), new VerticalLayoutData(1, 1));
+		add(createHeader(), new VerticalLayoutData(1, 92));
+		add(new NavigationPanel(), new VerticalLayoutData(1, 42));
+		add(createContent(), new VerticalLayoutData(1, 1));
 	}
 
+	/**
+	 * 
+	 */
 	private void initHandlers() {
 		AppEventBus.addHandler(NavigationEvent.TABLES, this);
 		AppEventBus.addHandler(NavigationEvent.MATCHES, this);
@@ -72,22 +63,24 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 		AppEventBus.addHandler(NavigationEvent.PLAYER, this);
 	}
 
-	private HtmlLayoutContainer createPageHeader() {
+	private HtmlLayoutContainer createHeader() {
 		final SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
 		sb.appendHtmlConstant("<div id='header'><div id='headerIcon'>");
 		sb.append(AbstractImagePrototype.create(KickerIcons.ICON.soccerBall()).getSafeHtml());
 		sb.appendHtmlConstant("</div>");
-		sb.appendHtmlConstant("<div id='headerTitle'>" + KickerMessages.MAIN_PANEL.mainPanelTitle() + "</div><div>");
+		sb.appendHtmlConstant("<div id='headerText'>");
+		sb.appendHtmlConstant(KickerMessages.MAIN_PANEL.mainPanelTitle());
+		sb.appendHtmlConstant("</div><div>");
 
 		final HtmlLayoutContainer htmlLcHeader = new HtmlLayoutContainer(sb.toSafeHtml());
-		htmlLcHeader.setId("pageHeaderBackground");
+		htmlLcHeader.setId("headerBackground");
 		htmlLcHeader.setStateful(false);
 
 		return htmlLcHeader;
 	}
 
-	private VerticalLayoutContainer createContentLayout() {
+	private VerticalLayoutContainer createContent() {
 		final VerticalLayoutContainer vlcContent = new VerticalLayoutContainer();
 		vlcContent.setId("contentBackground");
 		vlcContent.setScrollMode(ScrollMode.AUTOY);
@@ -95,10 +88,16 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 		final BorderLayoutContainer blcContent = new BorderLayoutContainer();
 		blcContent.setId("content");
 
+		clcContent = new CardLayoutContainer();
+		clcContent.add(tablePanel);
+		clcContent.add(matchesPanel);
+		clcContent.add(resultPanel);
+		clcContent.add(playerPanel);
+
 		blcContent.setCenterWidget(clcContent, new MarginData(5));
 
 		vlcContent.add(blcContent, new VerticalLayoutData(1200, 1000));
-		vlcContent.add(createFooter(), new VerticalLayoutData(1200, 80));
+		vlcContent.add(createFooter(), new VerticalLayoutData(1200, 50));
 
 		return vlcContent;
 	}
@@ -106,15 +105,21 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 	private HtmlLayoutContainer createFooter() {
 		final SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
-		sb.appendHtmlConstant("<div id='footerTitle'>Design und Idee von Sebastian Filke, 2013<br/>Impressum &bull; Kontakt<br/>Version: 0.5.2</div>");
+		sb.appendHtmlConstant("<div id='footer'>");
+		sb.appendHtmlConstant("<div id='footerLinks'>Impressum | Kontakt</div>");
+		sb.appendHtmlConstant("<div id='footerText'>Design und Idee &#064; Sebastian Filke, 2013 | Version: 0.5.2</div>");
+		sb.appendHtmlConstant("</div>");
 
 		final HtmlLayoutContainer htmlLcTitle = new HtmlLayoutContainer(sb.toSafeHtml());
-		htmlLcTitle.setId("pageFooterBackground");
+		htmlLcTitle.setId("footerBackground");
 		htmlLcTitle.setStateful(false);
 
 		return htmlLcTitle;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void navigationPressed(final NavigationEvent navEvent) {
 		if (navEvent.getAssociatedType() == NavigationEvent.TABLES) {

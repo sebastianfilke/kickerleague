@@ -16,6 +16,7 @@ body {
 	font-style: normal;
 }
 
+/* Header */
 #header {
 	position: relative;
 	padding: 12px 0px 0px 0px;
@@ -28,7 +29,7 @@ body {
 	padding-right: 10px;
 }
 
-#headerTitle {
+#headerText {
 	float: left;
 	font: 40px ChunkFiveRegular;
 	text-shadow: 0 -1px 1px #fff, 5px 2px 2px #383838;
@@ -36,35 +37,44 @@ body {
 	padding: 12px 0px 0px 0px;
 }
 
-#pageHeaderBackground {
-	background: url("../images/header_bg.png") repeat-x scroll #616161
+#headerBackground {
+	background: url("../images/header_bg.png") repeat-x scroll #606060
 		!important;
 }
 
-#footerTitle {
-	font: 14px ChunkFiveRegular;
-	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
-	text-align: center;
-}
-
-#pageFooterBackground {
-	background-color: transparent;
-	margin: 0 auto;
-}
-
-#transparentBackground {
-	background-color: transparent;
-}
-
+/* Content */
 #content {
 	box-shadow: 4px 4px 10px #666;
-	margin: 20px auto;
+	margin: 20px auto 12px auto;
 }
 
 #contentBackground {
-	background: url("../images/page_bg.png") repeat-x scroll #fff !important;
+	background: url("../images/content_bg.png") repeat-x scroll #fff
+		!important;
 }
 
+/* Footer */
+#footer {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+}
+
+#footerLinks {
+	position: absolute;
+	left: 0px;
+}
+
+#footerText {
+	position: absolute;
+	right: 0px;
+}
+
+#footerBackground {
+	margin: 0 auto;
+}
+
+/* General */
 #panelHeading {
 	font: 14px ChunkFiveRegular;
 	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;

@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.IdentityValueProvider;
+import com.sencha.gxt.core.client.util.DateWrapper;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.core.client.util.ToggleGroup;
 import com.sencha.gxt.data.client.loader.RpcProxy;
@@ -36,10 +37,13 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.CheckBox;
+import com.sencha.gxt.widget.core.client.form.DateField;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.form.FormPanel.LabelAlign;
 import com.sencha.gxt.widget.core.client.form.Radio;
+import com.sencha.gxt.widget.core.client.form.TimeField;
 import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
@@ -77,6 +81,8 @@ public class InsertPanel extends BasePanel {
 	private AppComboBox<PlayerDto> cbTeam2Player1, cbTeam2Player2;
 
 	private ToggleGroup tgPlayType;
+	private DateField dfMatchDate;
+	private TimeField tfMatchTime;
 
 	/**
 	 * Erzeugt einen neuen Controller zum Eintragen der Ergebnisse und Spieler
@@ -102,6 +108,9 @@ public class InsertPanel extends BasePanel {
 
 		final FieldSet fieldSetResult = createResultFieldSet();
 		vlcMain.add(fieldSetResult, new VerticalLayoutData(1, -1, new Margins(10, 10, 5, 10)));
+
+		final FieldSet fieldSetDateTime = createDateTimeFieldSet();
+		vlcMain.add(fieldSetDateTime, new VerticalLayoutData(1, -1, new Margins(0, 10, 5, 10)));
 
 		final FieldSet fieldSetSetPlayers = createPlayersFieldSet();
 		vlcMain.add(fieldSetSetPlayers, new VerticalLayoutData(1, -1, new Margins(0, 10, 10, 10)));
@@ -235,7 +244,7 @@ public class InsertPanel extends BasePanel {
 		});
 	}
 
-	protected void enableStatusForLastSet(Integer cbSet1Team1, Integer cbSet2Team1, Integer cbSet1Team2, Integer cbSet2Team2) {
+	private void enableStatusForLastSet(Integer cbSet1Team1, Integer cbSet2Team1, Integer cbSet1Team2, Integer cbSet2Team2) {
 		if ((cbSet1Team1 != null && cbSet1Team1 == 6) && (cbSet2Team1 != null && cbSet2Team1 == 6)) {
 			cbSet3Team1.clear();
 			cbSet3Team2.clear();
@@ -320,7 +329,7 @@ public class InsertPanel extends BasePanel {
 				return Integer.toString(item);
 			}
 		});
-		ArrayList<Integer> matchSet = new ArrayList<Integer>();
+		final ArrayList<Integer> matchSet = new ArrayList<Integer>();
 		for (int i = 0; i <= 6; i++) {
 			matchSet.add(i);
 		}
@@ -340,6 +349,78 @@ public class InsertPanel extends BasePanel {
 	}
 
 	/**
+	 * @return Das erzeugte FieldSet.
+	 */
+	private FieldSet createDateTimeFieldSet() {
+		final FieldSet fsDateTime = new FieldSet();
+		fsDateTime.setHeadingText("Datum/Uhrzeit");
+
+		final VerticalLayoutContainer vlcDateTime = new VerticalLayoutContainer();
+
+		vlcDateTime.add(createCheckBox(), new VerticalLayoutData(-1, -1));
+		vlcDateTime.add(createFieldSetDateTime(), new VerticalLayoutData(-1, -1));
+
+		fsDateTime.add(vlcDateTime);
+
+		return fsDateTime;
+	}
+
+	private CheckBox createCheckBox() {
+		final CheckBox cbCurrentTime = new CheckBox();
+		cbCurrentTime.setBoxLabel("Aktuelle Uhrzeit");
+		cbCurrentTime.setToolTip("Deaktivieren um die Zeit manuell einstellen");
+		cbCurrentTime.setValue(true);
+		cbCurrentTime.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				final CheckBox check = (CheckBox) event.getSource();
+
+				dfMatchDate.setValue(new Date());
+				dfMatchDate.setEnabled(false);
+				tfMatchTime.setValue(new Date());
+				tfMatchTime.setEnabled(false);
+				if (!check.getValue()) {
+					dfMatchDate.setEnabled(true);
+					tfMatchTime.setEnabled(true);
+				}
+			}
+		});
+
+		return cbCurrentTime;
+	}
+
+	private HBoxLayoutContainer createFieldSetDateTime() {
+		final HBoxLayoutContainer hblcResultInput = new HBoxLayoutContainer();
+		hblcResultInput.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
+		hblcResultInput.setPack(BoxLayoutPack.CENTER);
+
+		dfMatchDate = new DateField();
+		dfMatchDate.getDatePicker().setMinDate(new DateWrapper().addDays(-3).asDate());
+		dfMatchDate.getDatePicker().setMaxDate(new DateWrapper().asDate());
+		dfMatchDate.setEnabled(false);
+		dfMatchDate.setValue(new Date());
+
+		final FieldLabel fieldLabel1 = new FieldLabel(dfMatchDate, "Datum");
+		fieldLabel1.setLabelAlign(LabelAlign.TOP);
+
+		tfMatchTime = new TimeField();
+		tfMatchTime.setTriggerAction(TriggerAction.ALL);
+		tfMatchTime.setMinValue(new DateWrapper().clearTime().addHours(8).asDate());
+		tfMatchTime.setMaxValue(new DateWrapper().clearTime().addHours(22).addSeconds(1).asDate());
+		tfMatchTime.setEnabled(false);
+		tfMatchTime.setIncrement(1);
+		tfMatchTime.setValue(new Date());
+
+		final FieldLabel fieldLabel2 = new FieldLabel(tfMatchTime, "Zeit");
+		fieldLabel2.setLabelAlign(LabelAlign.TOP);
+
+		hblcResultInput.add(fieldLabel1, new BoxLayoutData(new Margins(0, 11, 0, 0)));
+		hblcResultInput.add(fieldLabel2, new BoxLayoutData());
+
+		return hblcResultInput;
+	}
+
+	/**
 	 * Erzeugt das Fieldset mit vier Textfeldern zum Eintragen der Spieler.
 	 * 
 	 * @return Das erzeugte Fieldset.
@@ -356,7 +437,6 @@ public class InsertPanel extends BasePanel {
 
 		cbTeam1Player1 = createPlayerComboBox(props, "Nach Spieler 1 suchen");
 		cbTeam1Player2 = createPlayerComboBox(props, "Nach Spieler 2 suchen");
-		cbTeam1Player2.setEnabled(false);
 
 		final FieldLabel fieldLabel1 = new FieldLabel(cbTeam1Player1, "Team 1");
 		fieldLabel1.setLabelAlign(LabelAlign.TOP);
@@ -365,7 +445,6 @@ public class InsertPanel extends BasePanel {
 
 		cbTeam2Player1 = createPlayerComboBox(props, "Nach Spieler 1 suchen");
 		cbTeam2Player2 = createPlayerComboBox(props, "Nach Spieler 2 suchen");
-		cbTeam2Player2.setEnabled(false);
 
 		final FieldLabel fieldLabel2 = new FieldLabel(cbTeam2Player1, "Team 2");
 		fieldLabel2.setLabelAlign(LabelAlign.TOP);
@@ -395,7 +474,7 @@ public class InsertPanel extends BasePanel {
 		tgPlayType = new ToggleGroup();
 		tgPlayType.add(rSingle);
 		tgPlayType.add(rDouble);
-		tgPlayType.setValue(rSingle);
+		tgPlayType.setValue(rDouble);
 		tgPlayType.addValueChangeHandler(new ValueChangeHandler<HasValue<Boolean>>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<HasValue<Boolean>> event) {
