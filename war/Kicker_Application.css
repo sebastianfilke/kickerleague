@@ -80,6 +80,20 @@ body {
 	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
 }
 
+.resultLabel1 {
+	font: 50px ChunkFiveRegular;
+	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
+	text-align: right;
+	line-height: 2;
+}
+
+.resultLabel2 {
+	font: 50px ChunkFiveRegular;
+	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
+	text-align: left;
+	line-height: 2;
+}
+
 /* ---------------------- Greenslate nav ---------------------- */
 #tabs26 {
 	position: relative;

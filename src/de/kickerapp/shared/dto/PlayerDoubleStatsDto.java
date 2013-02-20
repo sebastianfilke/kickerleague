@@ -20,6 +20,8 @@ public class PlayerDoubleStatsDto extends BaseData {
 
 	private Integer doubleCurTablePlace;
 
+	private Integer doubleLastMatchPoints;
+
 	private Integer doublePoints;
 
 	private Tendency doubleTendency;
@@ -32,34 +34,23 @@ public class PlayerDoubleStatsDto extends BaseData {
 		doubleGetGoals = 0;
 		doublePrevTablePlace = 0;
 		doubleCurTablePlace = 0;
+		doubleLastMatchPoints = 0;
 		doublePoints = 0;
 		doubleTendency = Tendency.Constant;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public Integer getDoubleWins() {
 		return doubleWins;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setDoubleWins(Integer doubleWins) {
 		this.doubleWins = doubleWins;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public Integer getDoubleLosses() {
 		return doubleLosses;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setDoubleLosses(Integer doubleLosses) {
 		this.doubleLosses = doubleLosses;
 	}
@@ -94,6 +85,14 @@ public class PlayerDoubleStatsDto extends BaseData {
 
 	public void setDoubleCurTablePlace(Integer doubleCurTablePlace) {
 		this.doubleCurTablePlace = doubleCurTablePlace;
+	}
+
+	public Integer getDoubleLastMatchPoints() {
+		return doubleLastMatchPoints;
+	}
+
+	public void setDoubleLastMatchPoints(Integer doubleLastMatchPoints) {
+		this.doubleLastMatchPoints = doubleLastMatchPoints;
 	}
 
 	public Integer getDoublePoints() {

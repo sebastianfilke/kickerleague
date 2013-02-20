@@ -14,6 +14,8 @@ public class MatchDto extends BaseData implements IMatch {
 
 	private Date matchDate;
 
+	private String groupDate;
+
 	private MatchType matchType;
 
 	private TeamDto team1;
@@ -58,6 +60,22 @@ public class MatchDto extends BaseData implements IMatch {
 	@Override
 	public Date getMatchDate() {
 		return matchDate;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setGroupDate(String groupDate) {
+		this.groupDate = groupDate;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getGroupDate() {
+		return groupDate;
 	}
 
 	/**

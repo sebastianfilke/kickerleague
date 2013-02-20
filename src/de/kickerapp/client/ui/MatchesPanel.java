@@ -1,10 +1,13 @@
 package de.kickerapp.client.ui;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 
+import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -17,6 +20,7 @@ import com.sencha.gxt.widget.core.client.form.StoreFilterField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.grid.GroupingView;
 import com.sencha.gxt.widget.core.client.grid.filters.DateFilter;
 import com.sencha.gxt.widget.core.client.grid.filters.GridFilters;
 import com.sencha.gxt.widget.core.client.grid.filters.ListFilter;
@@ -149,28 +153,95 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 
 	public Grid<IMatch> createGrid() {
 		final ColumnConfig<IMatch, String> ccNumber = new ColumnConfig<IMatch, String>(KickerProperties.MATCH_PROPERTY.matchNumber(), 40, "Nr.");
+		ccNumber.setGroupable(false);
+		ccNumber.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final Integer matchNumber1 = Integer.parseInt(o1);
+				final Integer matchNumber2 = Integer.parseInt(o2);
+				return matchNumber2.compareTo(matchNumber1);
+			}
+		});
 		final ColumnConfig<IMatch, Date> ccMatchDate = new ColumnConfig<IMatch, Date>(KickerProperties.MATCH_PROPERTY.matchDate(), 120, "Datum");
+		ccMatchDate.setGroupable(false);
 		ccMatchDate.setCell(new DateCell(DateTimeFormat.getFormat("dd.MM.yyyy HH:mm")));
+		final ColumnConfig<IMatch, String> ccGroupDate = new ColumnConfig<IMatch, String>(KickerProperties.MATCH_PROPERTY.groupDate(), 160, "Gruppe");
+		ccGroupDate.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final String date1 = o1.substring(o1.length() - 10, o1.length());
+				final String date2 = o2.substring(o2.length() - 10, o2.length());
+
+				final Integer year1 = Integer.parseInt(date1.substring(6, 10));
+				final Integer year2 = Integer.parseInt(date2.substring(6, 10));
+
+				int comp = year2.compareTo(year1);
+				if (comp == 0) {
+					final Integer month1 = Integer.parseInt(date1.substring(3, 5));
+					final Integer month2 = Integer.parseInt(date2.substring(3, 5));
+
+					comp = month2.compareTo(month1);
+					if (comp == 0) {
+						final Integer day1 = Integer.parseInt(date1.substring(0, 2));
+						final Integer day2 = Integer.parseInt(date2.substring(0, 2));
+						comp = day2.compareTo(day1);
+					}
+				}
+				return comp;
+			}
+		});
 		final ColumnConfig<IMatch, MatchType> ccMatchType = new ColumnConfig<IMatch, MatchType>(KickerProperties.MATCH_PROPERTY.matchType(), 80, "Typ");
 		final ColumnConfig<IMatch, String> ccTeam1 = new ColumnConfig<IMatch, String>(MatchProperty.team1, 220, "Spieler/Team 1");
+		ccTeam1.setGroupable(false);
+		ccTeam1.setCell(new AbstractCell<String>() {
+			@Override
+			public void render(Context context, String value, SafeHtmlBuilder sb) {
+				final IMatch match = store.findModelWithKey(context.getKey().toString());
+				if (match != null && isTeam1Winner(match)) {
+					sb.appendHtmlConstant("<b>" + value + "</b>");
+				} else {
+					sb.appendHtmlConstant(value);
+				}
+			}
+		});
 		final ColumnConfig<IMatch, String> ccTeam2 = new ColumnConfig<IMatch, String>(MatchProperty.team2, 220, "Spieler/Team 2");
+		ccTeam2.setGroupable(false);
+		ccTeam2.setCell(new AbstractCell<String>() {
+			@Override
+			public void render(Context context, String value, SafeHtmlBuilder sb) {
+				final IMatch match = store.findModelWithKey(context.getKey().toString());
+				if (match != null && !isTeam1Winner(match)) {
+					sb.appendHtmlConstant("<b>" + value + "</b>");
+				} else {
+					sb.appendHtmlConstant(value);
+				}
+			}
+		});
 		final ColumnConfig<IMatch, String> ccMatchResult = new ColumnConfig<IMatch, String>(MatchProperty.matchResult, 60, "Ergebnis");
+		ccMatchResult.setGroupable(false);
 		final ColumnConfig<IMatch, String> ccMatchSets = new ColumnConfig<IMatch, String>(MatchProperty.matchSets, 150, "Sätze");
+		ccMatchSets.setGroupable(false);
 
 		final ArrayList<ColumnConfig<IMatch, ?>> columns = new ArrayList<ColumnConfig<IMatch, ?>>();
 		columns.add(ccNumber);
 		columns.add(ccMatchDate);
+		columns.add(ccGroupDate);
 		columns.add(ccMatchType);
 		columns.add(ccTeam1);
 		columns.add(ccTeam2);
 		columns.add(ccMatchResult);
 		columns.add(ccMatchSets);
 
+		final GroupingView<IMatch> view = new GroupingView<IMatch>();
+		view.setAutoExpandColumn(ccMatchSets);
+		view.setShowGroupedColumn(false);
+		view.setAutoExpandMax(1000);
+		view.groupBy(ccGroupDate);
+		view.setStripeRows(true);
+		view.setColumnLines(true);
+
 		final Grid<IMatch> grid = new Grid<IMatch>(store, new ColumnModel<IMatch>(columns));
-		grid.getView().setAutoExpandColumn(ccMatchSets);
-		grid.getView().setAutoExpandMax(1000);
-		grid.getView().setStripeRows(true);
-		grid.getView().setColumnLines(true);
+		grid.setView(view);
 
 		final ListStore<MatchType> lsMatchType = new ListStore<MatchType>(new ModelKeyProvider<MatchType>() {
 			@Override
@@ -191,6 +262,21 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		filters.addFilter(dfMatchDate);
 
 		return grid;
+	}
+
+	private boolean isTeam1Winner(IMatch matchDto) {
+		boolean team1Winner = false;
+		int size = 0;
+		for (Integer result : matchDto.getSets().getSetsTeam1()) {
+			if (result != null && result == 6) {
+				size++;
+			}
+			if (size == 2) {
+				team1Winner = true;
+				break;
+			}
+		}
+		return team1Winner;
 	}
 
 	private AppButton createBtnUpdate() {

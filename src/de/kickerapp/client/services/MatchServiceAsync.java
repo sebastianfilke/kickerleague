@@ -13,7 +13,7 @@ import de.kickerapp.shared.dto.MatchDto;
  */
 public interface MatchServiceAsync {
 
-	public void createSingleMatch(MatchDto match, AsyncCallback<MatchDto> callback) throws IllegalArgumentException;
+	public void createMatch(MatchDto match, AsyncCallback<MatchDto> callback) throws IllegalArgumentException;
 
 	public void getAllMatches(AsyncCallback<ArrayList<MatchDto>> callback) throws IllegalArgumentException;
 

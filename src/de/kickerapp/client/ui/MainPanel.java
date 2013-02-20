@@ -59,7 +59,7 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 	private void initHandlers() {
 		AppEventBus.addHandler(NavigationEvent.TABLES, this);
 		AppEventBus.addHandler(NavigationEvent.MATCHES, this);
-		AppEventBus.addHandler(NavigationEvent.INPUT, this);
+		AppEventBus.addHandler(NavigationEvent.INSERT, this);
 		AppEventBus.addHandler(NavigationEvent.PLAYER, this);
 	}
 
@@ -128,8 +128,9 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 		} else if (navEvent.getAssociatedType() == NavigationEvent.MATCHES) {
 			clcContent.setActiveWidget(matchesPanel);
 			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.MATCHES));
-		} else if (navEvent.getAssociatedType() == NavigationEvent.INPUT) {
+		} else if (navEvent.getAssociatedType() == NavigationEvent.INSERT) {
 			clcContent.setActiveWidget(resultPanel);
+			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.INSERT));
 		} else if (navEvent.getAssociatedType() == NavigationEvent.PLAYER) {
 			clcContent.setActiveWidget(playerPanel);
 		}

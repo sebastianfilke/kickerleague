@@ -11,6 +11,7 @@ public class ShowDataEvent extends GwtEvent<ShowDataEventHandler> {
 
 	public static final GwtEvent.Type<ShowDataEventHandler> TABLES = new GwtEvent.Type<ShowDataEventHandler>();
 	public static final GwtEvent.Type<ShowDataEventHandler> MATCHES = new GwtEvent.Type<ShowDataEventHandler>();
+	public static final GwtEvent.Type<ShowDataEventHandler> INSERT = new GwtEvent.Type<ShowDataEventHandler>();
 
 	/** Der Typ des Ereignisses. */
 	private Type<ShowDataEventHandler> eventType;
@@ -42,6 +43,8 @@ public class ShowDataEvent extends GwtEvent<ShowDataEventHandler> {
 			associatedType = MATCHES;
 		} else if (eventType == TABLES) {
 			associatedType = TABLES;
+		} else if (eventType == INSERT) {
+			associatedType = INSERT;
 		}
 		return associatedType;
 	}

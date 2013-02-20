@@ -1,10 +1,16 @@
 package de.kickerapp.server.services;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import com.sencha.gxt.core.client.util.DateWrapper;
+import com.sencha.gxt.core.client.util.DateWrapper.Unit;
 
 import de.kickerapp.server.entity.Match;
 import de.kickerapp.server.entity.Player;
@@ -20,12 +26,17 @@ import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.MatchSetDto;
 import de.kickerapp.shared.dto.TeamDto;
 
+/**
+ * Hilfsklasse zur Verarbeitung von Spielen im Clienten.
+ * 
+ * @author Sebastian Filke
+ */
 public class MatchServiceHelper {
 
 	/**
-	 * Comparator zur Sortierung der Betriebsmittelarten.
+	 * Comparator zur Sortierung der Spielerstatistiken.
 	 * 
-	 * @author Sebastian Filke, GIGATRONIK München GmbH
+	 * @author Sebastian Filke
 	 */
 	protected static class StatsComparator implements Comparator<Stats>, Serializable {
 
@@ -53,12 +64,40 @@ public class MatchServiceHelper {
 		}
 	}
 
+	/**
+	 * Comparator zur Sortierung der Spiele.
+	 * 
+	 * @author Sebastian Filke
+	 */
+	protected static class MatchComparator implements Comparator<Match>, Serializable {
+
+		/** Konstante für die SerialVersionUID. */
+		private static final long serialVersionUID = 3150940865430023409L;
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int compare(Match m1, Match m2) {
+			return m2.getMatchNumber().compareTo(m1.getMatchNumber());
+		}
+	}
+
+	/**
+	 * Erzeugt die Client-Datenklasse anhand er Objekt-Datenklasse.
+	 * 
+	 * @param dbMatch Die Objekt-Datenklasse.
+	 * @return Die Client-Datenklasse.
+	 */
 	public static MatchDto createMatch(Match dbMatch) {
 		final MatchDto matchDto = new MatchDto();
 		matchDto.setId(dbMatch.getKey().getId());
 		matchDto.setMatchNumber(Long.toString(dbMatch.getMatchNumber()));
 		matchDto.setMatchDate(dbMatch.getMatchDate());
 		matchDto.setMatchType(dbMatch.getMatchType());
+
+		final SimpleDateFormat dateFormat = new SimpleDateFormat("'Spiele vom' EEEE, 'den' dd.MM.yyyy", Locale.GERMAN);
+		matchDto.setGroupDate(dateFormat.format(dbMatch.getMatchDate()));
 
 		final MatchType matchType = MatchType.None;
 		if (dbMatch.getMatchType() == MatchType.Single) {
@@ -159,21 +198,181 @@ public class MatchServiceHelper {
 		}
 	}
 
-	private static int getPoints(boolean winner, Player dbPlayer, MatchDto matchDto) {
-		final boolean twoSetGame = matchDto.getSets().getSetsTeam1().size() == 2;
-
+	protected static int getPointsForPlayer(boolean winner, Player dbPlayer, Stats dbPlayerStats, MatchDto matchDto) {
 		int points = 0;
-		if (winner) {
-			if (twoSetGame) {
+
+		points = getPointsForLastMatchDate(winner, dbPlayer.getLastMatchDate(), points);
+		points = getPointsForTablePlace(winner, dbPlayer, dbPlayerStats, matchDto, points);
+		points = getPointsForNumberOfSets(winner, matchDto, points);
+
+		return points;
+	}
+
+	protected static int getPointsForTeam(boolean winner, Team dbTeam, Stats dbTeamStats, MatchDto matchDto) {
+		int points = 0;
+
+		points = getPointsForLastMatchDate(winner, dbTeam.getLastMatchDate(), points);
+		points = getPointsForTablePlace(winner, dbTeam, dbTeamStats, matchDto, points);
+		points = getPointsForNumberOfSets(winner, matchDto, points);
+
+		return points;
+	}
+
+	private static int getPointsForLastMatchDate(boolean winner, Date lastMatchDate, int points) {
+		final Date lastMatchCurDay = new DateWrapper().clearTime().asDate();
+		final Date lastMatch1day = new DateWrapper().clearTime().add(Unit.DAY, -1).asDate();
+		final Date lastMatch3days = new DateWrapper().clearTime().add(Unit.DAY, -3).asDate();
+		final Date lastMatch6days = new DateWrapper().clearTime().add(Unit.DAY, -6).asDate();
+		final Date lastMatch9days = new DateWrapper().clearTime().add(Unit.DAY, -9).asDate();
+		final Date lastMatch14days = new DateWrapper().clearTime().add(Unit.DAY, -14).asDate();
+		final Date lastMatch28days = new DateWrapper().clearTime().add(Unit.DAY, -28).asDate();
+
+		if (lastMatchDate != null) {
+			final Date lastMatchDay = new DateWrapper(lastMatchDate).clearTime().asDate();
+			if (lastMatchDay.compareTo(lastMatchCurDay) == 0) {
+				points = points + 1;
+			} else if (lastMatchDay.after(lastMatch1day) && lastMatchDay.before(lastMatch3days)) {
+				points = points + 2;
+			} else if (lastMatchDay.after(lastMatch3days) && lastMatchDay.before(lastMatch6days)) {
+				points = points + 3;
+			} else if (lastMatchDay.after(lastMatch6days) && lastMatchDay.before(lastMatch9days)) {
+				points = points + 4;
+			} else if (lastMatchDay.after(lastMatch9days) && lastMatchDay.before(lastMatch14days)) {
+				points = points + 6;
+			} else if (lastMatchDay.after(lastMatch14days) && lastMatchDay.before(lastMatch28days)) {
 				points = points + 8;
 			} else {
+				points = points + 10;
+			}
+		} else {
+			if (winner) {
 				points = points + 6;
+			} else {
+				points = points - 6;
+			}
+		}
+		return points;
+	}
+
+	private static int getPointsForTablePlace(boolean winner, Player dbPlayer, Stats dbPlayerStats, MatchDto matchDto, int points) {
+		if (matchDto.getMatchType() == MatchType.Single) {
+			final PlayerSingleStats dbPlayer1SingleStats = (PlayerSingleStats) dbPlayerStats;
+			PlayerSingleStats dbPlayer2SingleStats = null;
+			if (matchDto.getTeam1().getPlayer1().getId() == dbPlayer.getKey().getId()) {
+				dbPlayer2SingleStats = PMFactory.getObjectById(PlayerSingleStats.class, matchDto.getTeam2().getPlayer1().getId());
+			} else {
+				dbPlayer2SingleStats = PMFactory.getObjectById(PlayerSingleStats.class, matchDto.getTeam1().getPlayer1().getId());
+			}
+
+			points = getPointsForTablePlaceDifference(winner, points, dbPlayer1SingleStats, dbPlayer2SingleStats);
+		} else {
+			final PlayerDoubleStats dbTeam1Player1SingleStats = (PlayerDoubleStats) dbPlayerStats;
+			PlayerDoubleStats dbTeam2Player1SingleStats = null;
+			PlayerDoubleStats dbTeam2Player2SingleStats = null;
+			if (matchDto.getTeam1().getPlayer1().getId() == dbPlayer.getKey().getId()) {
+				dbTeam2Player1SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2().getPlayer1().getId());
+				dbTeam2Player2SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2().getPlayer2().getId());
+			} else {
+				dbTeam2Player1SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1().getPlayer1().getId());
+				dbTeam2Player2SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1().getPlayer2().getId());
+			}
+
+			points = getPointsForTablePlaceDifference(winner, points, dbTeam1Player1SingleStats, dbTeam2Player1SingleStats, dbTeam2Player2SingleStats);
+		}
+		return points;
+	}
+
+	private static int getPointsForTablePlace(boolean winner, Team dbTeam, Stats dbTeamStats, MatchDto matchDto, int points) {
+		final TeamStats dbTeam1Stats = (TeamStats) dbTeamStats;
+		TeamStats dbTeam2Stats = null;
+
+		if (matchDto.getTeam1().getId() == dbTeam.getKey().getId()) {
+			dbTeam2Stats = PMFactory.getObjectById(TeamStats.class, matchDto.getTeam2().getId());
+		} else {
+			dbTeam2Stats = PMFactory.getObjectById(TeamStats.class, matchDto.getTeam1().getId());
+		}
+		points = getPointsForTablePlaceDifference(winner, points, dbTeam1Stats, dbTeam2Stats);
+
+		return points;
+	}
+
+	private static int getPointsForTablePlaceDifference(boolean winner, int points, final Stats stats1, final Stats stats2) {
+		final int differenceTablePlace = stats1.getCurTablePlace() - stats2.getCurTablePlace();
+
+		points = getPointsForTablePlace(winner, points, differenceTablePlace);
+		return points;
+	}
+
+	private static int getPointsForTablePlaceDifference(boolean winner, int points, Stats dbTeam1Player1Stats, Stats dbTeam2Player1Stats,
+			Stats dbTeam2Player2Stats) {
+		final double middleTablePlace = (dbTeam2Player1Stats.getCurTablePlace() + dbTeam2Player2Stats.getCurTablePlace()) / 2;
+		final int ceiledMiddleTablePlace = (int) Math.ceil(middleTablePlace);
+
+		final int differenceTablePlace = dbTeam1Player1Stats.getCurTablePlace() - ceiledMiddleTablePlace;
+
+		points = getPointsForTablePlace(winner, points, differenceTablePlace);
+
+		return points;
+	}
+
+	private static int getPointsForTablePlace(boolean winner, int points, final int differenceTablePlace) {
+		if (winner) {
+			if (differenceTablePlace <= 0) {
+				points = points + 2;
+				if (differenceTablePlace <= -1 && differenceTablePlace >= -3) {
+					points = points + 4;
+				} else if (differenceTablePlace <= -4 && differenceTablePlace >= -8) {
+					points = points + 2;
+				} else if (differenceTablePlace < -8) {
+					points = points + 1;
+				}
+			} else {
+				points = points + 4;
+				if (differenceTablePlace >= 1 && differenceTablePlace <= 3) {
+					points = points + 1;
+				} else if (differenceTablePlace >= 4 && differenceTablePlace <= 8) {
+					points = points + 2;
+				} else if (differenceTablePlace > 8) {
+					points = points + 4;
+				}
+			}
+		} else {
+			if (differenceTablePlace <= 0) {
+				points = points - 2;
+				if (differenceTablePlace <= -1 && differenceTablePlace >= -3) {
+					points = points - 4;
+				} else if (differenceTablePlace <= -4 && differenceTablePlace >= -8) {
+					points = points - 2;
+				} else if (differenceTablePlace < -8) {
+					points = points - 1;
+				}
+			} else {
+				points = points - 4;
+				if (differenceTablePlace >= 1 && differenceTablePlace <= 3) {
+					points = points - 1;
+				} else if (differenceTablePlace >= 4 && differenceTablePlace <= 8) {
+					points = points - 2;
+				} else if (differenceTablePlace > 8) {
+					points = points - 4;
+				}
+			}
+		}
+		return points;
+	}
+
+	private static int getPointsForNumberOfSets(boolean winner, MatchDto matchDto, int points) {
+		final boolean twoSetGame = matchDto.getSets().getSetsTeam1().size() == 2;
+		if (winner) {
+			if (twoSetGame) {
+				points = points + 6;
+			} else {
+				points = points + 4;
 			}
 		} else {
 			if (twoSetGame) {
-				points = points - 8;
-			} else {
 				points = points - 6;
+			} else {
+				points = points - 4;
 			}
 		}
 		return points;

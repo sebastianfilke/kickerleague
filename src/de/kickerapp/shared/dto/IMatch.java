@@ -18,6 +18,10 @@ public interface IMatch extends IBase {
 
 	public Date getMatchDate();
 
+	public void setGroupDate(String groupDate);
+
+	public String getGroupDate();
+
 	public MatchType getMatchType();
 
 	public void setMatchType(MatchType matchType);

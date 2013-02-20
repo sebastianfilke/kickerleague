@@ -10,6 +10,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -26,6 +27,7 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.RowNumberer;
+import com.sencha.gxt.widget.core.client.tips.QuickTip;
 import com.sencha.gxt.widget.core.client.toolbar.SeparatorToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
@@ -78,19 +80,6 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void initHandlers() {
-		super.initHandlers();
-
-		AppEventBus.addHandler(ShowDataEvent.TABLES, this);
-		AppEventBus.addHandler(TabPanelEvent.TYPE, this);
-		AppEventBus.addHandler(UpdatePanelEvent.ALL, this);
-		AppEventBus.addHandler(UpdatePanelEvent.TABLES, this);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public void initLayout() {
 		super.initLayout();
 		setHeadingHtml("<span id='panelHeading'>Aktuelle Spielertabelle (Einzelansicht)</span>");
@@ -107,6 +96,19 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		tabPanel = createTabPanel();
 
 		add(tabPanel);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initHandlers() {
+		super.initHandlers();
+
+		AppEventBus.addHandler(ShowDataEvent.TABLES, this);
+		AppEventBus.addHandler(TabPanelEvent.TYPE, this);
+		AppEventBus.addHandler(UpdatePanelEvent.ALL, this);
+		AppEventBus.addHandler(UpdatePanelEvent.TABLES, this);
 	}
 
 	private TabPanel createTabPanel() {
@@ -195,12 +197,23 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		final ColumnConfig<IPlayer, Integer> ccSingleLosses = new ColumnConfig<IPlayer, Integer>(PlayerProperty.singleLosses, 100, "Niederlagen");
 		final ColumnConfig<IPlayer, String> ccSingleGoals = new ColumnConfig<IPlayer, String>(PlayerProperty.singleGoals, 100, "Tore");
 		final ColumnConfig<IPlayer, String> ccSingleGoalDifference = new ColumnConfig<IPlayer, String>(PlayerProperty.singleGoalDifference, 100, "Tordifferenz");
-		final ColumnConfig<IPlayer, Integer> ccPoints = new ColumnConfig<IPlayer, Integer>(PlayerProperty.singlePoints, 100, "Punkte");
+		final ColumnConfig<IPlayer, String> ccPoints = new ColumnConfig<IPlayer, String>(PlayerProperty.singlePoints, 100, "Punkte");
+		ccPoints.setCell(new AbstractCell<String>() {
+			@Override
+			public void render(Context context, String value, SafeHtmlBuilder sb) {
+				final IPlayer player = storeSingleTable.findModelWithKey(context.getKey().toString());
+				final int singleLastMatchPoints = player.getPlayerSingleStats().getSingleLastMatchPoints();
+				getPoints(value, sb, singleLastMatchPoints);
+			}
+		});
 		final ColumnConfig<IPlayer, ImageResource> ccTendency = new ColumnConfig<IPlayer, ImageResource>(PlayerProperty.singleTendency, 60, "Tendenz");
 		ccTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
-				super.render(context, value, sb);
+				final IPlayer player = storeSingleTable.findModelWithKey(context.getKey().toString());
+				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerSingleStats().getSinglePrevTablePlace() + "'>");
+				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
+				sb.appendHtmlConstant("</span>");
 			}
 		});
 
@@ -220,8 +233,23 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);
 		grid.getView().setColumnLines(true);
+		new QuickTip(grid);
 
 		return grid;
+	}
+
+	private void getPoints(String value, SafeHtmlBuilder sb, final int lastMatchPoints) {
+		final String style = "style='color: " + (lastMatchPoints >= 0 ? "green" : "red") + "'";
+
+		final StringBuilder builder = new StringBuilder();
+		if (lastMatchPoints >= 0) {
+			builder.append("+" + Integer.toString(lastMatchPoints));
+		} else {
+			builder.append(Integer.toString(lastMatchPoints));
+		}
+
+		sb.appendHtmlConstant(value);
+		sb.appendHtmlConstant(" <span " + style + ">(" + builder.toString() + ")</span>");
 	}
 
 	private ToolBar createDoubleTableSingleViewToolBar() {
@@ -263,12 +291,23 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		final ColumnConfig<IPlayer, Integer> ccDoubleLosses = new ColumnConfig<IPlayer, Integer>(PlayerProperty.doubleLosses, 100, "Niederlagen");
 		final ColumnConfig<IPlayer, String> ccDoubleGoals = new ColumnConfig<IPlayer, String>(PlayerProperty.doubleGoals, 100, "Tore");
 		final ColumnConfig<IPlayer, String> ccSingleGoalDifference = new ColumnConfig<IPlayer, String>(PlayerProperty.doubleGoalDifference, 100, "Tordifferenz");
-		final ColumnConfig<IPlayer, Integer> ccPoints = new ColumnConfig<IPlayer, Integer>(PlayerProperty.doublePoints, 100, "Punkte");
+		final ColumnConfig<IPlayer, String> ccPoints = new ColumnConfig<IPlayer, String>(PlayerProperty.doublePoints, 100, "Punkte");
+		ccPoints.setCell(new AbstractCell<String>() {
+			@Override
+			public void render(Context context, String value, SafeHtmlBuilder sb) {
+				final IPlayer player = storeDoubleTableSingleView.findModelWithKey(context.getKey().toString());
+				final int lastMatchPoints = player.getPlayerDoubleStats().getDoubleLastMatchPoints();
+				getPoints(value, sb, lastMatchPoints);
+			}
+		});
 		final ColumnConfig<IPlayer, ImageResource> ccTendency = new ColumnConfig<IPlayer, ImageResource>(PlayerProperty.doubleTendency, 60, "Tendenz");
 		ccTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
-				super.render(context, value, sb);
+				final IPlayer player = storeDoubleTableSingleView.findModelWithKey(context.getKey().toString());
+				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerDoubleStats().getDoublePrevTablePlace() + "'>");
+				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
+				sb.appendHtmlConstant("</span>");
 			}
 		});
 
@@ -288,6 +327,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);
 		grid.getView().setColumnLines(true);
+		new QuickTip(grid);
 
 		return grid;
 	}
@@ -343,12 +383,23 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		final ColumnConfig<ITeam, Integer> ccSingleLosses = new ColumnConfig<ITeam, Integer>(KickerProperties.TEAM_PROPERTY.losses(), 100, "Niederlagen");
 		final ColumnConfig<ITeam, String> ccSingleGoals = new ColumnConfig<ITeam, String>(TeamProperty.goals, 100, "Tore");
 		final ColumnConfig<ITeam, String> ccSingleGoalDifference = new ColumnConfig<ITeam, String>(TeamProperty.goalDifference, 100, "Tordifferenz");
-		final ColumnConfig<ITeam, Integer> ccPoints = new ColumnConfig<ITeam, Integer>(KickerProperties.TEAM_PROPERTY.points(), 100, "Punkte");
+		final ColumnConfig<ITeam, String> ccPoints = new ColumnConfig<ITeam, String>(TeamProperty.points, 100, "Punkte");
+		ccPoints.setCell(new AbstractCell<String>() {
+			@Override
+			public void render(Context context, String value, SafeHtmlBuilder sb) {
+				final ITeam team = storeDoubleTableTeamView.findModelWithKey(context.getKey().toString());
+				final int lastMatchPoints = team.getLastMatchPoints();
+				getPoints(value, sb, lastMatchPoints);
+			}
+		});
 		final ColumnConfig<ITeam, ImageResource> ccTendency = new ColumnConfig<ITeam, ImageResource>(TeamProperty.tendency, 60, "Tendenz");
 		ccTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
-				super.render(context, value, sb);
+				final ITeam team = storeDoubleTableTeamView.findModelWithKey(context.getKey().toString());
+				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + team.getPrevTablePlace() + "'>");
+				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
+				sb.appendHtmlConstant("</span>");
 			}
 		});
 
@@ -368,6 +419,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);
 		grid.getView().setColumnLines(true);
+		new QuickTip(grid);
 
 		return grid;
 	}
@@ -492,9 +544,12 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 */
 	@Override
 	public void updatePanel(UpdatePanelEvent event) {
-		doUpdateSingleTable = true;
-		doUpdateDoubleTableSingleView = true;
-		doUpdateDoubleTableTeamView = true;
+		if (event.getActiveWidget() == 0) {
+			doUpdateSingleTable = true;
+		} else {
+			doUpdateDoubleTableSingleView = true;
+			doUpdateDoubleTableTeamView = true;
+		}
 	}
 
 }

@@ -29,6 +29,7 @@
 		<property name="getGoals" direction="asc" />
 		<property name="prevTablePlace" direction="asc" />
 		<property name="curTablePlace" direction="asc" />
+		<property name="lastMatchPoints" direction="asc" />
 		<property name="points" direction="desc" />
 		<property name="tendency" direction="asc" />
 	</datastore-index>
@@ -40,6 +41,7 @@
 		<property name="getGoals" direction="asc" />
 		<property name="prevTablePlace" direction="asc" />
 		<property name="curTablePlace" direction="asc" />
+		<property name="lastMatchPoints" direction="asc" />
 		<property name="points" direction="desc" />
 		<property name="tendency" direction="asc" />
 	</datastore-index>
@@ -57,6 +59,7 @@
 		<property name="getGoals" direction="asc" />
 		<property name="prevTablePlace" direction="asc" />
 		<property name="curTablePlace" direction="asc" />
+		<property name="lastMatchPoints" direction="asc" />
 		<property name="points" direction="desc" />
 		<property name="tendency" direction="asc" />
 	</datastore-index>

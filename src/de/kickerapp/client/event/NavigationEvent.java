@@ -11,7 +11,7 @@ public class NavigationEvent extends GwtEvent<NavigationEventHandler> {
 
 	public static final GwtEvent.Type<NavigationEventHandler> TABLES = new GwtEvent.Type<NavigationEventHandler>();
 	public static final GwtEvent.Type<NavigationEventHandler> MATCHES = new GwtEvent.Type<NavigationEventHandler>();
-	public static final GwtEvent.Type<NavigationEventHandler> INPUT = new GwtEvent.Type<NavigationEventHandler>();
+	public static final GwtEvent.Type<NavigationEventHandler> INSERT = new GwtEvent.Type<NavigationEventHandler>();
 	public static final GwtEvent.Type<NavigationEventHandler> PLAYER = new GwtEvent.Type<NavigationEventHandler>();
 
 	/** Der Typ des Ereignisses. */
@@ -44,8 +44,8 @@ public class NavigationEvent extends GwtEvent<NavigationEventHandler> {
 			associatedType = TABLES;
 		} else if (eventType == MATCHES) {
 			associatedType = MATCHES;
-		} else if (eventType == INPUT) {
-			associatedType = INPUT;
+		} else if (eventType == INSERT) {
+			associatedType = INSERT;
 		} else if (eventType == PLAYER) {
 			associatedType = PLAYER;
 		}

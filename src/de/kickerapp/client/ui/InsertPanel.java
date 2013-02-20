@@ -18,6 +18,7 @@ import com.sencha.gxt.cell.core.client.form.ComboBoxCell;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.util.DateWrapper;
+import com.sencha.gxt.core.client.util.DateWrapper.Unit;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.core.client.util.ToggleGroup;
 import com.sencha.gxt.data.client.loader.RpcProxy;
@@ -33,6 +34,10 @@ import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutD
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
 import com.sencha.gxt.widget.core.client.container.HBoxLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HBoxLayoutContainer.HBoxLayoutAlign;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
+import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer.VBoxLayoutAlign;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -48,6 +53,8 @@ import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 import de.kickerapp.client.event.AppEventBus;
+import de.kickerapp.client.event.ShowDataEvent;
+import de.kickerapp.client.event.ShowDataEventHandler;
 import de.kickerapp.client.event.TabPanelEvent;
 import de.kickerapp.client.event.UpdatePanelEvent;
 import de.kickerapp.client.properties.PlayerProperty;
@@ -56,6 +63,7 @@ import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.ui.resources.KickerTemplates;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
+import de.kickerapp.client.widgets.AppContentPanel;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.MatchSetDto;
@@ -67,7 +75,7 @@ import de.kickerapp.shared.dto.TeamDto;
  * 
  * @author Sebastian Filke
  */
-public class InsertPanel extends BasePanel {
+public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 
 	/** Die Ergebnisse für den ersten Satz. */
 	private AppComboBox<Integer> cbSet1Team1, cbSet1Team2;
@@ -81,8 +89,14 @@ public class InsertPanel extends BasePanel {
 	private AppComboBox<PlayerDto> cbTeam2Player1, cbTeam2Player2;
 
 	private ToggleGroup tgPlayType;
+
+	private CheckBox cbCurrentTime;
+
 	private DateField dfMatchDate;
+
 	private TimeField tfMatchTime;
+	private Label resultLabelTeam1;
+	private Label resultLabelTeam2;
 
 	/**
 	 * Erzeugt einen neuen Controller zum Eintragen der Ergebnisse und Spieler
@@ -91,6 +105,7 @@ public class InsertPanel extends BasePanel {
 	public InsertPanel() {
 		super();
 		initLayout();
+		initHandlers();
 	}
 
 	/**
@@ -118,6 +133,16 @@ public class InsertPanel extends BasePanel {
 		add(vlcMain);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initHandlers() {
+		super.initHandlers();
+
+		AppEventBus.addHandler(ShowDataEvent.INSERT, this);
+	}
+
 	private ToolBar createToolBar() {
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
@@ -136,6 +161,46 @@ public class InsertPanel extends BasePanel {
 		final FieldSet fsResult = new FieldSet();
 		fsResult.setHeadingText("Ergebnis");
 
+		final AppContentPanel panel = new AppContentPanel();
+		panel.setHeaderVisible(false);
+		panel.setBodyBorder(false);
+		panel.setBorders(false);
+		panel.setHeight(98);
+
+		final HorizontalLayoutContainer hlcResult = new HorizontalLayoutContainer();
+
+		resultLabelTeam1 = new Label("0");
+		resultLabelTeam1.setStyleName("resultLabel1", true);
+		final VBoxLayoutContainer vblcResultTeam1 = createLabelResultContainer(resultLabelTeam1);
+
+		resultLabelTeam2 = new Label("0");
+		resultLabelTeam2.setStyleName("resultLabel2", true);
+		final VBoxLayoutContainer vblcResultTeam2 = createLabelResultContainer(resultLabelTeam2);
+
+		hlcResult.add(vblcResultTeam1, new HorizontalLayoutData(360, 1));
+		hlcResult.add(createResultInsertContainer(), new HorizontalLayoutData(1, 1));
+		hlcResult.add(vblcResultTeam2, new HorizontalLayoutData(360, 1));
+
+		panel.add(hlcResult);
+
+		fsResult.add(panel);
+
+		return fsResult;
+	}
+
+	private VBoxLayoutContainer createLabelResultContainer(Label labelTeam) {
+		final VBoxLayoutContainer vblcResult = new VBoxLayoutContainer();
+		vblcResult.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
+
+		final BoxLayoutData flex = new BoxLayoutData();
+		flex.setFlex(1);
+
+		vblcResult.add(labelTeam, flex);
+
+		return vblcResult;
+	}
+
+	private VerticalLayoutContainer createResultInsertContainer() {
 		final VerticalLayoutContainer vlcResult = new VerticalLayoutContainer();
 
 		cbSet1Team1 = createSetComboBox("Satz 1");
@@ -153,15 +218,14 @@ public class InsertPanel extends BasePanel {
 		addValueChangedHandler();
 		addSelectionHandler();
 
-		fsResult.add(vlcResult);
-
-		return fsResult;
+		return vlcResult;
 	}
 
 	private void addValueChangedHandler() {
 		cbSet1Team1.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateLabelForTeam1(event.getValue(), cbSet2Team1.getValue(), cbSet3Team1.getValue());
 				updateRelatedSet(event.getValue(), cbSet1Team2);
 				enableStatusForLastSet(event.getValue(), cbSet2Team1.getValue(), cbSet1Team2.getValue(), cbSet2Team2.getValue());
 			}
@@ -169,6 +233,7 @@ public class InsertPanel extends BasePanel {
 		cbSet1Team2.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateLabelForTeam2(event.getValue(), cbSet2Team2.getValue(), cbSet3Team2.getValue());
 				updateRelatedSet(event.getValue(), cbSet1Team1);
 				enableStatusForLastSet(cbSet1Team1.getValue(), cbSet2Team1.getValue(), event.getValue(), cbSet2Team2.getValue());
 			}
@@ -176,6 +241,7 @@ public class InsertPanel extends BasePanel {
 		cbSet2Team1.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateLabelForTeam1(cbSet1Team1.getValue(), event.getValue(), cbSet3Team1.getValue());
 				updateRelatedSet(event.getValue(), cbSet2Team2);
 				enableStatusForLastSet(cbSet1Team1.getValue(), event.getValue(), cbSet1Team2.getValue(), cbSet2Team2.getValue());
 			}
@@ -183,6 +249,7 @@ public class InsertPanel extends BasePanel {
 		cbSet2Team2.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateLabelForTeam2(cbSet1Team2.getValue(), event.getValue(), cbSet3Team2.getValue());
 				updateRelatedSet(event.getValue(), cbSet2Team1);
 				enableStatusForLastSet(cbSet1Team1.getValue(), cbSet2Team1.getValue(), cbSet1Team2.getValue(), event.getValue());
 			}
@@ -190,12 +257,14 @@ public class InsertPanel extends BasePanel {
 		cbSet3Team1.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateLabelForTeam1(cbSet1Team1.getValue(), cbSet2Team1.getValue(), event.getValue());
 				updateRelatedSet(event.getValue(), cbSet3Team2);
 			}
 		});
 		cbSet3Team2.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Integer> event) {
+				updateLabelForTeam2(cbSet1Team2.getValue(), cbSet2Team2.getValue(), event.getValue());
 				updateRelatedSet(event.getValue(), cbSet3Team1);
 			}
 		});
@@ -205,6 +274,7 @@ public class InsertPanel extends BasePanel {
 		cbSet1Team1.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
+				updateLabelForTeam1(event.getSelectedItem(), cbSet2Team1.getValue(), cbSet3Team1.getValue());
 				updateRelatedSet(event.getSelectedItem(), cbSet1Team2);
 				enableStatusForLastSet(event.getSelectedItem(), cbSet2Team1.getValue(), cbSet1Team2.getValue(), cbSet2Team2.getValue());
 			}
@@ -212,6 +282,7 @@ public class InsertPanel extends BasePanel {
 		cbSet1Team2.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
+				updateLabelForTeam2(event.getSelectedItem(), cbSet2Team2.getValue(), cbSet3Team2.getValue());
 				updateRelatedSet(event.getSelectedItem(), cbSet1Team1);
 				enableStatusForLastSet(cbSet1Team1.getValue(), cbSet2Team1.getValue(), event.getSelectedItem(), cbSet2Team2.getValue());
 			}
@@ -219,6 +290,7 @@ public class InsertPanel extends BasePanel {
 		cbSet2Team1.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
+				updateLabelForTeam1(cbSet1Team1.getValue(), event.getSelectedItem(), cbSet3Team1.getValue());
 				updateRelatedSet(event.getSelectedItem(), cbSet2Team2);
 				enableStatusForLastSet(cbSet1Team1.getValue(), event.getSelectedItem(), cbSet1Team2.getValue(), cbSet2Team2.getValue());
 			}
@@ -226,6 +298,7 @@ public class InsertPanel extends BasePanel {
 		cbSet2Team2.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
+				updateLabelForTeam2(cbSet1Team2.getValue(), event.getSelectedItem(), cbSet3Team2.getValue());
 				updateRelatedSet(event.getSelectedItem(), cbSet2Team1);
 				enableStatusForLastSet(cbSet1Team1.getValue(), cbSet2Team1.getValue(), cbSet1Team2.getValue(), event.getSelectedItem());
 			}
@@ -233,15 +306,42 @@ public class InsertPanel extends BasePanel {
 		cbSet3Team1.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
+				updateLabelForTeam1(cbSet1Team1.getValue(), cbSet2Team1.getValue(), event.getSelectedItem());
 				updateRelatedSet(event.getSelectedItem(), cbSet3Team2);
 			}
 		});
 		cbSet3Team2.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
+				updateLabelForTeam2(cbSet1Team2.getValue(), cbSet2Team2.getValue(), event.getSelectedItem());
 				updateRelatedSet(event.getSelectedItem(), cbSet3Team1);
 			}
 		});
+	}
+
+	protected void updateLabelForTeam1(Integer value, Integer value2, Integer value3) {
+		final int result = getResult(value, value2, value3);
+		resultLabelTeam1.setText(String.valueOf(result));
+	}
+
+	protected void updateLabelForTeam2(Integer value, Integer value2, Integer value3) {
+		final int result = getResult(value, value2, value3);
+		resultLabelTeam2.setText(String.valueOf(result));
+	}
+
+	private int getResult(Integer value, Integer value2, Integer value3) {
+		int result = 0;
+
+		if (value != null && value == 6) {
+			result++;
+		}
+		if (value2 != null && value2 == 6) {
+			result++;
+		}
+		if (value3 != null && value3 == 6) {
+			result++;
+		}
+		return result;
 	}
 
 	private void enableStatusForLastSet(Integer cbSet1Team1, Integer cbSet2Team1, Integer cbSet1Team2, Integer cbSet2Team2) {
@@ -264,7 +364,7 @@ public class InsertPanel extends BasePanel {
 	private void updateRelatedSet(Integer value, AppComboBox<Integer> cbSet) {
 		if (value != null && value != 6) {
 			if (cbSet.getValue() == null) {
-				cbSet.setValue(6);
+				cbSet.setValue(6, true);
 			}
 		}
 	}
@@ -366,7 +466,7 @@ public class InsertPanel extends BasePanel {
 	}
 
 	private CheckBox createCheckBox() {
-		final CheckBox cbCurrentTime = new CheckBox();
+		cbCurrentTime = new CheckBox();
 		cbCurrentTime.setBoxLabel("Aktuelle Uhrzeit");
 		cbCurrentTime.setToolTip("Deaktivieren um die Zeit manuell einstellen");
 		cbCurrentTime.setValue(true);
@@ -395,10 +495,9 @@ public class InsertPanel extends BasePanel {
 		hblcResultInput.setPack(BoxLayoutPack.CENTER);
 
 		dfMatchDate = new DateField();
-		dfMatchDate.getDatePicker().setMinDate(new DateWrapper().addDays(-3).asDate());
-		dfMatchDate.getDatePicker().setMaxDate(new DateWrapper().asDate());
+		dfMatchDate.setMinValue(new DateWrapper().clearTime().addDays(-4).asDate());
+		dfMatchDate.setMaxValue(new DateWrapper().clearTime().asDate());
 		dfMatchDate.setEnabled(false);
-		dfMatchDate.setValue(new Date());
 
 		final FieldLabel fieldLabel1 = new FieldLabel(dfMatchDate, "Datum");
 		fieldLabel1.setLabelAlign(LabelAlign.TOP);
@@ -409,12 +508,11 @@ public class InsertPanel extends BasePanel {
 		tfMatchTime.setMaxValue(new DateWrapper().clearTime().addHours(22).addSeconds(1).asDate());
 		tfMatchTime.setEnabled(false);
 		tfMatchTime.setIncrement(1);
-		tfMatchTime.setValue(new Date());
 
 		final FieldLabel fieldLabel2 = new FieldLabel(tfMatchTime, "Zeit");
 		fieldLabel2.setLabelAlign(LabelAlign.TOP);
 
-		hblcResultInput.add(fieldLabel1, new BoxLayoutData(new Margins(0, 11, 0, 0)));
+		hblcResultInput.add(fieldLabel1, new BoxLayoutData(new Margins(0, 13, 0, 0)));
 		hblcResultInput.add(fieldLabel2, new BoxLayoutData());
 
 		return hblcResultInput;
@@ -482,12 +580,12 @@ public class InsertPanel extends BasePanel {
 				final Radio radio = (Radio) group.getValue();
 
 				cbTeam1Player2.setValue(null);
-				cbTeam1Player2.setEnabled(false);
+				cbTeam1Player2.setVisible(false);
 				cbTeam2Player2.setValue(null);
-				cbTeam2Player2.setEnabled(false);
+				cbTeam2Player2.setVisible(false);
 				if (radio.getId().equals(MatchType.Double.getMatchType())) {
-					cbTeam1Player2.setEnabled(true);
-					cbTeam2Player2.setEnabled(true);
+					cbTeam1Player2.setVisible(true);
+					cbTeam2Player2.setVisible(true);
 				}
 			}
 		});
@@ -552,7 +650,7 @@ public class InsertPanel extends BasePanel {
 	private void createMatch() {
 		mask("Spiel wird eingetragen...");
 		final MatchDto newMatch = makeMatch();
-		KickerServices.MATCH_SERVICE.createSingleMatch(newMatch, new AsyncCallback<MatchDto>() {
+		KickerServices.MATCH_SERVICE.createMatch(newMatch, new AsyncCallback<MatchDto>() {
 			@Override
 			public void onSuccess(MatchDto result) {
 				Info.display("Erfolgreich", "Spiel wurde erfolgreich eingetragen");
@@ -565,7 +663,9 @@ public class InsertPanel extends BasePanel {
 				final TabPanelEvent tabPanelEvent = new TabPanelEvent();
 				tabPanelEvent.setActiveWidget(activeWidget);
 				AppEventBus.fireEvent(tabPanelEvent);
-				AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL));
+				final UpdatePanelEvent updatePanelEvent = new UpdatePanelEvent(UpdatePanelEvent.ALL);
+				updatePanelEvent.setActiveWidget(activeWidget);
+				AppEventBus.fireEvent(updatePanelEvent);
 
 				unmask();
 			}
@@ -578,6 +678,9 @@ public class InsertPanel extends BasePanel {
 	}
 
 	private void clearInput() {
+		resultLabelTeam1.setText("0");
+		resultLabelTeam2.setText("0");
+
 		cbSet1Team1.clear();
 		cbSet1Team2.clear();
 		cbSet2Team1.clear();
@@ -587,6 +690,10 @@ public class InsertPanel extends BasePanel {
 		cbSet3Team1.setEnabled(true);
 		cbSet3Team2.setEnabled(true);
 
+		cbCurrentTime.setValue(true);
+		dfMatchDate.setEnabled(false);
+		tfMatchTime.setEnabled(false);
+
 		cbTeam1Player1.clear();
 		cbTeam1Player2.clear();
 		cbTeam2Player1.clear();
@@ -595,7 +702,19 @@ public class InsertPanel extends BasePanel {
 
 	private MatchDto makeMatch() {
 		final MatchDto newMatch = new MatchDto();
-		newMatch.setMatchDate(new Date());
+		if (cbCurrentTime.getValue()) {
+			newMatch.setMatchDate(new Date());
+		} else {
+			DateWrapper matchDate = new DateWrapper(dfMatchDate.getValue()).clearTime();
+
+			final int hours = new DateWrapper(tfMatchTime.getValue()).getHours();
+			final int minutes = new DateWrapper(tfMatchTime.getValue()).getMinutes();
+
+			matchDate = matchDate.add(Unit.HOUR, hours);
+			matchDate = matchDate.add(Unit.MINUTE, minutes);
+
+			newMatch.setMatchDate(matchDate.asDate());
+		}
 
 		TeamDto team1 = null;
 		TeamDto team2 = null;
@@ -627,6 +746,17 @@ public class InsertPanel extends BasePanel {
 		newMatch.setSets(newSets);
 
 		return newMatch;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void showData(ShowDataEvent event) {
+		if (cbCurrentTime.getValue()) {
+			dfMatchDate.setValue(new Date());
+			tfMatchTime.setValue(new Date());
+		}
 	}
 
 }

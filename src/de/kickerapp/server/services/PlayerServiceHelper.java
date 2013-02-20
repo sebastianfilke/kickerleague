@@ -43,6 +43,7 @@ public class PlayerServiceHelper {
 		playerSingleStatsDto.setSingleGetGoals(playerSingleStats.getGetGoals());
 		playerSingleStatsDto.setSinglePrevTablePlace(playerSingleStats.getPrevTablePlace());
 		playerSingleStatsDto.setSingleCurTablePlace(playerSingleStats.getCurTablePlace());
+		playerSingleStatsDto.setSingleLastMatchPoints(playerSingleStats.getLastMatchPoints());
 		playerSingleStatsDto.setSinglePoints(playerSingleStats.getPoints());
 		playerSingleStatsDto.setSingleTendency(playerSingleStats.getTendency());
 
@@ -61,6 +62,7 @@ public class PlayerServiceHelper {
 		playerDoubleStatsDto.setDoubleGetGoals(playerDoubleStats.getGetGoals());
 		playerDoubleStatsDto.setDoublePrevTablePlace(playerDoubleStats.getPrevTablePlace());
 		playerDoubleStatsDto.setDoubleCurTablePlace(playerDoubleStats.getCurTablePlace());
+		playerDoubleStatsDto.setDoubleLastMatchPoints(playerDoubleStats.getLastMatchPoints());
 		playerDoubleStatsDto.setDoublePoints(playerDoubleStats.getPoints());
 		playerDoubleStatsDto.setDoubleTendency(playerDoubleStats.getTendency());
 

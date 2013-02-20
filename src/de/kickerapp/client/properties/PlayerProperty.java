@@ -140,14 +140,14 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, Integer> singlePoints = new ValueProvider<IPlayer, Integer>() {
+	public ValueProvider<IPlayer, String> singlePoints = new ValueProvider<IPlayer, String>() {
 		@Override
-		public Integer getValue(IPlayer object) {
-			return object.getPlayerSingleStats().getSinglePoints();
+		public String getValue(IPlayer object) {
+			return Integer.toString(object.getPlayerSingleStats().getSinglePoints());
 		}
 
 		@Override
-		public void setValue(IPlayer object, Integer value) {
+		public void setValue(IPlayer object, String value) {
 		}
 
 		@Override
@@ -282,14 +282,14 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, Integer> doublePoints = new ValueProvider<IPlayer, Integer>() {
+	public ValueProvider<IPlayer, String> doublePoints = new ValueProvider<IPlayer, String>() {
 		@Override
-		public Integer getValue(IPlayer object) {
-			return object.getPlayerDoubleStats().getDoublePoints();
+		public String getValue(IPlayer object) {
+			return Integer.toString(object.getPlayerDoubleStats().getDoublePoints());
 		}
 
 		@Override
-		public void setValue(IPlayer object, Integer value) {
+		public void setValue(IPlayer object, String value) {
 		}
 
 		@Override

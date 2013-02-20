@@ -124,7 +124,21 @@ public interface TeamProperty extends PropertyAccess<ITeam> {
 
 	public ValueProvider<ITeam, Integer> curTablePlace();
 
-	public ValueProvider<ITeam, Integer> points();
+	public ValueProvider<ITeam, String> points = new ValueProvider<ITeam, String>() {
+		@Override
+		public String getValue(ITeam object) {
+			return Integer.toString(object.getPoints());
+		}
+
+		@Override
+		public void setValue(ITeam object, String value) {
+		}
+
+		@Override
+		public String getPath() {
+			return null;
+		}
+	};
 
 	public ValueProvider<ITeam, ImageResource> tendency = new ValueProvider<ITeam, ImageResource>() {
 		@Override

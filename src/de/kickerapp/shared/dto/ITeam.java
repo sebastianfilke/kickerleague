@@ -43,6 +43,10 @@ public interface ITeam extends IBase {
 
 	public void setCurTablePlace(Integer curTablePlace);
 
+	public Integer getLastMatchPoints();
+
+	public void setLastMatchPoints(Integer lastMatchPoints);
+
 	public Integer getPoints();
 
 	public void setPoints(Integer points);

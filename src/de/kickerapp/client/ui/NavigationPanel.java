@@ -14,8 +14,11 @@ import de.kickerapp.client.event.NavigationEvent;
 public class NavigationPanel extends SimpleContainer {
 
 	private Label label1;
+
 	private Label label2;
+
 	private Label label3;
+
 	private Label label4;
 
 	private Label current;
@@ -39,8 +42,12 @@ public class NavigationPanel extends SimpleContainer {
 	private HtmlLayoutContainer createHeader() {
 		final SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
-		sb.appendHtmlConstant("<div id='tabs26'>" + "<ul><li><div class='label1'></div></li>" + "<li><div class='label2'></div></li> "
-				+ "<li><div class='label3'></div></li>" + "<li><div class='label4'></div></li>" + "</ul></div>");
+		sb.appendHtmlConstant("<div id='tabs26'><ul>");
+		sb.appendHtmlConstant("<li><div class='label1'></div></li>");
+		sb.appendHtmlConstant("<li><div class='label2'></div></li>");
+		sb.appendHtmlConstant("<li><div class='label3'></div></li>");
+		sb.appendHtmlConstant("<li><div class='label4'></div></li>");
+		sb.appendHtmlConstant("</ul></div>");
 
 		final HtmlLayoutContainer htmlLcHeader = new HtmlLayoutContainer(sb.toSafeHtml());
 		htmlLcHeader.setStateful(false);
@@ -75,7 +82,7 @@ public class NavigationPanel extends SimpleContainer {
 		label3.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.INPUT));
+				AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.INSERT));
 				current.setStyleName("current", false);
 				current = label3;
 				current.setStyleName("current", true);

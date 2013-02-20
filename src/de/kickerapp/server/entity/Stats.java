@@ -33,6 +33,9 @@ public class Stats extends BaseEntity {
 	private Integer curTablePlace;
 
 	@Persistent
+	private Integer lastMatchPoints;
+
+	@Persistent
 	private Integer points;
 
 	@Persistent
@@ -45,6 +48,7 @@ public class Stats extends BaseEntity {
 		getGoals = 0;
 		prevTablePlace = 0;
 		curTablePlace = 0;
+		lastMatchPoints = 0;
 		points = 1000;
 		tendency = Tendency.Constant;
 	}
@@ -95,6 +99,14 @@ public class Stats extends BaseEntity {
 
 	public void setCurTablePlace(Integer curTablePlace) {
 		this.curTablePlace = curTablePlace;
+	}
+
+	public Integer getLastMatchPoints() {
+		return lastMatchPoints;
+	}
+
+	public void setLastMatchPoints(Integer lastMatchPoints) {
+		this.lastMatchPoints = lastMatchPoints;
 	}
 
 	public Integer getPoints() {

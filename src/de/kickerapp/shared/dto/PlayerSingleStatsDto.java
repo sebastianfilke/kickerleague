@@ -20,6 +20,8 @@ public class PlayerSingleStatsDto extends BaseData {
 
 	private Integer singleCurTablePlace;
 
+	private Integer singleLastMatchPoints;
+
 	private Integer singlePoints;
 
 	private Tendency singleTendency;
@@ -32,131 +34,79 @@ public class PlayerSingleStatsDto extends BaseData {
 		singleGetGoals = 0;
 		singlePrevTablePlace = 0;
 		singleCurTablePlace = 0;
+		singleLastMatchPoints = 0;
 		singlePoints = 0;
 		singleTendency = Tendency.Constant;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 
 	public Integer getSingleWins() {
 		return singleWins;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-
 	public void setSingleWins(Integer singleWins) {
 		this.singleWins = singleWins;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 
 	public Integer getSingleLosses() {
 		return singleLosses;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-
 	public void setSingleLosses(Integer singleLosses) {
 		this.singleLosses = singleLosses;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 
 	public Integer getSingleShotGoals() {
 		return singleShotGoals;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-
 	public void setSingleShotGoals(Integer singleShotGoals) {
 		this.singleShotGoals = singleShotGoals;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 
 	public Integer getSingleGetGoals() {
 		return singleGetGoals;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-
 	public void setSingleGetGoals(Integer singleGetGoals) {
 		this.singleGetGoals = singleGetGoals;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 
 	public Integer getSinglePrevTablePlace() {
 		return singlePrevTablePlace;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-
 	public void setSinglePrevTablePlace(Integer singlePrevTablePlace) {
 		this.singlePrevTablePlace = singlePrevTablePlace;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 
 	public Integer getSingleCurTablePlace() {
 		return singleCurTablePlace;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-
 	public void setSingleCurTablePlace(Integer singleCurTablePlace) {
 		this.singleCurTablePlace = singleCurTablePlace;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	public Integer getSingleLastMatchPoints() {
+		return singleLastMatchPoints;
+	}
+
+	public void setSingleLastMatchPoints(Integer singleLastMatchPoints) {
+		this.singleLastMatchPoints = singleLastMatchPoints;
+	}
 
 	public Integer getSinglePoints() {
 		return singlePoints;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setSinglePoints(Integer singlePoints) {
 		this.singlePoints = singlePoints;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public Tendency getSingleTendency() {
 		return singleTendency;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setSingleTendency(Tendency singleTendency) {
 		this.singleTendency = singleTendency;
 	}

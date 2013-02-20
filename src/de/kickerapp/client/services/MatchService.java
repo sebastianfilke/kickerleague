@@ -20,7 +20,7 @@ public interface MatchService extends RemoteService {
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	public MatchDto createSingleMatch(MatchDto match) throws IllegalArgumentException;
+	public MatchDto createMatch(MatchDto match) throws IllegalArgumentException;
 
 	public ArrayList<MatchDto> getAllMatches() throws IllegalArgumentException;
 

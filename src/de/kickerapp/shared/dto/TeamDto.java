@@ -28,6 +28,8 @@ public class TeamDto extends BaseData implements ITeam {
 
 	private Integer curTablePlace;
 
+	private Integer lastMatchPoints;
+
 	private Integer points;
 
 	private Tendency tendency;
@@ -44,6 +46,7 @@ public class TeamDto extends BaseData implements ITeam {
 		getGoals = 0;
 		prevTablePlace = 0;
 		curTablePlace = 0;
+		lastMatchPoints = 0;
 		points = 0;
 		tendency = Tendency.Constant;
 	}
@@ -201,6 +204,22 @@ public class TeamDto extends BaseData implements ITeam {
 	@Override
 	public void setCurTablePlace(Integer curTablePlace) {
 		this.curTablePlace = curTablePlace;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Integer getLastMatchPoints() {
+		return lastMatchPoints;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setLastMatchPoints(Integer lastMatchPoints) {
+		this.lastMatchPoints = lastMatchPoints;
 	}
 
 	/**

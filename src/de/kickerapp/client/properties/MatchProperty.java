@@ -21,6 +21,8 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 
 	public ValueProvider<IMatch, Date> matchDate();
 
+	public ValueProvider<IMatch, String> groupDate();
+
 	public ValueProvider<IMatch, MatchType> matchType();
 
 	public ValueProvider<IMatch, String> team1 = new ValueProvider<IMatch, String>() {

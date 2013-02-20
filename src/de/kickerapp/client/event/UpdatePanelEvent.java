@@ -11,6 +11,8 @@ public class UpdatePanelEvent extends GwtEvent<UpdatePanelEventHandler> {
 	/** Der Typ des Ereignisses. */
 	private Type<UpdatePanelEventHandler> eventType;
 
+	private int activeWidget;
+
 	/**
 	 * Erstellt ein neues <tt>NavigationsEvent</tt> mit angegebenem Ereignistyp.
 	 * 
@@ -42,6 +44,14 @@ public class UpdatePanelEvent extends GwtEvent<UpdatePanelEventHandler> {
 			associatedType = MATCHES;
 		}
 		return associatedType;
+	}
+
+	public int getActiveWidget() {
+		return activeWidget;
+	}
+
+	public void setActiveWidget(int activeWidget) {
+		this.activeWidget = activeWidget;
 	}
 
 }
