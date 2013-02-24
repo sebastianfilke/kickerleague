@@ -34,6 +34,10 @@ public interface IMatch extends IBase {
 
 	public TeamDto getTeam2();
 
+	public MatchPointsDto getPoints();
+
+	public void setPoints(MatchPointsDto points);
+
 	public void setSets(MatchSetDto sets);
 
 	public MatchSetDto getSets();

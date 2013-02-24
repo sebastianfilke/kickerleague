@@ -36,6 +36,10 @@ public class Match extends BaseEntity {
 	/** Die Datenbank-Id des zweiten Teams bzw. Spielers. */
 	@Persistent
 	private Long team2;
+	/** Die Liste der Spielpunkte. */
+	@Embedded
+	@Persistent(defaultFetchGroup = "true")
+	private MatchPoints matchPoints;
 	/** Die Liste der Spielsätze. */
 	@Embedded
 	@Persistent(defaultFetchGroup = "true")
@@ -46,23 +50,30 @@ public class Match extends BaseEntity {
 	 */
 	public Match() {
 		super();
+		matchDate = null;
+		matchType = MatchType.UNKNOWN;
+		team1 = null;
+		team2 = null;
+		matchPoints = new MatchPoints();
+		matchSets = new MatchSets();
 	}
 
+	/**
+	 * Liefert die Spielnummer.
+	 * 
+	 * @return Die Spielnummer als {@link Integer}.
+	 */
 	public Integer getMatchNumber() {
 		return matchNumber;
 	}
 
+	/**
+	 * Setzt die Spielnummer.
+	 * 
+	 * @param matchNumber Die Spielnummer als {@link Integer}.
+	 */
 	public void setMatchNumber(Integer matchNumber) {
 		this.matchNumber = matchNumber;
-	}
-
-	/**
-	 * Setzt das Spieldatum.
-	 * 
-	 * @param matchDate Das Spieldatum als {@link Date}.
-	 */
-	public void setMatchDate(Date matchDate) {
-		this.matchDate = matchDate;
 	}
 
 	/**
@@ -72,6 +83,15 @@ public class Match extends BaseEntity {
 	 */
 	public Date getMatchDate() {
 		return matchDate;
+	}
+
+	/**
+	 * Setzt das Spieldatum.
+	 * 
+	 * @param matchDate Das Spieldatum als {@link Date}.
+	 */
+	public void setMatchDate(Date matchDate) {
+		this.matchDate = matchDate;
 	}
 
 	public MatchType getMatchType() {
@@ -98,12 +118,64 @@ public class Match extends BaseEntity {
 		this.team2 = team2;
 	}
 
+	public MatchPoints getMatchPoints() {
+		return matchPoints;
+	}
+
+	public void setMatchPoints(MatchPoints matchPoints) {
+		this.matchPoints = matchPoints;
+	}
+
 	public MatchSets getMatchSets() {
 		return matchSets;
 	}
 
 	public void setMatchSets(MatchSets matchSets) {
 		this.matchSets = matchSets;
+	}
+
+	@PersistenceCapable
+	public static class MatchPoints implements Serializable {
+
+		/** Konstante für die SerialVersionUID. */
+		private static final long serialVersionUID = 8275268972473429142L;
+
+		/** Die Punkte des ersten Teams bzw. Spielers. */
+		@Persistent
+		private ArrayList<Integer> matchPointsTeam1;
+		/** Die Punkte des ersten Teams bzw. Spielers. */
+		@Persistent
+		private ArrayList<Integer> matchPointsTeam2;
+
+		public MatchPoints() {
+			this.matchPointsTeam1 = new ArrayList<Integer>();
+			this.matchPointsTeam2 = new ArrayList<Integer>();
+		}
+
+		/**
+		 * 
+		 */
+		public MatchPoints(ArrayList<Integer> matchPointsTeam1, ArrayList<Integer> matchPointsTeam2) {
+			this.matchPointsTeam1 = matchPointsTeam1;
+			this.matchPointsTeam2 = matchPointsTeam2;
+		}
+
+		public ArrayList<Integer> getMatchPointsTeam1() {
+			return matchPointsTeam1;
+		}
+
+		public void setMatchPointsTeam1(ArrayList<Integer> matchPointsTeam1) {
+			this.matchPointsTeam1 = matchPointsTeam1;
+		}
+
+		public ArrayList<Integer> getMatchPointsTeam2() {
+			return matchPointsTeam2;
+		}
+
+		public void setMatchPointsTeam2(ArrayList<Integer> matchPointsTeam2) {
+			this.matchPointsTeam2 = matchPointsTeam2;
+		}
+
 	}
 
 	/**

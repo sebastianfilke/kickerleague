@@ -29,7 +29,9 @@ import com.sencha.gxt.data.shared.loader.LoadResultListStoreBinding;
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.ListView;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
 import com.sencha.gxt.widget.core.client.container.HBoxLayoutContainer;
@@ -49,7 +51,6 @@ import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.form.FormPanel.LabelAlign;
 import com.sencha.gxt.widget.core.client.form.Radio;
 import com.sencha.gxt.widget.core.client.form.TimeField;
-import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 import de.kickerapp.client.event.AppEventBus;
@@ -57,10 +58,12 @@ import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.event.ShowDataEventHandler;
 import de.kickerapp.client.event.TabPanelEvent;
 import de.kickerapp.client.event.UpdatePanelEvent;
+import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.ui.resources.KickerTemplates;
+import de.kickerapp.client.ui.util.AppInfo;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
 import de.kickerapp.client.widgets.AppContentPanel;
@@ -95,7 +98,9 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	private DateField dfMatchDate;
 
 	private TimeField tfMatchTime;
+
 	private Label resultLabelTeam1;
+
 	private Label resultLabelTeam2;
 
 	/**
@@ -121,11 +126,11 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		final ToolBar toolBar = createToolBar();
 		vlcMain.add(toolBar, new VerticalLayoutData(1, -1));
 
-		final FieldSet fieldSetResult = createResultFieldSet();
-		vlcMain.add(fieldSetResult, new VerticalLayoutData(1, -1, new Margins(10, 10, 5, 10)));
-
 		final FieldSet fieldSetDateTime = createDateTimeFieldSet();
-		vlcMain.add(fieldSetDateTime, new VerticalLayoutData(1, -1, new Margins(0, 10, 5, 10)));
+		vlcMain.add(fieldSetDateTime, new VerticalLayoutData(1, -1, new Margins(10, 10, 5, 10)));
+
+		final FieldSet fieldSetResult = createResultFieldSet();
+		vlcMain.add(fieldSetResult, new VerticalLayoutData(1, -1, new Margins(0, 10, 5, 10)));
 
 		final FieldSet fieldSetSetPlayers = createPlayersFieldSet();
 		vlcMain.add(fieldSetSetPlayers, new VerticalLayoutData(1, -1, new Margins(0, 10, 10, 10)));
@@ -153,6 +158,78 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	/**
+	 * @return Das erzeugte FieldSet.
+	 */
+	private FieldSet createDateTimeFieldSet() {
+		final FieldSet fsDateTime = new FieldSet();
+		fsDateTime.setHeadingText("Datum/Uhrzeit");
+
+		final VerticalLayoutContainer vlcDateTime = new VerticalLayoutContainer();
+
+		vlcDateTime.add(createCheckBox(), new VerticalLayoutData(-1, -1));
+		vlcDateTime.add(createFieldSetDateTime(), new VerticalLayoutData(-1, -1));
+
+		fsDateTime.add(vlcDateTime);
+
+		return fsDateTime;
+	}
+
+	private CheckBox createCheckBox() {
+		cbCurrentTime = new CheckBox();
+		cbCurrentTime.setBoxLabel("Aktuelle Uhrzeit");
+		cbCurrentTime.setToolTip("Deaktivieren um die Zeit manuell einstellen");
+		cbCurrentTime.setValue(true);
+		cbCurrentTime.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				final CheckBox check = (CheckBox) event.getSource();
+
+				dfMatchDate.setValue(new Date());
+				dfMatchDate.clearInvalid();
+				dfMatchDate.setEnabled(false);
+				tfMatchTime.setValue(new Date());
+				tfMatchTime.clearInvalid();
+				tfMatchTime.setEnabled(false);
+				if (!check.getValue()) {
+					dfMatchDate.setEnabled(true);
+					tfMatchTime.setEnabled(true);
+				}
+			}
+		});
+
+		return cbCurrentTime;
+	}
+
+	private HBoxLayoutContainer createFieldSetDateTime() {
+		final HBoxLayoutContainer hblcResultInput = new HBoxLayoutContainer();
+		hblcResultInput.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
+		hblcResultInput.setPack(BoxLayoutPack.CENTER);
+
+		dfMatchDate = new DateField();
+		dfMatchDate.setMinValue(new DateWrapper().clearTime().addDays(-4).asDate());
+		dfMatchDate.setMaxValue(new DateWrapper().clearTime().asDate());
+		dfMatchDate.setEnabled(false);
+
+		final FieldLabel fieldLabel1 = new FieldLabel(dfMatchDate, "Datum");
+		fieldLabel1.setLabelAlign(LabelAlign.TOP);
+
+		tfMatchTime = new TimeField();
+		tfMatchTime.setTriggerAction(TriggerAction.ALL);
+		tfMatchTime.setMinValue(new DateWrapper().clearTime().addHours(8).asDate());
+		tfMatchTime.setMaxValue(new DateWrapper().clearTime().addHours(22).addSeconds(1).asDate());
+		tfMatchTime.setEnabled(false);
+		tfMatchTime.setIncrement(1);
+
+		final FieldLabel fieldLabel2 = new FieldLabel(tfMatchTime, "Zeit");
+		fieldLabel2.setLabelAlign(LabelAlign.TOP);
+
+		hblcResultInput.add(fieldLabel1, new BoxLayoutData(new Margins(0, 13, 0, 0)));
+		hblcResultInput.add(fieldLabel2, new BoxLayoutData());
+
+		return hblcResultInput;
+	}
+
+	/**
 	 * Erzeugt das Fieldset mit den ComboBoxen zum Eintragen des Ergebnisses.
 	 * 
 	 * @return Das erzeugte FieldSet.
@@ -170,11 +247,11 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		final HorizontalLayoutContainer hlcResult = new HorizontalLayoutContainer();
 
 		resultLabelTeam1 = new Label("0");
-		resultLabelTeam1.setStyleName("resultLabel1", true);
+		resultLabelTeam1.setStyleName("resultLabel resultLabelRight", true);
 		final VBoxLayoutContainer vblcResultTeam1 = createLabelResultContainer(resultLabelTeam1);
 
 		resultLabelTeam2 = new Label("0");
-		resultLabelTeam2.setStyleName("resultLabel2", true);
+		resultLabelTeam2.setStyleName("resultLabel resultLabelLeft", true);
 		final VBoxLayoutContainer vblcResultTeam2 = createLabelResultContainer(resultLabelTeam2);
 
 		hlcResult.add(vblcResultTeam1, new HorizontalLayoutData(360, 1));
@@ -365,6 +442,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		if (value != null && value != 6) {
 			if (cbSet.getValue() == null) {
 				cbSet.setValue(6, true);
+				cbSet.clearInvalid();
 			}
 		}
 	}
@@ -449,76 +527,6 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	/**
-	 * @return Das erzeugte FieldSet.
-	 */
-	private FieldSet createDateTimeFieldSet() {
-		final FieldSet fsDateTime = new FieldSet();
-		fsDateTime.setHeadingText("Datum/Uhrzeit");
-
-		final VerticalLayoutContainer vlcDateTime = new VerticalLayoutContainer();
-
-		vlcDateTime.add(createCheckBox(), new VerticalLayoutData(-1, -1));
-		vlcDateTime.add(createFieldSetDateTime(), new VerticalLayoutData(-1, -1));
-
-		fsDateTime.add(vlcDateTime);
-
-		return fsDateTime;
-	}
-
-	private CheckBox createCheckBox() {
-		cbCurrentTime = new CheckBox();
-		cbCurrentTime.setBoxLabel("Aktuelle Uhrzeit");
-		cbCurrentTime.setToolTip("Deaktivieren um die Zeit manuell einstellen");
-		cbCurrentTime.setValue(true);
-		cbCurrentTime.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				final CheckBox check = (CheckBox) event.getSource();
-
-				dfMatchDate.setValue(new Date());
-				dfMatchDate.setEnabled(false);
-				tfMatchTime.setValue(new Date());
-				tfMatchTime.setEnabled(false);
-				if (!check.getValue()) {
-					dfMatchDate.setEnabled(true);
-					tfMatchTime.setEnabled(true);
-				}
-			}
-		});
-
-		return cbCurrentTime;
-	}
-
-	private HBoxLayoutContainer createFieldSetDateTime() {
-		final HBoxLayoutContainer hblcResultInput = new HBoxLayoutContainer();
-		hblcResultInput.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
-		hblcResultInput.setPack(BoxLayoutPack.CENTER);
-
-		dfMatchDate = new DateField();
-		dfMatchDate.setMinValue(new DateWrapper().clearTime().addDays(-4).asDate());
-		dfMatchDate.setMaxValue(new DateWrapper().clearTime().asDate());
-		dfMatchDate.setEnabled(false);
-
-		final FieldLabel fieldLabel1 = new FieldLabel(dfMatchDate, "Datum");
-		fieldLabel1.setLabelAlign(LabelAlign.TOP);
-
-		tfMatchTime = new TimeField();
-		tfMatchTime.setTriggerAction(TriggerAction.ALL);
-		tfMatchTime.setMinValue(new DateWrapper().clearTime().addHours(8).asDate());
-		tfMatchTime.setMaxValue(new DateWrapper().clearTime().addHours(22).addSeconds(1).asDate());
-		tfMatchTime.setEnabled(false);
-		tfMatchTime.setIncrement(1);
-
-		final FieldLabel fieldLabel2 = new FieldLabel(tfMatchTime, "Zeit");
-		fieldLabel2.setLabelAlign(LabelAlign.TOP);
-
-		hblcResultInput.add(fieldLabel1, new BoxLayoutData(new Margins(0, 13, 0, 0)));
-		hblcResultInput.add(fieldLabel2, new BoxLayoutData());
-
-		return hblcResultInput;
-	}
-
-	/**
 	 * Erzeugt das Fieldset mit vier Textfeldern zum Eintragen der Spieler.
 	 * 
 	 * @return Das erzeugte Fieldset.
@@ -558,12 +566,12 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		final Radio rSingle = new Radio();
 		rSingle.setToolTip("Stellt den Spieltyp auf ein Einzelspiel (1vs1)");
 		rSingle.setBoxLabel("Einzel");
-		rSingle.setId(MatchType.Single.getMatchType());
+		rSingle.setId(MatchType.SINGLE.getMatchType());
 
 		final Radio rDouble = new Radio();
 		rDouble.setToolTip("Stellt den Spieltyp auf ein Doppelspiel (2vs2)");
 		rDouble.setBoxLabel("Doppel");
-		rDouble.setId(MatchType.Double.getMatchType());
+		rDouble.setId(MatchType.DOUBLE.getMatchType());
 
 		final HorizontalPanel horizontalPanel = new HorizontalPanel();
 		horizontalPanel.add(rSingle);
@@ -583,7 +591,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 				cbTeam1Player2.setVisible(false);
 				cbTeam2Player2.setValue(null);
 				cbTeam2Player2.setVisible(false);
-				if (radio.getId().equals(MatchType.Double.getMatchType())) {
+				if (radio.getId().equals(MatchType.DOUBLE.getMatchType())) {
 					cbTeam1Player2.setVisible(true);
 					cbTeam2Player2.setVisible(true);
 				}
@@ -616,9 +624,10 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		final PagingLoader<PagingLoadConfig, PagingLoadResult<PlayerDto>> loader = new PagingLoader<PagingLoadConfig, PagingLoadResult<PlayerDto>>(proxy);
 		loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig, PlayerDto, PagingLoadResult<PlayerDto>>(store));
 
+		cbPlayer.setTriggerAction(TriggerAction.ALL);
 		cbPlayer.setLoader(loader);
 		cbPlayer.setPageSize(5);
-		cbPlayer.setMinChars(2);
+		cbPlayer.setMinChars(1);
 
 		return cbPlayer;
 	}
@@ -648,33 +657,78 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private void createMatch() {
-		mask("Spiel wird eingetragen...");
-		final MatchDto newMatch = makeMatch();
-		KickerServices.MATCH_SERVICE.createMatch(newMatch, new AsyncCallback<MatchDto>() {
-			@Override
-			public void onSuccess(MatchDto result) {
-				Info.display("Erfolgreich", "Spiel wurde erfolgreich eingetragen");
-				clearInput();
+		if (inputValid()) {
+			mask("Spiel wird eingetragen...");
+			final MatchDto newMatch = makeMatch();
+			KickerServices.MATCH_SERVICE.createMatch(newMatch, new AsyncCallback<MatchDto>() {
+				@Override
+				public void onSuccess(MatchDto result) {
+					AppInfo.showInfo("Hinweis", "Spiel wurde erfolgreich eingetragen");
 
-				int activeWidget = 0;
-				if (result.getMatchType() == MatchType.Double) {
-					activeWidget = 1;
+					int activeWidget = 0;
+					if (result.getMatchType() == MatchType.DOUBLE) {
+						activeWidget = 1;
+					}
+					final TabPanelEvent tabPanelEvent = new TabPanelEvent();
+					tabPanelEvent.setActiveWidget(activeWidget);
+					AppEventBus.fireEvent(tabPanelEvent);
+					final UpdatePanelEvent updatePanelEvent = new UpdatePanelEvent(UpdatePanelEvent.ALL);
+					updatePanelEvent.setActiveWidget(activeWidget);
+					AppEventBus.fireEvent(updatePanelEvent);
+					clearInput();
+					unmask();
 				}
-				final TabPanelEvent tabPanelEvent = new TabPanelEvent();
-				tabPanelEvent.setActiveWidget(activeWidget);
-				AppEventBus.fireEvent(tabPanelEvent);
-				final UpdatePanelEvent updatePanelEvent = new UpdatePanelEvent(UpdatePanelEvent.ALL);
-				updatePanelEvent.setActiveWidget(activeWidget);
-				AppEventBus.fireEvent(updatePanelEvent);
 
-				unmask();
-			}
+				@Override
+				public void onFailure(Throwable caught) {
+					unmask();
+					AppExceptionHandler.handleException(caught);
+				}
+			});
+		} else {
+			final MessageBox box = new MessageBox("Hinweis", "Es müssen erst alle notwendigen Angaben gemacht werden!");
+			box.setPredefinedButtons(PredefinedButton.OK);
+			box.setIcon(MessageBox.ICONS.info());
+			box.show();
+		}
+	}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				unmask();
+	private boolean inputValid() {
+		boolean valid = false;
+		valid = dfMatchDate.isValid() && tfMatchTime.isValid();
+		if (valid) {
+			valid = checkRelatedSet(cbSet1Team1, cbSet1Team2);
+			if (valid) {
+				valid = checkRelatedSet(cbSet2Team1, cbSet2Team2);
+				if (valid) {
+					valid = checkRelatedSet(cbSet3Team1, cbSet3Team2);
+					if (valid) {
+						final Radio radio = (Radio) tgPlayType.getValue();
+						if (radio.getId().equals(MatchType.SINGLE.getMatchType())) {
+							valid = cbTeam1Player1.getValue() != null && cbTeam2Player1.getValue() != null;
+						} else {
+							valid = cbTeam1Player1.getValue() != null && cbTeam1Player2.getValue() != null && cbTeam2Player1.getValue() != null
+									&& cbTeam2Player2.getValue() != null;
+						}
+					}
+				}
 			}
-		});
+		}
+		return valid;
+	}
+
+	private boolean checkRelatedSet(AppComboBox<Integer> cb1Team1, AppComboBox<Integer> cb2Team2) {
+		boolean valid = false;
+		if (cb1Team1.getValue() != null && cb2Team2.getValue() != null) {
+			if (cb1Team1.getValue() < 6 && cb2Team2.getValue() == 6) {
+				valid = true;
+			} else if (cb1Team1.getValue() == 6 && cb2Team2.getValue() < 6) {
+				valid = true;
+			}
+		} else if (cb1Team1.isEnabled() == false && cb2Team2.isEnabled() == false) {
+			valid = true;
+		}
+		return valid;
 	}
 
 	private void clearInput() {
@@ -690,9 +744,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		cbSet3Team1.setEnabled(true);
 		cbSet3Team2.setEnabled(true);
 
-		cbCurrentTime.setValue(true);
-		dfMatchDate.setEnabled(false);
-		tfMatchTime.setEnabled(false);
+		cbCurrentTime.setValue(true, true);
 
 		cbTeam1Player1.clear();
 		cbTeam1Player2.clear();
@@ -719,12 +771,12 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		TeamDto team1 = null;
 		TeamDto team2 = null;
 		final Radio radio = (Radio) tgPlayType.getValue();
-		if (radio.getId().equals(MatchType.Single.getMatchType())) {
-			newMatch.setMatchType(MatchType.Single);
+		if (radio.getId().equals(MatchType.SINGLE.getMatchType())) {
+			newMatch.setMatchType(MatchType.SINGLE);
 			team1 = new TeamDto(cbTeam1Player1.getValue());
 			team2 = new TeamDto(cbTeam2Player1.getValue());
 		} else {
-			newMatch.setMatchType(MatchType.Double);
+			newMatch.setMatchType(MatchType.DOUBLE);
 			team1 = new TeamDto(cbTeam1Player1.getValue(), cbTeam1Player2.getValue());
 			team2 = new TeamDto(cbTeam2Player1.getValue(), cbTeam2Player2.getValue());
 		}

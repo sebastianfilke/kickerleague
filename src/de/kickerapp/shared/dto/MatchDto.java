@@ -22,6 +22,8 @@ public class MatchDto extends BaseData implements IMatch {
 
 	private TeamDto team2;
 
+	private MatchPointsDto points;
+
 	private MatchSetDto sets;
 
 	public MatchDto() {
@@ -124,6 +126,22 @@ public class MatchDto extends BaseData implements IMatch {
 	@Override
 	public TeamDto getTeam2() {
 		return team2;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public MatchPointsDto getPoints() {
+		return points;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPoints(MatchPointsDto points) {
+		this.points = points;
 	}
 
 	/**

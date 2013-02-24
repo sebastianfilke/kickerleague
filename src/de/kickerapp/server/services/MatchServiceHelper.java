@@ -23,6 +23,7 @@ import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.common.Tendency;
 import de.kickerapp.shared.dto.MatchDto;
+import de.kickerapp.shared.dto.MatchPointsDto;
 import de.kickerapp.shared.dto.MatchSetDto;
 import de.kickerapp.shared.dto.TeamDto;
 
@@ -99,8 +100,8 @@ public class MatchServiceHelper {
 		final SimpleDateFormat dateFormat = new SimpleDateFormat("'Spiele vom' EEEE, 'den' dd.MM.yyyy", Locale.GERMAN);
 		matchDto.setGroupDate(dateFormat.format(dbMatch.getMatchDate()));
 
-		final MatchType matchType = MatchType.None;
-		if (dbMatch.getMatchType() == MatchType.Single) {
+		final MatchType matchType = MatchType.UNKNOWN;
+		if (dbMatch.getMatchType() == MatchType.SINGLE) {
 			final Player team1Player1 = PMFactory.getObjectById(Player.class, dbMatch.getTeam1());
 			matchDto.setTeam1(new TeamDto(PlayerServiceHelper.createPlayer(team1Player1, matchType)));
 
@@ -121,6 +122,11 @@ public class MatchServiceHelper {
 
 			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createPlayer(team2Player1, matchType), PlayerServiceHelper.createPlayer(team2Player2, matchType)));
 		}
+		final MatchPointsDto pointsDto = new MatchPointsDto();
+		pointsDto.setPointsTeam1(dbMatch.getMatchPoints().getMatchPointsTeam1());
+		pointsDto.setPointsTeam2(dbMatch.getMatchPoints().getMatchPointsTeam2());
+		matchDto.setPoints(pointsDto);
+
 		final MatchSetDto setDto = new MatchSetDto();
 		setDto.setSetsTeam1(dbMatch.getMatchSets().getSetsTeam1());
 		setDto.setSetsTeam2(dbMatch.getMatchSets().getSetsTeam2());
@@ -255,7 +261,7 @@ public class MatchServiceHelper {
 	}
 
 	private static int getPointsForTablePlace(boolean winner, Player dbPlayer, Stats dbPlayerStats, MatchDto matchDto, int points) {
-		if (matchDto.getMatchType() == MatchType.Single) {
+		if (matchDto.getMatchType() == MatchType.SINGLE) {
 			final PlayerSingleStats dbPlayer1SingleStats = (PlayerSingleStats) dbPlayerStats;
 			PlayerSingleStats dbPlayer2SingleStats = null;
 			if (matchDto.getTeam1().getPlayer1().getId() == dbPlayer.getKey().getId()) {
@@ -340,20 +346,20 @@ public class MatchServiceHelper {
 			if (differenceTablePlace <= 0) {
 				points = points - 2;
 				if (differenceTablePlace <= -1 && differenceTablePlace >= -3) {
-					points = points - 4;
+					points = points - 1;
 				} else if (differenceTablePlace <= -4 && differenceTablePlace >= -8) {
 					points = points - 2;
 				} else if (differenceTablePlace < -8) {
-					points = points - 1;
+					points = points - 4;
 				}
 			} else {
 				points = points - 4;
 				if (differenceTablePlace >= 1 && differenceTablePlace <= 3) {
-					points = points - 1;
+					points = points - 4;
 				} else if (differenceTablePlace >= 4 && differenceTablePlace <= 8) {
 					points = points - 2;
 				} else if (differenceTablePlace > 8) {
-					points = points - 4;
+					points = points - 1;
 				}
 			}
 		}

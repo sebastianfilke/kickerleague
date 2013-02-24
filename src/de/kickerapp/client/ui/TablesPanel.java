@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ImageResourceCell;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.resources.client.ImageResource;
@@ -15,9 +14,9 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.Store;
-import com.sencha.gxt.theme.gray.client.tabs.GrayTabPanelBottomAppearance;
+import com.sencha.gxt.widget.core.client.PlainTabPanel;
 import com.sencha.gxt.widget.core.client.TabPanel;
-import com.sencha.gxt.widget.core.client.TabPanel.TabPanelAppearance;
+import com.sencha.gxt.widget.core.client.container.MarginData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -82,7 +81,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	@Override
 	public void initLayout() {
 		super.initLayout();
-		setHeadingHtml("<span id='panelHeading'>Aktuelle Spielertabelle (Einzelansicht)</span>");
+		setHeadingHtml("<span id='panelHeading'>Aktuelle Tabelle</span>");
 
 		doUpdateSingleTable = true;
 		doUpdateDoubleTableSingleView = true;
@@ -95,7 +94,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 
 		tabPanel = createTabPanel();
 
-		add(tabPanel);
+		add(tabPanel, new MarginData(5, 0, 0, 0));
 	}
 
 	/**
@@ -112,7 +111,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	}
 
 	private TabPanel createTabPanel() {
-		final TabPanel tabPanel = new TabPanel((TabPanelAppearance) GWT.create(GrayTabPanelBottomAppearance.class));
+		final PlainTabPanel tabPanel = new PlainTabPanel();
 		tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
 			@Override
 			public void onSelection(SelectionEvent<Widget> event) {
@@ -120,18 +119,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				final Widget w = event.getSelectedItem();
 
 				activeWidget = panel.getWidgetIndex(w);
-				setHeading();
 				getTable();
-			}
-
-			private void setHeading() {
-				if (activeWidget == 0) {
-					setHeadingHtml("<span id='panelHeading'>Aktuelle Spielertabelle (Einzelansicht)</span>");
-				} else if (activeWidget == 1) {
-					setHeadingHtml("<span id='panelHeading'>Aktuelle Spielertabelle (Teamansicht)</span>");
-				} else {
-					setHeadingHtml("<span id='panelHeading'>Aktuelle Teamtabelle</span>");
-				}
 			}
 		});
 		tabPanel.setResizeTabs(true);
@@ -150,7 +138,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		vlcDoubleTableTeamView.add(createDoubleTableTeamViewGrid(), new VerticalLayoutData(1, 1));
 
 		tabPanel.add(vlcSingleTable, "Spielertabelle (Einzelansicht)");
-		tabPanel.add(vlcDoubleTableSingleView, "Spielertabelle (Teamansicht)");
+		tabPanel.add(vlcDoubleTableSingleView, "Spielertabelle (Doppelansicht)");
 		tabPanel.add(vlcDoubleTableTeamView, "Teamtabelle");
 		tabPanel.setBodyBorder(false);
 		tabPanel.setBorders(false);
@@ -438,7 +426,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		if (doUpdateSingleTable) {
 			mask("Aktualisiere...");
 			storeSingleTable.clear();
-			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.Single, new AsyncCallback<ArrayList<PlayerDto>>() {
+			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.SINGLE, new AsyncCallback<ArrayList<PlayerDto>>() {
 				@Override
 				public void onSuccess(ArrayList<PlayerDto> result) {
 					storeSingleTable.addAll(result);
@@ -459,7 +447,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		if (doUpdateDoubleTableSingleView) {
 			mask("Aktualisiere...");
 			storeDoubleTableSingleView.clear();
-			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.Double, new AsyncCallback<ArrayList<PlayerDto>>() {
+			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.DOUBLE, new AsyncCallback<ArrayList<PlayerDto>>() {
 				@Override
 				public void onSuccess(ArrayList<PlayerDto> result) {
 					storeDoubleTableSingleView.addAll(result);

@@ -19,10 +19,10 @@ public class PlayerServiceHelper {
 		playerDto.setLastMatchDate(dbPlayer.getLastMatchDate());
 
 		switch (matchType) {
-		case Single:
+		case SINGLE:
 			setPlayerSingleStats(dbPlayer, playerDto);
 			break;
-		case Double:
+		case DOUBLE:
 			setPlayerDoubleStats(dbPlayer, playerDto);
 			break;
 		default:

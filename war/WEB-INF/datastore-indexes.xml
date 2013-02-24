@@ -7,6 +7,8 @@
 		<property name="matchType" direction="asc" />
 		<property name="team1" direction="asc" />
 		<property name="team2" direction="asc" />
+		<property name="matchPointsTeam1" direction="asc" />
+		<property name="matchPointsTeam2" direction="asc" />
 		<property name="setsTeam1" direction="asc" />
 		<property name="setsTeam2" direction="asc" />
 	</datastore-index>

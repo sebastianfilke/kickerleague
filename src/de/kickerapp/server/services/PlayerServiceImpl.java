@@ -6,9 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
-
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -109,17 +106,11 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 * {@inheritDoc}
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public ArrayList<PlayerDto> getAllPlayers(MatchType matchType) throws IllegalArgumentException {
-		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
-
 		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
 
-		final Query query = pm.newQuery(Player.class);
-
-		final List<Player> dbPlayers = (List<Player>) query.execute();
+		final List<Player> dbPlayers = PMFactory.getList(Player.class);
 		for (Player dbPlayer : dbPlayers) {
-			dbPlayer = pm.detachCopy(dbPlayer);
 			final PlayerDto player = PlayerServiceHelper.createPlayer(dbPlayer, matchType);
 
 			playerDtos.add(player);

@@ -1,15 +1,33 @@
 package de.kickerapp.shared.common;
 
+/**
+ * Aufzählung für die unterschiedlichen Typen von Spielen.
+ * 
+ * @author Sebastian Filke
+ */
 public enum MatchType {
 
-	Single("single"),
+	/**
+	 * Einzelspiel.
+	 */
+	SINGLE("single"),
 
-	Double("double"),
+	/**
+	 * Doppelspiel.
+	 */
+	DOUBLE("double"),
 
-	None("none");
+	/**
+	 * Unbekannt.
+	 */
+	UNKNOWN("none");
 
+	/** Der Spieltyp. */
 	private String matchType;
 
+	/**
+	 * @param matchType
+	 */
 	private MatchType(String matchType) {
 		this.matchType = matchType;
 	}

@@ -14,8 +14,8 @@ public class TeamServiceHelper {
 		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, (Long) dbTeam.getPlayers().toArray()[0]);
 		final Player dbPlayer2 = PMFactory.getObjectById(Player.class, (Long) dbTeam.getPlayers().toArray()[1]);
 
-		final PlayerDto player1 = PlayerServiceHelper.createPlayer(dbPlayer1, MatchType.None);
-		final PlayerDto player2 = PlayerServiceHelper.createPlayer(dbPlayer2, MatchType.None);
+		final PlayerDto player1 = PlayerServiceHelper.createPlayer(dbPlayer1, MatchType.UNKNOWN);
+		final PlayerDto player2 = PlayerServiceHelper.createPlayer(dbPlayer2, MatchType.UNKNOWN);
 
 		final TeamDto teamDto = new TeamDto(player1, player2);
 		teamDto.setId(dbTeam.getKey().getId());

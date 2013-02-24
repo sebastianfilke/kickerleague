@@ -29,6 +29,9 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 			sb.append(object.getLastName());
 			sb.append(", ");
 			sb.append(object.getFirstName());
+			sb.append(" (");
+			sb.append(object.getNickName());
+			sb.append(")");
 
 			return sb.toString();
 		}

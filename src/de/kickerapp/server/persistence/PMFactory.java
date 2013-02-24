@@ -35,6 +35,13 @@ public final class PMFactory {
 		return INSTANCE;
 	}
 
+	/**
+	 * Liefert sämtliche Instanzen für die übergebene Klasse.
+	 * 
+	 * @param clazz Die Klasse für welche die Instanzen gesucht werden sollen.
+	 * @param <T> Der Typ der Klasse.
+	 * @return Die Instanzen.
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends Serializable> List<T> getList(Class<T> clazz) {
 		final PersistenceManager pm = PMFactory.get().getPersistenceManager();

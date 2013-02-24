@@ -107,7 +107,7 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 
 		sb.appendHtmlConstant("<div id='footer'>");
 		sb.appendHtmlConstant("<div id='footerLinks'>Impressum | Kontakt</div>");
-		sb.appendHtmlConstant("<div id='footerText'>Design und Idee &#064; Sebastian Filke, 2013 | Version: 0.5.2</div>");
+		sb.appendHtmlConstant("<div id='footerText'>Design und Idee &#064; Sebastian Filke, 2013 | Version: 0.7.2</div>");
 		sb.appendHtmlConstant("</div>");
 
 		final HtmlLayoutContainer htmlLcTitle = new HtmlLayoutContainer(sb.toSafeHtml());
@@ -134,6 +134,7 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 		} else if (navEvent.getAssociatedType() == NavigationEvent.PLAYER) {
 			clcContent.setActiveWidget(playerPanel);
 		}
+		clcContent.forceLayout();
 	}
 
 }

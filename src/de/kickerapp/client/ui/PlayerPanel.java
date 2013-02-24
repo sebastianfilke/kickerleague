@@ -2,13 +2,14 @@ package de.kickerapp.client.ui;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.core.client.util.Margins;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
-import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 import de.kickerapp.client.event.AppEventBus;
@@ -17,6 +18,7 @@ import de.kickerapp.client.event.UpdatePanelEvent;
 import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.images.KickerIcons;
+import de.kickerapp.client.ui.util.AppInfo;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppTextField;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -81,16 +83,17 @@ public class PlayerPanel extends BasePanel {
 
 		final VerticalLayoutContainer vlcPlayer = new VerticalLayoutContainer();
 
-		tfNickname = createTextField("Nicknamen eintragen");
-		vlcPlayer.add(new FieldLabel(tfNickname, "Nickname"), new VerticalLayoutData(1, -1));
+		tfNickname = createTextField("Spitznamen eintragen (notwendig)");
+		vlcPlayer.add(new FieldLabel(tfNickname, "Spitzname"), new VerticalLayoutData(1, -1));
 
-		tfFirstname = createTextField("Vornamen eintragen");
+		tfFirstname = createTextField("Vornamen eintragen (notwendig)");
 		vlcPlayer.add(new FieldLabel(tfFirstname, "Vorname"), new VerticalLayoutData(1, -1));
 
-		tfLastname = createTextField("Nachnamen eintragen");
+		tfLastname = createTextField("Nachnamen eintragen (notwendig)");
 		vlcPlayer.add(new FieldLabel(tfLastname, "Nachname"), new VerticalLayoutData(1, -1));
 
 		tfEMail = createTextField("E-Mail Adresse eintragen");
+		tfEMail.setAllowBlank(true);
 		vlcPlayer.add(new FieldLabel(tfEMail, "E-Mail"), new VerticalLayoutData(1, -1));
 
 		fsPlayer.add(vlcPlayer);
@@ -141,26 +144,43 @@ public class PlayerPanel extends BasePanel {
 	}
 
 	private void createNewPlayer() {
-		mask("Spieler wird eingetragen...");
-		final PlayerDto newPlayer = createPlayer();
-		KickerServices.PLAYER_SERVICE.createPlayer(newPlayer, new AsyncCallback<PlayerDto>() {
-			@Override
-			public void onSuccess(PlayerDto result) {
-				Info.display("Hinweis", "Neuer Spieler wurde erfolgreich erstellt");
-				final TabPanelEvent tabPanelEvent = new TabPanelEvent();
-				tabPanelEvent.setActiveWidget(0);
-				AppEventBus.fireEvent(tabPanelEvent);
-				AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL));
-				clearInput();
-				unmask();
-			}
+		if (inputValid()) {
+			mask("Spieler wird eingetragen...");
+			final PlayerDto newPlayer = createPlayer();
+			KickerServices.PLAYER_SERVICE.createPlayer(newPlayer, new AsyncCallback<PlayerDto>() {
+				@Override
+				public void onSuccess(PlayerDto result) {
+					AppInfo.showInfo("Hinweis", "Neuer Spieler " + newPlayer.getLastName() + ", " + newPlayer.getFirstName() + " wurde erfolgreich eingetragen");
+					final TabPanelEvent tabPanelEvent = new TabPanelEvent();
+					tabPanelEvent.setActiveWidget(0);
+					AppEventBus.fireEvent(tabPanelEvent);
+					final UpdatePanelEvent updatePanelEvent = new UpdatePanelEvent(UpdatePanelEvent.ALL);
+					updatePanelEvent.setActiveWidget(0);
+					AppEventBus.fireEvent(updatePanelEvent);
+					clearInput();
+					unmask();
+				}
 
-			@Override
-			public void onFailure(Throwable caught) {
-				unmask();
-				AppExceptionHandler.handleException(caught);
-			}
-		});
+				@Override
+				public void onFailure(Throwable caught) {
+					unmask();
+					AppExceptionHandler.handleException(caught);
+				}
+			});
+		} else {
+			final MessageBox box = new MessageBox("Hinweis", "Es müssen erst alle notwendigen Angaben gemacht werden!");
+			box.setPredefinedButtons(PredefinedButton.OK);
+			box.setIcon(MessageBox.ICONS.info());
+			box.show();
+		}
+	}
+
+	private boolean inputValid() {
+		return isNotNullAndEmpty(tfNickname) && isNotNullAndEmpty(tfFirstname) && isNotNullAndEmpty(tfLastname);
+	}
+
+	private boolean isNotNullAndEmpty(AppTextField tf) {
+		return tf.getValue() != null && !tf.getValue().isEmpty();
 	}
 
 	private PlayerDto createPlayer() {

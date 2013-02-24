@@ -6,9 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
-
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
@@ -87,18 +84,12 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 	/**
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public ArrayList<PlayerDto> getAllPlayers() {
-		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
-
 		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
 
-		final Query query = pm.newQuery(Player.class);
-
-		final List<Player> dbPlayers = (List<Player>) query.execute();
+		final List<Player> dbPlayers = PMFactory.getList(Player.class);
 		for (Player dbPlayer : dbPlayers) {
-			dbPlayer = pm.detachCopy(dbPlayer);
-			final PlayerDto player = PlayerServiceHelper.createPlayer(dbPlayer, MatchType.Single);
+			final PlayerDto player = PlayerServiceHelper.createPlayer(dbPlayer, MatchType.SINGLE);
 
 			playerDtos.add(player);
 		}

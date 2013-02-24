@@ -37,7 +37,6 @@ import de.kickerapp.client.properties.MatchProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
-import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.IMatch;
 import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -190,8 +189,8 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				return comp;
 			}
 		});
-		final ColumnConfig<IMatch, MatchType> ccMatchType = new ColumnConfig<IMatch, MatchType>(KickerProperties.MATCH_PROPERTY.matchType(), 80, "Typ");
-		final ColumnConfig<IMatch, String> ccTeam1 = new ColumnConfig<IMatch, String>(MatchProperty.team1, 220, "Spieler/Team 1");
+		final ColumnConfig<IMatch, String> ccMatchType = new ColumnConfig<IMatch, String>(MatchProperty.matchType, 80, "Typ");
+		final ColumnConfig<IMatch, String> ccTeam1 = new ColumnConfig<IMatch, String>(MatchProperty.team1, 270, "Spieler/Team 1");
 		ccTeam1.setGroupable(false);
 		ccTeam1.setCell(new AbstractCell<String>() {
 			@Override
@@ -204,7 +203,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				}
 			}
 		});
-		final ColumnConfig<IMatch, String> ccTeam2 = new ColumnConfig<IMatch, String>(MatchProperty.team2, 220, "Spieler/Team 2");
+		final ColumnConfig<IMatch, String> ccTeam2 = new ColumnConfig<IMatch, String>(MatchProperty.team2, 270, "Spieler/Team 2");
 		ccTeam2.setGroupable(false);
 		ccTeam2.setCell(new AbstractCell<String>() {
 			@Override
@@ -219,7 +218,11 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		});
 		final ColumnConfig<IMatch, String> ccMatchResult = new ColumnConfig<IMatch, String>(MatchProperty.matchResult, 60, "Ergebnis");
 		ccMatchResult.setGroupable(false);
-		final ColumnConfig<IMatch, String> ccMatchSets = new ColumnConfig<IMatch, String>(MatchProperty.matchSets, 150, "Sätze");
+		final ColumnConfig<IMatch, String> ccMatchSets = new ColumnConfig<IMatch, String>(MatchProperty.matchSets, 80, "Sätze");
+		ccMatchSets.setGroupable(false);
+		final ColumnConfig<IMatch, String> ccMatchPointsTeam1 = new ColumnConfig<IMatch, String>(MatchProperty.matchPointsTeam1, 120, "Punkte Spieler/Team1");
+		ccMatchSets.setGroupable(false);
+		final ColumnConfig<IMatch, String> ccMatchPointsTeam2 = new ColumnConfig<IMatch, String>(MatchProperty.matchPointsTeam2, 120, "Punkte Spieler/Team2");
 		ccMatchSets.setGroupable(false);
 
 		final ArrayList<ColumnConfig<IMatch, ?>> columns = new ArrayList<ColumnConfig<IMatch, ?>>();
@@ -231,6 +234,8 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		columns.add(ccTeam2);
 		columns.add(ccMatchResult);
 		columns.add(ccMatchSets);
+		columns.add(ccMatchPointsTeam1);
+		columns.add(ccMatchPointsTeam2);
 
 		final GroupingView<IMatch> view = new GroupingView<IMatch>();
 		view.setAutoExpandColumn(ccMatchSets);
@@ -243,16 +248,16 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		final Grid<IMatch> grid = new Grid<IMatch>(store, new ColumnModel<IMatch>(columns));
 		grid.setView(view);
 
-		final ListStore<MatchType> lsMatchType = new ListStore<MatchType>(new ModelKeyProvider<MatchType>() {
+		final ListStore<String> lsMatchType = new ListStore<String>(new ModelKeyProvider<String>() {
 			@Override
-			public String getKey(MatchType item) {
+			public String getKey(String item) {
 				return item.toString();
 			}
 		});
-		lsMatchType.add(MatchType.Single);
-		lsMatchType.add(MatchType.Double);
+		lsMatchType.add("Einzel");
+		lsMatchType.add("Doppel");
 
-		final ListFilter<IMatch, MatchType> lfMatchType = new ListFilter<IMatch, MatchType>(KickerProperties.MATCH_PROPERTY.matchType(), lsMatchType);
+		final ListFilter<IMatch, String> lfMatchType = new ListFilter<IMatch, String>(MatchProperty.matchType, lsMatchType);
 		final DateFilter<IMatch> dfMatchDate = new DateFilter<IMatch>(KickerProperties.MATCH_PROPERTY.matchDate());
 
 		final GridFilters<IMatch> filters = new GridFilters<IMatch>();

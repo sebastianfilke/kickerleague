@@ -1,4 +1,5 @@
 /* Allgemeine Einstellungen */
+/*-----------------------------------------------------------------------------------------*/
 body {
 	border: none;
 	margin: 0 auto;
@@ -17,6 +18,7 @@ body {
 }
 
 /* Header */
+/*-----------------------------------------------------------------------------------------*/
 #header {
 	position: relative;
 	padding: 12px 0px 0px 0px;
@@ -43,6 +45,7 @@ body {
 }
 
 /* Content */
+/*-----------------------------------------------------------------------------------------*/
 #content {
 	box-shadow: 4px 4px 10px #666;
 	margin: 20px auto 12px auto;
@@ -54,6 +57,7 @@ body {
 }
 
 /* Footer */
+/*-----------------------------------------------------------------------------------------*/
 #footer {
 	position: relative;
 	font-family: Tahoma;
@@ -75,31 +79,33 @@ body {
 }
 
 /* General */
+/*-----------------------------------------------------------------------------------------*/
 #panelHeading {
 	font: 14px ChunkFiveRegular;
 	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
 }
 
-.resultLabel1 {
+.resultLabel {
 	font: 50px ChunkFiveRegular;
 	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
+	line-height: 2;
+}
+
+.resultLabelRight {
 	text-align: right;
-	line-height: 2;
 }
 
-.resultLabel2 {
-	font: 50px ChunkFiveRegular;
-	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
+.resultLabelLeft {
 	text-align: left;
-	line-height: 2;
 }
 
-/* ---------------------- Greenslate nav ---------------------- */
+/* Navigation */
+/*-----------------------------------------------------------------------------------------*/
 #tabs26 {
 	position: relative;
 	display: block;
 	height: 42px;
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: bold;
 	background: transparent url(../images/menu_bg.gif) repeat-x top left;
 	font-family: Arial, Verdana, Helvitica, sans-serif;
@@ -138,7 +144,7 @@ body {
 	text-decoration: none;
 	padding: 14px 22px 0 22px;
 	height: 28px;
-	text-shadow: 1px 1px 2px #000;
+	text-shadow: 1px 1px 4px #000;
 }
 
 #tabs26 ul li div.label:hover,#tabs26 ul li div.current {
@@ -147,8 +153,9 @@ body {
 	background: transparent url(../images/menu_bg_hover.gif) no-repeat top
 		center;
 }
-/* ---------------------- END Greenslate nav ---------------------- */
+
 /* Paging ComboBox */
+/*-----------------------------------------------------------------------------------------*/
 .templatePagingComboBox {
 	padding: 3px 10px 3px 10px;
 	white-space: normal;
