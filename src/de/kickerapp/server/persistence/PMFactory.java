@@ -44,7 +44,7 @@ public final class PMFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends Serializable> List<T> getList(Class<T> clazz) {
-		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
+		final PersistenceManager pm = get().getPersistenceManager();
 
 		final Query query = pm.newQuery(clazz);
 		List<T> list = new ArrayList<T>();
@@ -53,12 +53,13 @@ public final class PMFactory {
 			list = (List<T>) pm.detachCopyAll(list);
 		} finally {
 			query.closeAll();
+			pm.close();
 		}
 		return list;
 	}
 
 	public static <T extends Serializable> T getObjectById(Class<T> clazz, Long id) {
-		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
+		final PersistenceManager pm = get().getPersistenceManager();
 
 		T object = null;
 		try {
@@ -75,7 +76,7 @@ public final class PMFactory {
 	 * @return
 	 */
 	public static <T extends Serializable> T persistObject(T object) {
-		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
+		final PersistenceManager pm = get().getPersistenceManager();
 		final Transaction txn = pm.currentTransaction();
 		try {
 			txn.begin();
@@ -93,7 +94,7 @@ public final class PMFactory {
 
 	@SuppressWarnings("unchecked")
 	public static <T extends Serializable> int getNextId(Class<T> clazz) {
-		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
+		final PersistenceManager pm = get().getPersistenceManager();
 
 		final Query query = pm.newQuery(clazz);
 		int id = 0;
@@ -103,6 +104,7 @@ public final class PMFactory {
 			id++;
 		} finally {
 			query.closeAll();
+			pm.close();
 		}
 		return id;
 	}
