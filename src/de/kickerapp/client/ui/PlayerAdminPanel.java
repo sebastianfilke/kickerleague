@@ -42,16 +42,15 @@ import de.kickerapp.client.ui.util.AppInfo;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppTextField;
 import de.kickerapp.shared.common.MatchType;
-import de.kickerapp.shared.dto.IPlayer;
 import de.kickerapp.shared.dto.PlayerDto;
 
 public class PlayerAdminPanel extends SimpleContainer {
 
-	private ListStore<IPlayer> storePlayer;
+	private ListStore<PlayerDto> storePlayer;
 
-	private ListView<IPlayer, String> lvPlayer;
+	private ListView<PlayerDto, String> lvPlayer;
 
-	private StoreFilterField<IPlayer> sffPlayer;
+	private StoreFilterField<PlayerDto> sffPlayer;
 
 	private AppTextField tfNickname;
 
@@ -67,9 +66,10 @@ public class PlayerAdminPanel extends SimpleContainer {
 
 	private boolean doUpdatePlayerList;
 
+	private FieldSet fsPlayer;
+
 	/**
-	 * Erzeugt einen neuen Controller zum Eintragen neuer Spieler für die
-	 * Applikation.
+	 * Erzeugt einen neuen Controller zum Eintragen neuer Spieler für die Applikation.
 	 */
 	public PlayerAdminPanel() {
 		super();
@@ -84,7 +84,7 @@ public class PlayerAdminPanel extends SimpleContainer {
 
 		doUpdatePlayerList = true;
 
-		storePlayer = new ListStore<IPlayer>(KickerProperties.PLAYER_PROPERTY.id());
+		storePlayer = new ListStore<PlayerDto>(KickerProperties.PLAYER_PROPERTY.id());
 
 		add(createAdministrationContainer());
 	}
@@ -94,6 +94,7 @@ public class PlayerAdminPanel extends SimpleContainer {
 		blcAdmin.setBorders(false);
 
 		final VerticalLayoutContainer vlcPlayerInfo = new VerticalLayoutContainer();
+		vlcPlayerInfo.getElement().getStyle().setBackgroundColor("#F1F1F1");
 		vlcPlayerInfo.addStyleName("playerAdminInfo");
 		vlcPlayerInfo.add(createToolBarPlayerInfo(), new VerticalLayoutData(1, -1));
 		vlcPlayerInfo.add(createPlayerInfoFieldSet(), new VerticalLayoutData(1, -1, new Margins(10)));
@@ -129,8 +130,8 @@ public class PlayerAdminPanel extends SimpleContainer {
 	 * @return Das erzeugte FieldSet.
 	 */
 	private FieldSet createPlayerInfoFieldSet() {
-		final FieldSet fsPlayer = new FieldSet();
-		fsPlayer.setHeadingText("Spieler");
+		fsPlayer = new FieldSet();
+		fsPlayer.setHeadingText("Neuen Spieler eintragen");
 
 		final VerticalLayoutContainer vlcPlayer = new VerticalLayoutContainer();
 
@@ -187,6 +188,7 @@ public class PlayerAdminPanel extends SimpleContainer {
 		tfEMail.clear();
 		btnPlayerUpdate.setValue(false);
 		lvPlayer.getSelectionModel().deselectAll();
+		fsPlayer.setHeadingText("Neuen Spieler eintragen");
 		sffPlayer.setEnabled(true);
 		btnListUpdate.setEnabled(true);
 	}
@@ -195,9 +197,9 @@ public class PlayerAdminPanel extends SimpleContainer {
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
-		sffPlayer = new StoreFilterField<IPlayer>() {
+		sffPlayer = new StoreFilterField<PlayerDto>() {
 			@Override
-			protected boolean doSelect(Store<IPlayer> store, IPlayer parent, IPlayer item, String filter) {
+			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, String filter) {
 				if (item.getLastName().toLowerCase().contains(filter) || item.getFirstName().toLowerCase().contains(filter)
 						|| item.getNickName().toLowerCase().contains(filter)) {
 					return true;
@@ -241,7 +243,7 @@ public class PlayerAdminPanel extends SimpleContainer {
 		btnPlayerUpdate.addBeforeSelectHandler(new BeforeSelectHandler() {
 			@Override
 			public void onBeforeSelect(BeforeSelectEvent event) {
-				final IPlayer selectedPlayer = lvPlayer.getSelectionModel().getSelectedItem();
+				final PlayerDto selectedPlayer = lvPlayer.getSelectionModel().getSelectedItem();
 				if (selectedPlayer == null) {
 					event.setCancelled(true);
 				}
@@ -251,12 +253,13 @@ public class PlayerAdminPanel extends SimpleContainer {
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				if (event.getValue()) {
-					final IPlayer selectedPlayer = lvPlayer.getSelectionModel().getSelectedItem();
+					final PlayerDto selectedPlayer = lvPlayer.getSelectionModel().getSelectedItem();
 					if (selectedPlayer != null) {
 						tfNickname.setValue(selectedPlayer.getNickName());
 						tfFirstname.setValue(selectedPlayer.getFirstName());
 						tfLastname.setValue(selectedPlayer.getLastName());
 						tfEMail.setValue(selectedPlayer.getEMail());
+						fsPlayer.setHeadingText("Spieler bearbeiten");
 						sffPlayer.setEnabled(false);
 						btnListUpdate.setEnabled(false);
 					}
@@ -279,11 +282,11 @@ public class PlayerAdminPanel extends SimpleContainer {
 		return tf;
 	}
 
-	private ListView<IPlayer, String> createPlayerListListView() {
-		lvPlayer = new ListView<IPlayer, String>(storePlayer, PlayerProperty.playerName);
-		lvPlayer.getSelectionModel().addBeforeSelectionHandler(new BeforeSelectionHandler<IPlayer>() {
+	private ListView<PlayerDto, String> createPlayerListListView() {
+		lvPlayer = new ListView<PlayerDto, String>(storePlayer, PlayerProperty.playerName);
+		lvPlayer.getSelectionModel().addBeforeSelectionHandler(new BeforeSelectionHandler<PlayerDto>() {
 			@Override
-			public void onBeforeSelection(BeforeSelectionEvent<IPlayer> event) {
+			public void onBeforeSelection(BeforeSelectionEvent<PlayerDto> event) {
 				if (btnPlayerUpdate.getValue()) {
 					event.cancel();
 				}
@@ -295,11 +298,11 @@ public class PlayerAdminPanel extends SimpleContainer {
 		return lvPlayer;
 	}
 
-	private void getPlayerList() {
+	protected void getPlayerList() {
 		if (doUpdatePlayerList) {
 			mask("Aktualisiere...");
 			storePlayer.clear();
-			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.UNKNOWN, new AsyncCallback<ArrayList<PlayerDto>>() {
+			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.NONE, new AsyncCallback<ArrayList<PlayerDto>>() {
 				@Override
 				public void onSuccess(ArrayList<PlayerDto> result) {
 					storePlayer.addAll(result);
@@ -393,7 +396,7 @@ public class PlayerAdminPanel extends SimpleContainer {
 	}
 
 	private PlayerDto getPlayer() {
-		final IPlayer selectedPlayer = lvPlayer.getSelectionModel().getSelectedItem();
+		final PlayerDto selectedPlayer = lvPlayer.getSelectionModel().getSelectedItem();
 		if (selectedPlayer != null) {
 			selectedPlayer.setLastName(tfLastname.getText());
 			selectedPlayer.setFirstName(tfFirstname.getText());
@@ -402,7 +405,7 @@ public class PlayerAdminPanel extends SimpleContainer {
 				selectedPlayer.setEMail(tfEMail.getText());
 			}
 		}
-		return (PlayerDto) selectedPlayer;
+		return selectedPlayer;
 	}
 
 	private void fireEvents() {

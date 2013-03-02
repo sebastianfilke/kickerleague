@@ -25,19 +25,4 @@ public interface IBase extends Serializable, IsSerializable {
 	 */
 	public long getId();
 
-	/**
-	 * Setzt den Anzeigetext für ein ausgewähltes Objekt.
-	 * 
-	 * @param label Der Anzeigetext für ein ausgewähltes Objekta als
-	 *            {@link String}.
-	 */
-	public void setLabel(String label);
-
-	/**
-	 * Liefert den Anzeigetext für ein ausgewähltes Objekt.
-	 * 
-	 * @return Der Anzeigetext für ein ausgewähltes Objekt.
-	 */
-	public String getLabel();
-
 }

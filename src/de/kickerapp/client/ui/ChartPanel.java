@@ -11,11 +11,11 @@ import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.data.shared.ListStore;
 
 import de.kickerapp.client.properties.KickerProperties;
-import de.kickerapp.shared.dto.IChart;
+import de.kickerapp.shared.dto.ChartDto;
 
 public class ChartPanel extends BasePanel {
 
-	private ListStore<IChart> storeGroupBarChart;
+	private ListStore<ChartDto> storeGroupBarChart;
 
 	public ChartPanel() {
 		super();
@@ -28,13 +28,13 @@ public class ChartPanel extends BasePanel {
 	@Override
 	public void initLayout() {
 		super.initLayout();
-		storeGroupBarChart = new ListStore<IChart>(KickerProperties.CHART_PROPERTY.id());
+		storeGroupBarChart = new ListStore<ChartDto>(KickerProperties.CHART_PROPERTY.id());
 
 		add(createGroupBarChart());
 	}
 
-	private Chart<IChart> createGroupBarChart() {
-		final Chart<IChart> chart = new Chart<IChart>();
+	private Chart<ChartDto> createGroupBarChart() {
+		final Chart<ChartDto> chart = new Chart<ChartDto>();
 		chart.setStore(storeGroupBarChart);
 		chart.setShadowChart(true);
 
@@ -46,8 +46,8 @@ public class ChartPanel extends BasePanel {
 		return chart;
 	}
 
-	private NumericAxis<IChart> createNumericAxis() {
-		final NumericAxis<IChart> numAxis = new NumericAxis<IChart>();
+	private NumericAxis<ChartDto> createNumericAxis() {
+		final NumericAxis<ChartDto> numAxis = new NumericAxis<ChartDto>();
 		numAxis.setPosition(Position.BOTTOM);
 		// axis.addField(dataAccess.data1());
 		// axis.addField(dataAccess.data2());
@@ -64,8 +64,8 @@ public class ChartPanel extends BasePanel {
 		return numAxis;
 	}
 
-	private CategoryAxis<IChart, String> createCategoryAxis() {
-		final CategoryAxis<IChart, String> catAxis = new CategoryAxis<IChart, String>();
+	private CategoryAxis<ChartDto, String> createCategoryAxis() {
+		final CategoryAxis<ChartDto, String> catAxis = new CategoryAxis<ChartDto, String>();
 		catAxis.setPosition(Position.LEFT);
 		// catAxis.setField(dataAccess.name());
 
@@ -76,8 +76,8 @@ public class ChartPanel extends BasePanel {
 		return catAxis;
 	}
 
-	private BarSeries<IChart> createBarSeries() {
-		final BarSeries<IChart> bar = new BarSeries<IChart>();
+	private BarSeries<ChartDto> createBarSeries() {
+		final BarSeries<ChartDto> bar = new BarSeries<ChartDto>();
 		bar.setYAxisPosition(Position.BOTTOM);
 		// bar.addYField(dataAccess.data1());
 		// bar.addYField(dataAccess.data2());
@@ -89,8 +89,8 @@ public class ChartPanel extends BasePanel {
 		return bar;
 	}
 
-	private Legend<IChart> createLegend() {
-		final Legend<IChart> legend = new Legend<IChart>();
+	private Legend<ChartDto> createLegend() {
+		final Legend<ChartDto> legend = new Legend<ChartDto>();
 		legend.setPosition(Position.RIGHT);
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(true);

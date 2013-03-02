@@ -1,9 +1,7 @@
 package de.kickerapp.server.services;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -14,6 +12,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 import de.kickerapp.client.services.PagingService;
 import de.kickerapp.server.entity.Player;
 import de.kickerapp.server.persistence.PMFactory;
+import de.kickerapp.server.services.PlayerServiceHelper.PlayerComparator;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
 
@@ -21,25 +20,6 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = 1711104572514007282L;
-
-	/**
-	 * Comparator zur Sortierung der Betriebsmittelarten.
-	 * 
-	 * @author Sebastian Filke, GIGATRONIK München GmbH
-	 */
-	private class PlayerComparator implements Comparator<PlayerDto>, Serializable {
-
-		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = 2081602779517954979L;
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int compare(PlayerDto p1, PlayerDto p2) {
-			return p1.getLastName().compareTo(p2.getLastName());
-		}
-	}
 
 	@Override
 	public PagingLoadResult<PlayerDto> getPagedPlayers(String query, PagingLoadConfig config) throws IllegalArgumentException {
@@ -89,7 +69,7 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 
 		final List<Player> dbPlayers = PMFactory.getList(Player.class);
 		for (Player dbPlayer : dbPlayers) {
-			final PlayerDto player = PlayerServiceHelper.createPlayer(dbPlayer, MatchType.SINGLE);
+			final PlayerDto player = PlayerServiceHelper.createPlayer(dbPlayer, MatchType.BOTH);
 
 			playerDtos.add(player);
 		}

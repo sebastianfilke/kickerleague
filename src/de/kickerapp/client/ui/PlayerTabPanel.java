@@ -7,12 +7,16 @@ import com.sencha.gxt.widget.core.client.PlainTabPanel;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.container.MarginData;
 
+import de.kickerapp.client.event.AppEventBus;
+import de.kickerapp.client.event.ShowDataEvent;
+import de.kickerapp.client.event.ShowDataEventHandler;
+
 /**
  * Controller-Klasse zum Eintragen neuer Spieler für die Applikation.
  * 
  * @author Sebastian Filke
  */
-public class PlayerTabPanel extends BasePanel {
+public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 
 	private PlayerAdminPanel playerAdminPanel;
 
@@ -21,12 +25,12 @@ public class PlayerTabPanel extends BasePanel {
 	private int activeTab;
 
 	/**
-	 * Erzeugt einen neuen Controller zum Eintragen neuer Spieler für die
-	 * Applikation.
+	 * Erzeugt einen neuen Controller zum Eintragen neuer Spieler für die Applikation.
 	 */
 	public PlayerTabPanel() {
 		super();
 		initLayout();
+		initHandlers();
 	}
 
 	/**
@@ -44,6 +48,16 @@ public class PlayerTabPanel extends BasePanel {
 		tabPanel = createTabPanel();
 
 		add(tabPanel, new MarginData(5, 0, 0, 0));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initHandlers() {
+		super.initHandlers();
+
+		AppEventBus.addHandler(ShowDataEvent.PLAYER, this);
 	}
 
 	private TabPanel createTabPanel() {
@@ -65,6 +79,20 @@ public class PlayerTabPanel extends BasePanel {
 		tabPanel.setBorders(false);
 
 		return tabPanel;
+	}
+
+	private void getData() {
+		if (activeTab == 0) {
+			playerAdminPanel.getPlayerList();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void showData(ShowDataEvent event) {
+		getData();
 	}
 
 }

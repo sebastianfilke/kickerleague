@@ -2,10 +2,10 @@ package de.kickerapp.shared.dto;
 
 import java.util.Date;
 
-import de.kickerapp.shared.common.BaseData;
+import de.kickerapp.shared.common.BaseDto;
 import de.kickerapp.shared.common.MatchType;
 
-public class MatchDto extends BaseData implements IMatch {
+public class MatchDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = 2656034118993930642L;
@@ -35,7 +35,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public void setMatchNumber(String matchNumber) {
 		this.matchNumber = matchNumber;
 	}
@@ -43,7 +43,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public String getMatchNumber() {
 		return matchNumber;
 	}
@@ -51,7 +51,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public void setMatchDate(Date matchDate) {
 		this.matchDate = matchDate;
 	}
@@ -59,7 +59,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public Date getMatchDate() {
 		return matchDate;
 	}
@@ -67,7 +67,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public void setGroupDate(String groupDate) {
 		this.groupDate = groupDate;
 	}
@@ -75,7 +75,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public String getGroupDate() {
 		return groupDate;
 	}
@@ -83,7 +83,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public MatchType getMatchType() {
 		return matchType;
 	}
@@ -91,7 +91,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public void setMatchType(MatchType matchType) {
 		this.matchType = matchType;
 	}
@@ -99,7 +99,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public void setTeam1(TeamDto team1) {
 		this.team1 = team1;
 	}
@@ -107,7 +107,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public TeamDto getTeam1() {
 		return team1;
 	}
@@ -115,7 +115,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public void setTeam2(TeamDto team2) {
 		this.team2 = team2;
 	}
@@ -123,7 +123,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public TeamDto getTeam2() {
 		return team2;
 	}
@@ -131,7 +131,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public MatchPointsDto getPoints() {
 		return points;
 	}
@@ -139,7 +139,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public void setPoints(MatchPointsDto points) {
 		this.points = points;
 	}
@@ -147,7 +147,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public void setSets(MatchSetDto sets) {
 		this.sets = sets;
 	}
@@ -155,7 +155,7 @@ public class MatchDto extends BaseData implements IMatch {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	
 	public MatchSetDto getSets() {
 		return sets;
 	}

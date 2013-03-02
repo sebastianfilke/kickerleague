@@ -46,24 +46,22 @@ import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.StoreFilterCheckBox;
 import de.kickerapp.shared.common.MatchType;
-import de.kickerapp.shared.dto.IPlayer;
-import de.kickerapp.shared.dto.ITeam;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
 
 public class TablesPanel extends BasePanel implements ShowDataEventHandler, UpdatePanelEventHandler, TabPanelEventHandler {
 
-	private ListStore<IPlayer> storeSingleTable;
+	private ListStore<PlayerDto> storeSingleTable;
 
-	private ListStore<IPlayer> storeDoubleTable;
+	private ListStore<PlayerDto> storeDoubleTable;
 
-	private ListStore<ITeam> storeTeamTable;
+	private ListStore<TeamDto> storeTeamTable;
 
-	private StoreFilterField<IPlayer> sffSingleTable;
+	private StoreFilterField<PlayerDto> sffSingleTable;
 
-	private StoreFilterField<IPlayer> sffDoubleTable;
+	private StoreFilterField<PlayerDto> sffDoubleTable;
 
-	private StoreFilterField<ITeam> sffTeamTable;
+	private StoreFilterField<TeamDto> sffTeamTable;
 
 	private int activeTab;
 
@@ -90,9 +88,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		doUpdateTeamTable = true;
 		activeTab = 0;
 
-		storeSingleTable = new ListStore<IPlayer>(KickerProperties.PLAYER_PROPERTY.id());
-		storeDoubleTable = new ListStore<IPlayer>(KickerProperties.PLAYER_PROPERTY.id());
-		storeTeamTable = new ListStore<ITeam>(KickerProperties.TEAM_PROPERTY.id());
+		storeSingleTable = new ListStore<PlayerDto>(KickerProperties.PLAYER_PROPERTY.id());
+		storeDoubleTable = new ListStore<PlayerDto>(KickerProperties.PLAYER_PROPERTY.id());
+		storeTeamTable = new ListStore<TeamDto>(KickerProperties.TEAM_PROPERTY.id());
 
 		tabPanel = createTabPanel();
 
@@ -124,6 +122,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				getTable();
 			}
 		});
+		tabPanel.setAutoSelect(false);
 		tabPanel.setResizeTabs(true);
 		tabPanel.setTabWidth(200);
 
@@ -152,9 +151,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
-		sffSingleTable = new StoreFilterField<IPlayer>() {
+		sffSingleTable = new StoreFilterField<PlayerDto>() {
 			@Override
-			protected boolean doSelect(Store<IPlayer> store, IPlayer parent, IPlayer item, String filter) {
+			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, String filter) {
 				if (item.getLastName().toLowerCase().contains(filter) || item.getFirstName().toLowerCase().contains(filter)
 						|| item.getNickName().toLowerCase().contains(filter)) {
 					return true;
@@ -166,10 +165,10 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		sffSingleTable.setWidth(250);
 		sffSingleTable.setEmptyText("Nach Spieler suchen...");
 
-		final StoreFilterCheckBox<IPlayer> sfcNoMatchPlayer = new StoreFilterCheckBox<IPlayer>() {
+		final StoreFilterCheckBox<PlayerDto> sfcNoMatchPlayer = new StoreFilterCheckBox<PlayerDto>() {
 			@Override
-			protected boolean doSelect(Store<IPlayer> store, IPlayer parent, IPlayer item, boolean filter) {
-				if (!(item.getPlayerSingleStats().getSingleCurTablePlace() == 0)) {
+			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, boolean filter) {
+				if (!(item.getPlayerSingleStats().getCurTablePlace() == 0)) {
 					return true;
 				}
 				return false;
@@ -187,37 +186,45 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		return toolBar;
 	}
 
-	public Grid<IPlayer> createSingleTableGrid() {
-		final IdentityValueProvider<IPlayer> identity = new IdentityValueProvider<IPlayer>();
-		final RowNumberer<IPlayer> numberer = new RowNumberer<IPlayer>(identity);
-		numberer.setCell(new AbstractCell<IPlayer>() {
+	public Grid<PlayerDto> createSingleTableGrid() {
+		final IdentityValueProvider<PlayerDto> identity = new IdentityValueProvider<PlayerDto>();
+		final RowNumberer<PlayerDto> numberer = new RowNumberer<PlayerDto>(identity);
+		numberer.setCell(new AbstractCell<PlayerDto>() {
 			@Override
-			public void render(Context context, IPlayer value, SafeHtmlBuilder sb) {
-				sb.append(value.getPlayerSingleStats().getSingleCurTablePlace());
+			public void render(Context context, PlayerDto value, SafeHtmlBuilder sb) {
+				sb.append(value.getPlayerSingleStats().getCurTablePlace());
 			}
 		});
+		numberer.setComparator(new Comparator<PlayerDto>() {
+			@Override
+			public int compare(PlayerDto o1, PlayerDto o2) {
+				return o1.getPlayerSingleStats().getCurTablePlace().compareTo(o2.getPlayerSingleStats().getCurTablePlace());
+			}
+		});
+		numberer.setSortable(true);
 
-		final ColumnConfig<IPlayer, String> ccPlayerName = new ColumnConfig<IPlayer, String>(PlayerProperty.playerName, 140, "Spieler");
-		final ColumnConfig<IPlayer, Integer> ccSingleMatches = new ColumnConfig<IPlayer, Integer>(PlayerProperty.singleMatches, 100, "Anzahl Spiele");
-		final ColumnConfig<IPlayer, Integer> ccSingleWins = new ColumnConfig<IPlayer, Integer>(PlayerProperty.singleWins, 100, "Siege");
-		final ColumnConfig<IPlayer, Integer> ccSingleLosses = new ColumnConfig<IPlayer, Integer>(PlayerProperty.singleLosses, 100, "Niederlagen");
-		final ColumnConfig<IPlayer, String> ccSingleGoals = new ColumnConfig<IPlayer, String>(PlayerProperty.singleGoals, 100, "Tore");
-		final ColumnConfig<IPlayer, String> ccSingleGoalDifference = new ColumnConfig<IPlayer, String>(PlayerProperty.singleGoalDifference, 100, "Tordifferenz");
-		final ColumnConfig<IPlayer, String> ccPoints = new ColumnConfig<IPlayer, String>(PlayerProperty.singlePoints, 100, "Punkte");
+		final ColumnConfig<PlayerDto, String> ccPlayerName = new ColumnConfig<PlayerDto, String>(PlayerProperty.playerName, 140, "Spieler");
+		final ColumnConfig<PlayerDto, Integer> ccSingleMatches = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.singleMatches, 100, "Anzahl Spiele");
+		final ColumnConfig<PlayerDto, Integer> ccSingleWins = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.singleWins, 100, "Siege");
+		final ColumnConfig<PlayerDto, Integer> ccSingleLosses = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.singleLosses, 100, "Niederlagen");
+		final ColumnConfig<PlayerDto, String> ccSingleGoals = new ColumnConfig<PlayerDto, String>(PlayerProperty.singleGoals, 100, "Tore");
+		final ColumnConfig<PlayerDto, String> ccSingleGoalDifference = new ColumnConfig<PlayerDto, String>(PlayerProperty.singleGoalDifference, 100,
+				"Tordifferenz");
+		final ColumnConfig<PlayerDto, String> ccPoints = new ColumnConfig<PlayerDto, String>(PlayerProperty.singlePoints, 100, "Punkte");
 		ccPoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
-				final IPlayer player = storeSingleTable.findModelWithKey(context.getKey().toString());
-				final int singleLastMatchPoints = player.getPlayerSingleStats().getSingleLastMatchPoints();
+				final PlayerDto player = storeSingleTable.findModelWithKey(context.getKey().toString());
+				final int singleLastMatchPoints = player.getPlayerSingleStats().getLastMatchPoints();
 				getPoints(value, sb, singleLastMatchPoints);
 			}
 		});
-		final ColumnConfig<IPlayer, ImageResource> ccTendency = new ColumnConfig<IPlayer, ImageResource>(PlayerProperty.singleTendency, 80, "Tendenz");
+		final ColumnConfig<PlayerDto, ImageResource> ccTendency = new ColumnConfig<PlayerDto, ImageResource>(PlayerProperty.singleTendency, 80, "Tendenz");
 		ccTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
-				final IPlayer player = storeSingleTable.findModelWithKey(context.getKey().toString());
-				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerSingleStats().getSinglePrevTablePlace() + "'>");
+				final PlayerDto player = storeSingleTable.findModelWithKey(context.getKey().toString());
+				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerSingleStats().getPrevTablePlace() + "'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
 				sb.appendHtmlConstant("</span>");
 			}
@@ -229,7 +236,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			}
 		});
 
-		final ArrayList<ColumnConfig<IPlayer, ?>> columns = new ArrayList<ColumnConfig<IPlayer, ?>>();
+		final ArrayList<ColumnConfig<PlayerDto, ?>> columns = new ArrayList<ColumnConfig<PlayerDto, ?>>();
 		columns.add(numberer);
 		columns.add(ccPlayerName);
 		columns.add(ccSingleMatches);
@@ -240,7 +247,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccPoints);
 		columns.add(ccTendency);
 
-		final Grid<IPlayer> grid = new Grid<IPlayer>(storeSingleTable, new ColumnModel<IPlayer>(columns));
+		final Grid<PlayerDto> grid = new Grid<PlayerDto>(storeSingleTable, new ColumnModel<PlayerDto>(columns));
 		grid.getView().setAutoExpandColumn(ccPlayerName);
 		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);
@@ -268,9 +275,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
-		sffDoubleTable = new StoreFilterField<IPlayer>() {
+		sffDoubleTable = new StoreFilterField<PlayerDto>() {
 			@Override
-			protected boolean doSelect(Store<IPlayer> store, IPlayer parent, IPlayer item, String filter) {
+			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, String filter) {
 				if (item.getLastName().toLowerCase().contains(filter) || item.getFirstName().toLowerCase().contains(filter)
 						|| item.getNickName().toLowerCase().contains(filter)) {
 					return true;
@@ -289,36 +296,44 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	}
 
 	private Widget createDoubleTableSingleViewGrid() {
-		final IdentityValueProvider<IPlayer> identity = new IdentityValueProvider<IPlayer>();
-		final RowNumberer<IPlayer> numberer = new RowNumberer<IPlayer>(identity);
-		numberer.setCell(new AbstractCell<IPlayer>() {
+		final IdentityValueProvider<PlayerDto> identity = new IdentityValueProvider<PlayerDto>();
+		final RowNumberer<PlayerDto> numberer = new RowNumberer<PlayerDto>(identity);
+		numberer.setCell(new AbstractCell<PlayerDto>() {
 			@Override
-			public void render(Context context, IPlayer value, SafeHtmlBuilder sb) {
-				sb.append(value.getPlayerDoubleStats().getDoubleCurTablePlace());
+			public void render(Context context, PlayerDto value, SafeHtmlBuilder sb) {
+				sb.append(value.getPlayerDoubleStats().getCurTablePlace());
 			}
 		});
+		numberer.setComparator(new Comparator<PlayerDto>() {
+			@Override
+			public int compare(PlayerDto o1, PlayerDto o2) {
+				return o1.getPlayerDoubleStats().getCurTablePlace().compareTo(o2.getPlayerDoubleStats().getCurTablePlace());
+			}
+		});
+		numberer.setSortable(true);
 
-		final ColumnConfig<IPlayer, String> ccPlayerName = new ColumnConfig<IPlayer, String>(PlayerProperty.playerName, 140, "Spieler");
-		final ColumnConfig<IPlayer, Integer> ccSingleMatches = new ColumnConfig<IPlayer, Integer>(PlayerProperty.doubleMatches, 100, "Anzahl Spiele");
-		final ColumnConfig<IPlayer, Integer> ccDoubleWins = new ColumnConfig<IPlayer, Integer>(PlayerProperty.doubleWins, 100, "Siege");
-		final ColumnConfig<IPlayer, Integer> ccDoubleLosses = new ColumnConfig<IPlayer, Integer>(PlayerProperty.doubleLosses, 100, "Niederlagen");
-		final ColumnConfig<IPlayer, String> ccDoubleGoals = new ColumnConfig<IPlayer, String>(PlayerProperty.doubleGoals, 100, "Tore");
-		final ColumnConfig<IPlayer, String> ccSingleGoalDifference = new ColumnConfig<IPlayer, String>(PlayerProperty.doubleGoalDifference, 100, "Tordifferenz");
-		final ColumnConfig<IPlayer, String> ccPoints = new ColumnConfig<IPlayer, String>(PlayerProperty.doublePoints, 100, "Punkte");
+		final ColumnConfig<PlayerDto, String> ccPlayerName = new ColumnConfig<PlayerDto, String>(PlayerProperty.playerName, 140, "Spieler");
+		final ColumnConfig<PlayerDto, Integer> ccSingleMatches = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.doubleMatches, 100, "Anzahl Spiele");
+		final ColumnConfig<PlayerDto, Integer> ccDoubleWins = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.doubleWins, 100, "Siege");
+		final ColumnConfig<PlayerDto, Integer> ccDoubleLosses = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.doubleLosses, 100, "Niederlagen");
+		final ColumnConfig<PlayerDto, String> ccDoubleGoals = new ColumnConfig<PlayerDto, String>(PlayerProperty.doubleGoals, 100, "Tore");
+		final ColumnConfig<PlayerDto, String> ccSingleGoalDifference = new ColumnConfig<PlayerDto, String>(PlayerProperty.doubleGoalDifference, 100,
+				"Tordifferenz");
+		final ColumnConfig<PlayerDto, String> ccPoints = new ColumnConfig<PlayerDto, String>(PlayerProperty.doublePoints, 100, "Punkte");
 		ccPoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
-				final IPlayer player = storeDoubleTable.findModelWithKey(context.getKey().toString());
-				final int lastMatchPoints = player.getPlayerDoubleStats().getDoubleLastMatchPoints();
+				final PlayerDto player = storeDoubleTable.findModelWithKey(context.getKey().toString());
+				final int lastMatchPoints = player.getPlayerDoubleStats().getLastMatchPoints();
 				getPoints(value, sb, lastMatchPoints);
 			}
 		});
-		final ColumnConfig<IPlayer, ImageResource> ccTendency = new ColumnConfig<IPlayer, ImageResource>(PlayerProperty.doubleTendency, 80, "Tendenz");
+		final ColumnConfig<PlayerDto, ImageResource> ccTendency = new ColumnConfig<PlayerDto, ImageResource>(PlayerProperty.doubleTendency, 80, "Tendenz");
 		ccTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
-				final IPlayer player = storeDoubleTable.findModelWithKey(context.getKey().toString());
-				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerDoubleStats().getDoublePrevTablePlace() + "'>");
+				final PlayerDto player = storeDoubleTable.findModelWithKey(context.getKey().toString());
+				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerDoubleStats().getPrevTablePlace() + "'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
 				sb.appendHtmlConstant("</span>");
 			}
@@ -330,7 +345,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			}
 		});
 
-		final ArrayList<ColumnConfig<IPlayer, ?>> columns = new ArrayList<ColumnConfig<IPlayer, ?>>();
+		final ArrayList<ColumnConfig<PlayerDto, ?>> columns = new ArrayList<ColumnConfig<PlayerDto, ?>>();
 		columns.add(numberer);
 		columns.add(ccPlayerName);
 		columns.add(ccSingleMatches);
@@ -341,7 +356,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccPoints);
 		columns.add(ccTendency);
 
-		final Grid<IPlayer> grid = new Grid<IPlayer>(storeDoubleTable, new ColumnModel<IPlayer>(columns));
+		final Grid<PlayerDto> grid = new Grid<PlayerDto>(storeDoubleTable, new ColumnModel<PlayerDto>(columns));
 		grid.getView().setAutoExpandColumn(ccPlayerName);
 		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);
@@ -355,13 +370,13 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
-		sffTeamTable = new StoreFilterField<ITeam>() {
+		sffTeamTable = new StoreFilterField<TeamDto>() {
 			@Override
-			protected boolean doSelect(Store<ITeam> store, ITeam parent, ITeam item, String filter) {
+			protected boolean doSelect(Store<TeamDto> store, TeamDto parent, TeamDto item, String filter) {
 				return checkTeam(item, filter);
 			}
 
-			private boolean checkTeam(ITeam item, String filter) {
+			private boolean checkTeam(TeamDto item, String filter) {
 				final PlayerDto player1 = item.getPlayer1();
 				if (player1.getLastName().toLowerCase().contains(filter) || player1.getFirstName().toLowerCase().contains(filter)) {
 					return true;
@@ -386,37 +401,44 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		return toolBar;
 	}
 
-	public Grid<ITeam> createDoubleTableTeamViewGrid() {
-		final IdentityValueProvider<ITeam> identity = new IdentityValueProvider<ITeam>();
-		final RowNumberer<ITeam> numberer = new RowNumberer<ITeam>(identity);
-		numberer.setCell(new AbstractCell<ITeam>() {
+	public Grid<TeamDto> createDoubleTableTeamViewGrid() {
+		final IdentityValueProvider<TeamDto> identity = new IdentityValueProvider<TeamDto>();
+		final RowNumberer<TeamDto> numberer = new RowNumberer<TeamDto>(identity);
+		numberer.setCell(new AbstractCell<TeamDto>() {
 			@Override
-			public void render(Context context, ITeam value, SafeHtmlBuilder sb) {
-				sb.append(value.getCurTablePlace());
+			public void render(Context context, TeamDto value, SafeHtmlBuilder sb) {
+				sb.append(value.getTeamStatsDto().getCurTablePlace());
 			}
 		});
+		numberer.setComparator(new Comparator<TeamDto>() {
+			@Override
+			public int compare(TeamDto o1, TeamDto o2) {
+				return o1.getTeamStatsDto().getCurTablePlace().compareTo(o2.getTeamStatsDto().getCurTablePlace());
+			}
+		});
+		numberer.setSortable(true);
 
-		final ColumnConfig<ITeam, String> ccPlayerName = new ColumnConfig<ITeam, String>(TeamProperty.teamLabel, 140, "Team");
-		final ColumnConfig<ITeam, Integer> ccSingleMatches = new ColumnConfig<ITeam, Integer>(TeamProperty.matches, 100, "Anzahl Spiele");
-		final ColumnConfig<ITeam, Integer> ccSingleWins = new ColumnConfig<ITeam, Integer>(KickerProperties.TEAM_PROPERTY.wins(), 100, "Siege");
-		final ColumnConfig<ITeam, Integer> ccSingleLosses = new ColumnConfig<ITeam, Integer>(KickerProperties.TEAM_PROPERTY.losses(), 100, "Niederlagen");
-		final ColumnConfig<ITeam, String> ccSingleGoals = new ColumnConfig<ITeam, String>(TeamProperty.goals, 100, "Tore");
-		final ColumnConfig<ITeam, String> ccSingleGoalDifference = new ColumnConfig<ITeam, String>(TeamProperty.goalDifference, 100, "Tordifferenz");
-		final ColumnConfig<ITeam, String> ccPoints = new ColumnConfig<ITeam, String>(TeamProperty.points, 100, "Punkte");
+		final ColumnConfig<TeamDto, String> ccPlayerName = new ColumnConfig<TeamDto, String>(TeamProperty.teamName, 140, "Team");
+		final ColumnConfig<TeamDto, Integer> ccSingleMatches = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamMatches, 100, "Anzahl Spiele");
+		final ColumnConfig<TeamDto, Integer> ccSingleWins = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamWins, 100, "Siege");
+		final ColumnConfig<TeamDto, Integer> ccSingleLosses = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamLosses, 100, "Niederlagen");
+		final ColumnConfig<TeamDto, String> ccSingleGoals = new ColumnConfig<TeamDto, String>(TeamProperty.teamGoals, 100, "Tore");
+		final ColumnConfig<TeamDto, String> ccSingleGoalDifference = new ColumnConfig<TeamDto, String>(TeamProperty.teamGoalDifference, 100, "Tordifferenz");
+		final ColumnConfig<TeamDto, String> ccPoints = new ColumnConfig<TeamDto, String>(TeamProperty.teamPoints, 100, "Punkte");
 		ccPoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
-				final ITeam team = storeTeamTable.findModelWithKey(context.getKey().toString());
-				final int lastMatchPoints = team.getLastMatchPoints();
+				final TeamDto team = storeTeamTable.findModelWithKey(context.getKey().toString());
+				final int lastMatchPoints = team.getTeamStatsDto().getLastMatchPoints();
 				getPoints(value, sb, lastMatchPoints);
 			}
 		});
-		final ColumnConfig<ITeam, ImageResource> ccTendency = new ColumnConfig<ITeam, ImageResource>(TeamProperty.tendency, 80, "Tendenz");
+		final ColumnConfig<TeamDto, ImageResource> ccTendency = new ColumnConfig<TeamDto, ImageResource>(TeamProperty.teamTendency, 80, "Tendenz");
 		ccTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
-				final ITeam team = storeTeamTable.findModelWithKey(context.getKey().toString());
-				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + team.getPrevTablePlace() + "'>");
+				final TeamDto team = storeTeamTable.findModelWithKey(context.getKey().toString());
+				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + team.getTeamStatsDto().getPrevTablePlace() + "'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
 				sb.appendHtmlConstant("</span>");
 			}
@@ -428,7 +450,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			}
 		});
 
-		final ArrayList<ColumnConfig<ITeam, ?>> columns = new ArrayList<ColumnConfig<ITeam, ?>>();
+		final ArrayList<ColumnConfig<TeamDto, ?>> columns = new ArrayList<ColumnConfig<TeamDto, ?>>();
 		columns.add(numberer);
 		columns.add(ccPlayerName);
 		columns.add(ccSingleMatches);
@@ -439,7 +461,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccPoints);
 		columns.add(ccTendency);
 
-		final Grid<ITeam> grid = new Grid<ITeam>(storeTeamTable, new ColumnModel<ITeam>(columns));
+		final Grid<TeamDto> grid = new Grid<TeamDto>(storeTeamTable, new ColumnModel<TeamDto>(columns));
 		grid.getView().setAutoExpandColumn(ccPlayerName);
 		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);

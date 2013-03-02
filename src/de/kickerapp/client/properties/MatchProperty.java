@@ -9,24 +9,24 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
 import de.kickerapp.shared.common.MatchType;
-import de.kickerapp.shared.dto.IMatch;
+import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
 
-public interface MatchProperty extends PropertyAccess<IMatch> {
+public interface MatchProperty extends PropertyAccess<MatchDto> {
 
 	@Path("id")
-	public ModelKeyProvider<IMatch> id();
+	public ModelKeyProvider<MatchDto> id();
 
-	public ValueProvider<IMatch, String> matchNumber();
+	public ValueProvider<MatchDto, String> matchNumber();
 
-	public ValueProvider<IMatch, Date> matchDate();
+	public ValueProvider<MatchDto, Date> matchDate();
 
-	public ValueProvider<IMatch, String> groupDate();
+	public ValueProvider<MatchDto, String> groupDate();
 
-	public ValueProvider<IMatch, String> matchType = new ValueProvider<IMatch, String>() {
+	public ValueProvider<MatchDto, String> matchType = new ValueProvider<MatchDto, String>() {
 		@Override
-		public String getValue(IMatch object) {
+		public String getValue(MatchDto object) {
 			String matchType = "";
 			if (object.getMatchType() == MatchType.SINGLE) {
 				matchType = "Einzel";
@@ -37,7 +37,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		}
 
 		@Override
-		public void setValue(IMatch object, String value) {
+		public void setValue(MatchDto object, String value) {
 		}
 
 		@Override
@@ -46,13 +46,13 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IMatch, String> team1 = new ValueProvider<IMatch, String>() {
+	public ValueProvider<MatchDto, String> team1 = new ValueProvider<MatchDto, String>() {
 		@Override
-		public String getValue(IMatch object) {
+		public String getValue(MatchDto object) {
 			return getTeam(object, object.getTeam1());
 		}
 
-		private String getTeam(IMatch object, TeamDto teamDto) {
+		private String getTeam(MatchDto object, TeamDto teamDto) {
 			final StringBuilder sb = new StringBuilder();
 
 			final PlayerDto player1 = teamDto.getPlayer1();
@@ -70,7 +70,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		}
 
 		@Override
-		public void setValue(IMatch object, String value) {
+		public void setValue(MatchDto object, String value) {
 		}
 
 		@Override
@@ -79,13 +79,13 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IMatch, String> team2 = new ValueProvider<IMatch, String>() {
+	public ValueProvider<MatchDto, String> team2 = new ValueProvider<MatchDto, String>() {
 		@Override
-		public String getValue(IMatch object) {
+		public String getValue(MatchDto object) {
 			return getTeam(object, object.getTeam2());
 		}
 
-		private String getTeam(IMatch object, TeamDto teamDto) {
+		private String getTeam(MatchDto object, TeamDto teamDto) {
 			final StringBuilder sb = new StringBuilder();
 
 			final PlayerDto player1 = teamDto.getPlayer1();
@@ -103,7 +103,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		}
 
 		@Override
-		public void setValue(IMatch object, String value) {
+		public void setValue(MatchDto object, String value) {
 		}
 
 		@Override
@@ -112,9 +112,9 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IMatch, String> matchResult = new ValueProvider<IMatch, String>() {
+	public ValueProvider<MatchDto, String> matchResult = new ValueProvider<MatchDto, String>() {
 		@Override
-		public String getValue(IMatch object) {
+		public String getValue(MatchDto object) {
 			final StringBuilder sb = new StringBuilder();
 
 			int setWinsTeam1 = 0;
@@ -138,7 +138,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		}
 
 		@Override
-		public void setValue(IMatch object, String value) {
+		public void setValue(MatchDto object, String value) {
 		}
 
 		@Override
@@ -147,9 +147,9 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IMatch, String> matchSets = new ValueProvider<IMatch, String>() {
+	public ValueProvider<MatchDto, String> matchSets = new ValueProvider<MatchDto, String>() {
 		@Override
-		public String getValue(IMatch object) {
+		public String getValue(MatchDto object) {
 			final StringBuilder sb = new StringBuilder();
 
 			final int size = object.getSets().getSetsTeam1().size();
@@ -174,7 +174,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		}
 
 		@Override
-		public void setValue(IMatch object, String value) {
+		public void setValue(MatchDto object, String value) {
 		}
 
 		@Override
@@ -183,9 +183,9 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IMatch, String> matchPointsTeam1 = new ValueProvider<IMatch, String>() {
+	public ValueProvider<MatchDto, String> matchPointsTeam1 = new ValueProvider<MatchDto, String>() {
 		@Override
-		public String getValue(IMatch object) {
+		public String getValue(MatchDto object) {
 			final StringBuilder sb = new StringBuilder();
 
 			final ArrayList<Integer> pointsTeam1 = object.getPoints().getPointsTeam1();
@@ -214,7 +214,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		}
 
 		@Override
-		public void setValue(IMatch object, String value) {
+		public void setValue(MatchDto object, String value) {
 		}
 
 		@Override
@@ -223,9 +223,9 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IMatch, String> matchPointsTeam2 = new ValueProvider<IMatch, String>() {
+	public ValueProvider<MatchDto, String> matchPointsTeam2 = new ValueProvider<MatchDto, String>() {
 		@Override
-		public String getValue(IMatch object) {
+		public String getValue(MatchDto object) {
 			final StringBuilder sb = new StringBuilder();
 
 			final ArrayList<Integer> pointsTeam2 = object.getPoints().getPointsTeam2();
@@ -254,7 +254,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 		}
 
 		@Override
-		public void setValue(IMatch object, String value) {
+		public void setValue(MatchDto object, String value) {
 		}
 
 		@Override

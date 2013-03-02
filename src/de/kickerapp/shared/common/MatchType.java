@@ -18,9 +18,14 @@ public enum MatchType {
 	DOUBLE("double"),
 
 	/**
+	 * Beide Typen.
+	 */
+	BOTH("both"),
+
+	/**
 	 * Unbekannt.
 	 */
-	UNKNOWN("none");
+	NONE("none");
 
 	/** Der Spieltyp. */
 	private String matchType;

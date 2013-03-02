@@ -1,9 +1,7 @@
 package de.kickerapp.server.services;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import com.google.appengine.api.datastore.Key;
@@ -15,6 +13,8 @@ import de.kickerapp.server.entity.Player;
 import de.kickerapp.server.entity.PlayerDoubleStats;
 import de.kickerapp.server.entity.PlayerSingleStats;
 import de.kickerapp.server.persistence.PMFactory;
+import de.kickerapp.server.services.PlayerServiceHelper.PlayerComparator;
+import de.kickerapp.server.services.PlayerServiceHelper.PlayerTableComparator;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
 
@@ -27,62 +27,6 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = 3828516373887924192L;
-
-	/**
-	 * Comparator zur Sortierung der Betriebsmittelarten.
-	 * 
-	 * @author Sebastian Filke, GIGATRONIK München GmbH
-	 */
-	private class PlayerTableComparator implements Comparator<PlayerDto>, Serializable {
-
-		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = 7262644006482460970L;
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int compare(PlayerDto p1, PlayerDto p2) {
-			int comp = 0;
-			if (p1.getPlayerSingleStats() != null && p2.getPlayerSingleStats() != null) {
-				if (p1.getPlayerSingleStats().getSingleCurTablePlace() == 0) {
-					comp = 1;
-				} else if (p2.getPlayerSingleStats().getSingleCurTablePlace() == 0) {
-					comp = -1;
-				} else {
-					comp = p1.getPlayerSingleStats().getSingleCurTablePlace().compareTo(p2.getPlayerSingleStats().getSingleCurTablePlace());
-				}
-			} else if (p1.getPlayerDoubleStats() != null && p2.getPlayerDoubleStats() != null) {
-				if (p1.getPlayerDoubleStats().getDoubleCurTablePlace() == 0) {
-					comp = 1;
-				} else if (p2.getPlayerDoubleStats().getDoubleCurTablePlace() == 0) {
-					comp = -1;
-				} else {
-					comp = p1.getPlayerDoubleStats().getDoubleCurTablePlace().compareTo(p2.getPlayerDoubleStats().getDoubleCurTablePlace());
-				}
-			}
-			return comp;
-		}
-	}
-
-	/**
-	 * Comparator zur Sortierung der Betriebsmittelarten.
-	 * 
-	 * @author Sebastian Filke, GIGATRONIK München GmbH
-	 */
-	private class PlayerComparator implements Comparator<PlayerDto>, Serializable {
-
-		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = 2081602779517954979L;
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int compare(PlayerDto p1, PlayerDto p2) {
-			return p1.getLastName().compareTo(p2.getLastName());
-		}
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -134,7 +78,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 
 			playerDtos.add(player);
 		}
-		if (matchType == MatchType.UNKNOWN) {
+		if (matchType == MatchType.NONE) {
 			Collections.sort(playerDtos, new PlayerComparator());
 		} else {
 			Collections.sort(playerDtos, new PlayerTableComparator());

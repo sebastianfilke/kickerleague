@@ -100,7 +100,7 @@ public class MatchServiceHelper {
 		final SimpleDateFormat dateFormat = new SimpleDateFormat("'Spiele vom' EEEE, 'den' dd.MM.yyyy", Locale.GERMAN);
 		matchDto.setGroupDate(dateFormat.format(dbMatch.getMatchDate()));
 
-		final MatchType matchType = MatchType.UNKNOWN;
+		final MatchType matchType = MatchType.NONE;
 		if (dbMatch.getMatchType() == MatchType.SINGLE) {
 			final Player team1Player1 = PMFactory.getObjectById(Player.class, dbMatch.getTeam1());
 			matchDto.setTeam1(new TeamDto(PlayerServiceHelper.createPlayer(team1Player1, matchType)));
@@ -128,8 +128,8 @@ public class MatchServiceHelper {
 		matchDto.setPoints(pointsDto);
 
 		final MatchSetDto setDto = new MatchSetDto();
-		setDto.setSetsTeam1(dbMatch.getMatchSets().getSetsTeam1());
-		setDto.setSetsTeam2(dbMatch.getMatchSets().getSetsTeam2());
+		setDto.setSetsTeam1(dbMatch.getMatchSets().getMatchSetsTeam1());
+		setDto.setSetsTeam2(dbMatch.getMatchSets().getMatchSetsTeam2());
 		matchDto.setSets(setDto);
 
 		return matchDto;

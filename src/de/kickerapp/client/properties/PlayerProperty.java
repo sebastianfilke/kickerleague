@@ -8,22 +8,34 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
 import de.kickerapp.client.ui.images.KickerIcons;
-import de.kickerapp.shared.dto.IMatch;
-import de.kickerapp.shared.dto.IPlayer;
 import de.kickerapp.shared.dto.PlayerDoubleStatsDto;
+import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.PlayerSingleStatsDto;
 
-public interface PlayerProperty extends PropertyAccess<IMatch> {
+public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 
 	@Path("id")
-	public ModelKeyProvider<IPlayer> id();
+	public ModelKeyProvider<PlayerDto> id();
 
-	@Path("label")
-	public LabelProvider<IPlayer> label();
-
-	public ValueProvider<IPlayer, String> playerName = new ValueProvider<IPlayer, String>() {
+	public LabelProvider<PlayerDto> label = new LabelProvider<PlayerDto>() {
 		@Override
-		public String getValue(IPlayer object) {
+		public String getLabel(PlayerDto item) {
+			final StringBuilder sb = new StringBuilder();
+
+			sb.append(item.getLastName());
+			sb.append(", ");
+			sb.append(item.getFirstName());
+			sb.append(" (");
+			sb.append(item.getNickName());
+			sb.append(")");
+
+			return sb.toString();
+		}
+	};
+
+	public ValueProvider<PlayerDto, String> playerName = new ValueProvider<PlayerDto, String>() {
+		@Override
+		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
 
 			sb.append(object.getLastName());
@@ -37,7 +49,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 
 		@Override
-		public void setValue(IPlayer object, String value) {
+		public void setValue(PlayerDto object, String value) {
 		}
 
 		@Override
@@ -46,15 +58,15 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, Integer> singleMatches = new ValueProvider<IPlayer, Integer>() {
+	public ValueProvider<PlayerDto, Integer> singleMatches = new ValueProvider<PlayerDto, Integer>() {
 		@Override
-		public Integer getValue(IPlayer object) {
+		public Integer getValue(PlayerDto object) {
 			final PlayerSingleStatsDto playerSingleStatsDto = object.getPlayerSingleStats();
-			return playerSingleStatsDto.getSingleWins() + playerSingleStatsDto.getSingleLosses();
+			return playerSingleStatsDto.getWins() + playerSingleStatsDto.getLosses();
 		}
 
 		@Override
-		public void setValue(IPlayer object, Integer value) {
+		public void setValue(PlayerDto object, Integer value) {
 		}
 
 		@Override
@@ -63,14 +75,14 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, Integer> singleWins = new ValueProvider<IPlayer, Integer>() {
+	public ValueProvider<PlayerDto, Integer> singleWins = new ValueProvider<PlayerDto, Integer>() {
 		@Override
-		public Integer getValue(IPlayer object) {
-			return object.getPlayerSingleStats().getSingleWins();
+		public Integer getValue(PlayerDto object) {
+			return object.getPlayerSingleStats().getWins();
 		}
 
 		@Override
-		public void setValue(IPlayer object, Integer value) {
+		public void setValue(PlayerDto object, Integer value) {
 		}
 
 		@Override
@@ -79,14 +91,14 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, Integer> singleLosses = new ValueProvider<IPlayer, Integer>() {
+	public ValueProvider<PlayerDto, Integer> singleLosses = new ValueProvider<PlayerDto, Integer>() {
 		@Override
-		public Integer getValue(IPlayer object) {
-			return object.getPlayerSingleStats().getSingleLosses();
+		public Integer getValue(PlayerDto object) {
+			return object.getPlayerSingleStats().getLosses();
 		}
 
 		@Override
-		public void setValue(IPlayer object, Integer value) {
+		public void setValue(PlayerDto object, Integer value) {
 		}
 
 		@Override
@@ -95,21 +107,21 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, String> singleGoals = new ValueProvider<IPlayer, String>() {
+	public ValueProvider<PlayerDto, String> singleGoals = new ValueProvider<PlayerDto, String>() {
 		@Override
-		public String getValue(IPlayer object) {
+		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
 
 			final PlayerSingleStatsDto playerSingleStatsDto = object.getPlayerSingleStats();
-			sb.append(playerSingleStatsDto.getSingleShotGoals());
+			sb.append(playerSingleStatsDto.getShotGoals());
 			sb.append(":");
-			sb.append(playerSingleStatsDto.getSingleGetGoals());
+			sb.append(playerSingleStatsDto.getGetGoals());
 
 			return sb.toString();
 		}
 
 		@Override
-		public void setValue(IPlayer object, String value) {
+		public void setValue(PlayerDto object, String value) {
 		}
 
 		@Override
@@ -118,13 +130,13 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, String> singleGoalDifference = new ValueProvider<IPlayer, String>() {
+	public ValueProvider<PlayerDto, String> singleGoalDifference = new ValueProvider<PlayerDto, String>() {
 		@Override
-		public String getValue(IPlayer object) {
+		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
 
 			final PlayerSingleStatsDto playerSingleStatsDto = object.getPlayerSingleStats();
-			final int goalDifference = playerSingleStatsDto.getSingleShotGoals() - playerSingleStatsDto.getSingleGetGoals();
+			final int goalDifference = playerSingleStatsDto.getShotGoals() - playerSingleStatsDto.getGetGoals();
 			if (goalDifference >= 0) {
 				sb.append("+" + Integer.toString(goalDifference));
 			} else {
@@ -134,7 +146,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 
 		@Override
-		public void setValue(IPlayer object, String value) {
+		public void setValue(PlayerDto object, String value) {
 		}
 
 		@Override
@@ -143,14 +155,14 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, String> singlePoints = new ValueProvider<IPlayer, String>() {
+	public ValueProvider<PlayerDto, String> singlePoints = new ValueProvider<PlayerDto, String>() {
 		@Override
-		public String getValue(IPlayer object) {
-			return Integer.toString(object.getPlayerSingleStats().getSinglePoints());
+		public String getValue(PlayerDto object) {
+			return Integer.toString(object.getPlayerSingleStats().getPoints());
 		}
 
 		@Override
-		public void setValue(IPlayer object, String value) {
+		public void setValue(PlayerDto object, String value) {
 		}
 
 		@Override
@@ -159,12 +171,12 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, ImageResource> singleTendency = new ValueProvider<IPlayer, ImageResource>() {
+	public ValueProvider<PlayerDto, ImageResource> singleTendency = new ValueProvider<PlayerDto, ImageResource>() {
 		@Override
-		public ImageResource getValue(IPlayer object) {
+		public ImageResource getValue(PlayerDto object) {
 			ImageResource image = null;
 
-			switch (object.getPlayerSingleStats().getSingleTendency()) {
+			switch (object.getPlayerSingleStats().getTendency()) {
 			case Upward:
 				image = KickerIcons.ICON.tendencyUp();
 				break;
@@ -179,7 +191,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 
 		@Override
-		public void setValue(IPlayer object, ImageResource value) {
+		public void setValue(PlayerDto object, ImageResource value) {
 		}
 
 		@Override
@@ -188,15 +200,15 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, Integer> doubleMatches = new ValueProvider<IPlayer, Integer>() {
+	public ValueProvider<PlayerDto, Integer> doubleMatches = new ValueProvider<PlayerDto, Integer>() {
 		@Override
-		public Integer getValue(IPlayer object) {
+		public Integer getValue(PlayerDto object) {
 			final PlayerDoubleStatsDto playerDoubleStatsDto = object.getPlayerDoubleStats();
-			return playerDoubleStatsDto.getDoubleWins() + playerDoubleStatsDto.getDoubleLosses();
+			return playerDoubleStatsDto.getWins() + playerDoubleStatsDto.getLosses();
 		}
 
 		@Override
-		public void setValue(IPlayer object, Integer value) {
+		public void setValue(PlayerDto object, Integer value) {
 		}
 
 		@Override
@@ -205,14 +217,14 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, Integer> doubleWins = new ValueProvider<IPlayer, Integer>() {
+	public ValueProvider<PlayerDto, Integer> doubleWins = new ValueProvider<PlayerDto, Integer>() {
 		@Override
-		public Integer getValue(IPlayer object) {
-			return object.getPlayerDoubleStats().getDoubleWins();
+		public Integer getValue(PlayerDto object) {
+			return object.getPlayerDoubleStats().getWins();
 		}
 
 		@Override
-		public void setValue(IPlayer object, Integer value) {
+		public void setValue(PlayerDto object, Integer value) {
 		}
 
 		@Override
@@ -221,14 +233,14 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, Integer> doubleLosses = new ValueProvider<IPlayer, Integer>() {
+	public ValueProvider<PlayerDto, Integer> doubleLosses = new ValueProvider<PlayerDto, Integer>() {
 		@Override
-		public Integer getValue(IPlayer object) {
-			return object.getPlayerDoubleStats().getDoubleLosses();
+		public Integer getValue(PlayerDto object) {
+			return object.getPlayerDoubleStats().getLosses();
 		}
 
 		@Override
-		public void setValue(IPlayer object, Integer value) {
+		public void setValue(PlayerDto object, Integer value) {
 		}
 
 		@Override
@@ -237,21 +249,21 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, String> doubleGoals = new ValueProvider<IPlayer, String>() {
+	public ValueProvider<PlayerDto, String> doubleGoals = new ValueProvider<PlayerDto, String>() {
 		@Override
-		public String getValue(IPlayer object) {
+		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
 
 			final PlayerDoubleStatsDto playerDoubleStatsDto = object.getPlayerDoubleStats();
-			sb.append(playerDoubleStatsDto.getDoubleShotGoals());
+			sb.append(playerDoubleStatsDto.getShotGoals());
 			sb.append(":");
-			sb.append(playerDoubleStatsDto.getDoubleGetGoals());
+			sb.append(playerDoubleStatsDto.getGetGoals());
 
 			return sb.toString();
 		}
 
 		@Override
-		public void setValue(IPlayer object, String value) {
+		public void setValue(PlayerDto object, String value) {
 		}
 
 		@Override
@@ -260,13 +272,13 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, String> doubleGoalDifference = new ValueProvider<IPlayer, String>() {
+	public ValueProvider<PlayerDto, String> doubleGoalDifference = new ValueProvider<PlayerDto, String>() {
 		@Override
-		public String getValue(IPlayer object) {
+		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
 
 			final PlayerDoubleStatsDto playerDoubleStatsDto = object.getPlayerDoubleStats();
-			final int goalDifference = playerDoubleStatsDto.getDoubleShotGoals() - playerDoubleStatsDto.getDoubleGetGoals();
+			final int goalDifference = playerDoubleStatsDto.getShotGoals() - playerDoubleStatsDto.getGetGoals();
 			if (goalDifference >= 0) {
 				sb.append("+" + Integer.toString(goalDifference));
 			} else {
@@ -276,7 +288,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 
 		@Override
-		public void setValue(IPlayer object, String value) {
+		public void setValue(PlayerDto object, String value) {
 		}
 
 		@Override
@@ -285,14 +297,14 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, String> doublePoints = new ValueProvider<IPlayer, String>() {
+	public ValueProvider<PlayerDto, String> doublePoints = new ValueProvider<PlayerDto, String>() {
 		@Override
-		public String getValue(IPlayer object) {
-			return Integer.toString(object.getPlayerDoubleStats().getDoublePoints());
+		public String getValue(PlayerDto object) {
+			return Integer.toString(object.getPlayerDoubleStats().getPoints());
 		}
 
 		@Override
-		public void setValue(IPlayer object, String value) {
+		public void setValue(PlayerDto object, String value) {
 		}
 
 		@Override
@@ -301,12 +313,12 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 	};
 
-	public ValueProvider<IPlayer, ImageResource> doubleTendency = new ValueProvider<IPlayer, ImageResource>() {
+	public ValueProvider<PlayerDto, ImageResource> doubleTendency = new ValueProvider<PlayerDto, ImageResource>() {
 		@Override
-		public ImageResource getValue(IPlayer object) {
+		public ImageResource getValue(PlayerDto object) {
 			ImageResource image = null;
 
-			switch (object.getPlayerDoubleStats().getDoubleTendency()) {
+			switch (object.getPlayerDoubleStats().getTendency()) {
 			case Upward:
 				image = KickerIcons.ICON.tendencyUp();
 				break;
@@ -321,7 +333,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 		}
 
 		@Override
-		public void setValue(IPlayer object, ImageResource value) {
+		public void setValue(PlayerDto object, ImageResource value) {
 		}
 
 		@Override

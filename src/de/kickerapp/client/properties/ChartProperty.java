@@ -4,11 +4,10 @@ import com.google.gwt.editor.client.Editor.Path;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
-import de.kickerapp.shared.dto.IChart;
-import de.kickerapp.shared.dto.IMatch;
+import de.kickerapp.shared.dto.ChartDto;
 
-public interface ChartProperty extends PropertyAccess<IChart> {
+public interface ChartProperty extends PropertyAccess<ChartDto> {
 
 	@Path("id")
-	public ModelKeyProvider<IChart> id();
+	public ModelKeyProvider<ChartDto> id();
 }

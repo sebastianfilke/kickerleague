@@ -2,14 +2,14 @@ package de.kickerapp.shared.dto;
 
 import java.util.Date;
 
-import de.kickerapp.shared.common.BaseData;
+import de.kickerapp.shared.common.BaseDto;
 
 /**
  * Datenklasse zum Halten der Informationen eines Spielers.
  * 
  * @author Sebastian Filke
  */
-public class PlayerDto extends BaseData implements IPlayer {
+public class PlayerDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -8362977112070597348L;
@@ -34,6 +34,7 @@ public class PlayerDto extends BaseData implements IPlayer {
 	 */
 	public PlayerDto() {
 		super();
+
 		lastName = "";
 		firstName = "";
 		nickName = "";
@@ -53,13 +54,12 @@ public class PlayerDto extends BaseData implements IPlayer {
 		this();
 		this.lastName = lastName;
 		this.firstName = firstName;
-		setLabel(firstName + " " + lastName);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
@@ -67,7 +67,7 @@ public class PlayerDto extends BaseData implements IPlayer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public String getLastName() {
 		return lastName;
 	}
@@ -75,7 +75,7 @@ public class PlayerDto extends BaseData implements IPlayer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
@@ -83,7 +83,7 @@ public class PlayerDto extends BaseData implements IPlayer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public String getFirstName() {
 		return firstName;
 	}
@@ -91,7 +91,7 @@ public class PlayerDto extends BaseData implements IPlayer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
 	}
@@ -99,7 +99,7 @@ public class PlayerDto extends BaseData implements IPlayer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public String getNickName() {
 		return nickName;
 	}
@@ -107,7 +107,7 @@ public class PlayerDto extends BaseData implements IPlayer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public void setEMail(String eMail) {
 		this.eMail = eMail;
 	}
@@ -115,7 +115,7 @@ public class PlayerDto extends BaseData implements IPlayer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public String getEMail() {
 		return eMail;
 	}
@@ -123,7 +123,7 @@ public class PlayerDto extends BaseData implements IPlayer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public void setLastMatchDate(Date lastMatchDate) {
 		this.lastMatchDate = lastMatchDate;
 	}
@@ -131,35 +131,39 @@ public class PlayerDto extends BaseData implements IPlayer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public Date getLastMatchDate() {
 		return lastMatchDate;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public PlayerSingleStatsDto getPlayerSingleStats() {
 		return playerSingleStats;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public void setPlayerSingleStats(PlayerSingleStatsDto playerSingleStats) {
 		this.playerSingleStats = playerSingleStats;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public PlayerDoubleStatsDto getPlayerDoubleStats() {
 		return playerDoubleStats;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	public void setPlayerDoubleStats(PlayerDoubleStatsDto playerDoubleStats) {
 		this.playerDoubleStats = playerDoubleStats;
 	}

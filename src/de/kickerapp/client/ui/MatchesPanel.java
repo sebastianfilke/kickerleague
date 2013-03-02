@@ -37,7 +37,6 @@ import de.kickerapp.client.properties.MatchProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
-import de.kickerapp.shared.dto.IMatch;
 import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
@@ -47,9 +46,9 @@ import de.kickerapp.shared.dto.TeamDto;
  */
 public class MatchesPanel extends BasePanel implements ShowDataEventHandler, UpdatePanelEventHandler {
 
-	private ListStore<IMatch> store;
+	private ListStore<MatchDto> store;
 
-	private StoreFilterField<IMatch> sffGrid;
+	private StoreFilterField<MatchDto> sffGrid;
 
 	private boolean doUpdate;
 
@@ -67,7 +66,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		super.initLayout();
 		setHeadingHtml("<span id='panelHeading'>Zuletzt Gespielt</span>");
 
-		store = new ListStore<IMatch>(KickerProperties.MATCH_PROPERTY.id());
+		store = new ListStore<MatchDto>(KickerProperties.MATCH_PROPERTY.id());
 
 		doUpdate = true;
 
@@ -94,9 +93,9 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
-		sffGrid = new StoreFilterField<IMatch>() {
+		sffGrid = new StoreFilterField<MatchDto>() {
 			@Override
-			protected boolean doSelect(Store<IMatch> store, IMatch parent, IMatch item, String filter) {
+			protected boolean doSelect(Store<MatchDto> store, MatchDto parent, MatchDto item, String filter) {
 				boolean select = false;
 
 				select = checkTeam1(item, filter);
@@ -106,7 +105,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				return select;
 			}
 
-			private boolean checkTeam1(IMatch item, String filter) {
+			private boolean checkTeam1(MatchDto item, String filter) {
 				final TeamDto team1 = item.getTeam1();
 
 				final PlayerDto player1 = team1.getPlayer1();
@@ -123,7 +122,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				return false;
 			}
 
-			private boolean checkTeam2(IMatch item, String filter) {
+			private boolean checkTeam2(MatchDto item, String filter) {
 				final TeamDto team2 = item.getTeam2();
 
 				final PlayerDto player1 = team2.getPlayer1();
@@ -150,8 +149,8 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		return toolBar;
 	}
 
-	public Grid<IMatch> createGrid() {
-		final ColumnConfig<IMatch, String> ccNumber = new ColumnConfig<IMatch, String>(KickerProperties.MATCH_PROPERTY.matchNumber(), 40, "Nr.");
+	public Grid<MatchDto> createGrid() {
+		final ColumnConfig<MatchDto, String> ccNumber = new ColumnConfig<MatchDto, String>(KickerProperties.MATCH_PROPERTY.matchNumber(), 40, "Nr.");
 		ccNumber.setGroupable(false);
 		ccNumber.setComparator(new Comparator<String>() {
 			@Override
@@ -161,10 +160,10 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				return matchNumber2.compareTo(matchNumber1);
 			}
 		});
-		final ColumnConfig<IMatch, Date> ccMatchDate = new ColumnConfig<IMatch, Date>(KickerProperties.MATCH_PROPERTY.matchDate(), 120, "Datum");
+		final ColumnConfig<MatchDto, Date> ccMatchDate = new ColumnConfig<MatchDto, Date>(KickerProperties.MATCH_PROPERTY.matchDate(), 120, "Datum");
 		ccMatchDate.setGroupable(false);
 		ccMatchDate.setCell(new DateCell(DateTimeFormat.getFormat("dd.MM.yyyy HH:mm")));
-		final ColumnConfig<IMatch, String> ccGroupDate = new ColumnConfig<IMatch, String>(KickerProperties.MATCH_PROPERTY.groupDate(), 160, "Gruppe");
+		final ColumnConfig<MatchDto, String> ccGroupDate = new ColumnConfig<MatchDto, String>(KickerProperties.MATCH_PROPERTY.groupDate(), 160, "Gruppe");
 		ccGroupDate.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -189,13 +188,13 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				return comp;
 			}
 		});
-		final ColumnConfig<IMatch, String> ccMatchType = new ColumnConfig<IMatch, String>(MatchProperty.matchType, 80, "Typ");
-		final ColumnConfig<IMatch, String> ccTeam1 = new ColumnConfig<IMatch, String>(MatchProperty.team1, 270, "Spieler/Team 1");
+		final ColumnConfig<MatchDto, String> ccMatchType = new ColumnConfig<MatchDto, String>(MatchProperty.matchType, 80, "Typ");
+		final ColumnConfig<MatchDto, String> ccTeam1 = new ColumnConfig<MatchDto, String>(MatchProperty.team1, 270, "Spieler/Team 1");
 		ccTeam1.setGroupable(false);
 		ccTeam1.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
-				final IMatch match = store.findModelWithKey(context.getKey().toString());
+				final MatchDto match = store.findModelWithKey(context.getKey().toString());
 				if (match != null && isTeam1Winner(match)) {
 					sb.appendHtmlConstant("<b>" + value + "</b>");
 				} else {
@@ -203,12 +202,12 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				}
 			}
 		});
-		final ColumnConfig<IMatch, String> ccTeam2 = new ColumnConfig<IMatch, String>(MatchProperty.team2, 270, "Spieler/Team 2");
+		final ColumnConfig<MatchDto, String> ccTeam2 = new ColumnConfig<MatchDto, String>(MatchProperty.team2, 270, "Spieler/Team 2");
 		ccTeam2.setGroupable(false);
 		ccTeam2.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
-				final IMatch match = store.findModelWithKey(context.getKey().toString());
+				final MatchDto match = store.findModelWithKey(context.getKey().toString());
 				if (match != null && !isTeam1Winner(match)) {
 					sb.appendHtmlConstant("<b>" + value + "</b>");
 				} else {
@@ -216,16 +215,18 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				}
 			}
 		});
-		final ColumnConfig<IMatch, String> ccMatchResult = new ColumnConfig<IMatch, String>(MatchProperty.matchResult, 60, "Ergebnis");
+		final ColumnConfig<MatchDto, String> ccMatchResult = new ColumnConfig<MatchDto, String>(MatchProperty.matchResult, 60, "Ergebnis");
 		ccMatchResult.setGroupable(false);
-		final ColumnConfig<IMatch, String> ccMatchSets = new ColumnConfig<IMatch, String>(MatchProperty.matchSets, 80, "Sätze");
+		final ColumnConfig<MatchDto, String> ccMatchSets = new ColumnConfig<MatchDto, String>(MatchProperty.matchSets, 80, "Sätze");
 		ccMatchSets.setGroupable(false);
-		final ColumnConfig<IMatch, String> ccMatchPointsTeam1 = new ColumnConfig<IMatch, String>(MatchProperty.matchPointsTeam1, 120, "Punkte Spieler/Team1");
+		final ColumnConfig<MatchDto, String> ccMatchPointsTeam1 = new ColumnConfig<MatchDto, String>(MatchProperty.matchPointsTeam1, 120,
+				"Punkte Spieler/Team1");
 		ccMatchSets.setGroupable(false);
-		final ColumnConfig<IMatch, String> ccMatchPointsTeam2 = new ColumnConfig<IMatch, String>(MatchProperty.matchPointsTeam2, 120, "Punkte Spieler/Team2");
+		final ColumnConfig<MatchDto, String> ccMatchPointsTeam2 = new ColumnConfig<MatchDto, String>(MatchProperty.matchPointsTeam2, 120,
+				"Punkte Spieler/Team2");
 		ccMatchSets.setGroupable(false);
 
-		final ArrayList<ColumnConfig<IMatch, ?>> columns = new ArrayList<ColumnConfig<IMatch, ?>>();
+		final ArrayList<ColumnConfig<MatchDto, ?>> columns = new ArrayList<ColumnConfig<MatchDto, ?>>();
 		columns.add(ccNumber);
 		columns.add(ccMatchDate);
 		columns.add(ccGroupDate);
@@ -237,7 +238,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		columns.add(ccMatchPointsTeam1);
 		columns.add(ccMatchPointsTeam2);
 
-		final GroupingView<IMatch> view = new GroupingView<IMatch>();
+		final GroupingView<MatchDto> view = new GroupingView<MatchDto>();
 		view.setAutoExpandColumn(ccMatchSets);
 		view.setShowGroupedColumn(false);
 		view.setAutoExpandMax(1000);
@@ -245,7 +246,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		view.setStripeRows(true);
 		view.setColumnLines(true);
 
-		final Grid<IMatch> grid = new Grid<IMatch>(store, new ColumnModel<IMatch>(columns));
+		final Grid<MatchDto> grid = new Grid<MatchDto>(store, new ColumnModel<MatchDto>(columns));
 		grid.setView(view);
 
 		final ListStore<String> lsMatchType = new ListStore<String>(new ModelKeyProvider<String>() {
@@ -257,10 +258,10 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		lsMatchType.add("Einzel");
 		lsMatchType.add("Doppel");
 
-		final ListFilter<IMatch, String> lfMatchType = new ListFilter<IMatch, String>(MatchProperty.matchType, lsMatchType);
-		final DateFilter<IMatch> dfMatchDate = new DateFilter<IMatch>(KickerProperties.MATCH_PROPERTY.matchDate());
+		final ListFilter<MatchDto, String> lfMatchType = new ListFilter<MatchDto, String>(MatchProperty.matchType, lsMatchType);
+		final DateFilter<MatchDto> dfMatchDate = new DateFilter<MatchDto>(KickerProperties.MATCH_PROPERTY.matchDate());
 
-		final GridFilters<IMatch> filters = new GridFilters<IMatch>();
+		final GridFilters<MatchDto> filters = new GridFilters<MatchDto>();
 		filters.initPlugin(grid);
 		filters.setLocal(true);
 		filters.addFilter(lfMatchType);
@@ -269,7 +270,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		return grid;
 	}
 
-	private boolean isTeam1Winner(IMatch matchDto) {
+	private boolean isTeam1Winner(MatchDto matchDto) {
 		boolean team1Winner = false;
 		int size = 0;
 		for (Integer result : matchDto.getSets().getSetsTeam1()) {

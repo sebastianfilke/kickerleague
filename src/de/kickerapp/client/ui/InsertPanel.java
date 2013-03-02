@@ -122,6 +122,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		setHeadingHtml("<span id='panelHeading'>Spiel eintragen</span>");
 
 		final VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
+		vlcMain.getElement().getStyle().setBackgroundColor("#F1F1F1");
 
 		final ToolBar toolBar = createToolBar();
 		vlcMain.add(toolBar, new VerticalLayoutData(1, -1));
@@ -279,6 +280,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 
 	private VerticalLayoutContainer createResultInsertContainer() {
 		final VerticalLayoutContainer vlcResult = new VerticalLayoutContainer();
+		vlcResult.getElement().getStyle().setBackgroundColor("#F1F1F1");
 
 		cbSet1Team1 = createSetComboBox("Satz 1");
 		cbSet1Team2 = createSetComboBox("Satz 1");
@@ -611,7 +613,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 			}
 		});
 
-		final ComboBoxCell<PlayerDto> cell = new ComboBoxCell<PlayerDto>(store, props.label(), view);
+		final ComboBoxCell<PlayerDto> cell = new ComboBoxCell<PlayerDto>(store, props.label, view);
 		final AppComboBox<PlayerDto> cbPlayer = new AppComboBox<PlayerDto>(cell, emptyText);
 
 		final RpcProxy<PagingLoadConfig, PagingLoadResult<PlayerDto>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<PlayerDto>>() {

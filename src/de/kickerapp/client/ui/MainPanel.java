@@ -133,6 +133,7 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.INSERT));
 		} else if (navEvent.getAssociatedType() == NavigationEvent.PLAYER) {
 			clcContent.setActiveWidget(playerPanel);
+			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.PLAYER));
 		}
 		clcContent.forceLayout();
 	}

@@ -2,9 +2,9 @@ package de.kickerapp.shared.dto;
 
 import java.util.ArrayList;
 
-import de.kickerapp.shared.common.BaseData;
+import de.kickerapp.shared.common.BaseDto;
 
-public class MatchSetDto extends BaseData implements ISet {
+public class MatchSetDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -2054250321124768378L;

@@ -1,7 +1,5 @@
 package de.kickerapp.client.properties;
 
-import java.util.Date;
-
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -9,17 +7,18 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
 import de.kickerapp.client.ui.images.KickerIcons;
-import de.kickerapp.shared.dto.ITeam;
 import de.kickerapp.shared.dto.PlayerDto;
+import de.kickerapp.shared.dto.TeamDto;
+import de.kickerapp.shared.dto.TeamStatsDto;
 
-public interface TeamProperty extends PropertyAccess<ITeam> {
+public interface TeamProperty extends PropertyAccess<TeamDto> {
 
 	@Path("id")
-	public ModelKeyProvider<ITeam> id();
+	public ModelKeyProvider<TeamDto> id();
 
-	public ValueProvider<ITeam, String> teamLabel = new ValueProvider<ITeam, String>() {
+	public ValueProvider<TeamDto, String> teamName = new ValueProvider<TeamDto, String>() {
 		@Override
-		public String getValue(ITeam object) {
+		public String getValue(TeamDto object) {
 			final StringBuilder builder = new StringBuilder();
 
 			final PlayerDto player1 = object.getPlayer1();
@@ -35,73 +34,94 @@ public interface TeamProperty extends PropertyAccess<ITeam> {
 		}
 
 		@Override
-		public void setValue(ITeam object, String value) {
+		public void setValue(TeamDto object, String value) {
 		}
 
 		@Override
 		public String getPath() {
-			return "teamLabel";
+			return "teamName";
 		}
 	};
 
-	public ValueProvider<ITeam, PlayerDto> player1();
-
-	public ValueProvider<ITeam, PlayerDto> player2();
-
-	public ValueProvider<ITeam, Date> lastMatchDate();
-
-	public ValueProvider<ITeam, Integer> matches = new ValueProvider<ITeam, Integer>() {
+	public ValueProvider<TeamDto, Integer> teamMatches = new ValueProvider<TeamDto, Integer>() {
 		@Override
-		public Integer getValue(ITeam object) {
-			return object.getWins() + object.getLosses();
+		public Integer getValue(TeamDto object) {
+			final TeamStatsDto teamStatsDto = object.getTeamStatsDto();
+			return teamStatsDto.getWins() + teamStatsDto.getLosses();
 		}
 
 		@Override
-		public void setValue(ITeam object, Integer value) {
+		public void setValue(TeamDto object, Integer value) {
 		}
 
 		@Override
 		public String getPath() {
-			return "matches";
+			return "teamMatches";
 		}
 	};
 
-	public ValueProvider<ITeam, Integer> wins();
-
-	public ValueProvider<ITeam, Integer> losses();
-
-	public ValueProvider<ITeam, Integer> shotGoals();
-
-	public ValueProvider<ITeam, Integer> getGoals();
-
-	public ValueProvider<ITeam, String> goals = new ValueProvider<ITeam, String>() {
+	public ValueProvider<TeamDto, Integer> teamWins = new ValueProvider<TeamDto, Integer>() {
 		@Override
-		public String getValue(ITeam object) {
+		public Integer getValue(TeamDto object) {
+			return object.getTeamStatsDto().getWins();
+		}
+
+		@Override
+		public void setValue(TeamDto object, Integer value) {
+		}
+
+		@Override
+		public String getPath() {
+			return "teamWins";
+		}
+	};
+
+	public ValueProvider<TeamDto, Integer> teamLosses = new ValueProvider<TeamDto, Integer>() {
+		@Override
+		public Integer getValue(TeamDto object) {
+			return object.getTeamStatsDto().getLosses();
+		}
+
+		@Override
+		public void setValue(TeamDto object, Integer value) {
+		}
+
+		@Override
+		public String getPath() {
+			return "teamLosses";
+		}
+	};
+
+	public ValueProvider<TeamDto, String> teamGoals = new ValueProvider<TeamDto, String>() {
+		@Override
+		public String getValue(TeamDto object) {
 			final StringBuilder sb = new StringBuilder();
 
-			sb.append(object.getShotGoals());
+			final TeamStatsDto teamStatsDto = object.getTeamStatsDto();
+			sb.append(teamStatsDto.getShotGoals());
 			sb.append(":");
-			sb.append(object.getGetGoals());
+			sb.append(teamStatsDto.getGetGoals());
 
 			return sb.toString();
 		}
 
 		@Override
-		public void setValue(ITeam object, String value) {
+		public void setValue(TeamDto object, String value) {
 		}
 
 		@Override
 		public String getPath() {
-			return "goals";
+			return "teamGoals";
 		}
 	};
 
-	public ValueProvider<ITeam, String> goalDifference = new ValueProvider<ITeam, String>() {
+	public ValueProvider<TeamDto, String> teamGoalDifference = new ValueProvider<TeamDto, String>() {
 		@Override
-		public String getValue(ITeam object) {
+		public String getValue(TeamDto object) {
 			final StringBuilder sb = new StringBuilder();
 
-			final int goalDifference = object.getShotGoals() - object.getGetGoals();
+			final TeamStatsDto teamStatsDto = object.getTeamStatsDto();
+			final int goalDifference = teamStatsDto.getShotGoals() - teamStatsDto.getGetGoals();
 			if (goalDifference >= 0) {
 				sb.append("+" + Integer.toString(goalDifference));
 			} else {
@@ -111,41 +131,37 @@ public interface TeamProperty extends PropertyAccess<ITeam> {
 		}
 
 		@Override
-		public void setValue(ITeam object, String value) {
+		public void setValue(TeamDto object, String value) {
 		}
 
 		@Override
 		public String getPath() {
-			return "goalDifference";
+			return "teamGoalDifference";
 		}
 	};
 
-	public ValueProvider<ITeam, Integer> prevTablePlace();
-
-	public ValueProvider<ITeam, Integer> curTablePlace();
-
-	public ValueProvider<ITeam, String> points = new ValueProvider<ITeam, String>() {
+	public ValueProvider<TeamDto, String> teamPoints = new ValueProvider<TeamDto, String>() {
 		@Override
-		public String getValue(ITeam object) {
-			return Integer.toString(object.getPoints());
+		public String getValue(TeamDto object) {
+			return Integer.toString(object.getTeamStatsDto().getPoints());
 		}
 
 		@Override
-		public void setValue(ITeam object, String value) {
+		public void setValue(TeamDto object, String value) {
 		}
 
 		@Override
 		public String getPath() {
-			return "points";
+			return "teamPoints";
 		}
 	};
 
-	public ValueProvider<ITeam, ImageResource> tendency = new ValueProvider<ITeam, ImageResource>() {
+	public ValueProvider<TeamDto, ImageResource> teamTendency = new ValueProvider<TeamDto, ImageResource>() {
 		@Override
-		public ImageResource getValue(ITeam object) {
+		public ImageResource getValue(TeamDto object) {
 			ImageResource image = null;
 
-			switch (object.getTendency()) {
+			switch (object.getTeamStatsDto().getTendency()) {
 			case Upward:
 				image = KickerIcons.ICON.tendencyUp();
 				break;
@@ -160,12 +176,12 @@ public interface TeamProperty extends PropertyAccess<ITeam> {
 		}
 
 		@Override
-		public void setValue(ITeam object, ImageResource value) {
+		public void setValue(TeamDto object, ImageResource value) {
 		}
 
 		@Override
 		public String getPath() {
-			return "tendency";
+			return "teamTendency";
 		}
 	};
 

@@ -33,7 +33,7 @@ public class TeamServiceImpl extends RemoteServiceServlet implements TeamService
 		 */
 		@Override
 		public int compare(TeamDto t1, TeamDto t2) {
-			return t2.getPoints().compareTo(t1.getPoints());
+			return t2.getTeamStatsDto().getPoints().compareTo(t1.getTeamStatsDto().getPoints());
 		}
 	}
 
