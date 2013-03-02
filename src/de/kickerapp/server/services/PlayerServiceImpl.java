@@ -33,7 +33,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 * 
 	 * @author Sebastian Filke, GIGATRONIK München GmbH
 	 */
-	private class PlayerComparator implements Comparator<PlayerDto>, Serializable {
+	private class PlayerTableComparator implements Comparator<PlayerDto>, Serializable {
 
 		/** Konstante für die SerialVersionUID. */
 		private static final long serialVersionUID = 7262644006482460970L;
@@ -62,6 +62,25 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 				}
 			}
 			return comp;
+		}
+	}
+
+	/**
+	 * Comparator zur Sortierung der Betriebsmittelarten.
+	 * 
+	 * @author Sebastian Filke, GIGATRONIK München GmbH
+	 */
+	private class PlayerComparator implements Comparator<PlayerDto>, Serializable {
+
+		/** Konstante für die SerialVersionUID. */
+		private static final long serialVersionUID = 2081602779517954979L;
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int compare(PlayerDto p1, PlayerDto p2) {
+			return p1.getLastName().compareTo(p2.getLastName());
 		}
 	}
 
@@ -115,8 +134,29 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 
 			playerDtos.add(player);
 		}
-		Collections.sort(playerDtos, new PlayerComparator());
+		if (matchType == MatchType.UNKNOWN) {
+			Collections.sort(playerDtos, new PlayerComparator());
+		} else {
+			Collections.sort(playerDtos, new PlayerTableComparator());
+		}
 		return playerDtos;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PlayerDto updatePlayer(PlayerDto player) throws IllegalArgumentException {
+		Player dbPlayer = PMFactory.getObjectById(Player.class, player.getId());
+
+		dbPlayer.setLastName(player.getLastName());
+		dbPlayer.setFirstName(player.getFirstName());
+		dbPlayer.setNickName(player.getNickName());
+		dbPlayer.setEMail(player.getEMail());
+
+		dbPlayer = PMFactory.persistObject(dbPlayer);
+
+		return player;
 	}
 
 }

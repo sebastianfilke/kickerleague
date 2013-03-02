@@ -40,7 +40,7 @@ public interface TeamProperty extends PropertyAccess<ITeam> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "teamLabel";
 		}
 	};
 
@@ -62,7 +62,7 @@ public interface TeamProperty extends PropertyAccess<ITeam> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "matches";
 		}
 	};
 
@@ -92,7 +92,7 @@ public interface TeamProperty extends PropertyAccess<ITeam> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "goals";
 		}
 	};
 
@@ -116,7 +116,7 @@ public interface TeamProperty extends PropertyAccess<ITeam> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "goalDifference";
 		}
 	};
 
@@ -136,7 +136,7 @@ public interface TeamProperty extends PropertyAccess<ITeam> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "points";
 		}
 	};
 
@@ -165,7 +165,7 @@ public interface TeamProperty extends PropertyAccess<ITeam> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "tendency";
 		}
 	};
 

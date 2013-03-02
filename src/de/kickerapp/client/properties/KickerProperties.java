@@ -4,6 +4,8 @@ import com.google.gwt.core.client.GWT;
 
 public interface KickerProperties {
 
+	public final ChartProperty CHART_PROPERTY = GWT.create(ChartProperty.class);
+
 	public final MatchProperty MATCH_PROPERTY = GWT.create(MatchProperty.class);
 
 	public final PlayerProperty PLAYER_PROPERTY = GWT.create(PlayerProperty.class);

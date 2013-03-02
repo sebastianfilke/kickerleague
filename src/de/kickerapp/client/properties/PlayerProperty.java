@@ -42,7 +42,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "playerName";
 		}
 	};
 
@@ -59,7 +59,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "singleMatches";
 		}
 	};
 
@@ -75,7 +75,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "singleWins";
 		}
 	};
 
@@ -91,7 +91,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "singleLosses";
 		}
 	};
 
@@ -114,7 +114,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "singleGoals";
 		}
 	};
 
@@ -139,7 +139,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "singleGoalDifference";
 		}
 	};
 
@@ -155,7 +155,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "singlePoints";
 		}
 	};
 
@@ -184,7 +184,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "singleTendency";
 		}
 	};
 
@@ -201,7 +201,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "doubleMatches";
 		}
 	};
 
@@ -217,7 +217,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "doubleWins";
 		}
 	};
 
@@ -233,7 +233,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "doubleLosses";
 		}
 	};
 
@@ -256,7 +256,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "doubleGoals";
 		}
 	};
 
@@ -281,7 +281,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "doubleGoalDifference";
 		}
 	};
 
@@ -297,7 +297,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "doublePoints";
 		}
 	};
 
@@ -326,7 +326,7 @@ public interface PlayerProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "doubleTendency	";
 		}
 	};
 

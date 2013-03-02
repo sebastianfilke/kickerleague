@@ -1,6 +1,7 @@
 package de.kickerapp.client.ui;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ImageResourceCell;
@@ -43,6 +44,7 @@ import de.kickerapp.client.properties.TeamProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
+import de.kickerapp.client.widgets.StoreFilterCheckBox;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.IPlayer;
 import de.kickerapp.shared.dto.ITeam;
@@ -53,21 +55,21 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 
 	private ListStore<IPlayer> storeSingleTable;
 
-	private ListStore<IPlayer> storeDoubleTableSingleView;
+	private ListStore<IPlayer> storeDoubleTable;
 
-	private ListStore<ITeam> storeDoubleTableTeamView;
+	private ListStore<ITeam> storeTeamTable;
 
 	private StoreFilterField<IPlayer> sffSingleTable;
 
-	private StoreFilterField<IPlayer> sffDoubleTableSingleView;
+	private StoreFilterField<IPlayer> sffDoubleTable;
 
-	private StoreFilterField<ITeam> sffDoubleTableTeamView;
+	private StoreFilterField<ITeam> sffTeamTable;
 
-	private int activeWidget;
+	private int activeTab;
 
 	private TabPanel tabPanel;
 
-	private boolean doUpdateSingleTable, doUpdateDoubleTableSingleView, doUpdateDoubleTableTeamView;
+	private boolean doUpdateSingleTable, doUpdateDoubleTable, doUpdateTeamTable;
 
 	public TablesPanel() {
 		super();
@@ -84,13 +86,13 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		setHeadingHtml("<span id='panelHeading'>Aktuelle Tabelle</span>");
 
 		doUpdateSingleTable = true;
-		doUpdateDoubleTableSingleView = true;
-		doUpdateDoubleTableTeamView = true;
-		activeWidget = 0;
+		doUpdateDoubleTable = true;
+		doUpdateTeamTable = true;
+		activeTab = 0;
 
 		storeSingleTable = new ListStore<IPlayer>(KickerProperties.PLAYER_PROPERTY.id());
-		storeDoubleTableSingleView = new ListStore<IPlayer>(KickerProperties.PLAYER_PROPERTY.id());
-		storeDoubleTableTeamView = new ListStore<ITeam>(KickerProperties.TEAM_PROPERTY.id());
+		storeDoubleTable = new ListStore<IPlayer>(KickerProperties.PLAYER_PROPERTY.id());
+		storeTeamTable = new ListStore<ITeam>(KickerProperties.TEAM_PROPERTY.id());
 
 		tabPanel = createTabPanel();
 
@@ -118,7 +120,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				final TabPanel panel = (TabPanel) event.getSource();
 				final Widget w = event.getSelectedItem();
 
-				activeWidget = panel.getWidgetIndex(w);
+				activeTab = panel.getWidgetIndex(w);
 				getTable();
 			}
 		});
@@ -130,11 +132,11 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		vlcSingleTable.add(createSingleTableGrid(), new VerticalLayoutData(1, 1));
 
 		final VerticalLayoutContainer vlcDoubleTableSingleView = new VerticalLayoutContainer();
-		vlcDoubleTableSingleView.add(createDoubleTableSingleViewToolBar(), new VerticalLayoutData(1, -1));
+		vlcDoubleTableSingleView.add(createDoubleTableToolBar(), new VerticalLayoutData(1, -1));
 		vlcDoubleTableSingleView.add(createDoubleTableSingleViewGrid(), new VerticalLayoutData(1, 1));
 
 		final VerticalLayoutContainer vlcDoubleTableTeamView = new VerticalLayoutContainer();
-		vlcDoubleTableTeamView.add(createDoubleTableTeamViewToolBar(), new VerticalLayoutData(1, -1));
+		vlcDoubleTableTeamView.add(createTeamTableToolBar(), new VerticalLayoutData(1, -1));
 		vlcDoubleTableTeamView.add(createDoubleTableTeamViewGrid(), new VerticalLayoutData(1, 1));
 
 		tabPanel.add(vlcSingleTable, "Spielertabelle (Einzelansicht)");
@@ -153,7 +155,8 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		sffSingleTable = new StoreFilterField<IPlayer>() {
 			@Override
 			protected boolean doSelect(Store<IPlayer> store, IPlayer parent, IPlayer item, String filter) {
-				if (item.getLastName().toLowerCase().contains(filter) || item.getFirstName().toLowerCase().contains(filter)) {
+				if (item.getLastName().toLowerCase().contains(filter) || item.getFirstName().toLowerCase().contains(filter)
+						|| item.getNickName().toLowerCase().contains(filter)) {
 					return true;
 				}
 				return false;
@@ -163,9 +166,24 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		sffSingleTable.setWidth(250);
 		sffSingleTable.setEmptyText("Nach Spieler suchen...");
 
+		final StoreFilterCheckBox<IPlayer> sfcNoMatchPlayer = new StoreFilterCheckBox<IPlayer>() {
+			@Override
+			protected boolean doSelect(Store<IPlayer> store, IPlayer parent, IPlayer item, boolean filter) {
+				if (!(item.getPlayerSingleStats().getSingleCurTablePlace() == 0)) {
+					return true;
+				}
+				return false;
+			}
+		};
+		sfcNoMatchPlayer.bind(storeSingleTable);
+		sfcNoMatchPlayer.setBoxLabel("Nicht platzierte Spieler anzeigen");
+		sfcNoMatchPlayer.setToolTip("Aktivieren um auch Spieler anzuzeigen, welche noch nicht gespielt haben");
+
 		toolBar.add(createBtnUpdate());
 		toolBar.add(new SeparatorToolItem());
 		toolBar.add(sffSingleTable);
+		// toolBar.add(sfcNoMatchPlayer);
+
 		return toolBar;
 	}
 
@@ -194,7 +212,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				getPoints(value, sb, singleLastMatchPoints);
 			}
 		});
-		final ColumnConfig<IPlayer, ImageResource> ccTendency = new ColumnConfig<IPlayer, ImageResource>(PlayerProperty.singleTendency, 60, "Tendenz");
+		final ColumnConfig<IPlayer, ImageResource> ccTendency = new ColumnConfig<IPlayer, ImageResource>(PlayerProperty.singleTendency, 80, "Tendenz");
 		ccTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
@@ -202,6 +220,12 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerSingleStats().getSinglePrevTablePlace() + "'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
 				sb.appendHtmlConstant("</span>");
+			}
+		});
+		ccTendency.setComparator(new Comparator<ImageResource>() {
+			@Override
+			public int compare(ImageResource o1, ImageResource o2) {
+				return o1.getName().compareTo(o2.getName());
 			}
 		});
 
@@ -240,26 +264,27 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		sb.appendHtmlConstant(" <span " + style + ">(" + builder.toString() + ")</span>");
 	}
 
-	private ToolBar createDoubleTableSingleViewToolBar() {
+	private ToolBar createDoubleTableToolBar() {
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
-		sffDoubleTableSingleView = new StoreFilterField<IPlayer>() {
+		sffDoubleTable = new StoreFilterField<IPlayer>() {
 			@Override
 			protected boolean doSelect(Store<IPlayer> store, IPlayer parent, IPlayer item, String filter) {
-				if (item.getLastName().toLowerCase().contains(filter) || item.getFirstName().toLowerCase().contains(filter)) {
+				if (item.getLastName().toLowerCase().contains(filter) || item.getFirstName().toLowerCase().contains(filter)
+						|| item.getNickName().toLowerCase().contains(filter)) {
 					return true;
 				}
 				return false;
 			}
 		};
-		sffDoubleTableSingleView.bind(storeDoubleTableSingleView);
-		sffDoubleTableSingleView.setWidth(250);
-		sffDoubleTableSingleView.setEmptyText("Nach Spieler suchen...");
+		sffDoubleTable.bind(storeDoubleTable);
+		sffDoubleTable.setWidth(250);
+		sffDoubleTable.setEmptyText("Nach Spieler suchen...");
 
 		toolBar.add(createBtnUpdate());
 		toolBar.add(new SeparatorToolItem());
-		toolBar.add(sffDoubleTableSingleView);
+		toolBar.add(sffDoubleTable);
 		return toolBar;
 	}
 
@@ -283,19 +308,25 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		ccPoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
-				final IPlayer player = storeDoubleTableSingleView.findModelWithKey(context.getKey().toString());
+				final IPlayer player = storeDoubleTable.findModelWithKey(context.getKey().toString());
 				final int lastMatchPoints = player.getPlayerDoubleStats().getDoubleLastMatchPoints();
 				getPoints(value, sb, lastMatchPoints);
 			}
 		});
-		final ColumnConfig<IPlayer, ImageResource> ccTendency = new ColumnConfig<IPlayer, ImageResource>(PlayerProperty.doubleTendency, 60, "Tendenz");
+		final ColumnConfig<IPlayer, ImageResource> ccTendency = new ColumnConfig<IPlayer, ImageResource>(PlayerProperty.doubleTendency, 80, "Tendenz");
 		ccTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
-				final IPlayer player = storeDoubleTableSingleView.findModelWithKey(context.getKey().toString());
+				final IPlayer player = storeDoubleTable.findModelWithKey(context.getKey().toString());
 				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerDoubleStats().getDoublePrevTablePlace() + "'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
 				sb.appendHtmlConstant("</span>");
+			}
+		});
+		ccTendency.setComparator(new Comparator<ImageResource>() {
+			@Override
+			public int compare(ImageResource o1, ImageResource o2) {
+				return o1.getName().compareTo(o2.getName());
 			}
 		});
 
@@ -310,7 +341,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccPoints);
 		columns.add(ccTendency);
 
-		final Grid<IPlayer> grid = new Grid<IPlayer>(storeDoubleTableSingleView, new ColumnModel<IPlayer>(columns));
+		final Grid<IPlayer> grid = new Grid<IPlayer>(storeDoubleTable, new ColumnModel<IPlayer>(columns));
 		grid.getView().setAutoExpandColumn(ccPlayerName);
 		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);
@@ -320,11 +351,11 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		return grid;
 	}
 
-	private ToolBar createDoubleTableTeamViewToolBar() {
+	private ToolBar createTeamTableToolBar() {
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
-		sffDoubleTableTeamView = new StoreFilterField<ITeam>() {
+		sffTeamTable = new StoreFilterField<ITeam>() {
 			@Override
 			protected boolean doSelect(Store<ITeam> store, ITeam parent, ITeam item, String filter) {
 				return checkTeam(item, filter);
@@ -345,13 +376,13 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return false;
 			}
 		};
-		sffDoubleTableTeamView.bind(storeDoubleTableTeamView);
-		sffDoubleTableTeamView.setWidth(250);
-		sffDoubleTableTeamView.setEmptyText("Nach Spieler/Team suchen...");
+		sffTeamTable.bind(storeTeamTable);
+		sffTeamTable.setWidth(250);
+		sffTeamTable.setEmptyText("Nach Spieler/Team suchen...");
 
 		toolBar.add(createBtnUpdate());
 		toolBar.add(new SeparatorToolItem());
-		toolBar.add(sffDoubleTableTeamView);
+		toolBar.add(sffTeamTable);
 		return toolBar;
 	}
 
@@ -375,19 +406,25 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		ccPoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
-				final ITeam team = storeDoubleTableTeamView.findModelWithKey(context.getKey().toString());
+				final ITeam team = storeTeamTable.findModelWithKey(context.getKey().toString());
 				final int lastMatchPoints = team.getLastMatchPoints();
 				getPoints(value, sb, lastMatchPoints);
 			}
 		});
-		final ColumnConfig<ITeam, ImageResource> ccTendency = new ColumnConfig<ITeam, ImageResource>(TeamProperty.tendency, 60, "Tendenz");
+		final ColumnConfig<ITeam, ImageResource> ccTendency = new ColumnConfig<ITeam, ImageResource>(TeamProperty.tendency, 80, "Tendenz");
 		ccTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
-				final ITeam team = storeDoubleTableTeamView.findModelWithKey(context.getKey().toString());
+				final ITeam team = storeTeamTable.findModelWithKey(context.getKey().toString());
 				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + team.getPrevTablePlace() + "'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
 				sb.appendHtmlConstant("</span>");
+			}
+		});
+		ccTendency.setComparator(new Comparator<ImageResource>() {
+			@Override
+			public int compare(ImageResource o1, ImageResource o2) {
+				return o1.getName().compareTo(o2.getName());
 			}
 		});
 
@@ -402,7 +439,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccPoints);
 		columns.add(ccTendency);
 
-		final Grid<ITeam> grid = new Grid<ITeam>(storeDoubleTableTeamView, new ColumnModel<ITeam>(columns));
+		final Grid<ITeam> grid = new Grid<ITeam>(storeTeamTable, new ColumnModel<ITeam>(columns));
 		grid.getView().setAutoExpandColumn(ccPlayerName);
 		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);
@@ -413,10 +450,10 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	}
 
 	private void getTable() {
-		if (activeWidget == 0) {
+		if (activeTab == 0) {
 			getSingleTable();
-		} else if (activeWidget == 1) {
-			getDoubleTableSingleView();
+		} else if (activeTab == 1) {
+			getDoubleTable();
 		} else {
 			getDoubleTableTeamView();
 		}
@@ -443,21 +480,21 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		}
 	}
 
-	private void getDoubleTableSingleView() {
-		if (doUpdateDoubleTableSingleView) {
+	private void getDoubleTable() {
+		if (doUpdateDoubleTable) {
 			mask("Aktualisiere...");
-			storeDoubleTableSingleView.clear();
+			storeDoubleTable.clear();
 			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.DOUBLE, new AsyncCallback<ArrayList<PlayerDto>>() {
 				@Override
 				public void onSuccess(ArrayList<PlayerDto> result) {
-					storeDoubleTableSingleView.addAll(result);
-					doUpdateDoubleTableSingleView = false;
+					storeDoubleTable.addAll(result);
+					doUpdateDoubleTable = false;
 					unmask();
 				}
 
 				@Override
 				public void onFailure(Throwable caught) {
-					doUpdateDoubleTableSingleView = false;
+					doUpdateDoubleTable = false;
 					unmask();
 				}
 			});
@@ -465,20 +502,20 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	}
 
 	private void getDoubleTableTeamView() {
-		if (doUpdateDoubleTableTeamView) {
+		if (doUpdateTeamTable) {
 			mask("Aktualisiere...");
-			storeDoubleTableTeamView.clear();
+			storeTeamTable.clear();
 			KickerServices.TEAM_SERVICE.getAllTeams(new AsyncCallback<ArrayList<TeamDto>>() {
 				@Override
 				public void onSuccess(ArrayList<TeamDto> result) {
-					storeDoubleTableTeamView.addAll(result);
-					doUpdateDoubleTableTeamView = false;
+					storeTeamTable.addAll(result);
+					doUpdateTeamTable = false;
 					unmask();
 				}
 
 				@Override
 				public void onFailure(Throwable caught) {
-					doUpdateDoubleTableTeamView = false;
+					doUpdateTeamTable = false;
 					unmask();
 				}
 			});
@@ -496,12 +533,12 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			}
 
 			private void setDoUpdate() {
-				if (activeWidget == 0) {
+				if (activeTab == 0) {
 					doUpdateSingleTable = true;
-				} else if (activeWidget == 1) {
-					doUpdateDoubleTableSingleView = true;
+				} else if (activeTab == 1) {
+					doUpdateDoubleTable = true;
 				} else {
-					doUpdateDoubleTableTeamView = true;
+					doUpdateTeamTable = true;
 				}
 			}
 		});
@@ -521,9 +558,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 */
 	@Override
 	public void setActiveWidget(TabPanelEvent event) {
-		if (activeWidget != event.getActiveWidget()) {
-			activeWidget = event.getActiveWidget();
-			tabPanel.setActiveWidget(tabPanel.getWidget(activeWidget));
+		if (activeTab != event.getActiveTab()) {
+			activeTab = event.getActiveTab();
+			tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
 		}
 	}
 
@@ -535,8 +572,8 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		if (event.getActiveWidget() == 0) {
 			doUpdateSingleTable = true;
 		} else {
-			doUpdateDoubleTableSingleView = true;
-			doUpdateDoubleTableTeamView = true;
+			doUpdateDoubleTable = true;
+			doUpdateTeamTable = true;
 		}
 	}
 

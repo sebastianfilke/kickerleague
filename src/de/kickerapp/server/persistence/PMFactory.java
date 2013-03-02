@@ -11,7 +11,7 @@ import javax.jdo.Query;
 import javax.jdo.Transaction;
 
 /**
- * Singeltonklasse zum Halten der Instanz des PersistenceManager.
+ * Singeltonklasse zum Halten der Instanz des {@link PersistenceManager}s.
  * 
  * @author Sebastian Filke
  */
@@ -58,6 +58,14 @@ public final class PMFactory {
 		return list;
 	}
 
+	/**
+	 * Liefert die Instanz für die übergebene Klasse.
+	 * 
+	 * @param clazz Die Klasse für welche die Instanz gesucht werden sollen.
+	 * @param id Die Db-Id der Instanz.
+	 * @param <T> Der Typ der Klasse.
+	 * @return Die Instanz.
+	 */
 	public static <T extends Serializable> T getObjectById(Class<T> clazz, Long id) {
 		final PersistenceManager pm = get().getPersistenceManager();
 
@@ -72,8 +80,11 @@ public final class PMFactory {
 	}
 
 	/**
-	 * @param object
-	 * @return
+	 * Speichert die Instanz.
+	 * 
+	 * @param object Das Db-Objekt zum Speichern.
+	 * @param <T> Der Typ der Klasse.
+	 * @return Das gespeicherte Db-Objekt.
 	 */
 	public static <T extends Serializable> T persistObject(T object) {
 		final PersistenceManager pm = get().getPersistenceManager();
@@ -92,6 +103,14 @@ public final class PMFactory {
 		return object;
 	}
 
+	/**
+	 * Liefert die nächste Db-Id für die übergebene Klasse.
+	 * 
+	 * @param clazz Die Klasse für welche die nächste Db-Id geliefert werden
+	 *            soll.
+	 * @param <T> Der Typ der Klasse.
+	 * @return Die nächste Db-Id.
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends Serializable> int getNextId(Class<T> clazz) {
 		final PersistenceManager pm = get().getPersistenceManager();

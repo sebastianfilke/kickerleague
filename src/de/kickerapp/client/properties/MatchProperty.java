@@ -42,7 +42,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "matchType";
 		}
 	};
 
@@ -75,7 +75,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "team1";
 		}
 	};
 
@@ -108,7 +108,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "team2";
 		}
 	};
 
@@ -143,7 +143,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "matchResult";
 		}
 	};
 
@@ -179,7 +179,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "matchSets";
 		}
 	};
 
@@ -219,7 +219,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "matchPointsTeam1";
 		}
 	};
 
@@ -259,7 +259,7 @@ public interface MatchProperty extends PropertyAccess<IMatch> {
 
 		@Override
 		public String getPath() {
-			return null;
+			return "matchPointsTeam2";
 		}
 	};
 

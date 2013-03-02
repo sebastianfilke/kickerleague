@@ -14,5 +14,7 @@ public interface PlayerServiceAsync {
 
 	public void createPlayer(PlayerDto player, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
 
+	public void updatePlayer(PlayerDto player, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
+
 	public void getAllPlayers(MatchType matchType, AsyncCallback<ArrayList<PlayerDto>> callback) throws IllegalArgumentException;
 }

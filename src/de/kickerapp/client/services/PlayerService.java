@@ -16,6 +16,8 @@ public interface PlayerService extends RemoteService {
 
 	public PlayerDto createPlayer(PlayerDto player) throws IllegalArgumentException;
 
+	public PlayerDto updatePlayer(PlayerDto player) throws IllegalArgumentException;
+
 	public ArrayList<PlayerDto> getAllPlayers(MatchType matchType) throws IllegalArgumentException;
 
 }

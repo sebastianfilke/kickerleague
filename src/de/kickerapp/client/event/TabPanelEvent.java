@@ -24,7 +24,7 @@ public class TabPanelEvent extends GwtEvent<TabPanelEventHandler> {
 		return TYPE;
 	}
 
-	public int getActiveWidget() {
+	public int getActiveTab() {
 		return activeWidget;
 	}
 

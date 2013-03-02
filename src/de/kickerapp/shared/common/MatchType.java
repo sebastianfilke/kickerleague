@@ -26,16 +26,28 @@ public enum MatchType {
 	private String matchType;
 
 	/**
-	 * @param matchType
+	 * Erzeugt einen neuen Spieltyp.
+	 * 
+	 * @param matchType Der Spieltyp.
 	 */
 	private MatchType(String matchType) {
 		this.matchType = matchType;
 	}
 
+	/**
+	 * Liefert den Spieltyp.
+	 * 
+	 * @return Der Spieltyp.
+	 */
 	public String getMatchType() {
 		return matchType;
 	}
 
+	/**
+	 * Setzt den Spieltyp.
+	 * 
+	 * @param matchType Der Spieltyp.
+	 */
 	public void setMatchType(String matchType) {
 		this.matchType = matchType;
 	}

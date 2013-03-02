@@ -17,6 +17,9 @@ public interface KickerIcons extends ClientBundle {
 	@Source("table.png")
 	ImageResource table();
 
+	@Source("table_edit.png")
+	ImageResource table_edit();
+
 	@Source("table_save.png")
 	ImageResource table_save();
 

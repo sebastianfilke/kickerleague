@@ -31,7 +31,7 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 
 	private InsertPanel resultPanel;
 
-	private PlayerPanel playerPanel;
+	private PlayerTabPanel playerPanel;
 
 	public MainPanel() {
 		super();
@@ -46,7 +46,7 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 		tablePanel = new TablesPanel();
 		matchesPanel = new MatchesPanel();
 		resultPanel = new InsertPanel();
-		playerPanel = new PlayerPanel();
+		playerPanel = new PlayerTabPanel();
 
 		add(createHeader(), new VerticalLayoutData(1, 92));
 		add(new NavigationPanel(), new VerticalLayoutData(1, 42));
@@ -83,7 +83,7 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 	private VerticalLayoutContainer createContent() {
 		final VerticalLayoutContainer vlcContent = new VerticalLayoutContainer();
 		vlcContent.setId("contentBackground");
-		vlcContent.setScrollMode(ScrollMode.AUTOY);
+		vlcContent.setScrollMode(ScrollMode.AUTO);
 
 		final BorderLayoutContainer blcContent = new BorderLayoutContainer();
 		blcContent.setId("content");
@@ -107,7 +107,7 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 
 		sb.appendHtmlConstant("<div id='footer'>");
 		sb.appendHtmlConstant("<div id='footerLinks'>Impressum | Kontakt</div>");
-		sb.appendHtmlConstant("<div id='footerText'>Design und Idee &#064; Sebastian Filke, 2013 | Version: 0.7.2</div>");
+		sb.appendHtmlConstant("<div id='footerText'>Design und Idee &#064; Sebastian Filke, 2013 | Version: 0.7.8</div>");
 		sb.appendHtmlConstant("</div>");
 
 		final HtmlLayoutContainer htmlLcTitle = new HtmlLayoutContainer(sb.toSafeHtml());
