@@ -1,5 +1,8 @@
 package de.kickerapp.server.services;
 
+import java.io.Serializable;
+import java.util.Comparator;
+
 import de.kickerapp.server.entity.Player;
 import de.kickerapp.server.entity.Team;
 import de.kickerapp.server.entity.TeamStats;
@@ -10,6 +13,25 @@ import de.kickerapp.shared.dto.TeamDto;
 import de.kickerapp.shared.dto.TeamStatsDto;
 
 public class TeamServiceHelper {
+
+	/**
+	 * Comparator zur Sortierung der Teams für die Tabelle.
+	 * 
+	 * @author Sebastian Filke
+	 */
+	protected static class TeamTableComparator implements Comparator<TeamDto>, Serializable {
+
+		/** Konstante für die SerialVersionUID. */
+		private static final long serialVersionUID = -3174540122634747743L;
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int compare(TeamDto t1, TeamDto t2) {
+			return t1.getTeamStatsDto().getCurTablePlace().compareTo(t2.getTeamStatsDto().getCurTablePlace());
+		}
+	}
 
 	public static TeamDto createTeam(Team dbTeam) {
 		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, (Long) dbTeam.getPlayers().toArray()[0]);

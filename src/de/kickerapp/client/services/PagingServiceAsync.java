@@ -9,11 +9,10 @@ import de.kickerapp.shared.dto.PlayerDto;
 public interface PagingServiceAsync {
 
 	/**
-	 * Liefert eine gepufferte Liste, welche anhand des
-	 * <code>OrderPropertyIdentifier</code>s angegeben wird.
+	 * Liefert eine gepufferte Liste, welche anhand des <code>OrderPropertyIdentifier</code>s angegeben wird.
 	 * 
 	 * @param identifier Die Bezeichnungen einer Eigenschaft der Auftragsdaten.
-	 * @param config Die Ladekonfiguration der gepufferten Liste.
+	 * @param loadConfig Die Ladekonfiguration der gepufferten Liste.
 	 * @param callback Der Callback-Handler.
 	 */
 	public void getPagedPlayers(String query, PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<PlayerDto>> callback) throws IllegalArgumentException;

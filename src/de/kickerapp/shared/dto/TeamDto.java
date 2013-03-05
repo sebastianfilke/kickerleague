@@ -37,45 +37,26 @@ public class TeamDto extends BaseDto {
 		this.player2 = player2;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public PlayerDto getPlayer1() {
 		return player1;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setPlayer1(PlayerDto player1) {
 		this.player1 = player1;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 
 	public PlayerDto getPlayer2() {
 		return player2;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setPlayer2(PlayerDto player2) {
 		this.player2 = player2;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public Date getLastMatchDate() {
 		return lastMatchDate;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void setLastMatchDate(Date lastMatchDate) {
 		this.lastMatchDate = lastMatchDate;
 	}

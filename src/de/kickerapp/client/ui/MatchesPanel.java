@@ -6,7 +6,10 @@ import java.util.Date;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.TimeZone;
+import com.google.gwt.i18n.client.constants.TimeZoneConstants;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.data.shared.ListStore;
@@ -50,7 +53,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 
 	private StoreFilterField<MatchDto> sffGrid;
 
-	private boolean doUpdate;
+	private boolean doUpdateMatches;
 
 	public MatchesPanel() {
 		super();
@@ -68,7 +71,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 
 		store = new ListStore<MatchDto>(KickerProperties.MATCH_PROPERTY.id());
 
-		doUpdate = true;
+		doUpdateMatches = true;
 
 		final VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
 		vlcMain.add(createToolBar(), new VerticalLayoutData(1, -1));
@@ -162,7 +165,8 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		});
 		final ColumnConfig<MatchDto, Date> ccMatchDate = new ColumnConfig<MatchDto, Date>(KickerProperties.MATCH_PROPERTY.matchDate(), 120, "Datum");
 		ccMatchDate.setGroupable(false);
-		ccMatchDate.setCell(new DateCell(DateTimeFormat.getFormat("dd.MM.yyyy HH:mm")));
+		final TimeZoneConstants t = (TimeZoneConstants) GWT.create(TimeZoneConstants.class);
+		ccMatchDate.setCell(new DateCell(DateTimeFormat.getFormat("dd.MM.yyyy HH:mm"), TimeZone.createTimeZone(t.europeBerlin())));
 		final ColumnConfig<MatchDto, String> ccGroupDate = new ColumnConfig<MatchDto, String>(KickerProperties.MATCH_PROPERTY.groupDate(), 160, "Gruppe");
 		ccGroupDate.setComparator(new Comparator<String>() {
 			@Override
@@ -296,27 +300,27 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 			}
 
 			private void setDoUpdate() {
-				doUpdate = true;
+				doUpdateMatches = true;
 			}
 		});
 		return btnUpdate;
 	}
 
 	private void getMatches() {
-		if (doUpdate) {
+		if (doUpdateMatches) {
 			mask("Aktualisiere...");
 			clearInput();
 			KickerServices.MATCH_SERVICE.getAllMatches(new AsyncCallback<ArrayList<MatchDto>>() {
 				@Override
 				public void onSuccess(ArrayList<MatchDto> result) {
-					store.addAll(result);
-					doUpdate = false;
+					store.replaceAll(result);
+					doUpdateMatches = false;
 					unmask();
 				}
 
 				@Override
 				public void onFailure(Throwable caught) {
-					doUpdate = false;
+					doUpdateMatches = false;
 					unmask();
 				}
 			});
@@ -325,7 +329,6 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 
 	private void clearInput() {
 		sffGrid.clear();
-		store.clear();
 	}
 
 	/**
@@ -338,7 +341,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 
 	@Override
 	public void updatePanel(UpdatePanelEvent event) {
-		doUpdate = true;
+		doUpdateMatches = true;
 	}
 
 }

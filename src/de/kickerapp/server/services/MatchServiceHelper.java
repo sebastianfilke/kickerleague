@@ -35,7 +35,7 @@ import de.kickerapp.shared.dto.TeamDto;
 public class MatchServiceHelper {
 
 	/**
-	 * Comparator zur Sortierung der Spielerstatistiken.
+	 * Comparator zur Sortierung der Team- bzw. Spielerstatistiken.
 	 * 
 	 * @author Sebastian Filke
 	 */
@@ -133,6 +133,26 @@ public class MatchServiceHelper {
 		matchDto.setSets(setDto);
 
 		return matchDto;
+	}
+
+	protected static int getGoalsTeam1(MatchDto match) {
+		int goals = 0;
+		for (Integer result : match.getSets().getSetsTeam1()) {
+			if (result != null) {
+				goals = goals + result;
+			}
+		}
+		return goals;
+	}
+
+	protected static int getGoalsTeam2(MatchDto match) {
+		int goals = 0;
+		for (Integer result : match.getSets().getSetsTeam2()) {
+			if (result != null) {
+				goals = goals + result;
+			}
+		}
+		return goals;
 	}
 
 	protected static void updateSingleStats() {

@@ -44,7 +44,7 @@ import de.kickerapp.client.properties.TeamProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
-import de.kickerapp.client.widgets.StoreFilterCheckBox;
+import de.kickerapp.client.widgets.StoreFilterToggleButton;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
@@ -122,7 +122,6 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				getTable();
 			}
 		});
-		tabPanel.setAutoSelect(false);
 		tabPanel.setResizeTabs(true);
 		tabPanel.setTabWidth(200);
 
@@ -151,6 +150,20 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
+		final StoreFilterToggleButton<PlayerDto> sfcNoMatchPlayer = new StoreFilterToggleButton<PlayerDto>() {
+			@Override
+			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, boolean filter) {
+				if (!(item.getPlayerSingleStats().getCurTablePlace() == 0)) {
+					return true;
+				}
+				return false;
+			}
+		};
+		sfcNoMatchPlayer.bind(storeSingleTable);
+		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.table_sort());
+		sfcNoMatchPlayer.setText("Alle Spieler anzeigen");
+		sfcNoMatchPlayer.setToolTip("Aktivieren um auch Spieler anzuzeigen, welche noch kein Spiel und damit keinen Tabellenplatz haben");
+
 		sffSingleTable = new StoreFilterField<PlayerDto>() {
 			@Override
 			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, String filter) {
@@ -165,23 +178,10 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		sffSingleTable.setWidth(250);
 		sffSingleTable.setEmptyText("Nach Spieler suchen...");
 
-		final StoreFilterCheckBox<PlayerDto> sfcNoMatchPlayer = new StoreFilterCheckBox<PlayerDto>() {
-			@Override
-			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, boolean filter) {
-				if (!(item.getPlayerSingleStats().getCurTablePlace() == 0)) {
-					return true;
-				}
-				return false;
-			}
-		};
-		sfcNoMatchPlayer.bind(storeSingleTable);
-		sfcNoMatchPlayer.setBoxLabel("Nicht platzierte Spieler anzeigen");
-		sfcNoMatchPlayer.setToolTip("Aktivieren um auch Spieler anzuzeigen, welche noch nicht gespielt haben");
-
 		toolBar.add(createBtnUpdate());
+		toolBar.add(sfcNoMatchPlayer);
 		toolBar.add(new SeparatorToolItem());
 		toolBar.add(sffSingleTable);
-		// toolBar.add(sfcNoMatchPlayer);
 
 		return toolBar;
 	}
@@ -275,6 +275,20 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
+		final StoreFilterToggleButton<PlayerDto> sfcNoMatchPlayer = new StoreFilterToggleButton<PlayerDto>() {
+			@Override
+			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, boolean filter) {
+				if (!(item.getPlayerDoubleStats().getCurTablePlace() == 0)) {
+					return true;
+				}
+				return false;
+			}
+		};
+		sfcNoMatchPlayer.bind(storeDoubleTable);
+		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.table_sort());
+		sfcNoMatchPlayer.setText("Alle Spieler anzeigen");
+		sfcNoMatchPlayer.setToolTip("Aktivieren um auch Spieler anzuzeigen, welche noch kein Spiel und damit keinen Tabellenplatz haben");
+
 		sffDoubleTable = new StoreFilterField<PlayerDto>() {
 			@Override
 			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, String filter) {
@@ -290,6 +304,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		sffDoubleTable.setEmptyText("Nach Spieler suchen...");
 
 		toolBar.add(createBtnUpdate());
+		toolBar.add(sfcNoMatchPlayer);
 		toolBar.add(new SeparatorToolItem());
 		toolBar.add(sffDoubleTable);
 		return toolBar;
@@ -484,11 +499,10 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	private void getSingleTable() {
 		if (doUpdateSingleTable) {
 			mask("Aktualisiere...");
-			storeSingleTable.clear();
 			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.SINGLE, new AsyncCallback<ArrayList<PlayerDto>>() {
 				@Override
 				public void onSuccess(ArrayList<PlayerDto> result) {
-					storeSingleTable.addAll(result);
+					storeSingleTable.replaceAll(result);
 					doUpdateSingleTable = false;
 					unmask();
 				}
@@ -505,11 +519,10 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	private void getDoubleTable() {
 		if (doUpdateDoubleTable) {
 			mask("Aktualisiere...");
-			storeDoubleTable.clear();
 			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.DOUBLE, new AsyncCallback<ArrayList<PlayerDto>>() {
 				@Override
 				public void onSuccess(ArrayList<PlayerDto> result) {
-					storeDoubleTable.addAll(result);
+					storeDoubleTable.replaceAll(result);
 					doUpdateDoubleTable = false;
 					unmask();
 				}
@@ -526,11 +539,10 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	private void getDoubleTableTeamView() {
 		if (doUpdateTeamTable) {
 			mask("Aktualisiere...");
-			storeTeamTable.clear();
 			KickerServices.TEAM_SERVICE.getAllTeams(new AsyncCallback<ArrayList<TeamDto>>() {
 				@Override
 				public void onSuccess(ArrayList<TeamDto> result) {
-					storeTeamTable.addAll(result);
+					storeTeamTable.replaceAll(result);
 					doUpdateTeamTable = false;
 					unmask();
 				}
@@ -591,12 +603,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 */
 	@Override
 	public void updatePanel(UpdatePanelEvent event) {
-		if (event.getActiveWidget() == 0) {
-			doUpdateSingleTable = true;
-		} else {
-			doUpdateDoubleTable = true;
-			doUpdateTeamTable = true;
-		}
+		doUpdateSingleTable = true;
+		doUpdateDoubleTable = true;
+		doUpdateTeamTable = true;
 	}
 
 }

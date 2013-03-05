@@ -20,6 +20,8 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 
 	private PlayerAdminPanel playerAdminPanel;
 
+	//private ChartPanel chartPanel;
+
 	private TabPanel tabPanel;
 
 	private int activeTab;
@@ -44,6 +46,7 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 		activeTab = 0;
 
 		playerAdminPanel = new PlayerAdminPanel();
+		//chartPanel = new ChartPanel();
 
 		tabPanel = createTabPanel();
 
@@ -75,6 +78,7 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 		tabPanel.setTabWidth(200);
 
 		tabPanel.add(playerAdminPanel, "Spieler eintragen/bearbeiten");
+		//tabPanel.add(chartPanel, "Spielerstatistik");
 		tabPanel.setBodyBorder(false);
 		tabPanel.setBorders(false);
 

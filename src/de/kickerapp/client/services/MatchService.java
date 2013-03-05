@@ -16,11 +16,11 @@ import de.kickerapp.shared.dto.MatchDto;
 public interface MatchService extends RemoteService {
 
 	/**
-	 * @param match
+	 * @param matchDto
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	public MatchDto createMatch(MatchDto match) throws IllegalArgumentException;
+	public MatchDto createMatch(MatchDto matchDto) throws IllegalArgumentException;
 
 	public ArrayList<MatchDto> getAllMatches() throws IllegalArgumentException;
 

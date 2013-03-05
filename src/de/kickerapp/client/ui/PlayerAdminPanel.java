@@ -301,11 +301,10 @@ public class PlayerAdminPanel extends SimpleContainer {
 	protected void getPlayerList() {
 		if (doUpdatePlayerList) {
 			mask("Aktualisiere...");
-			storePlayer.clear();
 			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.NONE, new AsyncCallback<ArrayList<PlayerDto>>() {
 				@Override
 				public void onSuccess(ArrayList<PlayerDto> result) {
-					storePlayer.addAll(result);
+					storePlayer.replaceAll(result);
 					doUpdatePlayerList = false;
 					unmask();
 				}
@@ -412,9 +411,7 @@ public class PlayerAdminPanel extends SimpleContainer {
 		final TabPanelEvent tabPanelEvent = new TabPanelEvent();
 		tabPanelEvent.setActiveWidget(0);
 		AppEventBus.fireEvent(tabPanelEvent);
-		final UpdatePanelEvent updatePanelEvent = new UpdatePanelEvent(UpdatePanelEvent.ALL);
-		updatePanelEvent.setActiveWidget(0);
-		AppEventBus.fireEvent(updatePanelEvent);
+		AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.TABLES));
 	}
 
 }

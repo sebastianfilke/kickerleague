@@ -12,9 +12,9 @@ import de.kickerapp.shared.dto.PlayerDto;
  */
 public interface PlayerServiceAsync {
 
-	public void createPlayer(PlayerDto player, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
+	public void createPlayer(PlayerDto playerDto, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
 
-	public void updatePlayer(PlayerDto player, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
+	public void updatePlayer(PlayerDto playerDto, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
 
 	public void getAllPlayers(MatchType matchType, AsyncCallback<ArrayList<PlayerDto>> callback) throws IllegalArgumentException;
 }

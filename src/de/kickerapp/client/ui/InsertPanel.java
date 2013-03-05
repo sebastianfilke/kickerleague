@@ -104,8 +104,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	private Label resultLabelTeam2;
 
 	/**
-	 * Erzeugt einen neuen Controller zum Eintragen der Ergebnisse und Spieler
-	 * eines Spiels.
+	 * Erzeugt einen neuen Controller zum Eintragen der Ergebnisse und Spieler eines Spiels.
 	 */
 	public InsertPanel() {
 		super();
@@ -450,8 +449,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	/**
-	 * Erzeugt einen horizontal ausgerichteten Container mit zwei ComboBoxen für
-	 * das Ergebnis und einem Label.
+	 * Erzeugt einen horizontal ausgerichteten Container mit zwei ComboBoxen für das Ergebnis und einem Label.
 	 * 
 	 * @param cbResultTeam1 Die ComboBox für das erste Team.
 	 * @param cbResultTeam2 Die ComboBox für das zweite Team.
@@ -476,8 +474,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	/**
-	 * Erzeugt einen horizontal ausgerichteten Container mit zwei ComboBoxen für
-	 * das Ergebnis und einem Label.
+	 * Erzeugt einen horizontal ausgerichteten Container mit zwei ComboBoxen für das Ergebnis und einem Label.
 	 * 
 	 * @param cbResultTeam1 Die ComboBox für das erste Team.
 	 * @param cbResultTeam2 Die ComboBox für das zweite Team.
@@ -498,8 +495,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	/**
 	 * Erzeugt eine ComboBox zur Eingabe des Ergebnisses.
 	 * 
-	 * @param emptyText Der Text, welcher angezeigt wird, wenn das Feld noch
-	 *            leer ist als {@link String}.
+	 * @param emptyText Der Text, welcher angezeigt wird, wenn das Feld noch leer ist als {@link String}.
 	 * @return Die erzeugte ComboBox.
 	 */
 	private AppComboBox<Integer> createSetComboBox(String emptyText) {
@@ -674,9 +670,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 					final TabPanelEvent tabPanelEvent = new TabPanelEvent();
 					tabPanelEvent.setActiveWidget(activeWidget);
 					AppEventBus.fireEvent(tabPanelEvent);
-					final UpdatePanelEvent updatePanelEvent = new UpdatePanelEvent(UpdatePanelEvent.ALL);
-					updatePanelEvent.setActiveWidget(activeWidget);
-					AppEventBus.fireEvent(updatePanelEvent);
+					AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL));
 					clearInput();
 					unmask();
 				}
@@ -757,7 +751,19 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	private MatchDto makeMatch() {
 		final MatchDto newMatch = new MatchDto();
 		if (cbCurrentTime.getValue()) {
-			newMatch.setMatchDate(new Date());
+			DateWrapper matchDate = new DateWrapper(new Date());
+
+			final int hours = matchDate.getHours();
+			final int minutes = matchDate.getMinutes();
+			final int seconds = matchDate.getSeconds();
+
+			matchDate = matchDate.clearTime();
+
+			matchDate = matchDate.add(Unit.HOUR, hours);
+			matchDate = matchDate.add(Unit.MINUTE, minutes);
+			matchDate = matchDate.add(Unit.SECOND, seconds);
+
+			newMatch.setMatchDate(matchDate.asDate());
 		} else {
 			DateWrapper matchDate = new DateWrapper(dfMatchDate.getValue()).clearTime();
 
