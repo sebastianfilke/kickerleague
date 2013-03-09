@@ -13,8 +13,6 @@ public class ChartDto extends BaseDto {
 
 	private Integer getGoals;
 
-	private Integer goalDifference;
-
 	public ChartDto() {
 		super();
 
@@ -26,8 +24,6 @@ public class ChartDto extends BaseDto {
 	public ChartDto(String month) {
 		this();
 		this.month = month;
-		shotGoals = 0;
-		getGoals = 0;
 	}
 
 	public String getMonth() {
@@ -52,14 +48,6 @@ public class ChartDto extends BaseDto {
 
 	public void setGetGoals(Integer getGoals) {
 		this.getGoals = getGoals;
-	}
-
-	public Integer getGoalDifference() {
-		return goalDifference;
-	}
-
-	public void setGoalDifference(Integer goalDifference) {
-		this.goalDifference = goalDifference;
 	}
 
 }

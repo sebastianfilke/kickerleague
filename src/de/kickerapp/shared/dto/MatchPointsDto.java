@@ -4,35 +4,65 @@ import java.util.ArrayList;
 
 import de.kickerapp.shared.common.BaseDto;
 
+/**
+ * Client-Datenklasse zum Halten der Informationen für die Punkte eines Spiels.
+ * 
+ * @author Sebastian Filke
+ */
 public class MatchPointsDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -8595724509087459312L;
 
-	private ArrayList<Integer> pointsTeam1;
+	/** Die Punkte des ersten Teams bzw. Spielers. */
+	private ArrayList<Integer> matchPointsTeam1;
+	/** Die Punkte des ersten Teams bzw. Spielers. */
+	private ArrayList<Integer> matchPointsTeam2;
 
-	private ArrayList<Integer> pointsTeam2;
-
+	/**
+	 * Erzeugt Spielpunkte mit leeren Punktzahlen.
+	 */
 	public MatchPointsDto() {
 		super();
-		pointsTeam1 = new ArrayList<Integer>();
-		pointsTeam2 = new ArrayList<Integer>();
+
+		matchPointsTeam1 = new ArrayList<Integer>();
+		matchPointsTeam2 = new ArrayList<Integer>();
 	}
 
-	public ArrayList<Integer> getPointsTeam1() {
-		return pointsTeam1;
+	/**
+	 * Liefert die Punkte des ersten Teams bzw. Spielers.
+	 * 
+	 * @return Die Punkte des ersten Teams bzw. Spielers als {@link ArrayList}.
+	 */
+	public ArrayList<Integer> getMatchPointsTeam1() {
+		return matchPointsTeam1;
 	}
 
-	public void setPointsTeam1(ArrayList<Integer> setsTeam1) {
-		this.pointsTeam1 = setsTeam1;
+	/**
+	 * Setzt die Punkte des ersten Teams bzw. Spielers.
+	 * 
+	 * @param matchPointsTeam1 Die Punkte des ersten Teams bzw. Spielers als {@link ArrayList}.
+	 */
+	public void setMatchPointsTeam1(ArrayList<Integer> matchPointsTeam1) {
+		this.matchPointsTeam1 = matchPointsTeam1;
 	}
 
-	public ArrayList<Integer> getPointsTeam2() {
-		return pointsTeam2;
+	/**
+	 * Liefert die Punkte des zweiten Teams bzw. Spielers.
+	 * 
+	 * @return Die Punkte des zweiten Teams bzw. Spielers als {@link ArrayList}.
+	 */
+	public ArrayList<Integer> getMatchPointsTeam2() {
+		return matchPointsTeam2;
 	}
 
-	public void setPointsTeam2(ArrayList<Integer> setsTeam2) {
-		this.pointsTeam2 = setsTeam2;
+	/**
+	 * Setzt die Punkte des zweiten Teams bzw. Spielers.
+	 * 
+	 * @param matchPointsTeam2 Die Punkte des zweiten Teams bzw. Spielers als {@link ArrayList}.
+	 */
+	public void setMatchPointsTeam2(ArrayList<Integer> matchPointsTeam2) {
+		this.matchPointsTeam2 = matchPointsTeam2;
 	}
 
 }

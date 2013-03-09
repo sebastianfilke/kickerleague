@@ -18,6 +18,21 @@ public interface ChartProperty extends PropertyAccess<ChartDto> {
 
 	public ValueProvider<ChartDto, Integer> getGoals();
 
-	public ValueProvider<ChartDto, Integer> goalDifference();
+	public ValueProvider<ChartDto, Integer> goalDifference = new ValueProvider<ChartDto, Integer>() {
+		@Override
+		public Integer getValue(ChartDto object) {
+			final int goalDifference = object.getShotGoals() - object.getGetGoals();
+			return goalDifference;
+		}
+
+		@Override
+		public void setValue(ChartDto object, Integer value) {
+		}
+
+		@Override
+		public String getPath() {
+			return "goalDifference";
+		}
+	};
 
 }

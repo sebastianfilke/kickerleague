@@ -5,7 +5,7 @@ import com.google.gwt.event.shared.EventHandler;
 /**
  * Schnittstelle zur Behandlung von Navigations-Ereignissen.
  * 
- * @author Sebastian Filke, GIGATRONIK München GmbH
+ * @author Sebastian Filke
  */
 public interface NavigationEventHandler extends EventHandler {
 

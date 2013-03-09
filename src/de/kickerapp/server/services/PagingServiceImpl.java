@@ -12,10 +12,15 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 import de.kickerapp.client.services.PagingService;
 import de.kickerapp.server.entity.Player;
 import de.kickerapp.server.persistence.PMFactory;
-import de.kickerapp.server.services.PlayerServiceHelper.PlayerComparator;
+import de.kickerapp.server.services.PlayerServiceHelper.PlayerNameComparator;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
 
+/**
+ * Dienst zur Verarbeitung der PagingComboBoxen im Clienten.
+ * 
+ * @author Sebastian Filke
+ */
 public class PagingServiceImpl extends RemoteServiceServlet implements PagingService {
 
 	/** Konstante für die SerialVersionUID. */
@@ -61,19 +66,16 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 		return sublist;
 	}
 
-	/**
-	 * @return
-	 */
 	public ArrayList<PlayerDto> getAllPlayers() {
 		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
 
 		final List<Player> dbPlayers = PMFactory.getList(Player.class);
 		for (Player dbPlayer : dbPlayers) {
-			final PlayerDto player = PlayerServiceHelper.createPlayer(dbPlayer, MatchType.BOTH);
+			final PlayerDto player = PlayerServiceHelper.createDtoPlayer(dbPlayer, MatchType.BOTH);
 
 			playerDtos.add(player);
 		}
-		Collections.sort(playerDtos, new PlayerComparator());
+		Collections.sort(playerDtos, new PlayerNameComparator());
 		return playerDtos;
 	}
 

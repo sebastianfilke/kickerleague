@@ -37,15 +37,15 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 */
 	@Override
 	public MatchDto createMatch(MatchDto matchDto) throws IllegalArgumentException {
-		Match dbMatch = new Match();
+		final Match dbMatch = new Match();
 
-		final int matchId = PMFactory.getNextId(Match.class);
+		final int matchId = PMFactory.getNextId(Match.class.getName());
 		final Key matchKey = KeyFactory.createKey(Match.class.getSimpleName(), matchId);
 		dbMatch.setKey(matchKey);
 		dbMatch.setMatchNumber(matchId);
 		dbMatch.setMatchDate(matchDto.getMatchDate());
 
-		final MatchSets sets = new MatchSets(matchDto.getSets().getSetsTeam1(), matchDto.getSets().getSetsTeam2());
+		final MatchSets sets = new MatchSets(matchDto.getMatchSetsDto().getMatchSetsTeam1(), matchDto.getMatchSetsDto().getMatchSetsTeam2());
 		dbMatch.setMatchSets(sets);
 
 		if (matchDto.getMatchType() == MatchType.SINGLE) {
@@ -53,44 +53,44 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		} else {
 			createDoubleMatch(matchDto, dbMatch);
 		}
-		dbMatch = PMFactory.persistObject(dbMatch);
+		PMFactory.persistObject(dbMatch);
 
-		updateTable(matchDto);
+		MatchServiceHelper.updateTable(matchDto);
 
 		return matchDto;
 	}
 
-	private void createSingleMatch(final MatchDto matchDto, final Match dbMatch) {
+	private void createSingleMatch(final MatchDto matchDto, Match dbMatch) {
 		dbMatch.setMatchType(MatchType.SINGLE);
 
-		final Player team1Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam1().getPlayer1().getId());
-		final Player team2Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam2().getPlayer1().getId());
+		final Player dbTeam1Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer1().getId());
+		final Player dbTeam2Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer1().getId());
 
-		dbMatch.setTeam1(team1Player1.getKey().getId());
-		dbMatch.setTeam2(team2Player1.getKey().getId());
+		dbMatch.setTeam1(dbTeam1Player1.getKey().getId());
+		dbMatch.setTeam2(dbTeam2Player1.getKey().getId());
 
 		final boolean team1Winner = isTeam1Winner(matchDto);
-		updatePlayerStats(team1Player1, matchDto, dbMatch, team1Winner);
-		updatePlayerStats(team2Player1, matchDto, dbMatch, !team1Winner);
+		updatePlayerStats(dbTeam1Player1, matchDto, dbMatch, team1Winner);
+		updatePlayerStats(dbTeam2Player1, matchDto, dbMatch, !team1Winner);
 	}
 
 	private void createDoubleMatch(final MatchDto matchDto, final Match dbMatch) {
 		dbMatch.setMatchType(MatchType.DOUBLE);
 
-		final Player dbTeam1Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam1().getPlayer1().getId());
-		final Player dbTeam1Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam1().getPlayer2().getId());
+		final Player dbTeam1Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer1().getId());
+		final Player dbTeam1Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer2().getId());
 
 		final Team dbTeam1 = getTeam(dbTeam1Player1, dbTeam1Player2);
-		matchDto.getTeam1().setId(dbTeam1.getKey().getId());
+		matchDto.getTeam1Dto().setId(dbTeam1.getKey().getId());
 
 		final Player dbTeam1Player1Sorted = getPlayerForTeamId(dbTeam1Player1, dbTeam1Player2, (Long) dbTeam1.getPlayers().toArray()[0]);
 		final Player dbTeam1Player2Sorted = getPlayerForTeamId(dbTeam1Player1, dbTeam1Player2, (Long) dbTeam1.getPlayers().toArray()[1]);
 
-		final Player dbTeam2Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam2().getPlayer1().getId());
-		final Player dbTeam2Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam2().getPlayer2().getId());
+		final Player dbTeam2Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer1().getId());
+		final Player dbTeam2Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer2().getId());
 
 		final Team dbTeam2 = getTeam(dbTeam2Player1, dbTeam2Player2);
-		matchDto.getTeam2().setId(dbTeam2.getKey().getId());
+		matchDto.getTeam2Dto().setId(dbTeam2.getKey().getId());
 
 		final Player dbTeam2Player1Sorted = getPlayerForTeamId(dbTeam2Player1, dbTeam2Player2, (Long) dbTeam2.getPlayers().toArray()[0]);
 		final Player dbTeam2Player2Sorted = getPlayerForTeamId(dbTeam2Player1, dbTeam2Player2, (Long) dbTeam2.getPlayers().toArray()[1]);
@@ -123,36 +123,34 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		existingTeam.addAll(dbPlayer1.getTeams());
 		existingTeam.retainAll(dbPlayer2.getTeams());
 
-		Team team = null;
+		Team dbTeam = null;
 		if (existingTeam.isEmpty()) {
-			team = new Team(dbPlayer1, dbPlayer2);
-			final int teamId = PMFactory.getNextId(Team.class);
+			dbTeam = new Team(dbPlayer1, dbPlayer2);
+			final int teamId = PMFactory.getNextId(Team.class.getName());
 			final Key teamKey = KeyFactory.createKey(Team.class.getSimpleName(), teamId);
-			team.setKey(teamKey);
+			dbTeam.setKey(teamKey);
 
-			TeamStats newTeamStats = new TeamStats();
-			final int teamStatsId = PMFactory.getNextId(TeamStats.class);
+			final TeamStats dbTeamStats = new TeamStats();
+			final int teamStatsId = PMFactory.getNextId(TeamStats.class.getName());
 			final Key teamStatsKey = KeyFactory.createKey(TeamStats.class.getSimpleName(), teamStatsId);
-			newTeamStats.setKey(teamStatsKey);
+			dbTeamStats.setKey(teamStatsKey);
 
-			newTeamStats = PMFactory.persistObject(newTeamStats);
+			dbTeam.setTeamStats(dbTeamStats.getKey().getId());
+			dbPlayer1.getTeams().add(dbTeam.getKey().getId());
+			dbPlayer2.getTeams().add(dbTeam.getKey().getId());
 
-			team.setTeamStats(newTeamStats.getKey().getId());
-
-			team = PMFactory.persistObject(team);
-
-			dbPlayer1.getTeams().add(team.getKey().getId());
-			dbPlayer2.getTeams().add(team.getKey().getId());
+			final Object[] persistedResult = PMFactory.persistAllObjects(dbTeamStats, dbTeam);
+			dbTeam = (Team) persistedResult[1];
 		} else {
-			team = PMFactory.getObjectById(Team.class, (Long) existingTeam.toArray()[0]);
+			dbTeam = PMFactory.getObjectById(Team.class, (Long) existingTeam.toArray()[0]);
 		}
-		return team;
+		return dbTeam;
 	}
 
 	private boolean isTeam1Winner(MatchDto matchDto) {
 		boolean team1Winner = false;
 		int size = 0;
-		for (Integer result : matchDto.getSets().getSetsTeam1()) {
+		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam1()) {
 			if (result != null && result == 6) {
 				size++;
 			}
@@ -175,145 +173,131 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	private void updatePlayerStatsForSingleMatch(Player dbPlayer, MatchDto matchDto, Match dbMatch, boolean winner) {
 		final long playerId = dbPlayer.getKey().getId();
 
-		final PlayerSingleStats playerSingleStats = PMFactory.getObjectById(PlayerSingleStats.class, dbPlayer.getPlayerSingleStats());
+		final PlayerSingleStats dbPlayerSingleStats = PMFactory.getObjectById(PlayerSingleStats.class, dbPlayer.getPlayerSingleStats());
 
-		final int matchPoints = MatchServiceHelper.getPointsForPlayer(winner, dbPlayer, playerSingleStats, matchDto);
+		final int matchPoints = MatchServiceHelper.getPointsForPlayer(winner, dbPlayer, dbPlayerSingleStats, matchDto);
 		if (winner) {
-			final int wins = playerSingleStats.getWins() + 1;
-			playerSingleStats.setWins(wins);
+			final int wins = dbPlayerSingleStats.getWins() + 1;
+			dbPlayerSingleStats.setWins(wins);
 		} else {
-			final int losses = playerSingleStats.getLosses() + 1;
-			playerSingleStats.setLosses(losses);
+			final int losses = dbPlayerSingleStats.getLosses() + 1;
+			dbPlayerSingleStats.setLosses(losses);
 		}
-		final int points = playerSingleStats.getPoints() + matchPoints;
-		playerSingleStats.setPoints(points);
+		final int points = dbPlayerSingleStats.getPoints() + matchPoints;
+		dbPlayerSingleStats.setPoints(points);
 
 		final int goalsTeam1 = MatchServiceHelper.getGoalsTeam1(matchDto);
 		final int goalsTeam2 = MatchServiceHelper.getGoalsTeam2(matchDto);
-		if (matchDto.getTeam1().getPlayer1().getId() == playerId || matchDto.getTeam1().getPlayer2() != null
-				&& matchDto.getTeam1().getPlayer2().getId() == playerId) {
+		if (matchDto.getTeam1Dto().getPlayer1().getId() == playerId || matchDto.getTeam1Dto().getPlayer2() != null
+				&& matchDto.getTeam1Dto().getPlayer2().getId() == playerId) {
 			dbMatch.getMatchPoints().getMatchPointsTeam1().add(matchPoints);
 
-			final int shotGoals = playerSingleStats.getShotGoals() + goalsTeam1;
-			playerSingleStats.setShotGoals(shotGoals);
+			final int shotGoals = dbPlayerSingleStats.getShotGoals() + goalsTeam1;
+			dbPlayerSingleStats.setShotGoals(shotGoals);
 
-			final int getGoals = playerSingleStats.getGetGoals() + goalsTeam2;
-			playerSingleStats.setGetGoals(getGoals);
-		} else if (matchDto.getTeam2().getPlayer1().getId() == playerId || matchDto.getTeam2().getPlayer2() != null
-				&& matchDto.getTeam2().getPlayer2().getId() == playerId) {
+			final int getGoals = dbPlayerSingleStats.getGetGoals() + goalsTeam2;
+			dbPlayerSingleStats.setGetGoals(getGoals);
+		} else if (matchDto.getTeam2Dto().getPlayer1().getId() == playerId || matchDto.getTeam2Dto().getPlayer2() != null
+				&& matchDto.getTeam2Dto().getPlayer2().getId() == playerId) {
 			dbMatch.getMatchPoints().getMatchPointsTeam2().add(matchPoints);
 
-			final int shotGoals = playerSingleStats.getShotGoals() + goalsTeam2;
-			playerSingleStats.setShotGoals(shotGoals);
+			final int shotGoals = dbPlayerSingleStats.getShotGoals() + goalsTeam2;
+			dbPlayerSingleStats.setShotGoals(shotGoals);
 
-			final int getGoals = playerSingleStats.getGetGoals() + goalsTeam1;
-			playerSingleStats.setGetGoals(getGoals);
+			final int getGoals = dbPlayerSingleStats.getGetGoals() + goalsTeam1;
+			dbPlayerSingleStats.setGetGoals(getGoals);
 		}
-		playerSingleStats.setLastMatchPoints(matchPoints);
+		dbPlayerSingleStats.setLastMatchPoints(matchPoints);
 		if (dbPlayer.getLastMatchDate() == null || matchDto.getMatchDate().after(dbPlayer.getLastMatchDate())) {
 			dbPlayer.setLastMatchDate(matchDto.getMatchDate());
 		}
-
-		PMFactory.persistObject(playerSingleStats);
-		PMFactory.persistObject(dbPlayer);
+		PMFactory.persistAllObjects(dbPlayerSingleStats, dbPlayer);
 	}
 
 	private void updatePlayerStatsForDoubleMatch(Player dbPlayer, MatchDto matchDto, Match dbMatch, boolean winner) {
 		final long playerId = dbPlayer.getKey().getId();
 
-		final PlayerDoubleStats playerDoubleStats = PMFactory.getObjectById(PlayerDoubleStats.class, dbPlayer.getPlayerDoubleStats());
+		final PlayerDoubleStats dbPlayerDoubleStats = PMFactory.getObjectById(PlayerDoubleStats.class, dbPlayer.getPlayerDoubleStats());
 
-		final int matchPoints = MatchServiceHelper.getPointsForPlayer(winner, dbPlayer, playerDoubleStats, matchDto);
+		final int matchPoints = MatchServiceHelper.getPointsForPlayer(winner, dbPlayer, dbPlayerDoubleStats, matchDto);
 		if (winner) {
-			final int wins = playerDoubleStats.getWins() + 1;
-			playerDoubleStats.setWins(wins);
+			final int wins = dbPlayerDoubleStats.getWins() + 1;
+			dbPlayerDoubleStats.setWins(wins);
 		} else {
-			final int losses = playerDoubleStats.getLosses() + 1;
-			playerDoubleStats.setLosses(losses);
+			final int losses = dbPlayerDoubleStats.getLosses() + 1;
+			dbPlayerDoubleStats.setLosses(losses);
 		}
-		final int points = playerDoubleStats.getPoints() + matchPoints;
-		playerDoubleStats.setPoints(points);
+		final int points = dbPlayerDoubleStats.getPoints() + matchPoints;
+		dbPlayerDoubleStats.setPoints(points);
 
 		final int goalsTeam1 = MatchServiceHelper.getGoalsTeam1(matchDto);
 		final int goalsTeam2 = MatchServiceHelper.getGoalsTeam2(matchDto);
-		if (matchDto.getTeam1().getPlayer1().getId() == playerId || matchDto.getTeam1().getPlayer2() != null
-				&& matchDto.getTeam1().getPlayer2().getId() == playerId) {
+		if (matchDto.getTeam1Dto().getPlayer1().getId() == playerId || matchDto.getTeam1Dto().getPlayer2() != null
+				&& matchDto.getTeam1Dto().getPlayer2().getId() == playerId) {
 			dbMatch.getMatchPoints().getMatchPointsTeam1().add(matchPoints);
 
-			final int shotGoals = playerDoubleStats.getShotGoals() + goalsTeam1;
-			playerDoubleStats.setShotGoals(shotGoals);
+			final int shotGoals = dbPlayerDoubleStats.getShotGoals() + goalsTeam1;
+			dbPlayerDoubleStats.setShotGoals(shotGoals);
 
-			final int getGoals = playerDoubleStats.getGetGoals() + goalsTeam2;
-			playerDoubleStats.setGetGoals(getGoals);
-		} else if (matchDto.getTeam2().getPlayer1().getId() == playerId || matchDto.getTeam2().getPlayer2() != null
-				&& matchDto.getTeam2().getPlayer2().getId() == playerId) {
+			final int getGoals = dbPlayerDoubleStats.getGetGoals() + goalsTeam2;
+			dbPlayerDoubleStats.setGetGoals(getGoals);
+		} else if (matchDto.getTeam2Dto().getPlayer1().getId() == playerId || matchDto.getTeam2Dto().getPlayer2() != null
+				&& matchDto.getTeam2Dto().getPlayer2().getId() == playerId) {
 			dbMatch.getMatchPoints().getMatchPointsTeam2().add(matchPoints);
 
-			final int shotGoals = playerDoubleStats.getShotGoals() + goalsTeam2;
-			playerDoubleStats.setShotGoals(shotGoals);
+			final int shotGoals = dbPlayerDoubleStats.getShotGoals() + goalsTeam2;
+			dbPlayerDoubleStats.setShotGoals(shotGoals);
 
-			final int getGoals = playerDoubleStats.getGetGoals() + goalsTeam1;
-			playerDoubleStats.setGetGoals(getGoals);
+			final int getGoals = dbPlayerDoubleStats.getGetGoals() + goalsTeam1;
+			dbPlayerDoubleStats.setGetGoals(getGoals);
 		}
-		playerDoubleStats.setLastMatchPoints(matchPoints);
+		dbPlayerDoubleStats.setLastMatchPoints(matchPoints);
 		if (dbPlayer.getLastMatchDate() == null || matchDto.getMatchDate().after(dbPlayer.getLastMatchDate())) {
 			dbPlayer.setLastMatchDate(matchDto.getMatchDate());
 		}
-
-		PMFactory.persistObject(playerDoubleStats);
-		PMFactory.persistObject(dbPlayer);
+		PMFactory.persistAllObjects(dbPlayerDoubleStats, dbPlayer);
 	}
 
 	private void updateTeamStats(Team dbTeam, MatchDto matchDto, Match dbMatch, boolean winner) {
-		final TeamStats teamStats = PMFactory.getObjectById(TeamStats.class, dbTeam.getTeamStats());
+		final TeamStats dbTeamStats = PMFactory.getObjectById(TeamStats.class, dbTeam.getTeamStats());
 
-		final int matchPoints = MatchServiceHelper.getPointsForTeam(winner, dbTeam, teamStats, matchDto);
+		final int matchPoints = MatchServiceHelper.getPointsForTeam(winner, dbTeam, dbTeamStats, matchDto);
 		if (winner) {
-			final int wins = teamStats.getWins() + 1;
-			teamStats.setWins(wins);
+			final int wins = dbTeamStats.getWins() + 1;
+			dbTeamStats.setWins(wins);
 		} else {
-			final int losses = teamStats.getLosses() + 1;
-			teamStats.setLosses(losses);
+			final int losses = dbTeamStats.getLosses() + 1;
+			dbTeamStats.setLosses(losses);
 		}
-		final int points = teamStats.getPoints() + matchPoints;
-		teamStats.setPoints(points);
+		final int points = dbTeamStats.getPoints() + matchPoints;
+		dbTeamStats.setPoints(points);
 
 		final int goalsTeam1 = MatchServiceHelper.getGoalsTeam1(matchDto);
 		final int goalsTeam2 = MatchServiceHelper.getGoalsTeam2(matchDto);
-		if (dbTeam.getPlayers().contains(matchDto.getTeam1().getPlayer1().getId()) || dbTeam.getPlayers().contains(matchDto.getTeam1().getPlayer2().getId())) {
+		if (dbTeam.getPlayers().contains(matchDto.getTeam1Dto().getPlayer1().getId())
+				|| dbTeam.getPlayers().contains(matchDto.getTeam1Dto().getPlayer2().getId())) {
 			dbMatch.getMatchPoints().getMatchPointsTeam1().add(matchPoints);
 
-			final int shotGoals = teamStats.getShotGoals() + goalsTeam1;
-			teamStats.setShotGoals(shotGoals);
+			final int shotGoals = dbTeamStats.getShotGoals() + goalsTeam1;
+			dbTeamStats.setShotGoals(shotGoals);
 
-			final int getGoals = teamStats.getGetGoals() + goalsTeam2;
-			teamStats.setGetGoals(getGoals);
-		} else if (dbTeam.getPlayers().contains(matchDto.getTeam2().getPlayer1().getId())
-				|| dbTeam.getPlayers().contains(matchDto.getTeam2().getPlayer2().getId())) {
+			final int getGoals = dbTeamStats.getGetGoals() + goalsTeam2;
+			dbTeamStats.setGetGoals(getGoals);
+		} else if (dbTeam.getPlayers().contains(matchDto.getTeam2Dto().getPlayer1().getId())
+				|| dbTeam.getPlayers().contains(matchDto.getTeam2Dto().getPlayer2().getId())) {
 			dbMatch.getMatchPoints().getMatchPointsTeam2().add(matchPoints);
 
-			final int shotGoals = teamStats.getShotGoals() + goalsTeam2;
-			teamStats.setShotGoals(shotGoals);
+			final int shotGoals = dbTeamStats.getShotGoals() + goalsTeam2;
+			dbTeamStats.setShotGoals(shotGoals);
 
-			final int getGoals = teamStats.getGetGoals() + goalsTeam1;
-			teamStats.setGetGoals(getGoals);
+			final int getGoals = dbTeamStats.getGetGoals() + goalsTeam1;
+			dbTeamStats.setGetGoals(getGoals);
 		}
-		teamStats.setLastMatchPoints(matchPoints);
+		dbTeamStats.setLastMatchPoints(matchPoints);
 		if (dbTeam.getLastMatchDate() == null || matchDto.getMatchDate().after(dbTeam.getLastMatchDate())) {
 			dbTeam.setLastMatchDate(matchDto.getMatchDate());
 		}
-
-		PMFactory.persistObject(teamStats);
-		PMFactory.persistObject(dbTeam);
-	}
-
-	private void updateTable(MatchDto matchDto) {
-		if (matchDto.getMatchType() == MatchType.SINGLE) {
-			MatchServiceHelper.updateSingleStats();
-		} else {
-			MatchServiceHelper.updateDoubleStats();
-			MatchServiceHelper.updateTeamStats();
-		}
+		PMFactory.persistAllObjects(dbTeamStats, dbTeam);
 	}
 
 	/**
@@ -327,7 +311,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 
 		Collections.sort(dbMatches, new MatchComparator());
 		for (Match dbMatch : dbMatches) {
-			final MatchDto matchDto = MatchServiceHelper.createMatch(dbMatch);
+			final MatchDto matchDto = MatchServiceHelper.createDtoMatch(dbMatch);
 
 			matches.add(matchDto);
 		}

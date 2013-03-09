@@ -4,12 +4,14 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.PlainTabPanel;
+import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.container.MarginData;
 
 import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.event.ShowDataEventHandler;
+import de.kickerapp.client.ui.images.KickerIcons;
 
 /**
  * Controller-Klasse zum Eintragen neuer Spieler für die Applikation.
@@ -20,7 +22,7 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 
 	private PlayerAdminPanel playerAdminPanel;
 
-	//private ChartPanel chartPanel;
+	private SinglePlayerChartPanel chartPanel;
 
 	private TabPanel tabPanel;
 
@@ -46,7 +48,7 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 		activeTab = 0;
 
 		playerAdminPanel = new PlayerAdminPanel();
-		//chartPanel = new ChartPanel();
+		chartPanel = new SinglePlayerChartPanel();
 
 		tabPanel = createTabPanel();
 
@@ -72,13 +74,18 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 				final Widget w = event.getSelectedItem();
 
 				activeTab = panel.getWidgetIndex(w);
+				tabPanel.forceLayout();
+				getData();
 			}
 		});
 		tabPanel.setResizeTabs(true);
 		tabPanel.setTabWidth(200);
 
-		tabPanel.add(playerAdminPanel, "Spieler eintragen/bearbeiten");
-		//tabPanel.add(chartPanel, "Spielerstatistik");
+		final TabItemConfig ticAdminPanel = new TabItemConfig("Spieler eintragen/bearbeiten");
+		ticAdminPanel.setIcon(KickerIcons.ICON.user());
+
+		tabPanel.add(chartPanel, "Einzelspielerstatistik");
+		tabPanel.add(playerAdminPanel, ticAdminPanel);
 		tabPanel.setBodyBorder(false);
 		tabPanel.setBorders(false);
 
@@ -87,6 +94,8 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 
 	private void getData() {
 		if (activeTab == 0) {
+			chartPanel.getPlayerList();
+		} else if (activeTab == 1) {
 			playerAdminPanel.getPlayerList();
 		}
 	}

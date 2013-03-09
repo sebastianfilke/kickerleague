@@ -17,7 +17,6 @@ import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
-import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.BeforeSelectEvent;
@@ -44,7 +43,7 @@ import de.kickerapp.client.widgets.AppTextField;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
 
-public class PlayerAdminPanel extends SimpleContainer {
+public class PlayerAdminPanel extends BaseContainer {
 
 	private ListStore<PlayerDto> storePlayer;
 
@@ -79,6 +78,7 @@ public class PlayerAdminPanel extends SimpleContainer {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void initLayout() {
 		setBorders(false);
 
@@ -220,7 +220,7 @@ public class PlayerAdminPanel extends SimpleContainer {
 	}
 
 	private AppButton createBtnUpdate() {
-		btnListUpdate = new AppButton("Liste aktualisieren", KickerIcons.ICON.table_refresh());
+		btnListUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.table_refresh());
 		btnListUpdate.setToolTip("Aktualisiert die Liste der eingetragenen Spieler in der Datenbank");
 		btnListUpdate.addSelectHandler(new SelectHandler() {
 			@Override
@@ -313,6 +313,7 @@ public class PlayerAdminPanel extends SimpleContainer {
 				public void onFailure(Throwable caught) {
 					doUpdatePlayerList = false;
 					unmask();
+					AppExceptionHandler.handleException(caught);
 				}
 			});
 		}

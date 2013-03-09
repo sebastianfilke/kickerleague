@@ -16,6 +16,7 @@ import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.Store;
 import com.sencha.gxt.widget.core.client.PlainTabPanel;
+import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.container.MarginData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -38,6 +39,7 @@ import de.kickerapp.client.event.TabPanelEvent;
 import de.kickerapp.client.event.TabPanelEventHandler;
 import de.kickerapp.client.event.UpdatePanelEvent;
 import de.kickerapp.client.event.UpdatePanelEventHandler;
+import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.properties.TeamProperty;
@@ -81,7 +83,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	@Override
 	public void initLayout() {
 		super.initLayout();
-		setHeadingHtml("<span id='panelHeading'>Aktuelle Tabelle</span>");
+		setHeadingHtml("<span id='panelHeading'>Aktuelle Tabellen</span>");
 
 		doUpdateSingleTable = true;
 		doUpdateDoubleTable = true;
@@ -119,6 +121,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				final Widget w = event.getSelectedItem();
 
 				activeTab = panel.getWidgetIndex(w);
+				tabPanel.forceLayout();
 				getTable();
 			}
 		});
@@ -129,17 +132,26 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		vlcSingleTable.add(createSingleTableToolBar(), new VerticalLayoutData(1, -1));
 		vlcSingleTable.add(createSingleTableGrid(), new VerticalLayoutData(1, 1));
 
-		final VerticalLayoutContainer vlcDoubleTableSingleView = new VerticalLayoutContainer();
-		vlcDoubleTableSingleView.add(createDoubleTableToolBar(), new VerticalLayoutData(1, -1));
-		vlcDoubleTableSingleView.add(createDoubleTableSingleViewGrid(), new VerticalLayoutData(1, 1));
+		final TabItemConfig ticSingleTable = new TabItemConfig("Einzeltabelle");
+		ticSingleTable.setIcon(KickerIcons.ICON.user());
 
-		final VerticalLayoutContainer vlcDoubleTableTeamView = new VerticalLayoutContainer();
-		vlcDoubleTableTeamView.add(createTeamTableToolBar(), new VerticalLayoutData(1, -1));
-		vlcDoubleTableTeamView.add(createDoubleTableTeamViewGrid(), new VerticalLayoutData(1, 1));
+		final VerticalLayoutContainer vlcDoubleTable = new VerticalLayoutContainer();
+		vlcDoubleTable.add(createDoubleTableToolBar(), new VerticalLayoutData(1, -1));
+		vlcDoubleTable.add(createDoubleTableSingleViewGrid(), new VerticalLayoutData(1, 1));
 
-		tabPanel.add(vlcSingleTable, "Spielertabelle (Einzelansicht)");
-		tabPanel.add(vlcDoubleTableSingleView, "Spielertabelle (Doppelansicht)");
-		tabPanel.add(vlcDoubleTableTeamView, "Teamtabelle");
+		final TabItemConfig ticDoubleTable = new TabItemConfig("Doppeltabelle");
+		ticDoubleTable.setIcon(KickerIcons.ICON.group());
+
+		final VerticalLayoutContainer vlcTeamTable = new VerticalLayoutContainer();
+		vlcTeamTable.add(createTeamTableToolBar(), new VerticalLayoutData(1, -1));
+		vlcTeamTable.add(createDoubleTableTeamViewGrid(), new VerticalLayoutData(1, 1));
+
+		final TabItemConfig ticTeamTable = new TabItemConfig("Teamtabelle");
+		ticTeamTable.setIcon(KickerIcons.ICON.group_link());
+
+		tabPanel.add(vlcSingleTable, ticSingleTable);
+		tabPanel.add(vlcDoubleTable, ticDoubleTable);
+		tabPanel.add(vlcTeamTable, ticTeamTable);
 		tabPanel.setBodyBorder(false);
 		tabPanel.setBorders(false);
 
@@ -153,7 +165,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		final StoreFilterToggleButton<PlayerDto> sfcNoMatchPlayer = new StoreFilterToggleButton<PlayerDto>() {
 			@Override
 			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, boolean filter) {
-				if (!(item.getPlayerSingleStats().getCurTablePlace() == 0)) {
+				if (!(item.getPlayerSingleStatsDto().getCurTablePlace() == 0)) {
 					return true;
 				}
 				return false;
@@ -192,13 +204,13 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		numberer.setCell(new AbstractCell<PlayerDto>() {
 			@Override
 			public void render(Context context, PlayerDto value, SafeHtmlBuilder sb) {
-				sb.append(value.getPlayerSingleStats().getCurTablePlace());
+				sb.append(value.getPlayerSingleStatsDto().getCurTablePlace());
 			}
 		});
 		numberer.setComparator(new Comparator<PlayerDto>() {
 			@Override
 			public int compare(PlayerDto o1, PlayerDto o2) {
-				return o1.getPlayerSingleStats().getCurTablePlace().compareTo(o2.getPlayerSingleStats().getCurTablePlace());
+				return o1.getPlayerSingleStatsDto().getCurTablePlace().compareTo(o2.getPlayerSingleStatsDto().getCurTablePlace());
 			}
 		});
 		numberer.setSortable(true);
@@ -215,7 +227,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
 				final PlayerDto player = storeSingleTable.findModelWithKey(context.getKey().toString());
-				final int singleLastMatchPoints = player.getPlayerSingleStats().getLastMatchPoints();
+				final int singleLastMatchPoints = player.getPlayerSingleStatsDto().getLastMatchPoints();
 				getPoints(value, sb, singleLastMatchPoints);
 			}
 		});
@@ -224,7 +236,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final PlayerDto player = storeSingleTable.findModelWithKey(context.getKey().toString());
-				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerSingleStats().getPrevTablePlace() + "'>");
+				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerSingleStatsDto().getPrevTablePlace() + "'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
 				sb.appendHtmlConstant("</span>");
 			}
@@ -278,7 +290,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		final StoreFilterToggleButton<PlayerDto> sfcNoMatchPlayer = new StoreFilterToggleButton<PlayerDto>() {
 			@Override
 			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, boolean filter) {
-				if (!(item.getPlayerDoubleStats().getCurTablePlace() == 0)) {
+				if (!(item.getPlayerDoubleStatsDto().getCurTablePlace() == 0)) {
 					return true;
 				}
 				return false;
@@ -316,13 +328,13 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		numberer.setCell(new AbstractCell<PlayerDto>() {
 			@Override
 			public void render(Context context, PlayerDto value, SafeHtmlBuilder sb) {
-				sb.append(value.getPlayerDoubleStats().getCurTablePlace());
+				sb.append(value.getPlayerDoubleStatsDto().getCurTablePlace());
 			}
 		});
 		numberer.setComparator(new Comparator<PlayerDto>() {
 			@Override
 			public int compare(PlayerDto o1, PlayerDto o2) {
-				return o1.getPlayerDoubleStats().getCurTablePlace().compareTo(o2.getPlayerDoubleStats().getCurTablePlace());
+				return o1.getPlayerDoubleStatsDto().getCurTablePlace().compareTo(o2.getPlayerDoubleStatsDto().getCurTablePlace());
 			}
 		});
 		numberer.setSortable(true);
@@ -339,7 +351,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
 				final PlayerDto player = storeDoubleTable.findModelWithKey(context.getKey().toString());
-				final int lastMatchPoints = player.getPlayerDoubleStats().getLastMatchPoints();
+				final int lastMatchPoints = player.getPlayerDoubleStatsDto().getLastMatchPoints();
 				getPoints(value, sb, lastMatchPoints);
 			}
 		});
@@ -348,7 +360,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final PlayerDto player = storeDoubleTable.findModelWithKey(context.getKey().toString());
-				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerDoubleStats().getPrevTablePlace() + "'>");
+				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerDoubleStatsDto().getPrevTablePlace() + "'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
 				sb.appendHtmlConstant("</span>");
 			}
@@ -511,6 +523,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				public void onFailure(Throwable caught) {
 					doUpdateSingleTable = false;
 					unmask();
+					AppExceptionHandler.handleException(caught);
 				}
 			});
 		}
@@ -531,6 +544,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				public void onFailure(Throwable caught) {
 					doUpdateDoubleTable = false;
 					unmask();
+					AppExceptionHandler.handleException(caught);
 				}
 			});
 		}
@@ -551,6 +565,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				public void onFailure(Throwable caught) {
 					doUpdateTeamTable = false;
 					unmask();
+					AppExceptionHandler.handleException(caught);
 				}
 			});
 		}

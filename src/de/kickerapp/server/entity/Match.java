@@ -208,8 +208,10 @@ public class Match extends BaseEntity {
 		 * Erzeugt Spielpunkte mit leeren Punktzahlen.
 		 */
 		public MatchPoints() {
-			this.matchPointsTeam1 = new ArrayList<Integer>();
-			this.matchPointsTeam2 = new ArrayList<Integer>();
+			super();
+
+			matchPointsTeam1 = new ArrayList<Integer>();
+			matchPointsTeam2 = new ArrayList<Integer>();
 		}
 
 		/**
@@ -283,8 +285,10 @@ public class Match extends BaseEntity {
 		 * Erzeugt Spielsätze mit leeren Sätzen.
 		 */
 		public MatchSets() {
-			this.matchSetsTeam1 = new ArrayList<Integer>();
-			this.matchSetsTeam2 = new ArrayList<Integer>();
+			super();
+
+			matchSetsTeam1 = new ArrayList<Integer>();
+			matchSetsTeam2 = new ArrayList<Integer>();
 		}
 
 		/**

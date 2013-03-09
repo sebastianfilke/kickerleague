@@ -85,15 +85,15 @@ public class MatchServiceHelper {
 	}
 
 	/**
-	 * Erzeugt die Client-Datenklasse anhand er Objekt-Datenklasse.
+	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbMatch Die Objekt-Datenklasse.
 	 * @return Die Client-Datenklasse.
 	 */
-	public static MatchDto createMatch(Match dbMatch) {
+	public static MatchDto createDtoMatch(Match dbMatch) {
 		final MatchDto matchDto = new MatchDto();
 		matchDto.setId(dbMatch.getKey().getId());
-		matchDto.setMatchNumber(Long.toString(dbMatch.getMatchNumber()));
+		matchDto.setMatchNumber(dbMatch.getMatchNumber());
 		matchDto.setMatchDate(dbMatch.getMatchDate());
 		matchDto.setMatchType(dbMatch.getMatchType());
 
@@ -103,41 +103,43 @@ public class MatchServiceHelper {
 		final MatchType matchType = MatchType.NONE;
 		if (dbMatch.getMatchType() == MatchType.SINGLE) {
 			final Player team1Player1 = PMFactory.getObjectById(Player.class, dbMatch.getTeam1());
-			matchDto.setTeam1(new TeamDto(PlayerServiceHelper.createPlayer(team1Player1, matchType)));
+			matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createDtoPlayer(team1Player1, matchType)));
 
 			final Player team2Player2 = PMFactory.getObjectById(Player.class, dbMatch.getTeam2());
-			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createPlayer(team2Player2, matchType)));
+			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createDtoPlayer(team2Player2, matchType)));
 		} else {
 			final Team team1 = PMFactory.getObjectById(Team.class, dbMatch.getTeam1());
 
 			final Player team1Player1 = PMFactory.getObjectById(Player.class, (Long) team1.getPlayers().toArray()[0]);
 			final Player team1Player2 = PMFactory.getObjectById(Player.class, (Long) team1.getPlayers().toArray()[1]);
 
-			matchDto.setTeam1(new TeamDto(PlayerServiceHelper.createPlayer(team1Player1, matchType), PlayerServiceHelper.createPlayer(team1Player2, matchType)));
+			matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createDtoPlayer(team1Player1, matchType), PlayerServiceHelper.createDtoPlayer(team1Player2,
+					matchType)));
 
 			final Team team2 = PMFactory.getObjectById(Team.class, dbMatch.getTeam2());
 
 			final Player team2Player1 = PMFactory.getObjectById(Player.class, (Long) team2.getPlayers().toArray()[0]);
 			final Player team2Player2 = PMFactory.getObjectById(Player.class, (Long) team2.getPlayers().toArray()[1]);
 
-			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createPlayer(team2Player1, matchType), PlayerServiceHelper.createPlayer(team2Player2, matchType)));
+			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createDtoPlayer(team2Player1, matchType), PlayerServiceHelper.createDtoPlayer(team2Player2,
+					matchType)));
 		}
 		final MatchPointsDto pointsDto = new MatchPointsDto();
-		pointsDto.setPointsTeam1(dbMatch.getMatchPoints().getMatchPointsTeam1());
-		pointsDto.setPointsTeam2(dbMatch.getMatchPoints().getMatchPointsTeam2());
-		matchDto.setPoints(pointsDto);
+		pointsDto.setMatchPointsTeam1(dbMatch.getMatchPoints().getMatchPointsTeam1());
+		pointsDto.setMatchPointsTeam2(dbMatch.getMatchPoints().getMatchPointsTeam2());
+		matchDto.setMatchPointsDto(pointsDto);
 
 		final MatchSetDto setDto = new MatchSetDto();
-		setDto.setSetsTeam1(dbMatch.getMatchSets().getMatchSetsTeam1());
-		setDto.setSetsTeam2(dbMatch.getMatchSets().getMatchSetsTeam2());
-		matchDto.setSets(setDto);
+		setDto.setMatchSetsTeam1(dbMatch.getMatchSets().getMatchSetsTeam1());
+		setDto.setMatchSetsTeam2(dbMatch.getMatchSets().getMatchSetsTeam2());
+		matchDto.setMatchSetsDto(setDto);
 
 		return matchDto;
 	}
 
 	protected static int getGoalsTeam1(MatchDto match) {
 		int goals = 0;
-		for (Integer result : match.getSets().getSetsTeam1()) {
+		for (Integer result : match.getMatchSetsDto().getMatchSetsTeam1()) {
 			if (result != null) {
 				goals = goals + result;
 			}
@@ -147,7 +149,7 @@ public class MatchServiceHelper {
 
 	protected static int getGoalsTeam2(MatchDto match) {
 		int goals = 0;
-		for (Integer result : match.getSets().getSetsTeam2()) {
+		for (Integer result : match.getMatchSetsDto().getMatchSetsTeam2()) {
 			if (result != null) {
 				goals = goals + result;
 			}
@@ -155,43 +157,49 @@ public class MatchServiceHelper {
 		return goals;
 	}
 
-	protected static void updateSingleStats() {
+	protected static void updateTable(MatchDto matchDto) {
+		if (matchDto.getMatchType() == MatchType.SINGLE) {
+			updateSingleStats();
+		} else {
+			updateDoubleStats();
+			updateTeamStats();
+		}
+	}
+
+	private static void updateSingleStats() {
 		final List<PlayerSingleStats> dbPlayersSingleStats = PMFactory.getList(PlayerSingleStats.class);
 		removeStatsWithZeroMatches(dbPlayersSingleStats);
 
 		Collections.sort(dbPlayersSingleStats, new StatsComparator());
 		final int size = dbPlayersSingleStats.size();
 		for (int i = 0; i < size; i++) {
-			PlayerSingleStats singleStats = dbPlayersSingleStats.get(i);
-			updateStats(i, singleStats);
-			singleStats = PMFactory.persistObject(singleStats);
+			updateStats(i, dbPlayersSingleStats.get(i));
 		}
+		PMFactory.persistList(dbPlayersSingleStats);
 	}
 
-	protected static void updateDoubleStats() {
+	private static void updateDoubleStats() {
 		final List<PlayerDoubleStats> dbPlayersDoubleStats = PMFactory.getList(PlayerDoubleStats.class);
 		removeStatsWithZeroMatches(dbPlayersDoubleStats);
 
 		Collections.sort(dbPlayersDoubleStats, new StatsComparator());
 		final int size = dbPlayersDoubleStats.size();
 		for (int i = 0; i < size; i++) {
-			PlayerDoubleStats doubleStats = dbPlayersDoubleStats.get(i);
-			updateStats(i, doubleStats);
-			doubleStats = PMFactory.persistObject(doubleStats);
+			updateStats(i, dbPlayersDoubleStats.get(i));
 		}
+		PMFactory.persistList(dbPlayersDoubleStats);
 	}
 
-	protected static void updateTeamStats() {
+	private static void updateTeamStats() {
 		final List<TeamStats> dbTeamStats = PMFactory.getList(TeamStats.class);
 		removeStatsWithZeroMatches(dbTeamStats);
 
 		Collections.sort(dbTeamStats, new StatsComparator());
 		final int size = dbTeamStats.size();
 		for (int i = 0; i < size; i++) {
-			TeamStats teamStats = dbTeamStats.get(i);
-			updateStats(i, teamStats);
-			teamStats = PMFactory.persistObject(teamStats);
+			updateStats(i, dbTeamStats.get(i));
 		}
+		PMFactory.persistList(dbTeamStats);
 	}
 
 	private static void removeStatsWithZeroMatches(List<? extends Stats> dbStats) {
@@ -284,10 +292,10 @@ public class MatchServiceHelper {
 		if (matchDto.getMatchType() == MatchType.SINGLE) {
 			final PlayerSingleStats dbPlayer1SingleStats = (PlayerSingleStats) dbPlayerStats;
 			PlayerSingleStats dbPlayer2SingleStats = null;
-			if (matchDto.getTeam1().getPlayer1().getId() == dbPlayer.getKey().getId()) {
-				dbPlayer2SingleStats = PMFactory.getObjectById(PlayerSingleStats.class, matchDto.getTeam2().getPlayer1().getId());
+			if (matchDto.getTeam1Dto().getPlayer1().getId() == dbPlayer.getKey().getId()) {
+				dbPlayer2SingleStats = PMFactory.getObjectById(PlayerSingleStats.class, matchDto.getTeam2Dto().getPlayer1().getId());
 			} else {
-				dbPlayer2SingleStats = PMFactory.getObjectById(PlayerSingleStats.class, matchDto.getTeam1().getPlayer1().getId());
+				dbPlayer2SingleStats = PMFactory.getObjectById(PlayerSingleStats.class, matchDto.getTeam1Dto().getPlayer1().getId());
 			}
 
 			points = getPointsForTablePlaceDifference(winner, points, dbPlayer1SingleStats, dbPlayer2SingleStats);
@@ -295,12 +303,12 @@ public class MatchServiceHelper {
 			final PlayerDoubleStats dbTeam1Player1SingleStats = (PlayerDoubleStats) dbPlayerStats;
 			PlayerDoubleStats dbTeam2Player1SingleStats = null;
 			PlayerDoubleStats dbTeam2Player2SingleStats = null;
-			if (matchDto.getTeam1().getPlayer1().getId() == dbPlayer.getKey().getId()) {
-				dbTeam2Player1SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2().getPlayer1().getId());
-				dbTeam2Player2SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2().getPlayer2().getId());
+			if (matchDto.getTeam1Dto().getPlayer1().getId() == dbPlayer.getKey().getId()) {
+				dbTeam2Player1SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2Dto().getPlayer1().getId());
+				dbTeam2Player2SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2Dto().getPlayer2().getId());
 			} else {
-				dbTeam2Player1SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1().getPlayer1().getId());
-				dbTeam2Player2SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1().getPlayer2().getId());
+				dbTeam2Player1SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1Dto().getPlayer1().getId());
+				dbTeam2Player2SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1Dto().getPlayer2().getId());
 			}
 
 			points = getPointsForTablePlaceDifference(winner, points, dbTeam1Player1SingleStats, dbTeam2Player1SingleStats, dbTeam2Player2SingleStats);
@@ -312,10 +320,10 @@ public class MatchServiceHelper {
 		final TeamStats dbTeam1Stats = (TeamStats) dbTeamStats;
 		TeamStats dbTeam2Stats = null;
 
-		if (matchDto.getTeam1().getId() == dbTeam.getKey().getId()) {
-			dbTeam2Stats = PMFactory.getObjectById(TeamStats.class, matchDto.getTeam2().getId());
+		if (matchDto.getTeam1Dto().getId() == dbTeam.getKey().getId()) {
+			dbTeam2Stats = PMFactory.getObjectById(TeamStats.class, matchDto.getTeam2Dto().getId());
 		} else {
-			dbTeam2Stats = PMFactory.getObjectById(TeamStats.class, matchDto.getTeam1().getId());
+			dbTeam2Stats = PMFactory.getObjectById(TeamStats.class, matchDto.getTeam1Dto().getId());
 		}
 		points = getPointsForTablePlaceDifference(winner, points, dbTeam1Stats, dbTeam2Stats);
 
@@ -387,7 +395,7 @@ public class MatchServiceHelper {
 	}
 
 	private static int getPointsForNumberOfSets(boolean winner, MatchDto matchDto, int points) {
-		final boolean twoSetGame = matchDto.getSets().getSetsTeam1().size() == 2;
+		final boolean twoSetGame = matchDto.getMatchSetsDto().getMatchSetsTeam1().size() == 2;
 		if (winner) {
 			if (twoSetGame) {
 				points = points + 6;

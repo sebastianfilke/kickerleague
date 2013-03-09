@@ -24,8 +24,7 @@ public class NavigationPanel extends SimpleContainer {
 	private Label current;
 
 	/**
-	 * Erzeugt einen neuen Controller zum Eintragen neuer Spieler für die
-	 * Applikation.
+	 * Erzeugt einen neuen Controller zum Eintragen neuer Spieler für die Applikation.
 	 */
 	public NavigationPanel() {
 		super();
@@ -52,7 +51,7 @@ public class NavigationPanel extends SimpleContainer {
 		final HtmlLayoutContainer htmlLcHeader = new HtmlLayoutContainer(sb.toSafeHtml());
 		htmlLcHeader.setStateful(false);
 
-		label1 = new Label("Tabelle");
+		label1 = new Label("Tabellen");
 		label1.setStyleName("label", true);
 		label1.addClickHandler(new ClickHandler() {
 			@Override

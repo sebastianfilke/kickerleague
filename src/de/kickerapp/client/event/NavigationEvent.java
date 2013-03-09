@@ -5,7 +5,7 @@ import com.google.gwt.event.shared.GwtEvent;
 /**
  * Definition der Navigations-Ereignisse.
  * 
- * @author Sebastian Filke, GIGATRONIK München GmbH
+ * @author Sebastian Filke
  */
 public class NavigationEvent extends GwtEvent<NavigationEventHandler> {
 

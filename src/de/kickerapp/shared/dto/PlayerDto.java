@@ -5,7 +5,7 @@ import java.util.Date;
 import de.kickerapp.shared.common.BaseDto;
 
 /**
- * Datenklasse zum Halten der Informationen eines Spielers.
+ * Client-Datenklasse zum Halten der Informationen eines Spielers.
  * 
  * @author Sebastian Filke
  */
@@ -18,16 +18,16 @@ public class PlayerDto extends BaseDto {
 	private String lastName;
 	/** Der Vorname des Spielers. */
 	private String firstName;
-	/** Der Nickname des Spielers. */
+	/** Der Spitzname des Spielers. */
 	private String nickName;
 	/** Die E-Mail Adresse des Spielers. */
 	private String eMail;
 	/** Das Datum des letzten Spiels des Spielers. */
 	private Date lastMatchDate;
-
-	private PlayerSingleStatsDto playerSingleStats;
-
-	private PlayerDoubleStatsDto playerDoubleStats;
+	/** Die Einzelspiel-Statistik des Spielers. */
+	private PlayerSingleStatsDto playerSingleStatsDto;
+	/** Die Doppelspiel-Statistik des Spielers. */
+	private PlayerDoubleStatsDto playerDoubleStatsDto;
 
 	/**
 	 * Erzeugt einen neuen Spieler ohne Angaben.
@@ -40,8 +40,8 @@ public class PlayerDto extends BaseDto {
 		nickName = "";
 		eMail = "";
 		lastMatchDate = null;
-		playerSingleStats = null;
-		playerDoubleStats = null;
+		playerSingleStatsDto = null;
+		playerDoubleStatsDto = null;
 	}
 
 	/**
@@ -56,60 +56,130 @@ public class PlayerDto extends BaseDto {
 		this.firstName = firstName;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
+	/**
+	 * Liefert den Nachnamen des Spielers.
+	 * 
+	 * @return Der Nachname des Spielers als {@link String}.
+	 */
 	public String getLastName() {
 		return lastName;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	/**
+	 * Setzt den Nachnamen des Spielers.
+	 * 
+	 * @param lastName Der Nachname des Spielers als {@link String}.
+	 */
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
+	/**
+	 * Liefert den Vornamen des Spielers.
+	 * 
+	 * @return Der Vornamen des Spielers als {@link String}.
+	 */
 	public String getFirstName() {
 		return firstName;
 	}
 
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
+	/**
+	 * Setzt den Vornamen des Spielers.
+	 * 
+	 * @param firstName Der Vornamen des Spielers als {@link String}.
+	 */
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
+	/**
+	 * Liefert den Spitznamen des Spielers.
+	 * 
+	 * @return Der Spitzname des Spielers als {@link String}.
+	 */
 	public String getNickName() {
 		return nickName;
 	}
 
-	public void setEMail(String eMail) {
-		this.eMail = eMail;
+	/**
+	 * Setzt den Spitznamen des Spielers.
+	 * 
+	 * @param nickName Der Spitzname des Spielers als {@link String}.
+	 */
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
 	}
 
+	/**
+	 * Liefert die E-Mail Adresse des Spielers.
+	 * 
+	 * @return Die E-Mail Adresse des Spielers als {@link String}.
+	 */
 	public String getEMail() {
 		return eMail;
 	}
 
+	/**
+	 * Setzt die E-Mail Adresse des Spielers.
+	 * 
+	 * @param eMail Die E-Mail Adresse des Spielers als {@link String}.
+	 */
+	public void setEMail(String eMail) {
+		this.eMail = eMail;
+	}
+
+	/**
+	 * Setzt das Datum des letzten Spiels des Spielers.
+	 * 
+	 * @param lastMatchDate Das Datum des letzten Spiels des Spielers als {@link Date}.
+	 */
 	public void setLastMatchDate(Date lastMatchDate) {
 		this.lastMatchDate = lastMatchDate;
 	}
 
+	/**
+	 * Liefert das Datum des letzten Spiels des Spielers.
+	 * 
+	 * @return Das Datum des letzten Spiels des Spielers als {@link Date}.
+	 */
 	public Date getLastMatchDate() {
 		return lastMatchDate;
 	}
 
-	public PlayerSingleStatsDto getPlayerSingleStats() {
-		return playerSingleStats;
+	/**
+	 * Liefert die Einzelspiel-Statistik des Spielers.
+	 * 
+	 * @return Die Einzelspiel-Statistik des Spielers als {@link PlayerSingleStatsDto}.
+	 */
+	public PlayerSingleStatsDto getPlayerSingleStatsDto() {
+		return playerSingleStatsDto;
 	}
 
-	public void setPlayerSingleStats(PlayerSingleStatsDto playerSingleStats) {
-		this.playerSingleStats = playerSingleStats;
+	/**
+	 * Setzt die Einzelspiel-Statistik des Spielers.
+	 * 
+	 * @param playerSingleStatsDto Die Einzelspiel-Statistik des Spielers als {@link PlayerSingleStatsDto}.
+	 */
+	public void setPlayerSingleStatsDto(PlayerSingleStatsDto playerSingleStatsDto) {
+		this.playerSingleStatsDto = playerSingleStatsDto;
 	}
 
-	public PlayerDoubleStatsDto getPlayerDoubleStats() {
-		return playerDoubleStats;
+	/**
+	 * Liefert die Doppelspiel-Statistik des Spielers.
+	 * 
+	 * @return Die Doppelspiel-Statistik des Spielers als {@link PlayerDoubleStatsDto}.
+	 */
+	public PlayerDoubleStatsDto getPlayerDoubleStatsDto() {
+		return playerDoubleStatsDto;
 	}
 
-	public void setPlayerDoubleStats(PlayerDoubleStatsDto playerDoubleStats) {
-		this.playerDoubleStats = playerDoubleStats;
+	/**
+	 * Setzt die Doppelspiel-Statistik des Spielers.
+	 * 
+	 * @param playerDoubleStatsDto Die Doppelspiel-Statistik des Spielers als {@link PlayerDoubleStatsDto}.
+	 */
+	public void setPlayerDoubleStatsDto(PlayerDoubleStatsDto playerDoubleStatsDto) {
+		this.playerDoubleStatsDto = playerDoubleStatsDto;
 	}
 
 }

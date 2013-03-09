@@ -35,6 +35,7 @@ import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.event.ShowDataEventHandler;
 import de.kickerapp.client.event.UpdatePanelEvent;
 import de.kickerapp.client.event.UpdatePanelEventHandler;
+import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.properties.MatchProperty;
 import de.kickerapp.client.services.KickerServices;
@@ -109,7 +110,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 			}
 
 			private boolean checkTeam1(MatchDto item, String filter) {
-				final TeamDto team1 = item.getTeam1();
+				final TeamDto team1 = item.getTeam1Dto();
 
 				final PlayerDto player1 = team1.getPlayer1();
 				if (player1.getLastName().toLowerCase().contains(filter) || player1.getFirstName().toLowerCase().contains(filter)) {
@@ -126,7 +127,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 			}
 
 			private boolean checkTeam2(MatchDto item, String filter) {
-				final TeamDto team2 = item.getTeam2();
+				final TeamDto team2 = item.getTeam2Dto();
 
 				final PlayerDto player1 = team2.getPlayer1();
 				if (player1.getLastName().toLowerCase().contains(filter) || player1.getFirstName().toLowerCase().contains(filter)) {
@@ -153,16 +154,8 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 	}
 
 	public Grid<MatchDto> createGrid() {
-		final ColumnConfig<MatchDto, String> ccNumber = new ColumnConfig<MatchDto, String>(KickerProperties.MATCH_PROPERTY.matchNumber(), 40, "Nr.");
+		final ColumnConfig<MatchDto, Integer> ccNumber = new ColumnConfig<MatchDto, Integer>(KickerProperties.MATCH_PROPERTY.matchNumber(), 40, "Nr.");
 		ccNumber.setGroupable(false);
-		ccNumber.setComparator(new Comparator<String>() {
-			@Override
-			public int compare(String o1, String o2) {
-				final Integer matchNumber1 = Integer.parseInt(o1);
-				final Integer matchNumber2 = Integer.parseInt(o2);
-				return matchNumber2.compareTo(matchNumber1);
-			}
-		});
 		final ColumnConfig<MatchDto, Date> ccMatchDate = new ColumnConfig<MatchDto, Date>(KickerProperties.MATCH_PROPERTY.matchDate(), 120, "Datum");
 		ccMatchDate.setGroupable(false);
 		final TimeZoneConstants t = (TimeZoneConstants) GWT.create(TimeZoneConstants.class);
@@ -277,7 +270,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 	private boolean isTeam1Winner(MatchDto matchDto) {
 		boolean team1Winner = false;
 		int size = 0;
-		for (Integer result : matchDto.getSets().getSetsTeam1()) {
+		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam1()) {
 			if (result != null && result == 6) {
 				size++;
 			}
@@ -322,6 +315,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				public void onFailure(Throwable caught) {
 					doUpdateMatches = false;
 					unmask();
+					AppExceptionHandler.handleException(caught);
 				}
 			});
 		}

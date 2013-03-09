@@ -5,159 +5,191 @@ import java.util.Date;
 import de.kickerapp.shared.common.BaseDto;
 import de.kickerapp.shared.common.MatchType;
 
+/**
+ * Client-Datenklasse zum Halten der Informationen für ein Spiel.
+ * 
+ * @author Sebastian Filke
+ */
 public class MatchDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = 2656034118993930642L;
 
-	private String matchNumber;
-
+	/** Die Spielnummer. */
+	private Integer matchNumber;
+	/** Das Spieldatum. */
 	private Date matchDate;
-
+	/** Das Spieldatum zum Gruppieren der Spiele. */
 	private String groupDate;
-
+	/** Der Spieltyp. */
 	private MatchType matchType;
+	/** Das erste Team bzw. Spieler. */
+	private TeamDto team1Dto;
+	/** Das zweite Team bzw. Spieler. */
+	private TeamDto team2Dto;
+	/** Die Spielpunkte der Teams bzw. Spieler. */
+	private MatchPointsDto matchPointsDto;
+	/** Die Spielsätze der Teams bzw. Spieler. */
+	private MatchSetDto matchSetsDto;
 
-	private TeamDto team1;
-
-	private TeamDto team2;
-
-	private MatchPointsDto points;
-
-	private MatchSetDto sets;
-
+	/**
+	 * Erzeugt ein neues Spiel ohne Angaben.
+	 */
 	public MatchDto() {
 		super();
-		matchNumber = "";
+
+		matchNumber = 0;
 		matchDate = null;
+		groupDate = "";
+		matchType = MatchType.NONE;
+		team1Dto = null;
+		team2Dto = null;
+		matchPointsDto = null;
+		matchSetsDto = null;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Liefert die Spielnummer.
+	 * 
+	 * @return Die Spielnummer als {@link Integer}.
 	 */
-	
-	public void setMatchNumber(String matchNumber) {
-		this.matchNumber = matchNumber;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	
-	public String getMatchNumber() {
+	public Integer getMatchNumber() {
 		return matchNumber;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Setzt die Spielnummer.
+	 * 
+	 * @param matchNumber Die Spielnummer als {@link Integer}.
 	 */
-	
-	public void setMatchDate(Date matchDate) {
-		this.matchDate = matchDate;
+	public void setMatchNumber(Integer matchNumber) {
+		this.matchNumber = matchNumber;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Liefert das Spieldatum.
+	 * 
+	 * @return Das Spieldatum als {@link Date}.
 	 */
-	
 	public Date getMatchDate() {
 		return matchDate;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Setzt das Spieldatum.
+	 * 
+	 * @param matchDate Das Spieldatum als {@link Date}.
 	 */
-	
-	public void setGroupDate(String groupDate) {
-		this.groupDate = groupDate;
+	public void setMatchDate(Date matchDate) {
+		this.matchDate = matchDate;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Liefert das Spieldatum zum Gruppieren der Spiele.
+	 * 
+	 * @return Das Spieldatum zum Gruppieren der Spiele als {@link Date}.
 	 */
-	
 	public String getGroupDate() {
 		return groupDate;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Setzt das Spieldatum zum Gruppieren der Spiele.
+	 * 
+	 * @param groupDate Das Spieldatum zum Gruppieren der Spiele als {@link Date}.
 	 */
-	
+	public void setGroupDate(String groupDate) {
+		this.groupDate = groupDate;
+	}
+
+	/**
+	 * Liefert den Spieltyp.
+	 * 
+	 * @return Der Spieltyp als {@link MatchType}.
+	 */
 	public MatchType getMatchType() {
 		return matchType;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Setzt den Spieltyp.
+	 * 
+	 * @param matchType Der Spieltyp als {@link MatchType}.
 	 */
-	
 	public void setMatchType(MatchType matchType) {
 		this.matchType = matchType;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Liefert das erste Team bzw. Spieler.
+	 * 
+	 * @return Das erste Team bzw. Spieler als {@link TeamDto}.
 	 */
-	
-	public void setTeam1(TeamDto team1) {
-		this.team1 = team1;
+	public TeamDto getTeam1Dto() {
+		return team1Dto;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Setzt das erste Team bzw. Spieler.
+	 * 
+	 * @param team1Dto Das erste Team bzw. Spieler als {@link TeamDto}.
 	 */
-	
-	public TeamDto getTeam1() {
-		return team1;
+	public void setTeam1Dto(TeamDto team1Dto) {
+		this.team1Dto = team1Dto;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Liefert das zweite Team bzw. Spieler.
+	 * 
+	 * @return Das zweite Team bzw. Spieler als {@link TeamDto}.
 	 */
-	
-	public void setTeam2(TeamDto team2) {
-		this.team2 = team2;
+	public TeamDto getTeam2Dto() {
+		return team2Dto;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Setzt das zweite Team bzw. Spieler.
+	 * 
+	 * @param team2Dto Das zweite Team bzw. Spieler als {@link TeamDto}.
 	 */
-	
-	public TeamDto getTeam2() {
-		return team2;
+	public void setTeam2(TeamDto team2Dto) {
+		this.team2Dto = team2Dto;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Liefert die Spielpunkte der Teams bzw. Spieler.
+	 * 
+	 * @return Die Spielpunkte der Teams bzw. Spieler als {@link MatchPointsDto}.
 	 */
-	
-	public MatchPointsDto getPoints() {
-		return points;
+	public MatchPointsDto getMatchPointsDto() {
+		return matchPointsDto;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Setzt die Spielpunkte der Teams bzw. Spieler.
+	 * 
+	 * @param matchPointsDto Die Spielpunkte der Teams bzw. Spieler als {@link MatchPointsDto}.
 	 */
-	
-	public void setPoints(MatchPointsDto points) {
-		this.points = points;
+	public void setMatchPointsDto(MatchPointsDto matchPointsDto) {
+		this.matchPointsDto = matchPointsDto;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Liefert die Spielsätze der Teams bzw. Spieler.
+	 * 
+	 * @return Die Spielsätze der Teams bzw. Spieler als {@link MatchSetDto}.
 	 */
-	
-	public void setSets(MatchSetDto sets) {
-		this.sets = sets;
+	public MatchSetDto getMatchSetsDto() {
+		return matchSetsDto;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Setzt die Spielsätze der Teams bzw. Spieler.
+	 * 
+	 * @param matchSetsDto Die Spielsätze der Teams bzw. Spieler als {@link MatchSetDto}.
 	 */
-	
-	public MatchSetDto getSets() {
-		return sets;
+	public void setMatchSetsDto(MatchSetDto matchSetsDto) {
+		this.matchSetsDto = matchSetsDto;
 	}
 
 }

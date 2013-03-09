@@ -12,6 +12,11 @@ import de.kickerapp.shared.dto.PlayerDoubleStatsDto;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.PlayerSingleStatsDto;
 
+/**
+ * Hilfsklasse für den Dienst zur Verarbeitung von Spielern im Clienten.
+ * 
+ * @author Sebastian Filke
+ */
 public class PlayerServiceHelper {
 
 	/**
@@ -19,7 +24,7 @@ public class PlayerServiceHelper {
 	 * 
 	 * @author Sebastian Filke
 	 */
-	protected static class PlayerComparator implements Comparator<PlayerDto>, Serializable {
+	protected static class PlayerNameComparator implements Comparator<PlayerDto>, Serializable {
 
 		/** Konstante für die SerialVersionUID. */
 		private static final long serialVersionUID = 2081602779517954979L;
@@ -49,28 +54,35 @@ public class PlayerServiceHelper {
 		@Override
 		public int compare(PlayerDto p1, PlayerDto p2) {
 			int comp = 0;
-			if (p1.getPlayerSingleStats() != null && p2.getPlayerSingleStats() != null) {
-				if (p1.getPlayerSingleStats().getCurTablePlace() == 0) {
+			if (p1.getPlayerSingleStatsDto() != null && p2.getPlayerSingleStatsDto() != null) {
+				if (p1.getPlayerSingleStatsDto().getCurTablePlace() == 0) {
 					comp = 1;
-				} else if (p2.getPlayerSingleStats().getCurTablePlace() == 0) {
+				} else if (p2.getPlayerSingleStatsDto().getCurTablePlace() == 0) {
 					comp = -1;
 				} else {
-					comp = p1.getPlayerSingleStats().getCurTablePlace().compareTo(p2.getPlayerSingleStats().getCurTablePlace());
+					comp = p1.getPlayerSingleStatsDto().getCurTablePlace().compareTo(p2.getPlayerSingleStatsDto().getCurTablePlace());
 				}
-			} else if (p1.getPlayerDoubleStats() != null && p2.getPlayerDoubleStats() != null) {
-				if (p1.getPlayerDoubleStats().getCurTablePlace() == 0) {
+			} else if (p1.getPlayerDoubleStatsDto() != null && p2.getPlayerDoubleStatsDto() != null) {
+				if (p1.getPlayerDoubleStatsDto().getCurTablePlace() == 0) {
 					comp = 1;
-				} else if (p2.getPlayerDoubleStats().getCurTablePlace() == 0) {
+				} else if (p2.getPlayerDoubleStatsDto().getCurTablePlace() == 0) {
 					comp = -1;
 				} else {
-					comp = p1.getPlayerDoubleStats().getCurTablePlace().compareTo(p2.getPlayerDoubleStats().getCurTablePlace());
+					comp = p1.getPlayerDoubleStatsDto().getCurTablePlace().compareTo(p2.getPlayerDoubleStatsDto().getCurTablePlace());
 				}
 			}
 			return comp;
 		}
 	}
 
-	public static PlayerDto createPlayer(Player dbPlayer, MatchType matchType) {
+	/**
+	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
+	 * 
+	 * @param dbPlayer Die Objekt-Datenklasse.
+	 * @param matchType Der Spieltyp für welchen die Daten erstellt werden sollen.
+	 * @return Die Client-Datenklasse.
+	 */
+	public static PlayerDto createDtoPlayer(Player dbPlayer, MatchType matchType) {
 		final PlayerDto playerDto = new PlayerDto(dbPlayer.getLastName(), dbPlayer.getFirstName());
 		playerDto.setId(dbPlayer.getKey().getId());
 		playerDto.setNickName(dbPlayer.getNickName());
@@ -94,42 +106,54 @@ public class PlayerServiceHelper {
 		return playerDto;
 	}
 
+	/**
+	 * Setzt die die Einzelspiel-Statistik eines Spielers.
+	 * 
+	 * @param dbPlayer Die Objekt-Datenklasse.
+	 * @param playerDto Die Client-Datenklasse.
+	 */
 	private static void setPlayerSingleStats(Player dbPlayer, final PlayerDto playerDto) {
-		final PlayerSingleStats playerSingleStats = PMFactory.getObjectById(PlayerSingleStats.class, dbPlayer.getPlayerSingleStats());
+		final PlayerSingleStats dbPlayerSingleStats = PMFactory.getObjectById(PlayerSingleStats.class, dbPlayer.getPlayerSingleStats());
 
 		// Single Match
 		final PlayerSingleStatsDto playerSingleStatsDto = new PlayerSingleStatsDto();
 
-		playerSingleStatsDto.setWins(playerSingleStats.getWins());
-		playerSingleStatsDto.setLosses(playerSingleStats.getLosses());
-		playerSingleStatsDto.setShotGoals(playerSingleStats.getShotGoals());
-		playerSingleStatsDto.setGetGoals(playerSingleStats.getGetGoals());
-		playerSingleStatsDto.setPrevTablePlace(playerSingleStats.getPrevTablePlace());
-		playerSingleStatsDto.setCurTablePlace(playerSingleStats.getCurTablePlace());
-		playerSingleStatsDto.setLastMatchPoints(playerSingleStats.getLastMatchPoints());
-		playerSingleStatsDto.setPoints(playerSingleStats.getPoints());
-		playerSingleStatsDto.setTendency(playerSingleStats.getTendency());
+		playerSingleStatsDto.setWins(dbPlayerSingleStats.getWins());
+		playerSingleStatsDto.setLosses(dbPlayerSingleStats.getLosses());
+		playerSingleStatsDto.setShotGoals(dbPlayerSingleStats.getShotGoals());
+		playerSingleStatsDto.setGetGoals(dbPlayerSingleStats.getGetGoals());
+		playerSingleStatsDto.setPrevTablePlace(dbPlayerSingleStats.getPrevTablePlace());
+		playerSingleStatsDto.setCurTablePlace(dbPlayerSingleStats.getCurTablePlace());
+		playerSingleStatsDto.setLastMatchPoints(dbPlayerSingleStats.getLastMatchPoints());
+		playerSingleStatsDto.setPoints(dbPlayerSingleStats.getPoints());
+		playerSingleStatsDto.setTendency(dbPlayerSingleStats.getTendency());
 
-		playerDto.setPlayerSingleStats(playerSingleStatsDto);
+		playerDto.setPlayerSingleStatsDto(playerSingleStatsDto);
 	}
 
+	/**
+	 * Setzt die die Doppelspiel-Statistik eines Spielers.
+	 * 
+	 * @param dbPlayer Die Objekt-Datenklasse.
+	 * @param playerDto Die Client-Datenklasse.
+	 */
 	private static void setPlayerDoubleStats(Player dbPlayer, PlayerDto playerDto) {
-		final PlayerDoubleStats playerDoubleStats = PMFactory.getObjectById(PlayerDoubleStats.class, dbPlayer.getPlayerDoubleStats());
+		final PlayerDoubleStats dbPlayerDoubleStats = PMFactory.getObjectById(PlayerDoubleStats.class, dbPlayer.getPlayerDoubleStats());
 
 		// Double Match
 		final PlayerDoubleStatsDto playerDoubleStatsDto = new PlayerDoubleStatsDto();
 
-		playerDoubleStatsDto.setWins(playerDoubleStats.getWins());
-		playerDoubleStatsDto.setLosses(playerDoubleStats.getLosses());
-		playerDoubleStatsDto.setShotGoals(playerDoubleStats.getShotGoals());
-		playerDoubleStatsDto.setGetGoals(playerDoubleStats.getGetGoals());
-		playerDoubleStatsDto.setPrevTablePlace(playerDoubleStats.getPrevTablePlace());
-		playerDoubleStatsDto.setCurTablePlace(playerDoubleStats.getCurTablePlace());
-		playerDoubleStatsDto.setLastMatchPoints(playerDoubleStats.getLastMatchPoints());
-		playerDoubleStatsDto.setPoints(playerDoubleStats.getPoints());
-		playerDoubleStatsDto.setTendency(playerDoubleStats.getTendency());
+		playerDoubleStatsDto.setWins(dbPlayerDoubleStats.getWins());
+		playerDoubleStatsDto.setLosses(dbPlayerDoubleStats.getLosses());
+		playerDoubleStatsDto.setShotGoals(dbPlayerDoubleStats.getShotGoals());
+		playerDoubleStatsDto.setGetGoals(dbPlayerDoubleStats.getGetGoals());
+		playerDoubleStatsDto.setPrevTablePlace(dbPlayerDoubleStats.getPrevTablePlace());
+		playerDoubleStatsDto.setCurTablePlace(dbPlayerDoubleStats.getCurTablePlace());
+		playerDoubleStatsDto.setLastMatchPoints(dbPlayerDoubleStats.getLastMatchPoints());
+		playerDoubleStatsDto.setPoints(dbPlayerDoubleStats.getPoints());
+		playerDoubleStatsDto.setTendency(dbPlayerDoubleStats.getTendency());
 
-		playerDto.setPlayerDoubleStats(playerDoubleStatsDto);
+		playerDto.setPlayerDoubleStatsDto(playerDoubleStatsDto);
 	}
 
 }

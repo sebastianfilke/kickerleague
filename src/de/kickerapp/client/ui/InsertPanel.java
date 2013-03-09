@@ -206,8 +206,6 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		hblcResultInput.setPack(BoxLayoutPack.CENTER);
 
 		dfMatchDate = new DateField();
-		dfMatchDate.setMinValue(new DateWrapper().clearTime().addDays(-4).asDate());
-		dfMatchDate.setMaxValue(new DateWrapper().clearTime().asDate());
 		dfMatchDate.setEnabled(false);
 
 		final FieldLabel fieldLabel1 = new FieldLabel(dfMatchDate, "Datum");
@@ -215,8 +213,6 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 
 		tfMatchTime = new TimeField();
 		tfMatchTime.setTriggerAction(TriggerAction.ALL);
-		tfMatchTime.setMinValue(new DateWrapper().clearTime().addHours(8).asDate());
-		tfMatchTime.setMaxValue(new DateWrapper().clearTime().addHours(22).addSeconds(1).asDate());
 		tfMatchTime.setEnabled(false);
 		tfMatchTime.setIncrement(1);
 
@@ -609,7 +605,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 			}
 		});
 
-		final ComboBoxCell<PlayerDto> cell = new ComboBoxCell<PlayerDto>(store, props.label, view);
+		final ComboBoxCell<PlayerDto> cell = new ComboBoxCell<PlayerDto>(store, PlayerProperty.label, view);
 		final AppComboBox<PlayerDto> cbPlayer = new AppComboBox<PlayerDto>(cell, emptyText);
 
 		final RpcProxy<PagingLoadConfig, PagingLoadResult<PlayerDto>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<PlayerDto>>() {
@@ -701,7 +697,8 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 					if (valid) {
 						final Radio radio = (Radio) tgPlayType.getValue();
 						if (radio.getId().equals(MatchType.SINGLE.getMatchType())) {
-							valid = cbTeam1Player1.getValue() != null && cbTeam2Player1.getValue() != null;
+							valid = cbTeam1Player1.getValue() != null && cbTeam2Player1.getValue() != null
+									&& cbTeam1Player1.getValue() != cbTeam2Player1.getValue();
 						} else {
 							valid = cbTeam1Player1.getValue() != null && cbTeam1Player2.getValue() != null && cbTeam2Player1.getValue() != null
 									&& cbTeam2Player2.getValue() != null;
@@ -766,12 +763,15 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 			newMatch.setMatchDate(matchDate.asDate());
 		} else {
 			DateWrapper matchDate = new DateWrapper(dfMatchDate.getValue()).clearTime();
+			final DateWrapper currentDate = new DateWrapper(new Date());
 
 			final int hours = new DateWrapper(tfMatchTime.getValue()).getHours();
 			final int minutes = new DateWrapper(tfMatchTime.getValue()).getMinutes();
+			final int seconds = currentDate.getSeconds();
 
 			matchDate = matchDate.add(Unit.HOUR, hours);
 			matchDate = matchDate.add(Unit.MINUTE, minutes);
+			matchDate = matchDate.add(Unit.SECOND, seconds);
 
 			newMatch.setMatchDate(matchDate.asDate());
 		}
@@ -788,22 +788,22 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 			team1 = new TeamDto(cbTeam1Player1.getValue(), cbTeam1Player2.getValue());
 			team2 = new TeamDto(cbTeam2Player1.getValue(), cbTeam2Player2.getValue());
 		}
-		newMatch.setTeam1(team1);
+		newMatch.setTeam1Dto(team1);
 		newMatch.setTeam2(team2);
 
 		final MatchSetDto newSets = new MatchSetDto();
-		newSets.getSetsTeam1().add(cbSet1Team1.getValue());
-		newSets.getSetsTeam1().add(cbSet2Team1.getValue());
+		newSets.getMatchSetsTeam1().add(cbSet1Team1.getValue());
+		newSets.getMatchSetsTeam1().add(cbSet2Team1.getValue());
 		if (cbSet3Team1.getValue() != null) {
-			newSets.getSetsTeam1().add(cbSet3Team1.getValue());
+			newSets.getMatchSetsTeam1().add(cbSet3Team1.getValue());
 		}
 
-		newSets.getSetsTeam2().add(cbSet1Team2.getValue());
-		newSets.getSetsTeam2().add(cbSet2Team2.getValue());
+		newSets.getMatchSetsTeam2().add(cbSet1Team2.getValue());
+		newSets.getMatchSetsTeam2().add(cbSet2Team2.getValue());
 		if (cbSet3Team2.getValue() != null) {
-			newSets.getSetsTeam2().add(cbSet3Team2.getValue());
+			newSets.getMatchSetsTeam2().add(cbSet3Team2.getValue());
 		}
-		newMatch.setSets(newSets);
+		newMatch.setMatchSetsDto(newSets);
 
 		return newMatch;
 	}

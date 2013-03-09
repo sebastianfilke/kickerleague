@@ -1,18 +1,18 @@
-package de.kickerapp.client.ui.dialog;
+package de.kickerapp.client.ui;
 
-import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
 /**
  * Basis-Controller zur Darstellung und Verarbeitung der Applikation.
  * 
  * @author Sebastian Filke
  */
-public class BaseDialog extends Dialog {
+public class BaseContainer extends SimpleContainer {
 
 	/**
 	 * Erzeugt einen neuen Basis-Controller.
 	 */
-	public BaseDialog() {
+	public BaseContainer() {
 		super();
 	}
 

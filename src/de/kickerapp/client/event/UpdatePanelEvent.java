@@ -7,6 +7,7 @@ public class UpdatePanelEvent extends GwtEvent<UpdatePanelEventHandler> {
 	public static final GwtEvent.Type<UpdatePanelEventHandler> ALL = new GwtEvent.Type<UpdatePanelEventHandler>();
 	public static final GwtEvent.Type<UpdatePanelEventHandler> TABLES = new GwtEvent.Type<UpdatePanelEventHandler>();
 	public static final GwtEvent.Type<UpdatePanelEventHandler> MATCHES = new GwtEvent.Type<UpdatePanelEventHandler>();
+	public static final GwtEvent.Type<UpdatePanelEventHandler> CHARTS = new GwtEvent.Type<UpdatePanelEventHandler>();
 
 	/** Der Typ des Ereignisses. */
 	private Type<UpdatePanelEventHandler> eventType;
@@ -40,6 +41,8 @@ public class UpdatePanelEvent extends GwtEvent<UpdatePanelEventHandler> {
 			associatedType = TABLES;
 		} else if (eventType == MATCHES) {
 			associatedType = MATCHES;
+		} else if (eventType == CHARTS) {
+			associatedType = CHARTS;
 		}
 		return associatedType;
 	}

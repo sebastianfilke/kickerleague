@@ -51,7 +51,7 @@ public class AppExceptionHandler {
 		final AppErrorMessageBox dialog = new AppErrorMessageBox();
 
 		if (msg != null) {
-			// dialog.setErrorMsg(msg);
+			dialog.setErrorMsg(msg);
 		}
 
 		LOGGER.severe(error.replaceAll("<br>", "\n"));
@@ -61,7 +61,7 @@ public class AppExceptionHandler {
 	}
 
 	/**
-	 * Fehlertext formatieren
+	 * Fehlertext formatieren.
 	 * 
 	 * @param theMessage Fehlertext
 	 * @return Formatierter Fehlertext

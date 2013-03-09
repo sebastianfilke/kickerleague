@@ -1,7 +1,7 @@
 package de.kickerapp.shared.common;
 
 /**
- * Die Basisklasse für Datenbankobjekte im Client.
+ * Die Client-Basisklasse für Datenbankobjekte.
  * 
  * @author Sebastian Filke
  */
@@ -10,7 +10,7 @@ public class BaseDto implements IBase {
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -4326262956527591125L;
 
-	/** Die DB-ID für das Objekt. */
+	/** Die DB-Id für das Objekt. */
 	private long id;
 
 	/**

@@ -17,15 +17,14 @@ public interface KickerTemplates extends XTemplates {
 	public final KickerTemplates TEMPLATE = GWT.create(KickerTemplates.class);
 
 	/**
-	 * Das Template zum Anzeigen eines Spielers mitsamt seinen Informationen bei
-	 * der Spielersuche.
+	 * Das Template zum Anzeigen eines Spielers mitsamt seinen Informationen bei der Spielersuche.
 	 * 
-	 * @param player Der gefundene Spieler.
+	 * @param playerDto Der gefundene Spieler.
 	 * @return Das Template.
 	 */
-	@XTemplate("<div class='templatePagingComboBox'><h3><span>Letztes Spiel:</br>{player.lastMatchDate:date(\"dd.MM.yyyy HH:mm\")}</span>{player.firstName}, {player.lastName} ({player.nickName})</h3>"
-			+ "<span>Einzel - Siege: <font color='green'>{player.playerSingleStats.wins}</font> &#183; Niederlagen: <font color='red'>{player.playerSingleStats.losses}</font></span> | "
-			+ "<span>Doppel - Siege: <font color='green'>{player.playerDoubleStats.wins}</font> &#183; Niederlagen: <font color='red'>{player.playerDoubleStats.losses}</font></span></div>")
-	SafeHtml renderPlayerPagingComboBox(PlayerDto player);
+	@XTemplate("<div class='templatePagingComboBox'><h3><span>Letztes Spiel:</br>{playerDto.lastMatchDate:date(\"dd.MM.yyyy HH:mm\")}</span>{playerDto.firstName}, {playerDto.lastName} ({playerDto.nickName})</h3>"
+			+ "<span>Einzel - Siege: <font color='green'>{playerDto.playerSingleStatsDto.wins}</font> &#183; Niederlagen: <font color='red'>{playerDto.playerSingleStatsDto.losses}</font></span> | "
+			+ "<span>Doppel - Siege: <font color='green'>{playerDto.playerDoubleStatsDto.wins}</font> &#183; Niederlagen: <font color='red'>{playerDto.playerDoubleStatsDto.losses}</font></span></div>")
+	SafeHtml renderPlayerPagingComboBox(PlayerDto playerDto);
 
 }

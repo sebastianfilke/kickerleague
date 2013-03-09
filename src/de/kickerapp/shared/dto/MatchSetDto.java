@@ -4,35 +4,65 @@ import java.util.ArrayList;
 
 import de.kickerapp.shared.common.BaseDto;
 
+/**
+ * Client-Datenklasse zum Halten der Informationen für die Spielsätze eines Spiels.
+ * 
+ * @author Sebastian Filke
+ */
 public class MatchSetDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -2054250321124768378L;
 
-	private ArrayList<Integer> setsTeam1;
+	/** Die Sätze des ersten Teams bzw. Spielers. */
+	private ArrayList<Integer> matchSetsTeam1;
+	/** Die Sätze des zweiten Teams bzw. Spielers. */
+	private ArrayList<Integer> matchSetsTeam2;
 
-	private ArrayList<Integer> setsTeam2;
-
+	/**
+	 * Erzeugt Spielsätze mit leeren Sätzen.
+	 */
 	public MatchSetDto() {
 		super();
-		setsTeam1 = new ArrayList<Integer>();
-		setsTeam2 = new ArrayList<Integer>();
+
+		matchSetsTeam1 = new ArrayList<Integer>();
+		matchSetsTeam2 = new ArrayList<Integer>();
 	}
 
-	public ArrayList<Integer> getSetsTeam1() {
-		return setsTeam1;
+	/**
+	 * Liefert die Sätze des ersten Teams bzw. Spielers.
+	 * 
+	 * @return Die Sätze des ersten Teams bzw. Spielers als {@link ArrayList}.
+	 */
+	public ArrayList<Integer> getMatchSetsTeam1() {
+		return matchSetsTeam1;
 	}
 
-	public void setSetsTeam1(ArrayList<Integer> setsTeam1) {
-		this.setsTeam1 = setsTeam1;
+	/**
+	 * Setzt die Sätze des ersten Teams bzw. Spielers.
+	 * 
+	 * @param matchSetsTeam1 Die Sätze des ersten Teams bzw. Spielers als {@link ArrayList}.
+	 */
+	public void setMatchSetsTeam1(ArrayList<Integer> matchSetsTeam1) {
+		this.matchSetsTeam1 = matchSetsTeam1;
 	}
 
-	public ArrayList<Integer> getSetsTeam2() {
-		return setsTeam2;
+	/**
+	 * Liefert die Sätze des zweiten Teams bzw. Spielers.
+	 * 
+	 * @return Die Sätze des zweiten Teams bzw. Spielers als {@link ArrayList}.
+	 */
+	public ArrayList<Integer> getMatchSetsTeam2() {
+		return matchSetsTeam2;
 	}
 
-	public void setSetsTeam2(ArrayList<Integer> setsTeam2) {
-		this.setsTeam2 = setsTeam2;
+	/**
+	 * Setzt die Sätze des zweiten Teams bzw. Spielers.
+	 * 
+	 * @param matchSetsTeam2 Die Sätze des zweiten Teams bzw. Spielers als {@link ArrayList}.
+	 */
+	public void setMatchSetsTeam2(ArrayList<Integer> matchSetsTeam2) {
+		this.matchSetsTeam2 = matchSetsTeam2;
 	}
 
 }

@@ -13,7 +13,7 @@ import de.kickerapp.server.entity.Player;
 import de.kickerapp.server.entity.PlayerDoubleStats;
 import de.kickerapp.server.entity.PlayerSingleStats;
 import de.kickerapp.server.persistence.PMFactory;
-import de.kickerapp.server.services.PlayerServiceHelper.PlayerComparator;
+import de.kickerapp.server.services.PlayerServiceHelper.PlayerNameComparator;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerTableComparator;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -32,37 +32,33 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PlayerDto createPlayer(PlayerDto player) throws IllegalArgumentException {
-		Player newPlayer = new Player();
-		final int playerId = PMFactory.getNextId(Player.class);
+	public PlayerDto createPlayer(PlayerDto playerDto) throws IllegalArgumentException {
+		final Player dbPlayer = new Player();
+		final int playerId = PMFactory.getNextId(Player.class.getName());
 		final Key playerKey = KeyFactory.createKey(Player.class.getSimpleName(), playerId);
-		newPlayer.setKey(playerKey);
+		dbPlayer.setKey(playerKey);
 
-		newPlayer.setLastName(player.getLastName());
-		newPlayer.setFirstName(player.getFirstName());
-		newPlayer.setNickName(player.getNickName());
-		newPlayer.setEMail(player.getEMail());
+		dbPlayer.setLastName(playerDto.getLastName());
+		dbPlayer.setFirstName(playerDto.getFirstName());
+		dbPlayer.setNickName(playerDto.getNickName());
+		dbPlayer.setEMail(playerDto.getEMail());
 
-		PlayerSingleStats newSingleStats = new PlayerSingleStats();
-		final int playerSingleStatsId = PMFactory.getNextId(PlayerSingleStats.class);
+		final PlayerSingleStats dbSingleStats = new PlayerSingleStats();
+		final int playerSingleStatsId = PMFactory.getNextId(PlayerSingleStats.class.getName());
 		final Key playerSingleStatsKey = KeyFactory.createKey(PlayerSingleStats.class.getSimpleName(), playerSingleStatsId);
-		newSingleStats.setKey(playerSingleStatsKey);
+		dbSingleStats.setKey(playerSingleStatsKey);
 
-		newSingleStats = PMFactory.persistObject(newSingleStats);
-
-		PlayerDoubleStats newDoubleStats = new PlayerDoubleStats();
-		final int playerDoubleStatsId = PMFactory.getNextId(PlayerDoubleStats.class);
+		final PlayerDoubleStats dbDoubleStats = new PlayerDoubleStats();
+		final int playerDoubleStatsId = PMFactory.getNextId(PlayerDoubleStats.class.getName());
 		final Key playerDoubleStatsKey = KeyFactory.createKey(PlayerDoubleStats.class.getSimpleName(), playerDoubleStatsId);
-		newDoubleStats.setKey(playerDoubleStatsKey);
+		dbDoubleStats.setKey(playerDoubleStatsKey);
 
-		newDoubleStats = PMFactory.persistObject(newDoubleStats);
+		dbPlayer.setPlayerSingleStats(dbSingleStats.getKey().getId());
+		dbPlayer.setPlayerDoubleStats(dbDoubleStats.getKey().getId());
 
-		newPlayer.setPlayerSingleStats(newSingleStats.getKey().getId());
-		newPlayer.setPlayerDoubleStats(newDoubleStats.getKey().getId());
+		PMFactory.persistAllObjects(dbSingleStats, dbDoubleStats, dbPlayer);
 
-		newPlayer = PMFactory.persistObject(newPlayer);
-
-		return player;
+		return playerDto;
 	}
 
 	/**
@@ -74,12 +70,12 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 
 		final List<Player> dbPlayers = PMFactory.getList(Player.class);
 		for (Player dbPlayer : dbPlayers) {
-			final PlayerDto player = PlayerServiceHelper.createPlayer(dbPlayer, matchType);
+			final PlayerDto player = PlayerServiceHelper.createDtoPlayer(dbPlayer, matchType);
 
 			playerDtos.add(player);
 		}
 		if (matchType == MatchType.NONE) {
-			Collections.sort(playerDtos, new PlayerComparator());
+			Collections.sort(playerDtos, new PlayerNameComparator());
 		} else {
 			Collections.sort(playerDtos, new PlayerTableComparator());
 		}
@@ -90,17 +86,17 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PlayerDto updatePlayer(PlayerDto player) throws IllegalArgumentException {
-		Player dbPlayer = PMFactory.getObjectById(Player.class, player.getId());
+	public PlayerDto updatePlayer(PlayerDto playerDto) throws IllegalArgumentException {
+		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId());
 
-		dbPlayer.setLastName(player.getLastName());
-		dbPlayer.setFirstName(player.getFirstName());
-		dbPlayer.setNickName(player.getNickName());
-		dbPlayer.setEMail(player.getEMail());
+		dbPlayer.setLastName(playerDto.getLastName());
+		dbPlayer.setFirstName(playerDto.getFirstName());
+		dbPlayer.setNickName(playerDto.getNickName());
+		dbPlayer.setEMail(playerDto.getEMail());
 
-		dbPlayer = PMFactory.persistObject(dbPlayer);
+		PMFactory.persistObject(dbPlayer);
 
-		return player;
+		return playerDto;
 	}
 
 }

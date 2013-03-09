@@ -18,7 +18,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 	@Path("id")
 	public ModelKeyProvider<MatchDto> id();
 
-	public ValueProvider<MatchDto, String> matchNumber();
+	public ValueProvider<MatchDto, Integer> matchNumber();
 
 	public ValueProvider<MatchDto, Date> matchDate();
 
@@ -49,7 +49,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 	public ValueProvider<MatchDto, String> team1 = new ValueProvider<MatchDto, String>() {
 		@Override
 		public String getValue(MatchDto object) {
-			return getTeam(object, object.getTeam1());
+			return getTeam(object, object.getTeam1Dto());
 		}
 
 		private String getTeam(MatchDto object, TeamDto teamDto) {
@@ -82,7 +82,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 	public ValueProvider<MatchDto, String> team2 = new ValueProvider<MatchDto, String>() {
 		@Override
 		public String getValue(MatchDto object) {
-			return getTeam(object, object.getTeam2());
+			return getTeam(object, object.getTeam2Dto());
 		}
 
 		private String getTeam(MatchDto object, TeamDto teamDto) {
@@ -118,7 +118,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 			final StringBuilder sb = new StringBuilder();
 
 			int setWinsTeam1 = 0;
-			for (Integer set : object.getSets().getSetsTeam1()) {
+			for (Integer set : object.getMatchSetsDto().getMatchSetsTeam1()) {
 				if (set == 6) {
 					setWinsTeam1++;
 				}
@@ -127,7 +127,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 			sb.append(":");
 
 			int setWinsTeam2 = 0;
-			for (Integer set : object.getSets().getSetsTeam2()) {
+			for (Integer set : object.getMatchSetsDto().getMatchSetsTeam2()) {
 				if (set == 6) {
 					setWinsTeam2++;
 				}
@@ -152,18 +152,18 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 		public String getValue(MatchDto object) {
 			final StringBuilder sb = new StringBuilder();
 
-			final int size = object.getSets().getSetsTeam1().size();
+			final int size = object.getMatchSetsDto().getMatchSetsTeam1().size();
 			for (int i = 0; i < size; i++) {
-				final Integer setTeam1 = object.getSets().getSetsTeam1().get(i);
-				final Integer setTeam2 = object.getSets().getSetsTeam2().get(i);
+				final Integer setTeam1 = object.getMatchSetsDto().getMatchSetsTeam1().get(i);
+				final Integer setTeam2 = object.getMatchSetsDto().getMatchSetsTeam2().get(i);
 				if (setTeam1 != null && setTeam2 != null) {
 					sb.append(setTeam1);
 					sb.append(":");
 					sb.append(setTeam2);
 
 					if (i < size - 1) {
-						final Integer nextSetTeam1 = object.getSets().getSetsTeam1().get(i + 1);
-						final Integer nextSetTeam2 = object.getSets().getSetsTeam2().get(i + 1);
+						final Integer nextSetTeam1 = object.getMatchSetsDto().getMatchSetsTeam1().get(i + 1);
+						final Integer nextSetTeam2 = object.getMatchSetsDto().getMatchSetsTeam2().get(i + 1);
 						if (nextSetTeam1 != null && nextSetTeam2 != null) {
 							sb.append(", ");
 						}
@@ -188,7 +188,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 		public String getValue(MatchDto object) {
 			final StringBuilder sb = new StringBuilder();
 
-			final ArrayList<Integer> pointsTeam1 = object.getPoints().getPointsTeam1();
+			final ArrayList<Integer> pointsTeam1 = object.getMatchPointsDto().getMatchPointsTeam1();
 
 			Integer point = pointsTeam1.get(0);
 			appendPoint(sb, point);
@@ -228,7 +228,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 		public String getValue(MatchDto object) {
 			final StringBuilder sb = new StringBuilder();
 
-			final ArrayList<Integer> pointsTeam2 = object.getPoints().getPointsTeam2();
+			final ArrayList<Integer> pointsTeam2 = object.getMatchPointsDto().getMatchPointsTeam2();
 
 			Integer point = pointsTeam2.get(0);
 			appendPoint(sb, point);

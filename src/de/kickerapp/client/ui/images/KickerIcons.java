@@ -14,9 +14,15 @@ public interface KickerIcons extends ClientBundle {
 	/** Die Icons. */
 	public final KickerIcons ICON = GWT.create(KickerIcons.class);
 
+	@Source("group_link.png")
+	ImageResource group_link();
+
+	@Source("group.png")
+	ImageResource group();
+
 	@Source("table.png")
 	ImageResource table();
-	
+
 	@Source("table_sort.png")
 	ImageResource table_sort();
 
@@ -40,5 +46,8 @@ public interface KickerIcons extends ClientBundle {
 
 	@Source("tendency_constant.png")
 	ImageResource tendencyConstant();
+
+	@Source("user.png")
+	ImageResource user();
 
 }

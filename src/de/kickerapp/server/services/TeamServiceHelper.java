@@ -12,6 +12,11 @@ import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
 import de.kickerapp.shared.dto.TeamStatsDto;
 
+/**
+ * Hilfsklasse für den Dienst zur Verarbeitung von Teams im Clienten.
+ * 
+ * @author Sebastian Filke
+ */
 public class TeamServiceHelper {
 
 	/**
@@ -33,31 +38,37 @@ public class TeamServiceHelper {
 		}
 	}
 
-	public static TeamDto createTeam(Team dbTeam) {
+	/**
+	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
+	 * 
+	 * @param dbTeam Die Objekt-Datenklasse.
+	 * @return Die Client-Datenklasse.
+	 */
+	public static TeamDto createDtoTeam(Team dbTeam) {
 		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, (Long) dbTeam.getPlayers().toArray()[0]);
 		final Player dbPlayer2 = PMFactory.getObjectById(Player.class, (Long) dbTeam.getPlayers().toArray()[1]);
 
-		final PlayerDto player1 = PlayerServiceHelper.createPlayer(dbPlayer1, MatchType.NONE);
-		final PlayerDto player2 = PlayerServiceHelper.createPlayer(dbPlayer2, MatchType.NONE);
+		final PlayerDto playerDto1 = PlayerServiceHelper.createDtoPlayer(dbPlayer1, MatchType.NONE);
+		final PlayerDto playerDto2 = PlayerServiceHelper.createDtoPlayer(dbPlayer2, MatchType.NONE);
 
-		final TeamDto teamDto = new TeamDto(player1, player2);
+		final TeamDto teamDto = new TeamDto(playerDto1, playerDto2);
 		teamDto.setId(dbTeam.getKey().getId());
 		teamDto.setLastMatchDate(dbTeam.getLastMatchDate());
 
-		final TeamStats teamStats = PMFactory.getObjectById(TeamStats.class, dbTeam.getTeamStats());
+		final TeamStats dbTeamStats = PMFactory.getObjectById(TeamStats.class, dbTeam.getTeamStats());
 
 		// Team Match
 		final TeamStatsDto teamStatsDto = new TeamStatsDto();
 
-		teamStatsDto.setWins(teamStats.getWins());
-		teamStatsDto.setLosses(teamStats.getLosses());
-		teamStatsDto.setShotGoals(teamStats.getShotGoals());
-		teamStatsDto.setGetGoals(teamStats.getGetGoals());
-		teamStatsDto.setPrevTablePlace(teamStats.getPrevTablePlace());
-		teamStatsDto.setCurTablePlace(teamStats.getCurTablePlace());
-		teamStatsDto.setLastMatchPoints(teamStats.getLastMatchPoints());
-		teamStatsDto.setPoints(teamStats.getPoints());
-		teamStatsDto.setTendency(teamStats.getTendency());
+		teamStatsDto.setWins(dbTeamStats.getWins());
+		teamStatsDto.setLosses(dbTeamStats.getLosses());
+		teamStatsDto.setShotGoals(dbTeamStats.getShotGoals());
+		teamStatsDto.setGetGoals(dbTeamStats.getGetGoals());
+		teamStatsDto.setPrevTablePlace(dbTeamStats.getPrevTablePlace());
+		teamStatsDto.setCurTablePlace(dbTeamStats.getCurTablePlace());
+		teamStatsDto.setLastMatchPoints(dbTeamStats.getLastMatchPoints());
+		teamStatsDto.setPoints(dbTeamStats.getPoints());
+		teamStatsDto.setTendency(dbTeamStats.getTendency());
 
 		teamDto.setTeamStatsDto(teamStatsDto);
 

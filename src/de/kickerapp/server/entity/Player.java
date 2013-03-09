@@ -23,7 +23,7 @@ public class Player extends BaseEntity {
 	/** Der Vorname des Spielers. */
 	@Persistent
 	private String firstName;
-	/** Der Nickname des Spielers. */
+	/** Der Spitzname des Spielers. */
 	@Persistent
 	private String nickName;
 	/** Die E-Mail Adresse des Spielers. */
@@ -107,18 +107,18 @@ public class Player extends BaseEntity {
 	}
 
 	/**
-	 * Liefert den Nicknamen des Spielers.
+	 * Liefert den Spitznamen des Spielers.
 	 * 
-	 * @return Der Nicknamen des Spielers als {@link String}.
+	 * @return Der Spitzname des Spielers als {@link String}.
 	 */
 	public String getNickName() {
 		return nickName;
 	}
 
 	/**
-	 * Setzt den Nicknamen des Spielers.
+	 * Setzt den Spitznamen des Spielers.
 	 * 
-	 * @param nickName Der Nicknamen des Spielers als {@link String}.
+	 * @param nickName Der Spitzname des Spielers als {@link String}.
 	 */
 	public void setNickName(String nickName) {
 		this.nickName = nickName;

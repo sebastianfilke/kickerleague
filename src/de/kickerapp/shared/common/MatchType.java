@@ -23,7 +23,7 @@ public enum MatchType {
 	BOTH("both"),
 
 	/**
-	 * Unbekannt.
+	 * Kein Typ.
 	 */
 	NONE("none");
 

@@ -2,9 +2,9 @@ package de.kickerapp.server.services;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
-import com.google.gwt.dev.util.collect.HashMap;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.ChartService;
@@ -41,6 +41,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 
 		final Calendar cal = Calendar.getInstance();
 
+		boolean containsPlayer = false;
 		for (Match dbMatch : dbMatches) {
 			final int month = getMonthForMatch(cal, dbMatch);
 			final ChartDto chartDto = data.get(month);
@@ -50,6 +51,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 
 			if (dbMatch.getMatchType() == MatchType.SINGLE) {
 				if (dbMatch.getTeam1().equals(playerDto.getId())) {
+					containsPlayer = true;
 					for (Integer matchSet : dbMatch.getMatchSets().getMatchSetsTeam1()) {
 						shotGoals = shotGoals + matchSet;
 					}
@@ -57,6 +59,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 						getGoals = getGoals + matchSet;
 					}
 				} else if (dbMatch.getTeam2().equals(playerDto.getId())) {
+					containsPlayer = true;
 					for (Integer matchSet : dbMatch.getMatchSets().getMatchSetsTeam2()) {
 						shotGoals = shotGoals + matchSet;
 					}
@@ -65,10 +68,16 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 					}
 				}
 			}
+			chartDto.setShotGoals(shotGoals);
+			chartDto.setGetGoals(getGoals);
 		}
-		final ArrayList<ChartDto> chartDto = (ArrayList<ChartDto>) data.values();
-
-		return chartDto;
+		final ArrayList<ChartDto> chartDtos = new ArrayList<ChartDto>();
+		if (containsPlayer) {
+			for (ChartDto chartDto : data.values()) {
+				chartDtos.add(chartDto);
+			}
+		}
+		return chartDtos;
 	}
 
 	private int getMonthForMatch(Calendar cal, Match dbMatch) {

@@ -31,7 +31,7 @@ public class TeamServiceImpl extends RemoteServiceServlet implements TeamService
 
 		final List<Team> dbTeams = PMFactory.getList(Team.class);
 		for (Team dbTeam : dbTeams) {
-			final TeamDto player = TeamServiceHelper.createTeam(dbTeam);
+			final TeamDto player = TeamServiceHelper.createDtoTeam(dbTeam);
 
 			teamDtos.add(player);
 		}

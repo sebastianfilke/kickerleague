@@ -33,9 +33,9 @@ public class Team extends BaseEntity {
 	public Team() {
 		super();
 
-		players = new HashSet<Long>();
 		lastMatchDate = null;
 		teamStats = 0L;
+		players = new HashSet<Long>();
 	}
 
 	/**
