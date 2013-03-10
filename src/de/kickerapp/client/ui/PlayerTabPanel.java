@@ -22,7 +22,7 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 
 	private PlayerAdminPanel playerAdminPanel;
 
-	private SinglePlayerChartPanel chartPanel;
+	// private SinglePlayerChartPanel chartPanel;
 
 	private TabPanel tabPanel;
 
@@ -48,7 +48,7 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 		activeTab = 0;
 
 		playerAdminPanel = new PlayerAdminPanel();
-		chartPanel = new SinglePlayerChartPanel();
+		// chartPanel = new SinglePlayerChartPanel();
 
 		tabPanel = createTabPanel();
 
@@ -81,10 +81,13 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 		tabPanel.setResizeTabs(true);
 		tabPanel.setTabWidth(200);
 
+		final TabItemConfig ticSinglePlayerChart = new TabItemConfig("Einzelspielerstatistik");
+		ticSinglePlayerChart.setIcon(KickerIcons.ICON.chart_bar());
+
 		final TabItemConfig ticAdminPanel = new TabItemConfig("Spieler eintragen/bearbeiten");
 		ticAdminPanel.setIcon(KickerIcons.ICON.user());
 
-		tabPanel.add(chartPanel, "Einzelspielerstatistik");
+		// tabPanel.add(chartPanel, ticSinglePlayerChart);
 		tabPanel.add(playerAdminPanel, ticAdminPanel);
 		tabPanel.setBodyBorder(false);
 		tabPanel.setBorders(false);
@@ -93,11 +96,11 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private void getData() {
-		if (activeTab == 0) {
-			chartPanel.getPlayerList();
-		} else if (activeTab == 1) {
-			playerAdminPanel.getPlayerList();
-		}
+		// if (activeTab == 0) {
+		// chartPanel.getPlayerList();
+		// } else if (activeTab == 1) {
+		playerAdminPanel.getPlayerList();
+		// }
 	}
 
 	/**

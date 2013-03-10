@@ -23,6 +23,7 @@ import com.sencha.gxt.chart.client.draw.RGB;
 import com.sencha.gxt.chart.client.draw.sprite.Sprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite.TextAnchor;
+import com.sencha.gxt.core.client.util.ToggleGroup;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
@@ -56,6 +57,8 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 	private ListStore<PlayerDto> storePlayer;
 
+	private ListStore<ChartDto> storeWin;
+
 	private ListStore<ChartDto> storeGoal;
 
 	private Chart<ChartDto> chartGoal;
@@ -63,6 +66,8 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private boolean doUpdatePlayerList, doUpdateGoalChart;
 
 	private BarSeries<ChartDto> bar;
+
+	private ToggleGroup tgChart;
 
 	public SinglePlayerChartPanel() {
 		super();
@@ -79,7 +84,12 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		doUpdateGoalChart = true;
 
 		storeGoal = new ListStore<ChartDto>(KickerProperties.CHART_PROPERTY.id());
+		storeWin = new ListStore<ChartDto>(KickerProperties.CHART_PROPERTY.id());
 
+		add(createBlcSingleStats());
+	}
+
+	private BorderLayoutContainer createBlcSingleStats() {
 		final BorderLayoutContainer blcSinglePlayer = new BorderLayoutContainer();
 
 		final BorderLayoutData northData = new BorderLayoutData(0.2);
@@ -96,12 +106,12 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 		final VerticalLayoutContainer vlcCharts = new VerticalLayoutContainer();
 		vlcCharts.add(createToolBarCharts(), new VerticalLayoutData(1, -1));
-		vlcCharts.add(createGroupBarChart(), new VerticalLayoutData(1, 1));
+		vlcCharts.add(createGroupBarChartForSingleGoals(), new VerticalLayoutData(1, 1));
 
 		blcSinglePlayer.setNorthWidget(vlcPlayerInfo, northData);
 		blcSinglePlayer.setCenterWidget(vlcCharts);
 
-		add(blcSinglePlayer);
+		return blcSinglePlayer;
 	}
 
 	/**
@@ -158,8 +168,13 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 			public void onSelection(SelectionEvent<PlayerDto> event) {
 				final PlayerDto selectedPlayer = event.getSelectedItem();
 				if (selectedPlayer != null) {
-					setDoUpdate();
-					loadGoalChart(selectedPlayer);
+					final ToggleButton tbtn = (ToggleButton) tgChart.getValue();
+					if (tbtn.getId().equals("singleGoalsChart")) {
+						setDoUpdate();
+						loadGoalChart(selectedPlayer);
+					} else if (tbtn.getId().equals("singleWinsChart")) {
+
+					}
 				}
 			}
 
@@ -175,23 +190,37 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
+		final ToggleButton btnGoalChart = createBtnGoalChart();
+		final ToggleButton btnWinsChart = createBtnWinsChart();
+
+		tgChart = new ToggleGroup();
+		tgChart.add(btnGoalChart);
+		tgChart.add(btnWinsChart);
+		tgChart.setValue(btnGoalChart);
+
 		toolBar.add(createBtnUpdateChart());
 		toolBar.add(new SeparatorToolItem());
-		toolBar.add(createBtnGoalChart());
+		toolBar.add(btnGoalChart);
+		toolBar.add(btnWinsChart);
 
 		return toolBar;
 	}
 
 	private AppButton createBtnUpdateChart() {
 		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.table_refresh());
-		btnUpdate.setToolTip("Aktualisiert die Statistik");
+		btnUpdate.setToolTip("Aktualisiert die momentan gewählte Statistik");
 		btnUpdate.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
 				final PlayerDto selectedPlayer = cbPlayer.getValue();
 				if (selectedPlayer != null) {
-					setDoUpdate();
-					loadGoalChart(selectedPlayer);
+					final ToggleButton tbtn = (ToggleButton) tgChart.getValue();
+					if (tbtn.getId().equals("singleGoalsChart")) {
+						setDoUpdate();
+						loadGoalChart(selectedPlayer);
+					} else if (tbtn.getId().equals("singleWinsChart")) {
+
+					}
 				}
 			}
 
@@ -205,7 +234,8 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private ToggleButton createBtnGoalChart() {
 		final ToggleButton btnGoalChart = new ToggleButton("Torstatistik");
 		btnGoalChart.setToolTip("Zeigt die Torstatistik für den aktuell gewählten Spieler");
-		btnGoalChart.setIcon(KickerIcons.ICON.table_edit());
+		btnGoalChart.setIcon(KickerIcons.ICON.chart_bar());
+		btnGoalChart.setId("singleGoalsChart");
 		btnGoalChart.setAllowDepress(false);
 		btnGoalChart.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
@@ -226,21 +256,46 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		return btnGoalChart;
 	}
 
-	private Chart<ChartDto> createGroupBarChart() {
+	private ToggleButton createBtnWinsChart() {
+		final ToggleButton btnWinsChart = new ToggleButton("Siegstatistik");
+		btnWinsChart.setToolTip("Zeigt die Siegstatistik für den aktuell gewählten Spieler");
+		btnWinsChart.setIcon(KickerIcons.ICON.chart_bar());
+		btnWinsChart.setId("singleWinsChart");
+		btnWinsChart.setAllowDepress(false);
+		btnWinsChart.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if (event.getValue()) {
+					final PlayerDto selectedPlayer = cbPlayer.getValue();
+					if (selectedPlayer != null) {
+						setDoUpdate();
+						// loadGoalChart(selectedPlayer);
+					}
+				}
+			}
+
+			private void setDoUpdate() {
+				doUpdateGoalChart = true;
+			}
+		});
+		return btnWinsChart;
+	}
+
+	private Chart<ChartDto> createGroupBarChartForSingleGoals() {
 		chartGoal = new Chart<ChartDto>();
-		chartGoal.setStore(storeGoal);
 		chartGoal.setShadowChart(true);
+		chartGoal.setStore(storeGoal);
 		chartGoal.setAnimated(true);
 
-		chartGoal.addAxis(createNumericAxis());
+		chartGoal.addAxis(createNumericAxisForSingleGoals());
 		chartGoal.addAxis(createCategoryAxis());
-		chartGoal.addSeries(createBarSeries());
+		chartGoal.addSeries(createBarSeriesForSingleGoals());
 		chartGoal.setLegend(createLegend());
 
 		return chartGoal;
 	}
 
-	private NumericAxis<ChartDto> createNumericAxis() {
+	private NumericAxis<ChartDto> createNumericAxisForSingleGoals() {
 		final NumericAxis<ChartDto> numAxis = new NumericAxis<ChartDto>();
 		numAxis.setPosition(Position.LEFT);
 		numAxis.addField(ChartProperty.goalDifference);
@@ -270,7 +325,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		return catAxis;
 	}
 
-	private BarSeries<ChartDto> createBarSeries() {
+	private BarSeries<ChartDto> createBarSeriesForSingleGoals() {
 		bar = new BarSeries<ChartDto>();
 		bar.setYAxisPosition(Position.LEFT);
 		bar.addYField(ChartProperty.goalDifference);
@@ -311,7 +366,6 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 				DrawFx.createStrokeWidthAnimator(sprite, 0).run(250);
 			}
 		});
-
 		return bar;
 	}
 
@@ -322,6 +376,81 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		legend.setItemHiding(true);
 
 		return legend;
+	}
+
+	private Chart<ChartDto> createGroupBarChartForSingleWins() {
+		chartGoal = new Chart<ChartDto>();
+		chartGoal.setShadowChart(true);
+		chartGoal.setStore(storeWin);
+		chartGoal.setAnimated(true);
+
+		chartGoal.addAxis(createNumericAxisForSingleWins());
+		chartGoal.addAxis(createCategoryAxis());
+		chartGoal.addSeries(createBarSeriesForSingleWins());
+		chartGoal.setLegend(createLegend());
+
+		return chartGoal;
+	}
+
+	private NumericAxis<ChartDto> createNumericAxisForSingleWins() {
+		final NumericAxis<ChartDto> numAxis = new NumericAxis<ChartDto>();
+		numAxis.setPosition(Position.LEFT);
+		numAxis.addField(ChartProperty.winsDifference);
+		numAxis.addField(KickerProperties.CHART_PROPERTY.wins());
+		numAxis.addField(KickerProperties.CHART_PROPERTY.losses());
+
+		final TextSprite title = new TextSprite("Siegbilanz");
+		title.setFontSize(20);
+		title.setFont("Tahoma");
+		numAxis.setTitleConfig(title);
+
+		numAxis.setDisplayGrid(true);
+
+		return numAxis;
+	}
+
+	private BarSeries<ChartDto> createBarSeriesForSingleWins() {
+		final BarSeries<ChartDto> bar = new BarSeries<ChartDto>();
+		bar.setYAxisPosition(Position.LEFT);
+		bar.addYField(ChartProperty.winsDifference);
+		bar.addYField(KickerProperties.CHART_PROPERTY.wins());
+		bar.addYField(KickerProperties.CHART_PROPERTY.losses());
+		bar.addColor(new RGB(17, 95, 166));
+		bar.addColor(new RGB(148, 174, 10));
+		bar.addColor(new RGB(166, 17, 32));
+		bar.setColumn(true);
+
+		final TextSprite sprite = new TextSprite();
+		sprite.setFill(RGB.WHITE);
+		sprite.setFontSize(12);
+		sprite.setTextAnchor(TextAnchor.MIDDLE);
+
+		final SeriesLabelConfig<ChartDto> labelConfig = new SeriesLabelConfig<ChartDto>();
+		labelConfig.setSpriteConfig(sprite);
+
+		bar.setLabelConfig(labelConfig);
+
+		final ArrayList<String> legendTitles = new ArrayList<String>();
+		legendTitles.add("Siegdifferenz");
+		legendTitles.add("Siege");
+		legendTitles.add("Niederlagen");
+		bar.setLegendTitles(legendTitles);
+		bar.setShownInLegend(false);
+		bar.setHighlighting(true);
+		bar.setHighlighter(new SeriesHighlighter() {
+			@Override
+			public void highlight(Sprite sprite) {
+				sprite.setStroke(new RGB(0, 0, 0));
+				DrawFx.createStrokeWidthAnimator(sprite, 3).run(250);
+			}
+
+			@Override
+			public void unHighlight(Sprite sprite) {
+				sprite.setStroke(Color.NONE);
+				DrawFx.createStrokeWidthAnimator(sprite, 0).run(250);
+			}
+		});
+		return bar;
 	}
 
 	protected void getPlayerList() {

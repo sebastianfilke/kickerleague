@@ -2,29 +2,36 @@ package de.kickerapp.client.ui;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.widget.core.client.container.AbstractHtmlLayoutContainer.HtmlData;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
 import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.NavigationEvent;
+import de.kickerapp.client.event.NavigationEventHandler;
 
-public class NavigationPanel extends SimpleContainer {
+/**
+ * Controller-Klasse für die Navigationsleiste der Applikation.
+ * 
+ * @author Sebastian Filke
+ */
+public class NavigationPanel extends BaseContainer {
 
-	private Label label1;
-
-	private Label label2;
-
-	private Label label3;
-
-	private Label label4;
-
-	private Label current;
+	/** Der Navigationspunkt für Tabellen. */
+	private Label lTables;
+	/** Der Navigationspunkt für Ergebnisse. */
+	private Label lResults;
+	/** Der Navigationspunkt für das Eintragen von Spielen. */
+	private Label lInsert;
+	/** Der Navigationspunkt für Spieler und Spielerstatistiken. */
+	private Label lPlayer;
+	/** Der momentan selektierte Navigationspunkt. */
+	private Label lSelected;
 
 	/**
-	 * Erzeugt einen neuen Controller zum Eintragen neuer Spieler für die Applikation.
+	 * Erzeugt einen neuen Controller für die Navigationsleiste der Applikation.
 	 */
 	public NavigationPanel() {
 		super();
@@ -34,77 +41,65 @@ public class NavigationPanel extends SimpleContainer {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void initLayout() {
-		add(createHeader());
+		add(createHlcNavigation());
 	}
 
-	private HtmlLayoutContainer createHeader() {
+	/**
+	 * Erstellt die Navigationsleiste.
+	 * 
+	 * @return Die erstellt Navigationsleiste.
+	 */
+	private HtmlLayoutContainer createHlcNavigation() {
 		final SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
 		sb.appendHtmlConstant("<div id='tabs26'><ul>");
-		sb.appendHtmlConstant("<li><div class='label1'></div></li>");
-		sb.appendHtmlConstant("<li><div class='label2'></div></li>");
-		sb.appendHtmlConstant("<li><div class='label3'></div></li>");
-		sb.appendHtmlConstant("<li><div class='label4'></div></li>");
+		sb.appendHtmlConstant("<li><div class='lTables'></div></li>");
+		sb.appendHtmlConstant("<li><div class='lResults'></div></li>");
+		sb.appendHtmlConstant("<li><div class='lInsert'></div></li>");
+		sb.appendHtmlConstant("<li><div class='lPlayer'></div></li>");
 		sb.appendHtmlConstant("</ul></div>");
 
-		final HtmlLayoutContainer htmlLcHeader = new HtmlLayoutContainer(sb.toSafeHtml());
-		htmlLcHeader.setStateful(false);
+		final HtmlLayoutContainer htmlLcNavigation = new HtmlLayoutContainer(sb.toSafeHtml());
+		htmlLcNavigation.setStateful(false);
 
-		label1 = new Label("Tabellen");
-		label1.setStyleName("label", true);
-		label1.addClickHandler(new ClickHandler() {
+		lTables = createNavigationLabel("Tabellen", NavigationEvent.TABLES);
+		lSelected = lTables;
+		lSelected.setStyleName("current", true);
+
+		lResults = createNavigationLabel("Ergebnisse", NavigationEvent.MATCHES);
+		lInsert = createNavigationLabel("Spiel eintragen", NavigationEvent.INSERT);
+		lPlayer = createNavigationLabel("Spieler", NavigationEvent.PLAYER);
+
+		htmlLcNavigation.add(lTables, new HtmlData(".lTables"));
+		htmlLcNavigation.add(lResults, new HtmlData(".lResults"));
+		htmlLcNavigation.add(lInsert, new HtmlData(".lInsert"));
+		htmlLcNavigation.add(lPlayer, new HtmlData(".lPlayer"));
+
+		return htmlLcNavigation;
+	}
+
+	/**
+	 * Erstellt einen Navigationspunkt für die Navigationsleiste.
+	 * 
+	 * @param text Der Text des Navigationspunktes als <code>String</code>.
+	 * @param navEvent Der Typ des NavigationsEvents welches ausgelöst werden soll.
+	 * @return Der erstellte Navigationspunkt.
+	 */
+	private Label createNavigationLabel(final String text, final Type<NavigationEventHandler> navEvent) {
+		final Label lNavigation = new Label(text);
+		lNavigation.setStyleName("label", true);
+		lNavigation.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
-				current.setStyleName("current", false);
-				current = label1;
-				current.setStyleName("current", true);
+				AppEventBus.fireEvent(new NavigationEvent(navEvent));
+				lSelected.setStyleName("current", false);
+				lSelected = lNavigation;
+				lSelected.setStyleName("current", true);
 			}
 		});
-		current = label1;
-		current.setStyleName("current", true);
-		label2 = new Label("Ergebnisse");
-		label2.setStyleName("label", true);
-		label2.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.MATCHES));
-				current.setStyleName("current", false);
-				current = label2;
-				current.setStyleName("current", true);
-			}
-		});
-
-		label3 = new Label("Spiel eintragen");
-		label3.setStyleName("label", true);
-		label3.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.INSERT));
-				current.setStyleName("current", false);
-				current = label3;
-				current.setStyleName("current", true);
-			}
-		});
-		label4 = new Label("Spieler");
-		label4.setStyleName("label", true);
-		label4.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.PLAYER));
-				current.setStyleName("current", false);
-				current = label4;
-				current.setStyleName("current", true);
-			}
-		});
-
-		htmlLcHeader.add(label1, new HtmlData(".label1"));
-		htmlLcHeader.add(label2, new HtmlData(".label2"));
-		htmlLcHeader.add(label3, new HtmlData(".label3"));
-		htmlLcHeader.add(label4, new HtmlData(".label4"));
-
-		return htmlLcHeader;
+		return lNavigation;
 	}
 
 }

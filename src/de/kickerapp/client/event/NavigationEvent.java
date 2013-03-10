@@ -9,9 +9,13 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class NavigationEvent extends GwtEvent<NavigationEventHandler> {
 
+	/** Das Ereignis zum Anzeigen der Tabellen. */
 	public static final GwtEvent.Type<NavigationEventHandler> TABLES = new GwtEvent.Type<NavigationEventHandler>();
+	/** Das Ereignis zum Anzeigen der Ergebnisse. */
 	public static final GwtEvent.Type<NavigationEventHandler> MATCHES = new GwtEvent.Type<NavigationEventHandler>();
+	/** Das Ereignis zum Anzeigen des Panels zum Eintragen von Ergebnissen. */
 	public static final GwtEvent.Type<NavigationEventHandler> INSERT = new GwtEvent.Type<NavigationEventHandler>();
+	/** Das Ereignis zum Anzeigen der Spieler und Spielerstatistiken. */
 	public static final GwtEvent.Type<NavigationEventHandler> PLAYER = new GwtEvent.Type<NavigationEventHandler>();
 
 	/** Der Typ des Ereignisses. */

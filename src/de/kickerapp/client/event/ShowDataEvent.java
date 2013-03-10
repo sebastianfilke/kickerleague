@@ -3,22 +3,26 @@ package de.kickerapp.client.event;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Definition der Sprachwechsel-Ereignisse der Applikation.
+ * Definition der Datenanzeige-Ereignisse.
  * 
  * @author Sebastian Filke
  */
 public class ShowDataEvent extends GwtEvent<ShowDataEventHandler> {
 
+	/** Das Ereignis zum Anzeigen der Daten der Tabellen. */
 	public static final GwtEvent.Type<ShowDataEventHandler> TABLES = new GwtEvent.Type<ShowDataEventHandler>();
+	/** Das Ereignis zum Anzeigen der Daten der Ergebnisse. */
 	public static final GwtEvent.Type<ShowDataEventHandler> MATCHES = new GwtEvent.Type<ShowDataEventHandler>();
+	/** Das Ereignis zum Anzeigen der Daten für den Panel zum Eintragen von Ergebnissen. */
 	public static final GwtEvent.Type<ShowDataEventHandler> INSERT = new GwtEvent.Type<ShowDataEventHandler>();
+	/** Das Ereignis zum Anzeigen der Daten der Spieler und Spielerstatistiken. */
 	public static final GwtEvent.Type<ShowDataEventHandler> PLAYER = new GwtEvent.Type<ShowDataEventHandler>();
 
 	/** Der Typ des Ereignisses. */
 	private Type<ShowDataEventHandler> eventType;
 
 	/**
-	 * Erstellt ein neues <tt>AfterLayoutEvent</tt> mit angegebenem Ereignistyp.
+	 * Erstellt ein neues <tt>ShowDataEvent</tt> mit angegebenem Ereignistyp.
 	 * 
 	 * @param theEventType Der Typ des Ereignisses.
 	 */

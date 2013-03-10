@@ -13,6 +13,9 @@ public interface KickerIcons extends ClientBundle {
 
 	/** Die Icons. */
 	public final KickerIcons ICON = GWT.create(KickerIcons.class);
+	
+	@Source("chart_bar.png")
+	ImageResource chart_bar();
 
 	@Source("group_link.png")
 	ImageResource group_link();

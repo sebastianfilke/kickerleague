@@ -13,12 +13,18 @@ public class ChartDto extends BaseDto {
 
 	private Integer getGoals;
 
+	private Integer wins;
+
+	private Integer losses;
+
 	public ChartDto() {
 		super();
 
 		month = "";
 		shotGoals = 0;
 		getGoals = 0;
+		wins = 0;
+		losses = 0;
 	}
 
 	public ChartDto(String month) {
@@ -48,6 +54,22 @@ public class ChartDto extends BaseDto {
 
 	public void setGetGoals(Integer getGoals) {
 		this.getGoals = getGoals;
+	}
+
+	public Integer getWins() {
+		return wins;
+	}
+
+	public void setWins(Integer wins) {
+		this.wins = wins;
+	}
+
+	public Integer getLosses() {
+		return losses;
+	}
+
+	public void setLosses(Integer losses) {
+		this.losses = losses;
 	}
 
 }

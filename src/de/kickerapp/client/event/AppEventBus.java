@@ -12,29 +12,26 @@ import com.google.gwt.event.shared.HandlerRegistration;
  */
 public final class AppEventBus {
 
+	/** Die einzige Instanz der {@link AppEventBus}. */
+	private static final AppEventBus INSTANCE = new AppEventBus();
+
+	/** Der HandlerManager. */
 	private HandlerManager eventBus;
 
 	/**
-	 * Initialization On Demand Holder Idiom.
-	 */
-	private static class Holder {
-		private static final AppEventBus INSTANCE = new AppEventBus();
-	}
-
-	/**
-	 * Privater Konstruktor soll nicht von außen aufgerufen werden.
+	 * Privater Konstruktor zur Verhinderung externe Instantiierung.
 	 */
 	private AppEventBus() {
 		eventBus = new HandlerManager(this);
 	}
 
 	/**
-	 * Statische Methode <code>get()</code> liefert die Instanz der Klasse.
+	 * Liefert die einzige Instanz des {@link AppEventBus}.
 	 * 
-	 * @return AppEventBus
+	 * @return Die Instanz.
 	 */
 	private static AppEventBus get() {
-		return Holder.INSTANCE;
+		return INSTANCE;
 	}
 
 	/**
@@ -47,8 +44,7 @@ public final class AppEventBus {
 	}
 
 	/**
-	 * Statische Methode <code>fireEvent()</code> löst das angegebene Ereignis
-	 * aus.
+	 * Statische Methode <code>fireEvent()</code> löst das angegebene Ereignis aus.
 	 * 
 	 * @param event Das Ereignis.
 	 */
@@ -62,8 +58,7 @@ public final class AppEventBus {
 	 * @param <H> Der Typ des Handlers.
 	 * @param type Der Ereignistyp der mit diesem Handler verbunden ist.
 	 * @param handler Der Handler
-	 * @return Die Registrierung des Handlers, die gespeichert werden kann um
-	 *         den Handler später wieder entfernen zu können.
+	 * @return Die Registrierung des Handlers, die gespeichert werden kann um den Handler später wieder entfernen zu können.
 	 */
 	public static <H extends EventHandler> HandlerRegistration addHandler(GwtEvent.Type<H> type, final H handler) {
 		return get().getEventBus().addHandler(type, handler);

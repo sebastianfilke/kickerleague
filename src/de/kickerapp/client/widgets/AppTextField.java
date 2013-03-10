@@ -3,7 +3,7 @@ package de.kickerapp.client.widgets;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
- * Erweiterung des {@link TextField}s für die Application.
+ * Erweiterung des {@link TextField}s für die Applikation.
  * 
  * @author Sebastian Filke
  */
@@ -17,8 +17,7 @@ public class AppTextField extends TextField {
 	}
 
 	/**
-	 * Erzeugt ein neues TextField mit übergebenem Standardtext, falls das
-	 * Textfield leer ist.
+	 * Erzeugt ein neues TextField mit übergebenem Standardtext, falls das Textfeld leer ist.
 	 * 
 	 * @param emptyText Der Standardtext des TextFields als {@link String}.
 	 */

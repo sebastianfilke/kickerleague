@@ -17,13 +17,13 @@ public class BaseContainer extends SimpleContainer {
 	}
 
 	/**
-	 * Initalisiert das Layout des Panels.
+	 * Initalisiert das Layout des Containers.
 	 */
 	protected void initLayout() {
 	}
 
 	/**
-	 * Initalisiert die EventHandler des Panels.
+	 * Initalisiert die EventHandler des Containers.
 	 */
 	protected void initHandlers() {
 	}

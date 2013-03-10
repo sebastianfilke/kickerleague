@@ -9,7 +9,7 @@ import de.kickerapp.client.ui.dialog.AppErrorMessageBox;
  * 
  * @author Sebastian Filke
  */
-public class AppExceptionHandler {
+public final class AppExceptionHandler {
 
 	/** Der Logger der Klasse. */
 	private static transient final Logger LOGGER = Logger.getLogger(AppExceptionHandler.class.getName());
@@ -61,26 +61,6 @@ public class AppExceptionHandler {
 	}
 
 	/**
-	 * Fehlertext formatieren.
-	 * 
-	 * @param theMessage Fehlertext
-	 * @return Formatierter Fehlertext
-	 */
-	private static String extractMessage(String theMessage) {
-		if (theMessage == null || theMessage.equals("")) {
-			return "";
-		}
-
-		final int start = theMessage.indexOf("ErrorCodeRuntimeException[message=");
-
-		if (start == -1) {
-			return theMessage;
-		}
-
-		return theMessage.substring(theMessage.indexOf("---", start), theMessage.indexOf("]", start)).replaceAll("\n", "<br>");
-	}
-
-	/**
 	 * HTML Format des StackTraces.
 	 * 
 	 * @param theThrowable die Exception
@@ -91,15 +71,15 @@ public class AppExceptionHandler {
 			return "";
 		}
 
-		final StringBuilder result = new StringBuilder();
-		result.append(theThrowable.toString());
-		result.append("<br>");
+		final StringBuilder sb = new StringBuilder();
+		sb.append(theThrowable.toString());
+		sb.append("<br>");
 
 		for (StackTraceElement element : theThrowable.getStackTrace()) {
-			result.append(element);
-			result.append("<br>");
+			sb.append(element);
+			sb.append("<br>");
 		}
-		return result.toString();
+		return sb.toString();
 	}
 
 }

@@ -3,7 +3,7 @@ package de.kickerapp.client.widgets;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 
 /**
- * Erweiterung des {@link ContentPanel}s für die Application.
+ * Erweiterung des {@link ContentPanel}s für die Applikation.
  * 
  * @author Sebastian Filke
  */

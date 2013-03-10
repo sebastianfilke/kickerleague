@@ -4,7 +4,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 
 /**
- * Erweiterung des {@link TextButton} für die Application.
+ * Erweiterung des {@link TextButton} für die Applikation.
  * 
  * @author Sebastian Filke
  */
@@ -15,7 +15,6 @@ public class AppButton extends TextButton {
 	 */
 	public AppButton() {
 		super();
-		setWidth(100);
 	}
 
 	/**
@@ -26,8 +25,14 @@ public class AppButton extends TextButton {
 	public AppButton(String text) {
 		super(text);
 	}
-	
-	public AppButton(String text, ImageResource icon){
+
+	/**
+	 * Erzeugt einen neuen TextButton mit übergebenem Text und Icon.
+	 * 
+	 * @param text Der Text des Buttons als {@link String}.
+	 * @param icon Das Icon des Buttons als {@link ImageResource}.
+	 */
+	public AppButton(String text, ImageResource icon) {
 		super(text, icon);
 	}
 
