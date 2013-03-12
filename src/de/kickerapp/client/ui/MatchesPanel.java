@@ -41,21 +41,26 @@ import de.kickerapp.client.properties.MatchProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
+import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
 
 /**
+ * Controller-Klasse für die Spielergebnisse.
+ * 
  * @author Sebastian Filke
  */
 public class MatchesPanel extends BasePanel implements ShowDataEventHandler, UpdatePanelEventHandler {
 
-	private ListStore<MatchDto> store;
-
-	private StoreFilterField<MatchDto> sffGrid;
-
+	/** Der Store für die Spielergebnisse. */
+	private ListStore<MatchDto> storeMatches;
+	/** Der Angabe, ob die Spielergebnisse aktualisiert werden sollen. */
 	private boolean doUpdateMatches;
 
+	/**
+	 * Erzeugt einen neuen Controller für die Spielergebnisse.
+	 */
 	public MatchesPanel() {
 		super();
 		initLayout();
@@ -70,15 +75,15 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		super.initLayout();
 		setHeadingHtml("<span id='panelHeading'>Zuletzt Gespielt</span>");
 
-		store = new ListStore<MatchDto>(KickerProperties.MATCH_PROPERTY.id());
-
 		doUpdateMatches = true;
 
-		final VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
-		vlcMain.add(createToolBar(), new VerticalLayoutData(1, -1));
-		vlcMain.add(createGrid(), new VerticalLayoutData(1, 1));
+		storeMatches = new ListStore<MatchDto>(KickerProperties.MATCH_PROPERTY.id());
 
-		add(vlcMain);
+		final VerticalLayoutContainer vlcMatches = new VerticalLayoutContainer();
+		vlcMatches.add(createMatchesToolBar(), new VerticalLayoutData(1, -1));
+		vlcMatches.add(createMatchesGrid(), new VerticalLayoutData(1, 1));
+
+		add(vlcMatches);
 	}
 
 	/**
@@ -93,11 +98,16 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		AppEventBus.addHandler(UpdatePanelEvent.MATCHES, this);
 	}
 
-	private ToolBar createToolBar() {
+	/**
+	 * Erzeugt die ToolBar für die Spielergebnisse.
+	 * 
+	 * @return Die erzeugte ToolBar.
+	 */
+	private ToolBar createMatchesToolBar() {
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
-		sffGrid = new StoreFilterField<MatchDto>() {
+		final StoreFilterField<MatchDto> sffGrid = new StoreFilterField<MatchDto>() {
 			@Override
 			protected boolean doSelect(Store<MatchDto> store, MatchDto parent, MatchDto item, String filter) {
 				boolean select = false;
@@ -112,50 +122,91 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 			private boolean checkTeam1(MatchDto item, String filter) {
 				final TeamDto team1 = item.getTeam1Dto();
 
-				final PlayerDto player1 = team1.getPlayer1();
-				if (player1.getLastName().toLowerCase().contains(filter) || player1.getFirstName().toLowerCase().contains(filter)) {
-					return true;
+				final String[] queries = filter.split(" ");
+
+				final boolean containsPlayer1 = checkPlayer(team1.getPlayer1(), queries);
+				boolean containsPlayer2 = false;
+				if (team1.getPlayer2() != null) {
+					containsPlayer2 = checkPlayer(team1.getPlayer2(), queries);
 				}
 
-				final PlayerDto player2 = team1.getPlayer2();
-				if (player2 != null) {
-					if (player2.getLastName().toLowerCase().contains(filter) || player2.getFirstName().toLowerCase().contains(filter)) {
-						return true;
+				boolean select = false;
+				if (item.getMatchType() == MatchType.SINGLE) {
+					if (queries.length == 1) {
+						select = containsPlayer1;
+					} else {
+						select = false;
+					}
+				} else {
+					if (queries.length == 1) {
+						select = containsPlayer1 || containsPlayer2;
+					} else {
+						select = containsPlayer1 && containsPlayer2;
 					}
 				}
-				return false;
+				return select;
 			}
 
 			private boolean checkTeam2(MatchDto item, String filter) {
 				final TeamDto team2 = item.getTeam2Dto();
 
-				final PlayerDto player1 = team2.getPlayer1();
-				if (player1.getLastName().toLowerCase().contains(filter) || player1.getFirstName().toLowerCase().contains(filter)) {
-					return true;
+				final String[] queries = filter.split(" ");
+
+				final boolean containsPlayer1 = checkPlayer(team2.getPlayer1(), queries);
+				boolean containsPlayer2 = false;
+				if (team2.getPlayer2() != null) {
+					containsPlayer2 = checkPlayer(team2.getPlayer2(), queries);
 				}
 
-				final PlayerDto player2 = team2.getPlayer2();
-				if (player2 != null) {
-					if (player2.getLastName().toLowerCase().contains(filter) || player2.getFirstName().toLowerCase().contains(filter)) {
-						return true;
+				boolean select = false;
+				if (item.getMatchType() == MatchType.SINGLE) {
+					if (queries.length == 1) {
+						select = containsPlayer1;
+					} else {
+						select = false;
+					}
+				} else {
+					if (queries.length == 1) {
+						select = containsPlayer1 || containsPlayer2;
+					} else {
+						select = containsPlayer1 && containsPlayer2;
 					}
 				}
-				return false;
+				return select;
+			}
+
+			private boolean checkPlayer(PlayerDto playerDto, final String[] queries) {
+				boolean containsPlayer1 = false;
+				for (String curQuery : queries) {
+					final PlayerDto player1 = playerDto;
+					if (player1.getLastName().toLowerCase().contains(curQuery.toLowerCase())
+							|| player1.getFirstName().toLowerCase().contains(curQuery.toLowerCase())) {
+						containsPlayer1 = true;
+						break;
+					}
+				}
+				return containsPlayer1;
 			}
 		};
-		sffGrid.bind(store);
-		sffGrid.setWidth(250);
 		sffGrid.setEmptyText("Nach Spieler/Team suchen...");
+		sffGrid.setWidth(250);
+		sffGrid.bind(storeMatches);
 
 		toolBar.add(createBtnUpdate());
 		toolBar.add(new SeparatorToolItem());
 		toolBar.add(sffGrid);
+
 		return toolBar;
 	}
 
-	public Grid<MatchDto> createGrid() {
-		final ColumnConfig<MatchDto, Integer> ccNumber = new ColumnConfig<MatchDto, Integer>(KickerProperties.MATCH_PROPERTY.matchNumber(), 40, "Nr.");
-		ccNumber.setGroupable(false);
+	/**
+	 * Erzeugt das Grid für die Spielergebnisse.
+	 * 
+	 * @return Das erzeugte Grid.
+	 */
+	public Grid<MatchDto> createMatchesGrid() {
+		final ColumnConfig<MatchDto, Integer> ccMatchNumber = new ColumnConfig<MatchDto, Integer>(KickerProperties.MATCH_PROPERTY.matchNumber(), 40, "Nr.");
+		ccMatchNumber.setGroupable(false);
 		final ColumnConfig<MatchDto, Date> ccMatchDate = new ColumnConfig<MatchDto, Date>(KickerProperties.MATCH_PROPERTY.matchDate(), 120, "Datum");
 		ccMatchDate.setGroupable(false);
 		final TimeZoneConstants t = (TimeZoneConstants) GWT.create(TimeZoneConstants.class);
@@ -191,7 +242,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		ccTeam1.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
-				final MatchDto match = store.findModelWithKey(context.getKey().toString());
+				final MatchDto match = storeMatches.findModelWithKey(context.getKey().toString());
 				if (match != null && isTeam1Winner(match)) {
 					sb.appendHtmlConstant("<b>" + value + "</b>");
 				} else {
@@ -204,7 +255,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		ccTeam2.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
-				final MatchDto match = store.findModelWithKey(context.getKey().toString());
+				final MatchDto match = storeMatches.findModelWithKey(context.getKey().toString());
 				if (match != null && !isTeam1Winner(match)) {
 					sb.appendHtmlConstant("<b>" + value + "</b>");
 				} else {
@@ -224,7 +275,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		ccMatchSets.setGroupable(false);
 
 		final ArrayList<ColumnConfig<MatchDto, ?>> columns = new ArrayList<ColumnConfig<MatchDto, ?>>();
-		columns.add(ccNumber);
+		columns.add(ccMatchNumber);
 		columns.add(ccMatchDate);
 		columns.add(ccGroupDate);
 		columns.add(ccMatchType);
@@ -243,7 +294,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		view.setStripeRows(true);
 		view.setColumnLines(true);
 
-		final Grid<MatchDto> grid = new Grid<MatchDto>(store, new ColumnModel<MatchDto>(columns));
+		final Grid<MatchDto> grid = new Grid<MatchDto>(storeMatches, new ColumnModel<MatchDto>(columns));
 		grid.setView(view);
 
 		final ListStore<String> lsMatchType = new ListStore<String>(new ModelKeyProvider<String>() {
@@ -267,6 +318,12 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		return grid;
 	}
 
+	/**
+	 * Liefert die Angabe, ob das erste Team gewonnen hat.
+	 * 
+	 * @param matchDto Das Spiel.
+	 * @return <code>true</code> falls, das erste Team gewonnen hat, ansonsten <code>false</code>.
+	 */
 	private boolean isTeam1Winner(MatchDto matchDto) {
 		boolean team1Winner = false;
 		int size = 0;
@@ -282,6 +339,35 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		return team1Winner;
 	}
 
+	/**
+	 * Liefert die Daten für die Spielergebnisse.
+	 */
+	private void getMatches() {
+		if (doUpdateMatches) {
+			mask("Aktualisiere...");
+			KickerServices.MATCH_SERVICE.getAllMatches(new AsyncCallback<ArrayList<MatchDto>>() {
+				@Override
+				public void onSuccess(ArrayList<MatchDto> result) {
+					storeMatches.replaceAll(result);
+					doUpdateMatches = false;
+					unmask();
+				}
+
+				@Override
+				public void onFailure(Throwable caught) {
+					doUpdateMatches = false;
+					unmask();
+					AppExceptionHandler.handleException(caught);
+				}
+			});
+		}
+	}
+
+	/**
+	 * Erzeugt den Button zum Aktualisieren der Spielergebnisse.
+	 * 
+	 * @return Der erzeugte Button.
+	 */
 	private AppButton createBtnUpdate() {
 		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.table_refresh());
 		btnUpdate.setToolTip("Aktualisiert die Ergebnisse der zuletzt gespielten Spiele");
@@ -297,32 +383,6 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 			}
 		});
 		return btnUpdate;
-	}
-
-	private void getMatches() {
-		if (doUpdateMatches) {
-			mask("Aktualisiere...");
-			clearInput();
-			KickerServices.MATCH_SERVICE.getAllMatches(new AsyncCallback<ArrayList<MatchDto>>() {
-				@Override
-				public void onSuccess(ArrayList<MatchDto> result) {
-					store.replaceAll(result);
-					doUpdateMatches = false;
-					unmask();
-				}
-
-				@Override
-				public void onFailure(Throwable caught) {
-					doUpdateMatches = false;
-					unmask();
-					AppExceptionHandler.handleException(caught);
-				}
-			});
-		}
-	}
-
-	private void clearInput() {
-		sffGrid.clear();
 	}
 
 	/**

@@ -50,6 +50,9 @@ public interface KickerIcons extends ClientBundle {
 	@Source("tendency_constant.png")
 	ImageResource tendencyConstant();
 
+	@Source("user_edit.png")
+	ImageResource user_edit();
+	
 	@Source("user.png")
 	ImageResource user();
 

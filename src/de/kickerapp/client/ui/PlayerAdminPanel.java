@@ -200,8 +200,8 @@ public class PlayerAdminPanel extends BaseContainer {
 		sffPlayer = new StoreFilterField<PlayerDto>() {
 			@Override
 			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, String filter) {
-				if (item.getLastName().toLowerCase().contains(filter) || item.getFirstName().toLowerCase().contains(filter)
-						|| item.getNickName().toLowerCase().contains(filter)) {
+				if (item.getLastName().toLowerCase().contains(filter.toLowerCase()) || item.getFirstName().toLowerCase().contains(filter.toLowerCase())
+						|| item.getNickName().toLowerCase().contains(filter.toLowerCase())) {
 					return true;
 				}
 				return false;

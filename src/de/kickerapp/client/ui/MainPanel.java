@@ -8,6 +8,7 @@ import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.MarginData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 
 import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.NavigationEvent;
@@ -21,7 +22,7 @@ import de.kickerapp.client.ui.resources.KickerMessages;
  * 
  * @author Sebastian Filke
  */
-public class MainPanel extends VerticalLayoutContainer implements NavigationEventHandler {
+public class MainPanel extends BaseContainer implements NavigationEventHandler {
 
 	private CardLayoutContainer clcContent;
 
@@ -40,23 +41,28 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 	}
 
 	/**
-	 * 
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void initLayout() {
 		tablePanel = new TablesPanel();
 		matchesPanel = new MatchesPanel();
 		resultPanel = new InsertPanel();
 		playerPanel = new PlayerTabPanel();
 
-		add(createHeader(), new VerticalLayoutData(1, 92));
-		add(new NavigationPanel(), new VerticalLayoutData(1, 42));
-		add(createContent(), new VerticalLayoutData(1, 1));
+		final VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
+		vlcMain.add(createHeader(), new VerticalLayoutData(1, 92));
+		vlcMain.add(new NavigationPanel(), new VerticalLayoutData(1, 42));
+		vlcMain.add(createContent(), new VerticalLayoutData(1, 1));
+
+		add(vlcMain);
 	}
 
 	/**
-	 * 
+	 * {@inheritDoc}
 	 */
-	private void initHandlers() {
+	@Override
+	public void initHandlers() {
 		AppEventBus.addHandler(NavigationEvent.TABLES, this);
 		AppEventBus.addHandler(NavigationEvent.MATCHES, this);
 		AppEventBus.addHandler(NavigationEvent.INSERT, this);
@@ -107,7 +113,7 @@ public class MainPanel extends VerticalLayoutContainer implements NavigationEven
 
 		sb.appendHtmlConstant("<div id='footer'>");
 		sb.appendHtmlConstant("<div id='footerLinks'>Impressum | Kontakt</div>");
-		sb.appendHtmlConstant("<div id='footerText'>Design und Idee &#064; Sebastian Filke, 2013 | Version: 0.7.8</div>");
+		sb.appendHtmlConstant("<div id='footerText'>Design und Idee &#064; Sebastian Filke, 2013 | Version: 0.7.95</div>");
 		sb.appendHtmlConstant("</div>");
 
 		final HtmlLayoutContainer htmlLcTitle = new HtmlLayoutContainer(sb.toSafeHtml());

@@ -85,7 +85,7 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 		ticSinglePlayerChart.setIcon(KickerIcons.ICON.chart_bar());
 
 		final TabItemConfig ticAdminPanel = new TabItemConfig("Spieler eintragen/bearbeiten");
-		ticAdminPanel.setIcon(KickerIcons.ICON.user());
+		ticAdminPanel.setIcon(KickerIcons.ICON.user_edit());
 
 		// tabPanel.add(chartPanel, ticSinglePlayerChart);
 		tabPanel.add(playerAdminPanel, ticAdminPanel);

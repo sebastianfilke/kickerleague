@@ -51,26 +51,29 @@ import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
 
+/**
+ * Controller-Klasse für die Team- bzw. Spielertabellen.
+ * 
+ * @author Sebastian Filke
+ */
 public class TablesPanel extends BasePanel implements ShowDataEventHandler, UpdatePanelEventHandler, TabPanelEventHandler {
 
+	/** Der Store für die Einzelspielertabelle. */
 	private ListStore<PlayerDto> storeSingleTable;
-
+	/** Der Store für die Doppelspielertabelle. */
 	private ListStore<PlayerDto> storeDoubleTable;
-
+	/** Der Store für die Teamtabelle. */
 	private ListStore<TeamDto> storeTeamTable;
-
-	private StoreFilterField<PlayerDto> sffSingleTable;
-
-	private StoreFilterField<PlayerDto> sffDoubleTable;
-
-	private StoreFilterField<TeamDto> sffTeamTable;
-
+	/** Der aktuelle oder anzuzeigende Tab. */
 	private int activeTab;
-
+	/** Der TabPanel zum Anzeigen der verschiedenen Tabellen. */
 	private TabPanel tabPanel;
-
+	/** Der Angabe, ob die Einzelspielertabelle, Doppelspielertabelle sowie die Teamtabelle aktualisiert werden sollen. */
 	private boolean doUpdateSingleTable, doUpdateDoubleTable, doUpdateTeamTable;
 
+	/**
+	 * Erzeugt einen neuen Controller für die Team- bzw. Spielertabellen.
+	 */
 	public TablesPanel() {
 		super();
 		initLayout();
@@ -112,6 +115,11 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		AppEventBus.addHandler(UpdatePanelEvent.TABLES, this);
 	}
 
+	/**
+	 * Erzeugt den TabPanel zum Anzeigen der verschiedenen Tabellen.
+	 * 
+	 * @return Der erzeugte TabPanel.
+	 */
 	private TabPanel createTabPanel() {
 		final PlainTabPanel tabPanel = new PlainTabPanel();
 		tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
@@ -122,7 +130,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 
 				activeTab = panel.getWidgetIndex(w);
 				tabPanel.forceLayout();
-				getTable();
+				getTableForActiveTab();
 			}
 		});
 		tabPanel.setResizeTabs(true);
@@ -137,14 +145,14 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 
 		final VerticalLayoutContainer vlcDoubleTable = new VerticalLayoutContainer();
 		vlcDoubleTable.add(createDoubleTableToolBar(), new VerticalLayoutData(1, -1));
-		vlcDoubleTable.add(createDoubleTableSingleViewGrid(), new VerticalLayoutData(1, 1));
+		vlcDoubleTable.add(createDoubleTableGrid(), new VerticalLayoutData(1, 1));
 
 		final TabItemConfig ticDoubleTable = new TabItemConfig("Doppeltabelle");
 		ticDoubleTable.setIcon(KickerIcons.ICON.group());
 
 		final VerticalLayoutContainer vlcTeamTable = new VerticalLayoutContainer();
 		vlcTeamTable.add(createTeamTableToolBar(), new VerticalLayoutData(1, -1));
-		vlcTeamTable.add(createDoubleTableTeamViewGrid(), new VerticalLayoutData(1, 1));
+		vlcTeamTable.add(createTeamTableGrid(), new VerticalLayoutData(1, 1));
 
 		final TabItemConfig ticTeamTable = new TabItemConfig("Teamtabelle");
 		ticTeamTable.setIcon(KickerIcons.ICON.group_link());
@@ -158,6 +166,11 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		return tabPanel;
 	}
 
+	/**
+	 * Erzeugt die ToolBar für die Einzelspielertabelle.
+	 * 
+	 * @return Die erzeugte ToolBar.
+	 */
 	private ToolBar createSingleTableToolBar() {
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
@@ -171,24 +184,24 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return false;
 			}
 		};
-		sfcNoMatchPlayer.bind(storeSingleTable);
-		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.table_sort());
-		sfcNoMatchPlayer.setText("Alle Spieler anzeigen");
 		sfcNoMatchPlayer.setToolTip("Aktivieren um auch Spieler anzuzeigen, welche noch kein Spiel und damit keinen Tabellenplatz haben");
+		sfcNoMatchPlayer.setText("Alle Spieler anzeigen");
+		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.table_sort());
+		sfcNoMatchPlayer.bind(storeSingleTable);
 
-		sffSingleTable = new StoreFilterField<PlayerDto>() {
+		final StoreFilterField<PlayerDto> sffSingleTable = new StoreFilterField<PlayerDto>() {
 			@Override
 			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, String filter) {
-				if (item.getLastName().toLowerCase().contains(filter) || item.getFirstName().toLowerCase().contains(filter)
-						|| item.getNickName().toLowerCase().contains(filter)) {
+				if (item.getLastName().toLowerCase().contains(filter.toLowerCase()) || item.getFirstName().toLowerCase().contains(filter.toLowerCase())
+						|| item.getNickName().toLowerCase().contains(filter.toLowerCase())) {
 					return true;
 				}
 				return false;
 			}
 		};
-		sffSingleTable.bind(storeSingleTable);
-		sffSingleTable.setWidth(250);
 		sffSingleTable.setEmptyText("Nach Spieler suchen...");
+		sffSingleTable.setWidth(250);
+		sffSingleTable.bind(storeSingleTable);
 
 		toolBar.add(createBtnUpdate());
 		toolBar.add(sfcNoMatchPlayer);
@@ -198,6 +211,11 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		return toolBar;
 	}
 
+	/**
+	 * Erzeugt das Grid für die Einzelspielertabelle.
+	 * 
+	 * @return Das erzeugte Grid.
+	 */
 	public Grid<PlayerDto> createSingleTableGrid() {
 		final IdentityValueProvider<PlayerDto> identity = new IdentityValueProvider<PlayerDto>();
 		final RowNumberer<PlayerDto> numberer = new RowNumberer<PlayerDto>(identity);
@@ -220,19 +238,53 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		final ColumnConfig<PlayerDto, Integer> ccSingleWins = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.singleWins, 100, "Siege");
 		final ColumnConfig<PlayerDto, Integer> ccSingleLosses = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.singleLosses, 100, "Niederlagen");
 		final ColumnConfig<PlayerDto, String> ccSingleGoals = new ColumnConfig<PlayerDto, String>(PlayerProperty.singleGoals, 100, "Tore");
+		ccSingleGoals.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final Integer shotGoals1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
+				final Integer shotGoals2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
+
+				int comp = shotGoals1.compareTo(shotGoals2);
+				if (comp == 0) {
+					final Integer getGoals1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
+					final Integer getGoals2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
+
+					comp = getGoals2.compareTo(getGoals1);
+				}
+				return comp;
+			}
+		});
 		final ColumnConfig<PlayerDto, String> ccSingleGoalDifference = new ColumnConfig<PlayerDto, String>(PlayerProperty.singleGoalDifference, 100,
 				"Tordifferenz");
-		final ColumnConfig<PlayerDto, String> ccPoints = new ColumnConfig<PlayerDto, String>(PlayerProperty.singlePoints, 100, "Punkte");
-		ccPoints.setCell(new AbstractCell<String>() {
+		ccSingleGoalDifference.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final Integer goalDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
+				final Integer goalDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
+
+				return goalDifference1.compareTo(goalDifference2);
+			}
+		});
+		final ColumnConfig<PlayerDto, String> ccSinglePoints = new ColumnConfig<PlayerDto, String>(PlayerProperty.singlePoints, 100, "Punkte");
+		ccSinglePoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
 				final PlayerDto player = storeSingleTable.findModelWithKey(context.getKey().toString());
 				final int singleLastMatchPoints = player.getPlayerSingleStatsDto().getLastMatchPoints();
-				getPoints(value, sb, singleLastMatchPoints);
+				concatLastMatchPoints(value, sb, singleLastMatchPoints);
 			}
 		});
-		final ColumnConfig<PlayerDto, ImageResource> ccTendency = new ColumnConfig<PlayerDto, ImageResource>(PlayerProperty.singleTendency, 80, "Tendenz");
-		ccTendency.setCell(new ImageResourceCell() {
+		ccSinglePoints.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final Integer points1 = Integer.parseInt(o1);
+				final Integer points2 = Integer.parseInt(o2);
+
+				return points1.compareTo(points2);
+			}
+		});
+		final ColumnConfig<PlayerDto, ImageResource> ccSingleTendency = new ColumnConfig<PlayerDto, ImageResource>(PlayerProperty.singleTendency, 80, "Tendenz");
+		ccSingleTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final PlayerDto player = storeSingleTable.findModelWithKey(context.getKey().toString());
@@ -241,7 +293,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				sb.appendHtmlConstant("</span>");
 			}
 		});
-		ccTendency.setComparator(new Comparator<ImageResource>() {
+		ccSingleTendency.setComparator(new Comparator<ImageResource>() {
 			@Override
 			public int compare(ImageResource o1, ImageResource o2) {
 				return o1.getName().compareTo(o2.getName());
@@ -256,8 +308,8 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccSingleLosses);
 		columns.add(ccSingleGoals);
 		columns.add(ccSingleGoalDifference);
-		columns.add(ccPoints);
-		columns.add(ccTendency);
+		columns.add(ccSinglePoints);
+		columns.add(ccSingleTendency);
 
 		final Grid<PlayerDto> grid = new Grid<PlayerDto>(storeSingleTable, new ColumnModel<PlayerDto>(columns));
 		grid.getView().setAutoExpandColumn(ccPlayerName);
@@ -269,20 +321,11 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		return grid;
 	}
 
-	private void getPoints(String value, SafeHtmlBuilder sb, final int lastMatchPoints) {
-		final String style = "style='color: " + (lastMatchPoints >= 0 ? "green" : "red") + "'";
-
-		final StringBuilder builder = new StringBuilder();
-		if (lastMatchPoints >= 0) {
-			builder.append("+" + Integer.toString(lastMatchPoints));
-		} else {
-			builder.append(Integer.toString(lastMatchPoints));
-		}
-
-		sb.appendHtmlConstant(value);
-		sb.appendHtmlConstant(" <span " + style + ">(" + builder.toString() + ")</span>");
-	}
-
+	/**
+	 * Erzeugt die ToolBar für die Doppelspielertabelle.
+	 * 
+	 * @return Die erzeugte ToolBar.
+	 */
 	private ToolBar createDoubleTableToolBar() {
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
@@ -296,33 +339,39 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return false;
 			}
 		};
-		sfcNoMatchPlayer.bind(storeDoubleTable);
-		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.table_sort());
-		sfcNoMatchPlayer.setText("Alle Spieler anzeigen");
 		sfcNoMatchPlayer.setToolTip("Aktivieren um auch Spieler anzuzeigen, welche noch kein Spiel und damit keinen Tabellenplatz haben");
+		sfcNoMatchPlayer.setText("Alle Spieler anzeigen");
+		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.table_sort());
+		sfcNoMatchPlayer.bind(storeDoubleTable);
 
-		sffDoubleTable = new StoreFilterField<PlayerDto>() {
+		final StoreFilterField<PlayerDto> sffDoubleTable = new StoreFilterField<PlayerDto>() {
 			@Override
 			protected boolean doSelect(Store<PlayerDto> store, PlayerDto parent, PlayerDto item, String filter) {
-				if (item.getLastName().toLowerCase().contains(filter) || item.getFirstName().toLowerCase().contains(filter)
-						|| item.getNickName().toLowerCase().contains(filter)) {
+				if (item.getLastName().toLowerCase().contains(filter.toLowerCase()) || item.getFirstName().toLowerCase().contains(filter.toLowerCase())
+						|| item.getNickName().toLowerCase().contains(filter.toLowerCase())) {
 					return true;
 				}
 				return false;
 			}
 		};
-		sffDoubleTable.bind(storeDoubleTable);
-		sffDoubleTable.setWidth(250);
 		sffDoubleTable.setEmptyText("Nach Spieler suchen...");
+		sffDoubleTable.setWidth(250);
+		sffDoubleTable.bind(storeDoubleTable);
 
 		toolBar.add(createBtnUpdate());
 		toolBar.add(sfcNoMatchPlayer);
 		toolBar.add(new SeparatorToolItem());
 		toolBar.add(sffDoubleTable);
+
 		return toolBar;
 	}
 
-	private Widget createDoubleTableSingleViewGrid() {
+	/**
+	 * Erzeugt das Grid für die Doppelspielertabelle.
+	 * 
+	 * @return Das erzeugte Grid.
+	 */
+	private Grid<PlayerDto> createDoubleTableGrid() {
 		final IdentityValueProvider<PlayerDto> identity = new IdentityValueProvider<PlayerDto>();
 		final RowNumberer<PlayerDto> numberer = new RowNumberer<PlayerDto>(identity);
 		numberer.setCell(new AbstractCell<PlayerDto>() {
@@ -340,23 +389,57 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		numberer.setSortable(true);
 
 		final ColumnConfig<PlayerDto, String> ccPlayerName = new ColumnConfig<PlayerDto, String>(PlayerProperty.playerName, 140, "Spieler");
-		final ColumnConfig<PlayerDto, Integer> ccSingleMatches = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.doubleMatches, 100, "Anzahl Spiele");
+		final ColumnConfig<PlayerDto, Integer> ccDoubleMatches = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.doubleMatches, 100, "Anzahl Spiele");
 		final ColumnConfig<PlayerDto, Integer> ccDoubleWins = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.doubleWins, 100, "Siege");
 		final ColumnConfig<PlayerDto, Integer> ccDoubleLosses = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.doubleLosses, 100, "Niederlagen");
 		final ColumnConfig<PlayerDto, String> ccDoubleGoals = new ColumnConfig<PlayerDto, String>(PlayerProperty.doubleGoals, 100, "Tore");
-		final ColumnConfig<PlayerDto, String> ccSingleGoalDifference = new ColumnConfig<PlayerDto, String>(PlayerProperty.doubleGoalDifference, 100,
+		ccDoubleGoals.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final Integer shotGoals1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
+				final Integer shotGoals2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
+
+				int comp = shotGoals1.compareTo(shotGoals2);
+				if (comp == 0) {
+					final Integer getGoals1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
+					final Integer getGoals2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
+
+					comp = getGoals2.compareTo(getGoals1);
+				}
+				return comp;
+			}
+		});
+		final ColumnConfig<PlayerDto, String> ccDoubleGoalDifference = new ColumnConfig<PlayerDto, String>(PlayerProperty.doubleGoalDifference, 100,
 				"Tordifferenz");
-		final ColumnConfig<PlayerDto, String> ccPoints = new ColumnConfig<PlayerDto, String>(PlayerProperty.doublePoints, 100, "Punkte");
-		ccPoints.setCell(new AbstractCell<String>() {
+		ccDoubleGoalDifference.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final Integer goalDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
+				final Integer goalDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
+
+				return goalDifference1.compareTo(goalDifference2);
+			}
+		});
+		final ColumnConfig<PlayerDto, String> ccDoublePoints = new ColumnConfig<PlayerDto, String>(PlayerProperty.doublePoints, 100, "Punkte");
+		ccDoublePoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
 				final PlayerDto player = storeDoubleTable.findModelWithKey(context.getKey().toString());
 				final int lastMatchPoints = player.getPlayerDoubleStatsDto().getLastMatchPoints();
-				getPoints(value, sb, lastMatchPoints);
+				concatLastMatchPoints(value, sb, lastMatchPoints);
 			}
 		});
-		final ColumnConfig<PlayerDto, ImageResource> ccTendency = new ColumnConfig<PlayerDto, ImageResource>(PlayerProperty.doubleTendency, 80, "Tendenz");
-		ccTendency.setCell(new ImageResourceCell() {
+		ccDoublePoints.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final Integer points1 = Integer.parseInt(o1);
+				final Integer points2 = Integer.parseInt(o2);
+
+				return points1.compareTo(points2);
+			}
+		});
+		final ColumnConfig<PlayerDto, ImageResource> ccDoubleTendency = new ColumnConfig<PlayerDto, ImageResource>(PlayerProperty.doubleTendency, 80, "Tendenz");
+		ccDoubleTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final PlayerDto player = storeDoubleTable.findModelWithKey(context.getKey().toString());
@@ -365,7 +448,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				sb.appendHtmlConstant("</span>");
 			}
 		});
-		ccTendency.setComparator(new Comparator<ImageResource>() {
+		ccDoubleTendency.setComparator(new Comparator<ImageResource>() {
 			@Override
 			public int compare(ImageResource o1, ImageResource o2) {
 				return o1.getName().compareTo(o2.getName());
@@ -375,13 +458,13 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		final ArrayList<ColumnConfig<PlayerDto, ?>> columns = new ArrayList<ColumnConfig<PlayerDto, ?>>();
 		columns.add(numberer);
 		columns.add(ccPlayerName);
-		columns.add(ccSingleMatches);
+		columns.add(ccDoubleMatches);
 		columns.add(ccDoubleWins);
 		columns.add(ccDoubleLosses);
 		columns.add(ccDoubleGoals);
-		columns.add(ccSingleGoalDifference);
-		columns.add(ccPoints);
-		columns.add(ccTendency);
+		columns.add(ccDoubleGoalDifference);
+		columns.add(ccDoublePoints);
+		columns.add(ccDoubleTendency);
 
 		final Grid<PlayerDto> grid = new Grid<PlayerDto>(storeDoubleTable, new ColumnModel<PlayerDto>(columns));
 		grid.getView().setAutoExpandColumn(ccPlayerName);
@@ -393,42 +476,66 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		return grid;
 	}
 
+	/**
+	 * Erzeugt die ToolBar für die Teamtabelle.
+	 * 
+	 * @return Die erzeugte ToolBar.
+	 */
 	private ToolBar createTeamTableToolBar() {
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
-		sffTeamTable = new StoreFilterField<TeamDto>() {
+		final StoreFilterField<TeamDto> sffTeamTable = new StoreFilterField<TeamDto>() {
 			@Override
 			protected boolean doSelect(Store<TeamDto> store, TeamDto parent, TeamDto item, String filter) {
-				return checkTeam(item, filter);
+				return doSelectTeam(item, filter);
 			}
 
-			private boolean checkTeam(TeamDto item, String filter) {
-				final PlayerDto player1 = item.getPlayer1();
-				if (player1.getLastName().toLowerCase().contains(filter) || player1.getFirstName().toLowerCase().contains(filter)) {
-					return true;
-				}
+			private boolean doSelectTeam(TeamDto item, String filter) {
+				final String[] queries = filter.split(" ");
 
-				final PlayerDto player2 = item.getPlayer2();
-				if (player2 != null) {
-					if (player2.getLastName().toLowerCase().contains(filter) || player2.getFirstName().toLowerCase().contains(filter)) {
-						return true;
+				final boolean containsPlayer1 = checkPlayer(item.getPlayer1(), queries);
+				final boolean containsPlayer2 = checkPlayer(item.getPlayer2(), queries);
+
+				boolean select = false;
+				if (queries.length == 1) {
+					select = containsPlayer1 || containsPlayer2;
+				} else {
+					select = containsPlayer1 && containsPlayer2;
+				}
+				return select;
+			}
+
+			private boolean checkPlayer(PlayerDto playerDto, final String[] queries) {
+				boolean containsPlayer1 = false;
+				for (String curQuery : queries) {
+					final PlayerDto player1 = playerDto;
+					if (player1.getLastName().toLowerCase().contains(curQuery.toLowerCase())
+							|| player1.getFirstName().toLowerCase().contains(curQuery.toLowerCase())) {
+						containsPlayer1 = true;
+						break;
 					}
 				}
-				return false;
+				return containsPlayer1;
 			}
 		};
-		sffTeamTable.bind(storeTeamTable);
-		sffTeamTable.setWidth(250);
 		sffTeamTable.setEmptyText("Nach Spieler/Team suchen...");
+		sffTeamTable.setWidth(250);
+		sffTeamTable.bind(storeTeamTable);
 
 		toolBar.add(createBtnUpdate());
 		toolBar.add(new SeparatorToolItem());
 		toolBar.add(sffTeamTable);
+
 		return toolBar;
 	}
 
-	public Grid<TeamDto> createDoubleTableTeamViewGrid() {
+	/**
+	 * Erzeugt das Grid für die Teamtabelle.
+	 * 
+	 * @return Das erzeugte Grid.
+	 */
+	public Grid<TeamDto> createTeamTableGrid() {
 		final IdentityValueProvider<TeamDto> identity = new IdentityValueProvider<TeamDto>();
 		final RowNumberer<TeamDto> numberer = new RowNumberer<TeamDto>(identity);
 		numberer.setCell(new AbstractCell<TeamDto>() {
@@ -445,23 +552,57 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		});
 		numberer.setSortable(true);
 
-		final ColumnConfig<TeamDto, String> ccPlayerName = new ColumnConfig<TeamDto, String>(TeamProperty.teamName, 140, "Team");
-		final ColumnConfig<TeamDto, Integer> ccSingleMatches = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamMatches, 100, "Anzahl Spiele");
-		final ColumnConfig<TeamDto, Integer> ccSingleWins = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamWins, 100, "Siege");
-		final ColumnConfig<TeamDto, Integer> ccSingleLosses = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamLosses, 100, "Niederlagen");
-		final ColumnConfig<TeamDto, String> ccSingleGoals = new ColumnConfig<TeamDto, String>(TeamProperty.teamGoals, 100, "Tore");
-		final ColumnConfig<TeamDto, String> ccSingleGoalDifference = new ColumnConfig<TeamDto, String>(TeamProperty.teamGoalDifference, 100, "Tordifferenz");
-		final ColumnConfig<TeamDto, String> ccPoints = new ColumnConfig<TeamDto, String>(TeamProperty.teamPoints, 100, "Punkte");
-		ccPoints.setCell(new AbstractCell<String>() {
+		final ColumnConfig<TeamDto, String> ccTeamName = new ColumnConfig<TeamDto, String>(TeamProperty.teamName, 140, "Team");
+		final ColumnConfig<TeamDto, Integer> ccTeamMatches = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamMatches, 100, "Anzahl Spiele");
+		final ColumnConfig<TeamDto, Integer> ccTeamWins = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamWins, 100, "Siege");
+		final ColumnConfig<TeamDto, Integer> ccTeamLosses = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamLosses, 100, "Niederlagen");
+		final ColumnConfig<TeamDto, String> ccTeamGoals = new ColumnConfig<TeamDto, String>(TeamProperty.teamGoals, 100, "Tore");
+		ccTeamGoals.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final Integer shotGoals1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
+				final Integer shotGoals2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
+
+				int comp = shotGoals1.compareTo(shotGoals2);
+				if (comp == 0) {
+					final Integer getGoals1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
+					final Integer getGoals2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
+
+					comp = getGoals2.compareTo(getGoals1);
+				}
+				return comp;
+			}
+		});
+		final ColumnConfig<TeamDto, String> ccTeamGoalDifference = new ColumnConfig<TeamDto, String>(TeamProperty.teamGoalDifference, 100, "Tordifferenz");
+		ccTeamGoalDifference.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final Integer goalDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
+				final Integer goalDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
+
+				return goalDifference1.compareTo(goalDifference2);
+			}
+		});
+		final ColumnConfig<TeamDto, String> ccTeamPoints = new ColumnConfig<TeamDto, String>(TeamProperty.teamPoints, 100, "Punkte");
+		ccTeamPoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
 				final TeamDto team = storeTeamTable.findModelWithKey(context.getKey().toString());
 				final int lastMatchPoints = team.getTeamStatsDto().getLastMatchPoints();
-				getPoints(value, sb, lastMatchPoints);
+				concatLastMatchPoints(value, sb, lastMatchPoints);
 			}
 		});
-		final ColumnConfig<TeamDto, ImageResource> ccTendency = new ColumnConfig<TeamDto, ImageResource>(TeamProperty.teamTendency, 80, "Tendenz");
-		ccTendency.setCell(new ImageResourceCell() {
+		ccTeamPoints.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final Integer points1 = Integer.parseInt(o1);
+				final Integer points2 = Integer.parseInt(o2);
+
+				return points1.compareTo(points2);
+			}
+		});
+		final ColumnConfig<TeamDto, ImageResource> ccTeamTendency = new ColumnConfig<TeamDto, ImageResource>(TeamProperty.teamTendency, 80, "Tendenz");
+		ccTeamTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final TeamDto team = storeTeamTable.findModelWithKey(context.getKey().toString());
@@ -470,7 +611,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				sb.appendHtmlConstant("</span>");
 			}
 		});
-		ccTendency.setComparator(new Comparator<ImageResource>() {
+		ccTeamTendency.setComparator(new Comparator<ImageResource>() {
 			@Override
 			public int compare(ImageResource o1, ImageResource o2) {
 				return o1.getName().compareTo(o2.getName());
@@ -479,17 +620,17 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 
 		final ArrayList<ColumnConfig<TeamDto, ?>> columns = new ArrayList<ColumnConfig<TeamDto, ?>>();
 		columns.add(numberer);
-		columns.add(ccPlayerName);
-		columns.add(ccSingleMatches);
-		columns.add(ccSingleWins);
-		columns.add(ccSingleLosses);
-		columns.add(ccSingleGoals);
-		columns.add(ccSingleGoalDifference);
-		columns.add(ccPoints);
-		columns.add(ccTendency);
+		columns.add(ccTeamName);
+		columns.add(ccTeamMatches);
+		columns.add(ccTeamWins);
+		columns.add(ccTeamLosses);
+		columns.add(ccTeamGoals);
+		columns.add(ccTeamGoalDifference);
+		columns.add(ccTeamPoints);
+		columns.add(ccTeamTendency);
 
 		final Grid<TeamDto> grid = new Grid<TeamDto>(storeTeamTable, new ColumnModel<TeamDto>(columns));
-		grid.getView().setAutoExpandColumn(ccPlayerName);
+		grid.getView().setAutoExpandColumn(ccTeamName);
 		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);
 		grid.getView().setColumnLines(true);
@@ -498,7 +639,31 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		return grid;
 	}
 
-	private void getTable() {
+	/**
+	 * Fügt die letzten Spielpunkte für ein Team bzw. Spieler hinzu.
+	 * 
+	 * @param value Die aktuelle Punkte des Teams bzw Spielers.
+	 * @param sb Der SafteHtmlBuilder.
+	 * @param lastMatchPoints Die letzten Punkte für ein Team bzw. Spieler.
+	 */
+	private void concatLastMatchPoints(String value, SafeHtmlBuilder sb, final int lastMatchPoints) {
+		final String style = "style='color: " + (lastMatchPoints >= 0 ? "green" : "red") + "'";
+
+		final StringBuilder builder = new StringBuilder();
+		if (lastMatchPoints >= 0) {
+			builder.append("+" + Integer.toString(lastMatchPoints));
+		} else {
+			builder.append(Integer.toString(lastMatchPoints));
+		}
+
+		sb.appendHtmlConstant(value);
+		sb.appendHtmlConstant(" <span " + style + ">(" + builder.toString() + ")</span>");
+	}
+
+	/**
+	 * Liefert die Team- bzw. Spielertabelle für das aktuell aktive Tab.
+	 */
+	private void getTableForActiveTab() {
 		if (activeTab == 0) {
 			getSingleTable();
 		} else if (activeTab == 1) {
@@ -508,6 +673,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		}
 	}
 
+	/**
+	 * Liefert die Daten für die Einzelspielertabelle.
+	 */
 	private void getSingleTable() {
 		if (doUpdateSingleTable) {
 			mask("Aktualisiere...");
@@ -529,6 +697,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		}
 	}
 
+	/**
+	 * Liefert die Daten für die Doppelspielertabelle.
+	 */
 	private void getDoubleTable() {
 		if (doUpdateDoubleTable) {
 			mask("Aktualisiere...");
@@ -550,6 +721,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		}
 	}
 
+	/**
+	 * Liefert die Daten für die Teamtabelle.
+	 */
 	private void getDoubleTableTeamView() {
 		if (doUpdateTeamTable) {
 			mask("Aktualisiere...");
@@ -571,6 +745,11 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		}
 	}
 
+	/**
+	 * Erzeugt den Button zum Aktualisieren der Tabellen.
+	 * 
+	 * @return Der erzeugte Button.
+	 */
 	private AppButton createBtnUpdate() {
 		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.table_refresh());
 		btnUpdate.setToolTip("Aktualisiert die Tabelle");
@@ -578,7 +757,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			@Override
 			public void onSelect(SelectEvent event) {
 				setDoUpdate();
-				getTable();
+				getTableForActiveTab();
 			}
 
 			private void setDoUpdate() {
@@ -599,7 +778,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 */
 	@Override
 	public void showData(ShowDataEvent event) {
-		getTable();
+		getTableForActiveTab();
 	}
 
 	/**
