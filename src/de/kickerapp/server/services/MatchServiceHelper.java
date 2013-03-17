@@ -111,24 +111,24 @@ public class MatchServiceHelper {
 
 		final MatchType matchType = MatchType.NONE;
 		if (dbMatch.getMatchType() == MatchType.SINGLE) {
-			final Player team1Player1 = getPlayerById(dbMatch.getTeam1(), dbPlayers);
+			final Player team1Player1 = PlayerServiceHelper.getPlayerById(dbMatch.getTeam1(), dbPlayers);
 			matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createDtoPlayer(team1Player1, matchType)));
 
-			final Player team2Player2 = getPlayerById(dbMatch.getTeam2(), dbPlayers);
+			final Player team2Player2 = PlayerServiceHelper.getPlayerById(dbMatch.getTeam2(), dbPlayers);
 			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createDtoPlayer(team2Player2, matchType)));
 		} else {
-			final Team team1 = getTeamById(dbMatch.getTeam1(), dbTeams);
+			final Team team1 = TeamServiceHelper.getTeamById(dbMatch.getTeam1(), dbTeams);
 
-			final Player team1Player1 = getPlayerById((Long) team1.getPlayers().toArray()[0], dbPlayers);
-			final Player team1Player2 = getPlayerById((Long) team1.getPlayers().toArray()[1], dbPlayers);
+			final Player team1Player1 = PlayerServiceHelper.getPlayerById((Long) team1.getPlayers().toArray()[0], dbPlayers);
+			final Player team1Player2 = PlayerServiceHelper.getPlayerById((Long) team1.getPlayers().toArray()[1], dbPlayers);
 
 			matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createDtoPlayer(team1Player1, matchType), PlayerServiceHelper.createDtoPlayer(team1Player2,
 					matchType)));
 
-			final Team team2 = getTeamById(dbMatch.getTeam2(), dbTeams);
+			final Team team2 = TeamServiceHelper.getTeamById(dbMatch.getTeam2(), dbTeams);
 
-			final Player team2Player1 = getPlayerById((Long) team2.getPlayers().toArray()[0], dbPlayers);
-			final Player team2Player2 = getPlayerById((Long) team2.getPlayers().toArray()[1], dbPlayers);
+			final Player team2Player1 = PlayerServiceHelper.getPlayerById((Long) team2.getPlayers().toArray()[0], dbPlayers);
+			final Player team2Player2 = PlayerServiceHelper.getPlayerById((Long) team2.getPlayers().toArray()[1], dbPlayers);
 
 			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createDtoPlayer(team2Player1, matchType), PlayerServiceHelper.createDtoPlayer(team2Player2,
 					matchType)));
@@ -144,42 +144,6 @@ public class MatchServiceHelper {
 		matchDto.setMatchSetsDto(setDto);
 
 		return matchDto;
-	}
-
-	/**
-	 * Liefert den Spieler anhand der Db-Id.
-	 * 
-	 * @param id Die Db-Id des Spielers.
-	 * @param dbPlayers Die Objekt-Datenklasse-Liste aller Spieler.
-	 * @return Der Spieler.
-	 */
-	private static Player getPlayerById(Long id, List<Player> dbPlayers) {
-		Player dbPlayer = null;
-		for (Player dbCurrentPlayer : dbPlayers) {
-			if (dbCurrentPlayer.getKey().getId() == id) {
-				dbPlayer = dbCurrentPlayer;
-				break;
-			}
-		}
-		return dbPlayer;
-	}
-
-	/**
-	 * Liefert das Team anhand der Db-Id.
-	 * 
-	 * @param id Die Db-Id des Teams.
-	 * @param dbTeams Die Objekt-Datenklasse-Liste aller Teams.
-	 * @return Das Team.
-	 */
-	private static Team getTeamById(Long id, List<Team> dbTeams) {
-		Team dbTeam = null;
-		for (Team dbCurrentTeam : dbTeams) {
-			if (dbCurrentTeam.getKey().getId() == id) {
-				dbTeam = dbCurrentTeam;
-				break;
-			}
-		}
-		return dbTeam;
 	}
 
 	/**

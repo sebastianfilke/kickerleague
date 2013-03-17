@@ -3,6 +3,7 @@ package de.kickerapp.server.services;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -46,11 +47,13 @@ public class TeamServiceHelper {
 	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbTeam Die Objekt-Datenklasse.
+	 * @param dbTeamStats Die Objekt-Datenklasse-Liste aller Teamspiel-Statistiken.
+	 * @param dbPlayers Die Objekt-Datenklasse-Liste aller Spieler.
 	 * @return Die Client-Datenklasse.
 	 */
-	protected static TeamDto createDtoTeam(Team dbTeam) {
-		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, (Long) dbTeam.getPlayers().toArray()[0]);
-		final Player dbPlayer2 = PMFactory.getObjectById(Player.class, (Long) dbTeam.getPlayers().toArray()[1]);
+	protected static TeamDto createDtoTeam(Team dbTeam, List<TeamStats> dbTeamStats, List<Player> dbPlayers) {
+		final Player dbPlayer1 = PlayerServiceHelper.getPlayerById((Long) dbTeam.getPlayers().toArray()[0], dbPlayers);
+		final Player dbPlayer2 = PlayerServiceHelper.getPlayerById((Long) dbTeam.getPlayers().toArray()[1], dbPlayers);
 
 		final PlayerDto playerDto1 = PlayerServiceHelper.createDtoPlayer(dbPlayer1, MatchType.NONE);
 		final PlayerDto playerDto2 = PlayerServiceHelper.createDtoPlayer(dbPlayer2, MatchType.NONE);
@@ -59,24 +62,60 @@ public class TeamServiceHelper {
 		teamDto.setId(dbTeam.getKey().getId());
 		teamDto.setLastMatchDate(dbTeam.getLastMatchDate());
 
-		final TeamStats dbTeamStats = PMFactory.getObjectById(TeamStats.class, dbTeam.getTeamStats());
+		final TeamStats dbTeamStat = getTeamStatById(dbTeam.getTeamStats(), dbTeamStats);
 
 		// Team Match
 		final TeamStatsDto teamStatsDto = new TeamStatsDto();
 
-		teamStatsDto.setWins(dbTeamStats.getWins());
-		teamStatsDto.setLosses(dbTeamStats.getLosses());
-		teamStatsDto.setShotGoals(dbTeamStats.getShotGoals());
-		teamStatsDto.setGetGoals(dbTeamStats.getGetGoals());
-		teamStatsDto.setPrevTablePlace(dbTeamStats.getPrevTablePlace());
-		teamStatsDto.setCurTablePlace(dbTeamStats.getCurTablePlace());
-		teamStatsDto.setLastMatchPoints(dbTeamStats.getLastMatchPoints());
-		teamStatsDto.setPoints(dbTeamStats.getPoints());
-		teamStatsDto.setTendency(dbTeamStats.getTendency());
+		teamStatsDto.setWins(dbTeamStat.getWins());
+		teamStatsDto.setLosses(dbTeamStat.getLosses());
+		teamStatsDto.setShotGoals(dbTeamStat.getShotGoals());
+		teamStatsDto.setGetGoals(dbTeamStat.getGetGoals());
+		teamStatsDto.setPrevTablePlace(dbTeamStat.getPrevTablePlace());
+		teamStatsDto.setCurTablePlace(dbTeamStat.getCurTablePlace());
+		teamStatsDto.setLastMatchPoints(dbTeamStat.getLastMatchPoints());
+		teamStatsDto.setPoints(dbTeamStat.getPoints());
+		teamStatsDto.setTendency(dbTeamStat.getTendency());
 
 		teamDto.setTeamStatsDto(teamStatsDto);
 
 		return teamDto;
+	}
+
+	/**
+	 * Liefert das Team anhand der Db-Id.
+	 * 
+	 * @param id Die Db-Id des Teams.
+	 * @param dbTeams Die Objekt-Datenklasse-Liste aller Teams.
+	 * @return Das Team.
+	 */
+	protected static Team getTeamById(Long id, List<Team> dbTeams) {
+		Team dbTeam = null;
+		for (Team dbCurrentTeam : dbTeams) {
+			if (dbCurrentTeam.getKey().getId() == id) {
+				dbTeam = dbCurrentTeam;
+				break;
+			}
+		}
+		return dbTeam;
+	}
+
+	/**
+	 * Liefert das Teamspiel-Statistik anhand der Db-Id.
+	 * 
+	 * @param id Die Db-Id der Teamspiel-Statistik.
+	 * @param dbTeamStats Die Objekt-Datenklasse-Liste aller Teamspiel-Statistiken.
+	 * @return Die Teamspiel-Statistik.
+	 */
+	protected static TeamStats getTeamStatById(Long id, List<TeamStats> dbTeamStats) {
+		TeamStats dbTeamStat = null;
+		for (TeamStats dbCurrentTeamStats : dbTeamStats) {
+			if (dbCurrentTeamStats.getKey().getId() == id) {
+				dbTeamStat = dbCurrentTeamStats;
+				break;
+			}
+		}
+		return dbTeamStat;
 	}
 
 	/**

@@ -222,7 +222,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 			}
 		});
 		ccMatchNumber.setGroupable(false);
-		final SummaryColumnConfig<MatchDto, Date> ccMatchDate = new SummaryColumnConfig<MatchDto, Date>(KickerProperties.MATCH_PROPERTY.matchDate(), 120,
+		final SummaryColumnConfig<MatchDto, Date> ccMatchDate = new SummaryColumnConfig<MatchDto, Date>(KickerProperties.MATCH_PROPERTY.matchDate(), 110,
 				"Datum");
 		ccMatchDate.setGroupable(false);
 		final TimeZoneConstants t = (TimeZoneConstants) GWT.create(TimeZoneConstants.class);
@@ -253,7 +253,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				return comp;
 			}
 		});
-		final SummaryColumnConfig<MatchDto, String> ccMatchType = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchType, 80, "Typ");
+		final SummaryColumnConfig<MatchDto, String> ccMatchType = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchType, 70, "Typ");
 		final SummaryColumnConfig<MatchDto, String> ccTeam1 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.team1, 270, "Spieler/Team 1");
 		ccTeam1.setGroupable(false);
 		ccTeam1.setCell(new AbstractCell<String>() {

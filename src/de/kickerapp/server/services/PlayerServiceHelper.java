@@ -2,6 +2,7 @@ package de.kickerapp.server.services;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.List;
 
 import de.kickerapp.server.entity.Player;
 import de.kickerapp.server.entity.PlayerDoubleStats;
@@ -73,6 +74,24 @@ public class PlayerServiceHelper {
 			}
 			return comp;
 		}
+	}
+
+	/**
+	 * Liefert den Spieler anhand der Db-Id.
+	 * 
+	 * @param id Die Db-Id des Spielers.
+	 * @param dbPlayers Die Objekt-Datenklasse-Liste aller Spieler.
+	 * @return Der Spieler.
+	 */
+	protected static Player getPlayerById(Long id, List<Player> dbPlayers) {
+		Player dbPlayer = null;
+		for (Player dbCurrentPlayer : dbPlayers) {
+			if (dbCurrentPlayer.getKey().getId() == id) {
+				dbPlayer = dbCurrentPlayer;
+				break;
+			}
+		}
+		return dbPlayer;
 	}
 
 	/**

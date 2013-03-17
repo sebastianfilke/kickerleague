@@ -7,7 +7,9 @@ import java.util.List;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.TeamService;
+import de.kickerapp.server.entity.Player;
 import de.kickerapp.server.entity.Team;
+import de.kickerapp.server.entity.TeamStats;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.services.TeamServiceHelper.TeamTableComparator;
 import de.kickerapp.shared.dto.TeamDto;
@@ -30,10 +32,13 @@ public class TeamServiceImpl extends RemoteServiceServlet implements TeamService
 		final ArrayList<TeamDto> teamDtos = new ArrayList<TeamDto>();
 
 		final List<Team> dbTeams = PMFactory.getList(Team.class);
-		for (Team dbTeam : dbTeams) {
-			final TeamDto player = TeamServiceHelper.createDtoTeam(dbTeam);
+		final List<TeamStats> dbTeamStats = PMFactory.getList(TeamStats.class);
+		final List<Player> dbPlayers = PMFactory.getList(Player.class);
 
-			teamDtos.add(player);
+		for (Team dbTeam : dbTeams) {
+			final TeamDto teamDto = TeamServiceHelper.createDtoTeam(dbTeam, dbTeamStats, dbPlayers);
+
+			teamDtos.add(teamDto);
 		}
 		Collections.sort(teamDtos, new TeamTableComparator());
 		return teamDtos;
