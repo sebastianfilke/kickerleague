@@ -69,8 +69,28 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
 
 		final List<Player> dbPlayers = PMFactory.getList(Player.class);
+		List<PlayerSingleStats> dbPlayerSingleStats = null;
+		List<PlayerDoubleStats> dbPlayerDoubleStats = null;
+		if (matchType == MatchType.SINGLE) {
+			dbPlayerSingleStats = PMFactory.getList(PlayerSingleStats.class);
+		} else if (matchType == MatchType.DOUBLE) {
+			dbPlayerDoubleStats = PMFactory.getList(PlayerDoubleStats.class);
+		} else if (matchType == MatchType.BOTH) {
+			dbPlayerSingleStats = PMFactory.getList(PlayerSingleStats.class);
+			dbPlayerDoubleStats = PMFactory.getList(PlayerDoubleStats.class);
+		}
+
 		for (Player dbPlayer : dbPlayers) {
-			final PlayerDto player = PlayerServiceHelper.createDtoPlayer(dbPlayer, matchType);
+			PlayerDto player = null;
+			if (matchType == MatchType.SINGLE) {
+				player = PlayerServiceHelper.createPlayerDtoWithSingleStats(dbPlayer, dbPlayerSingleStats);
+			} else if (matchType == MatchType.DOUBLE) {
+				player = PlayerServiceHelper.createPlayerDtoWithDoubleStats(dbPlayer, dbPlayerDoubleStats);
+			} else if (matchType == MatchType.BOTH) {
+				player = PlayerServiceHelper.createPlayerDtoWithAllStats(dbPlayer, dbPlayerSingleStats, dbPlayerDoubleStats);
+			} else {
+				player = PlayerServiceHelper.createPlayerDto(dbPlayer);
+			}
 
 			playerDtos.add(player);
 		}

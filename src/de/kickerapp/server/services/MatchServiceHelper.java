@@ -109,29 +109,26 @@ public class MatchServiceHelper {
 		final SimpleDateFormat dateFormat = new SimpleDateFormat("'Spiele vom' EEEE, 'den' dd.MM.yyyy", Locale.GERMAN);
 		matchDto.setGroupDate(dateFormat.format(dbMatch.getMatchDate()));
 
-		final MatchType matchType = MatchType.NONE;
 		if (dbMatch.getMatchType() == MatchType.SINGLE) {
 			final Player team1Player1 = PlayerServiceHelper.getPlayerById(dbMatch.getTeam1(), dbPlayers);
-			matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createDtoPlayer(team1Player1, matchType)));
+			matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(team1Player1)));
 
 			final Player team2Player2 = PlayerServiceHelper.getPlayerById(dbMatch.getTeam2(), dbPlayers);
-			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createDtoPlayer(team2Player2, matchType)));
+			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createPlayerDto(team2Player2)));
 		} else {
 			final Team team1 = TeamServiceHelper.getTeamById(dbMatch.getTeam1(), dbTeams);
 
 			final Player team1Player1 = PlayerServiceHelper.getPlayerById((Long) team1.getPlayers().toArray()[0], dbPlayers);
 			final Player team1Player2 = PlayerServiceHelper.getPlayerById((Long) team1.getPlayers().toArray()[1], dbPlayers);
 
-			matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createDtoPlayer(team1Player1, matchType), PlayerServiceHelper.createDtoPlayer(team1Player2,
-					matchType)));
+			matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(team1Player1), PlayerServiceHelper.createPlayerDto(team1Player2)));
 
 			final Team team2 = TeamServiceHelper.getTeamById(dbMatch.getTeam2(), dbTeams);
 
 			final Player team2Player1 = PlayerServiceHelper.getPlayerById((Long) team2.getPlayers().toArray()[0], dbPlayers);
 			final Player team2Player2 = PlayerServiceHelper.getPlayerById((Long) team2.getPlayers().toArray()[1], dbPlayers);
 
-			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createDtoPlayer(team2Player1, matchType), PlayerServiceHelper.createDtoPlayer(team2Player2,
-					matchType)));
+			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createPlayerDto(team2Player1), PlayerServiceHelper.createPlayerDto(team2Player2)));
 		}
 		final MatchPointsDto pointsDto = new MatchPointsDto();
 		pointsDto.setMatchPointsTeam1(dbMatch.getMatchPoints().getMatchPointsTeam1());

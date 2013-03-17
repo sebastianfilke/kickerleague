@@ -24,6 +24,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = 4344447340775655248L;
 
+	/** Die Monate. */
 	private static final String[] MONTHS = new String[] { "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober",
 			"November", "Dezember" };
 
@@ -39,11 +40,11 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 			data.put(i, new ChartDto(MONTHS[i - 1]));
 		}
 
-		final Calendar cal = Calendar.getInstance();
+		final Calendar calendar = Calendar.getInstance();
 
 		boolean containsPlayer = false;
 		for (Match dbMatch : dbMatches) {
-			final int month = getMonthForMatch(cal, dbMatch);
+			final int month = getMonthForMatch(calendar, dbMatch);
 			final ChartDto chartDto = data.get(month);
 
 			Integer shotGoals = chartDto.getShotGoals();
@@ -80,10 +81,17 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		return chartDtos;
 	}
 
-	private int getMonthForMatch(Calendar cal, Match dbMatch) {
+	/**
+	 * Liefert eine Zahl zwischen 1 und 12 zur Representation des Monats.
+	 * 
+	 * @param calendar Der Kalendar.
+	 * @param dbMatch Das Spiel.
+	 * @return Eine Zahl zwischen 1 und 12 zur Representation des Monats.
+	 */
+	private int getMonthForMatch(Calendar calendar, Match dbMatch) {
 		dbMatch.getMatchDate().getTime();
-		cal.setTime(dbMatch.getMatchDate());
+		calendar.setTime(dbMatch.getMatchDate());
 
-		return cal.get(Calendar.MONTH) + 1;
+		return calendar.get(Calendar.MONTH) + 1;
 	}
 }

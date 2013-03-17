@@ -12,7 +12,6 @@ import de.kickerapp.server.entity.Player;
 import de.kickerapp.server.entity.Team;
 import de.kickerapp.server.entity.TeamStats;
 import de.kickerapp.server.persistence.PMFactory;
-import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
 import de.kickerapp.shared.dto.TeamStatsDto;
@@ -55,8 +54,8 @@ public class TeamServiceHelper {
 		final Player dbPlayer1 = PlayerServiceHelper.getPlayerById((Long) dbTeam.getPlayers().toArray()[0], dbPlayers);
 		final Player dbPlayer2 = PlayerServiceHelper.getPlayerById((Long) dbTeam.getPlayers().toArray()[1], dbPlayers);
 
-		final PlayerDto playerDto1 = PlayerServiceHelper.createDtoPlayer(dbPlayer1, MatchType.NONE);
-		final PlayerDto playerDto2 = PlayerServiceHelper.createDtoPlayer(dbPlayer2, MatchType.NONE);
+		final PlayerDto playerDto1 = PlayerServiceHelper.createPlayerDto(dbPlayer1);
+		final PlayerDto playerDto2 = PlayerServiceHelper.createPlayerDto(dbPlayer2);
 
 		final TeamDto teamDto = new TeamDto(playerDto1, playerDto2);
 		teamDto.setId(dbTeam.getKey().getId());
@@ -64,7 +63,6 @@ public class TeamServiceHelper {
 
 		final TeamStats dbTeamStat = getTeamStatById(dbTeam.getTeamStats(), dbTeamStats);
 
-		// Team Match
 		final TeamStatsDto teamStatsDto = new TeamStatsDto();
 
 		teamStatsDto.setWins(dbTeamStat.getWins());
