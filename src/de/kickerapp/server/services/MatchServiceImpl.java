@@ -2,7 +2,6 @@ package de.kickerapp.server.services;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import com.google.appengine.api.datastore.Key;
@@ -15,6 +14,7 @@ import de.kickerapp.server.entity.Match.MatchSets;
 import de.kickerapp.server.entity.Player;
 import de.kickerapp.server.entity.PlayerDoubleStats;
 import de.kickerapp.server.entity.PlayerSingleStats;
+import de.kickerapp.server.entity.Stats;
 import de.kickerapp.server.entity.Team;
 import de.kickerapp.server.entity.TeamStats;
 import de.kickerapp.server.persistence.PMFactory;
@@ -60,6 +60,12 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		return matchDto;
 	}
 
+	/**
+	 * Erzeugt und Speichert ein Einzelspiel.
+	 * 
+	 * @param matchDto Die Client-Datenklasse.
+	 * @param dbMatch Die Objekt-Datenklasse.
+	 */
 	private void createSingleMatch(final MatchDto matchDto, Match dbMatch) {
 		dbMatch.setMatchType(MatchType.SINGLE);
 
@@ -69,108 +75,91 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		dbMatch.setTeam1(dbTeam1Player1.getKey().getId());
 		dbMatch.setTeam2(dbTeam2Player1.getKey().getId());
 
-		final boolean team1Winner = isTeam1Winner(matchDto);
-		updatePlayerStats(dbTeam1Player1, matchDto, dbMatch, team1Winner);
-		updatePlayerStats(dbTeam2Player1, matchDto, dbMatch, !team1Winner);
+		final boolean team1Winner = MatchServiceHelper.isTeam1Winner(matchDto);
+		final PlayerSingleStats dbTeam1Player1SingleStats = (PlayerSingleStats) updatePlayerStats(dbTeam1Player1, matchDto, dbMatch, team1Winner);
+		final PlayerSingleStats dbTeam2Player1SingleStats = (PlayerSingleStats) updatePlayerStats(dbTeam2Player1, matchDto, dbMatch, !team1Winner);
+
+		PMFactory.persistAllObjects(dbTeam1Player1SingleStats, dbTeam1Player1);
+		PMFactory.persistAllObjects(dbTeam2Player1SingleStats, dbTeam2Player1);
 	}
 
+	/**
+	 * Erzeugt und Speichert ein Doppelspiel.
+	 * 
+	 * @param matchDto Die Client-Datenklasse.
+	 * @param dbMatch Die Objekt-Datenklasse.
+	 */
 	private void createDoubleMatch(final MatchDto matchDto, final Match dbMatch) {
 		dbMatch.setMatchType(MatchType.DOUBLE);
 
 		final Player dbTeam1Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer1().getId());
 		final Player dbTeam1Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer2().getId());
 
-		final Team dbTeam1 = getTeam(dbTeam1Player1, dbTeam1Player2);
+		final Team dbTeam1 = TeamServiceHelper.getTeam(dbTeam1Player1, dbTeam1Player2);
 		matchDto.getTeam1Dto().setId(dbTeam1.getKey().getId());
 
-		final Player dbTeam1Player1Sorted = getPlayerForTeamId(dbTeam1Player1, dbTeam1Player2, (Long) dbTeam1.getPlayers().toArray()[0]);
-		final Player dbTeam1Player2Sorted = getPlayerForTeamId(dbTeam1Player1, dbTeam1Player2, (Long) dbTeam1.getPlayers().toArray()[1]);
+		final Player dbTeam1Player1Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam1Player1, dbTeam1Player2, (Long) dbTeam1.getPlayers().toArray()[0]);
+		final Player dbTeam1Player2Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam1Player1, dbTeam1Player2, (Long) dbTeam1.getPlayers().toArray()[1]);
 
 		final Player dbTeam2Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer1().getId());
 		final Player dbTeam2Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer2().getId());
 
-		final Team dbTeam2 = getTeam(dbTeam2Player1, dbTeam2Player2);
+		final Team dbTeam2 = TeamServiceHelper.getTeam(dbTeam2Player1, dbTeam2Player2);
 		matchDto.getTeam2Dto().setId(dbTeam2.getKey().getId());
 
-		final Player dbTeam2Player1Sorted = getPlayerForTeamId(dbTeam2Player1, dbTeam2Player2, (Long) dbTeam2.getPlayers().toArray()[0]);
-		final Player dbTeam2Player2Sorted = getPlayerForTeamId(dbTeam2Player1, dbTeam2Player2, (Long) dbTeam2.getPlayers().toArray()[1]);
+		final Player dbTeam2Player1Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam2Player1, dbTeam2Player2, (Long) dbTeam2.getPlayers().toArray()[0]);
+		final Player dbTeam2Player2Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam2Player1, dbTeam2Player2, (Long) dbTeam2.getPlayers().toArray()[1]);
 
 		dbMatch.setTeam1(dbTeam1.getKey().getId());
 		dbMatch.setTeam2(dbTeam2.getKey().getId());
 
-		final boolean team1Winner = isTeam1Winner(matchDto);
-		updatePlayerStats(dbTeam1Player1Sorted, matchDto, dbMatch, team1Winner);
-		updatePlayerStats(dbTeam1Player2Sorted, matchDto, dbMatch, team1Winner);
-		updatePlayerStats(dbTeam2Player1Sorted, matchDto, dbMatch, !team1Winner);
-		updatePlayerStats(dbTeam2Player2Sorted, matchDto, dbMatch, !team1Winner);
+		final boolean team1Winner = MatchServiceHelper.isTeam1Winner(matchDto);
+		final PlayerDoubleStats dbTeam1Player1DoubleStats = (PlayerDoubleStats) updatePlayerStats(dbTeam1Player1Sorted, matchDto, dbMatch, team1Winner);
+		final PlayerDoubleStats dbTeam1Player2DoubleStats = (PlayerDoubleStats) updatePlayerStats(dbTeam1Player2Sorted, matchDto, dbMatch, team1Winner);
+		final PlayerDoubleStats dbTeam2Player1DoubleStats = (PlayerDoubleStats) updatePlayerStats(dbTeam2Player1Sorted, matchDto, dbMatch, !team1Winner);
+		final PlayerDoubleStats dbTeam2Player2DoubleStats = (PlayerDoubleStats) updatePlayerStats(dbTeam2Player2Sorted, matchDto, dbMatch, !team1Winner);
 
-		updateTeamStats(dbTeam1, matchDto, dbMatch, team1Winner);
-		updateTeamStats(dbTeam2, matchDto, dbMatch, !team1Winner);
+		PMFactory.persistAllObjects(dbTeam1Player1DoubleStats, dbTeam1Player1Sorted);
+		PMFactory.persistAllObjects(dbTeam1Player2DoubleStats, dbTeam1Player2Sorted);
+		PMFactory.persistAllObjects(dbTeam2Player1DoubleStats, dbTeam2Player1Sorted);
+		PMFactory.persistAllObjects(dbTeam2Player2DoubleStats, dbTeam2Player2Sorted);
+
+		final TeamStats dbTeam1TeamStats = (TeamStats) updateTeamStats(dbTeam1, matchDto, dbMatch, team1Winner);
+		final TeamStats dbTeam2TeamStats = (TeamStats) updateTeamStats(dbTeam2, matchDto, dbMatch, !team1Winner);
+
+		PMFactory.persistAllObjects(dbTeam1TeamStats, dbTeam1);
+		PMFactory.persistAllObjects(dbTeam2TeamStats, dbTeam2);
 	}
 
-	private Player getPlayerForTeamId(Player dbTeam1Player1, Player dbTeam1Player2, Long id) {
-		Player player = null;
-		if (dbTeam1Player1.getKey().getId() == id) {
-			player = dbTeam1Player1;
-		} else if (dbTeam1Player2.getKey().getId() == id) {
-			player = dbTeam1Player2;
-		}
-		return player;
-	}
-
-	private Team getTeam(Player dbPlayer1, Player dbPlayer2) {
-		final HashSet<Long> existingTeam = new HashSet<Long>();
-		existingTeam.addAll(dbPlayer1.getTeams());
-		existingTeam.retainAll(dbPlayer2.getTeams());
-
-		Team dbTeam = null;
-		if (existingTeam.isEmpty()) {
-			dbTeam = new Team(dbPlayer1, dbPlayer2);
-			final int teamId = PMFactory.getNextId(Team.class.getName());
-			final Key teamKey = KeyFactory.createKey(Team.class.getSimpleName(), teamId);
-			dbTeam.setKey(teamKey);
-
-			final TeamStats dbTeamStats = new TeamStats();
-			final int teamStatsId = PMFactory.getNextId(TeamStats.class.getName());
-			final Key teamStatsKey = KeyFactory.createKey(TeamStats.class.getSimpleName(), teamStatsId);
-			dbTeamStats.setKey(teamStatsKey);
-
-			dbTeam.setTeamStats(dbTeamStats.getKey().getId());
-			dbPlayer1.getTeams().add(dbTeam.getKey().getId());
-			dbPlayer2.getTeams().add(dbTeam.getKey().getId());
-
-			final Object[] persistedResult = PMFactory.persistAllObjects(dbTeamStats, dbTeam);
-			dbTeam = (Team) persistedResult[1];
-		} else {
-			dbTeam = PMFactory.getObjectById(Team.class, (Long) existingTeam.toArray()[0]);
-		}
-		return dbTeam;
-	}
-
-	private boolean isTeam1Winner(MatchDto matchDto) {
-		boolean team1Winner = false;
-		int size = 0;
-		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam1()) {
-			if (result != null && result == 6) {
-				size++;
-			}
-			if (size == 2) {
-				team1Winner = true;
-				break;
-			}
-		}
-		return team1Winner;
-	}
-
-	private void updatePlayerStats(Player dbPlayer, MatchDto matchDto, Match dbMatch, boolean winner) {
+	/**
+	 * Liefert die aktualisierte Einzelspiel- bzw. Doppelspielstatistik.
+	 * 
+	 * @param dbPlayer Der Spieler.
+	 * @param matchDto Das Spiel.
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 * @param winner <code>true</code> falls der Spieler gewonnen hat, andernfalls <code>false</code>.
+	 * @return Die aktualisierte Einzelspiel- bzw. Doppelspielstatistik.
+	 */
+	private Stats updatePlayerStats(Player dbPlayer, MatchDto matchDto, Match dbMatch, boolean winner) {
+		Stats playerStats = null;
 		if (matchDto.getMatchType() == MatchType.SINGLE) {
-			updatePlayerStatsForSingleMatch(dbPlayer, matchDto, dbMatch, winner);
+			playerStats = updatePlayerStatsForSingleMatch(dbPlayer, matchDto, dbMatch, winner);
 		} else {
-			updatePlayerStatsForDoubleMatch(dbPlayer, matchDto, dbMatch, winner);
+			playerStats = updatePlayerStatsForDoubleMatch(dbPlayer, matchDto, dbMatch, winner);
 		}
+		return playerStats;
 	}
 
-	private void updatePlayerStatsForSingleMatch(Player dbPlayer, MatchDto matchDto, Match dbMatch, boolean winner) {
+	/**
+	 * Liefert die aktualisierte Einzelspielstatistik.
+	 * 
+	 * @param dbPlayer Der Spieler.
+	 * @param matchDto Das Spiel.
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 * @param winner <code>true</code> falls der Spieler gewonnen hat, andernfalls <code>false</code>.
+	 * @return Die aktualisierte Einzelspielstatistik.
+	 */
+	private PlayerSingleStats updatePlayerStatsForSingleMatch(Player dbPlayer, MatchDto matchDto, Match dbMatch, boolean winner) {
 		final long playerId = dbPlayer.getKey().getId();
 
 		final PlayerSingleStats dbPlayerSingleStats = PMFactory.getObjectById(PlayerSingleStats.class, dbPlayer.getPlayerSingleStats());
@@ -211,10 +200,19 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		if (dbPlayer.getLastMatchDate() == null || matchDto.getMatchDate().after(dbPlayer.getLastMatchDate())) {
 			dbPlayer.setLastMatchDate(matchDto.getMatchDate());
 		}
-		PMFactory.persistAllObjects(dbPlayerSingleStats, dbPlayer);
+		return dbPlayerSingleStats;
 	}
 
-	private void updatePlayerStatsForDoubleMatch(Player dbPlayer, MatchDto matchDto, Match dbMatch, boolean winner) {
+	/**
+	 * Liefert die aktualisierte Doppelspielstatistik.
+	 * 
+	 * @param dbPlayer Der Spieler.
+	 * @param matchDto Das Spiel.
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 * @param winner <code>true</code> falls der Spieler gewonnen hat, andernfalls <code>false</code>.
+	 * @return Die aktualisierte Doppelspielstatistik.
+	 */
+	private PlayerDoubleStats updatePlayerStatsForDoubleMatch(Player dbPlayer, MatchDto matchDto, Match dbMatch, boolean winner) {
 		final long playerId = dbPlayer.getKey().getId();
 
 		final PlayerDoubleStats dbPlayerDoubleStats = PMFactory.getObjectById(PlayerDoubleStats.class, dbPlayer.getPlayerDoubleStats());
@@ -255,10 +253,19 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		if (dbPlayer.getLastMatchDate() == null || matchDto.getMatchDate().after(dbPlayer.getLastMatchDate())) {
 			dbPlayer.setLastMatchDate(matchDto.getMatchDate());
 		}
-		PMFactory.persistAllObjects(dbPlayerDoubleStats, dbPlayer);
+		return dbPlayerDoubleStats;
 	}
 
-	private void updateTeamStats(Team dbTeam, MatchDto matchDto, Match dbMatch, boolean winner) {
+	/**
+	 * Liefert die aktualisierte Teamspielstatistik.
+	 * 
+	 * @param dbTeam Das Team.
+	 * @param matchDto Das Spiel.
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 * @param winner <code>true</code> falls das Team gewonnen hat, andernfalls <code>false</code>.
+	 * @return Die aktualisierte Teamspielstatistik.
+	 */
+	private TeamStats updateTeamStats(Team dbTeam, MatchDto matchDto, Match dbMatch, boolean winner) {
 		final TeamStats dbTeamStats = PMFactory.getObjectById(TeamStats.class, dbTeam.getTeamStats());
 
 		final int matchPoints = MatchServiceHelper.getPointsForTeam(winner, dbTeam, dbTeamStats, matchDto);
@@ -297,7 +304,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		if (dbTeam.getLastMatchDate() == null || matchDto.getMatchDate().after(dbTeam.getLastMatchDate())) {
 			dbTeam.setLastMatchDate(matchDto.getMatchDate());
 		}
-		PMFactory.persistAllObjects(dbTeamStats, dbTeam);
+		return dbTeamStats;
 	}
 
 	/**
@@ -308,10 +315,12 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		final ArrayList<MatchDto> matches = new ArrayList<MatchDto>();
 
 		final List<Match> dbMatches = PMFactory.getList(Match.class);
+		final List<Player> dbPlayers = PMFactory.getList(Player.class);
+		final List<Team> dbTeams = PMFactory.getList(Team.class);
 
 		Collections.sort(dbMatches, new MatchComparator());
 		for (Match dbMatch : dbMatches) {
-			final MatchDto matchDto = MatchServiceHelper.createDtoMatch(dbMatch);
+			final MatchDto matchDto = MatchServiceHelper.createDtoMatch(dbMatch, dbPlayers, dbTeams);
 
 			matches.add(matchDto);
 		}

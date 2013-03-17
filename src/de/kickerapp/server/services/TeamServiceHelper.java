@@ -2,6 +2,10 @@ package de.kickerapp.server.services;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.HashSet;
+
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 import de.kickerapp.server.entity.Player;
 import de.kickerapp.server.entity.Team;
@@ -44,7 +48,7 @@ public class TeamServiceHelper {
 	 * @param dbTeam Die Objekt-Datenklasse.
 	 * @return Die Client-Datenklasse.
 	 */
-	public static TeamDto createDtoTeam(Team dbTeam) {
+	protected static TeamDto createDtoTeam(Team dbTeam) {
 		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, (Long) dbTeam.getPlayers().toArray()[0]);
 		final Player dbPlayer2 = PMFactory.getObjectById(Player.class, (Long) dbTeam.getPlayers().toArray()[1]);
 
@@ -73,6 +77,42 @@ public class TeamServiceHelper {
 		teamDto.setTeamStatsDto(teamStatsDto);
 
 		return teamDto;
+	}
+
+	/**
+	 * Liefert oder erzeugt, falls noch nicht vorhanden, ein Team.
+	 * 
+	 * @param dbPlayer1 Der erste Spieler des Teams.
+	 * @param dbPlayer2 Der zweite Spieler des Teams.
+	 * @return Das Team.
+	 */
+	protected static Team getTeam(Player dbPlayer1, Player dbPlayer2) {
+		final HashSet<Long> existingTeam = new HashSet<Long>();
+		existingTeam.addAll(dbPlayer1.getTeams());
+		existingTeam.retainAll(dbPlayer2.getTeams());
+
+		Team dbTeam = null;
+		if (existingTeam.isEmpty()) {
+			dbTeam = new Team(dbPlayer1, dbPlayer2);
+			final int teamId = PMFactory.getNextId(Team.class.getName());
+			final Key teamKey = KeyFactory.createKey(Team.class.getSimpleName(), teamId);
+			dbTeam.setKey(teamKey);
+
+			final TeamStats dbTeamStats = new TeamStats();
+			final int teamStatsId = PMFactory.getNextId(TeamStats.class.getName());
+			final Key teamStatsKey = KeyFactory.createKey(TeamStats.class.getSimpleName(), teamStatsId);
+			dbTeamStats.setKey(teamStatsKey);
+
+			dbTeam.setTeamStats(dbTeamStats.getKey().getId());
+			dbPlayer1.getTeams().add(dbTeam.getKey().getId());
+			dbPlayer2.getTeams().add(dbTeam.getKey().getId());
+
+			final Object[] persistedResult = PMFactory.persistAllObjects(dbTeamStats, dbTeam);
+			dbTeam = (Team) persistedResult[1];
+		} else {
+			dbTeam = PMFactory.getObjectById(Team.class, (Long) existingTeam.toArray()[0]);
+		}
+		return dbTeam;
 	}
 
 }

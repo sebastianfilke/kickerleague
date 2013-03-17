@@ -1,6 +1,9 @@
 package de.kickerapp.client.exception;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 
 import de.kickerapp.client.ui.dialog.AppErrorMessageBox;
 
@@ -9,53 +12,37 @@ import de.kickerapp.client.ui.dialog.AppErrorMessageBox;
  * 
  * @author Sebastian Filke
  */
-public final class AppExceptionHandler {
+public class AppExceptionHandler implements UncaughtExceptionHandler {
 
 	/** Der Logger der Klasse. */
 	private static transient final Logger LOGGER = Logger.getLogger(AppExceptionHandler.class.getName());
 
-	/**
-	 * Privater Konstruktor soll nicht von außen aufgerufen werden.
-	 */
-	private AppExceptionHandler() {
+	@Override
+	public void onUncaughtException(Throwable caught) {
+		handleException(caught);
 	}
 
 	/**
 	 * Die eigentliche Fehlerbehandlung.
 	 * 
-	 * @param throwable die Exception
+	 * @param caught die Exception
 	 */
-	public static void handleException(final Throwable throwable) {
-		LOGGER.fine("AppExceptionHandler.handleException: " + throwable);
+	public static void handleException(final Throwable caught) {
+		LOGGER.log(Level.SEVERE, caught.getMessage(), caught);
 
-		processException(throwable);
-	}
-
-	/**
-	 * Startet die Fehlerbehandlung.
-	 * 
-	 * @param theCaught Exception
-	 */
-	private static void processException(Throwable theCaught) {
 		String msg = "";
-
-		if (theCaught != null && theCaught.getMessage() != null) {
-			msg = theCaught.getLocalizedMessage();
+		if (caught.getMessage() != null) {
+			msg = caught.getLocalizedMessage();
+		}
+		if (msg.isEmpty()) {
+			msg = caught.getClass().getName();
 		}
 
-		if ("".equals(msg)) {
-			msg = theCaught.getClass().getName();
-		}
-
-		final String error = getCustomStackTrace(theCaught);
+		final String error = getCustomStackTrace(caught);
 		final AppErrorMessageBox dialog = new AppErrorMessageBox();
-
 		if (msg != null) {
 			dialog.setErrorMsg(msg);
 		}
-
-		LOGGER.severe(error.replaceAll("<br>", "\n"));
-
 		// dialog.setErrorContents(error);
 		dialog.show();
 	}
@@ -63,21 +50,17 @@ public final class AppExceptionHandler {
 	/**
 	 * HTML Format des StackTraces.
 	 * 
-	 * @param theThrowable die Exception
+	 * @param caught die Exception
 	 * @return StackTrace als String
 	 */
-	private static String getCustomStackTrace(Throwable theThrowable) {
-		if (theThrowable == null) {
-			return "";
-		}
-
+	private static String getCustomStackTrace(Throwable caught) {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(theThrowable.toString());
-		sb.append("<br>");
+		sb.append(caught.toString());
+		sb.append("<br/>");
 
-		for (StackTraceElement element : theThrowable.getStackTrace()) {
+		for (StackTraceElement element : caught.getStackTrace()) {
 			sb.append(element);
-			sb.append("<br>");
+			sb.append("<br/>");
 		}
 		return sb.toString();
 	}

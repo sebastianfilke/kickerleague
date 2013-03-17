@@ -5,6 +5,7 @@ import com.sencha.gxt.widget.core.client.container.MarginData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
+import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppContentPanel;
 
 /**
@@ -13,6 +14,10 @@ import de.kickerapp.client.widgets.AppContentPanel;
  * @author Sebastian Filke
  */
 public class AppErrorMessageBox extends BaseDialog {
+
+	private AppButton btnOk;
+
+	private AppButton btnDetails;
 
 	private HTML html;
 

@@ -3,6 +3,7 @@ package de.kickerapp.client.ui;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Map;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.DateCell;
@@ -10,8 +11,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.TimeZone;
 import com.google.gwt.i18n.client.constants.TimeZoneConstants;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.Store;
@@ -23,7 +27,10 @@ import com.sencha.gxt.widget.core.client.form.StoreFilterField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
-import com.sencha.gxt.widget.core.client.grid.GroupingView;
+import com.sencha.gxt.widget.core.client.grid.GroupSummaryView;
+import com.sencha.gxt.widget.core.client.grid.SummaryColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.SummaryRenderer;
+import com.sencha.gxt.widget.core.client.grid.SummaryType;
 import com.sencha.gxt.widget.core.client.grid.filters.DateFilter;
 import com.sencha.gxt.widget.core.client.grid.filters.GridFilters;
 import com.sencha.gxt.widget.core.client.grid.filters.ListFilter;
@@ -205,13 +212,23 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 	 * @return Das erzeugte Grid.
 	 */
 	public Grid<MatchDto> createMatchesGrid() {
-		final ColumnConfig<MatchDto, Integer> ccMatchNumber = new ColumnConfig<MatchDto, Integer>(KickerProperties.MATCH_PROPERTY.matchNumber(), 40, "Nr.");
+		final SummaryColumnConfig<MatchDto, Integer> ccMatchNumber = new SummaryColumnConfig<MatchDto, Integer>(KickerProperties.MATCH_PROPERTY.matchNumber(),
+				60, "Nr.");
+		ccMatchNumber.setSummaryType(new SummaryType.CountSummaryType<Integer>());
+		ccMatchNumber.setSummaryRenderer(new SummaryRenderer<MatchDto>() {
+			@Override
+			public SafeHtml render(Number value, Map<ValueProvider<? super MatchDto, ?>, Number> data) {
+				return SafeHtmlUtils.fromTrustedString(value.intValue() > 1 ? "(" + value.intValue() + " Spiele)" : "(1 Spiel)");
+			}
+		});
 		ccMatchNumber.setGroupable(false);
-		final ColumnConfig<MatchDto, Date> ccMatchDate = new ColumnConfig<MatchDto, Date>(KickerProperties.MATCH_PROPERTY.matchDate(), 120, "Datum");
+		final SummaryColumnConfig<MatchDto, Date> ccMatchDate = new SummaryColumnConfig<MatchDto, Date>(KickerProperties.MATCH_PROPERTY.matchDate(), 120,
+				"Datum");
 		ccMatchDate.setGroupable(false);
 		final TimeZoneConstants t = (TimeZoneConstants) GWT.create(TimeZoneConstants.class);
 		ccMatchDate.setCell(new DateCell(DateTimeFormat.getFormat("dd.MM.yyyy HH:mm"), TimeZone.createTimeZone(t.europeBerlin())));
-		final ColumnConfig<MatchDto, String> ccGroupDate = new ColumnConfig<MatchDto, String>(KickerProperties.MATCH_PROPERTY.groupDate(), 160, "Gruppe");
+		final SummaryColumnConfig<MatchDto, String> ccGroupDate = new SummaryColumnConfig<MatchDto, String>(KickerProperties.MATCH_PROPERTY.groupDate(), 160,
+				"Gruppe");
 		ccGroupDate.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -236,8 +253,8 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				return comp;
 			}
 		});
-		final ColumnConfig<MatchDto, String> ccMatchType = new ColumnConfig<MatchDto, String>(MatchProperty.matchType, 80, "Typ");
-		final ColumnConfig<MatchDto, String> ccTeam1 = new ColumnConfig<MatchDto, String>(MatchProperty.team1, 270, "Spieler/Team 1");
+		final SummaryColumnConfig<MatchDto, String> ccMatchType = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchType, 80, "Typ");
+		final SummaryColumnConfig<MatchDto, String> ccTeam1 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.team1, 270, "Spieler/Team 1");
 		ccTeam1.setGroupable(false);
 		ccTeam1.setCell(new AbstractCell<String>() {
 			@Override
@@ -250,7 +267,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				}
 			}
 		});
-		final ColumnConfig<MatchDto, String> ccTeam2 = new ColumnConfig<MatchDto, String>(MatchProperty.team2, 270, "Spieler/Team 2");
+		final SummaryColumnConfig<MatchDto, String> ccTeam2 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.team2, 270, "Spieler/Team 2");
 		ccTeam2.setGroupable(false);
 		ccTeam2.setCell(new AbstractCell<String>() {
 			@Override
@@ -263,14 +280,14 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				}
 			}
 		});
-		final ColumnConfig<MatchDto, String> ccMatchResult = new ColumnConfig<MatchDto, String>(MatchProperty.matchResult, 60, "Ergebnis");
+		final SummaryColumnConfig<MatchDto, String> ccMatchResult = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchResult, 60, "Ergebnis");
 		ccMatchResult.setGroupable(false);
-		final ColumnConfig<MatchDto, String> ccMatchSets = new ColumnConfig<MatchDto, String>(MatchProperty.matchSets, 80, "Sätze");
+		final SummaryColumnConfig<MatchDto, String> ccMatchSets = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchSets, 80, "Sätze");
 		ccMatchSets.setGroupable(false);
-		final ColumnConfig<MatchDto, String> ccMatchPointsTeam1 = new ColumnConfig<MatchDto, String>(MatchProperty.matchPointsTeam1, 120,
+		final SummaryColumnConfig<MatchDto, String> ccMatchPointsTeam1 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchPointsTeam1, 120,
 				"Punkte Spieler/Team1");
 		ccMatchSets.setGroupable(false);
-		final ColumnConfig<MatchDto, String> ccMatchPointsTeam2 = new ColumnConfig<MatchDto, String>(MatchProperty.matchPointsTeam2, 120,
+		final SummaryColumnConfig<MatchDto, String> ccMatchPointsTeam2 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchPointsTeam2, 120,
 				"Punkte Spieler/Team2");
 		ccMatchSets.setGroupable(false);
 
@@ -286,13 +303,12 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		columns.add(ccMatchPointsTeam1);
 		columns.add(ccMatchPointsTeam2);
 
-		final GroupingView<MatchDto> view = new GroupingView<MatchDto>();
+		final GroupSummaryView<MatchDto> view = new GroupSummaryView<MatchDto>();
 		view.setAutoExpandColumn(ccMatchSets);
 		view.setShowGroupedColumn(false);
 		view.setAutoExpandMax(1000);
 		view.groupBy(ccGroupDate);
 		view.setStripeRows(true);
-		view.setColumnLines(true);
 
 		final Grid<MatchDto> grid = new Grid<MatchDto>(storeMatches, new ColumnModel<MatchDto>(columns));
 		grid.setView(view);

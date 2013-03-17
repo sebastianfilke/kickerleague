@@ -259,9 +259,18 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		ccSingleGoalDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				final Integer goalDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
-				final Integer goalDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
-
+				Integer goalDifference1 = 0;
+				if (o1.startsWith("+")) {
+					goalDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
+				} else {
+					goalDifference1 = Integer.parseInt(o1);
+				}
+				Integer goalDifference2 = 0;
+				if (o2.startsWith("+")) {
+					goalDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
+				} else {
+					goalDifference2 = Integer.parseInt(o2);
+				}
 				return goalDifference1.compareTo(goalDifference2);
 			}
 		});
@@ -315,7 +324,6 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		grid.getView().setAutoExpandColumn(ccPlayerName);
 		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);
-		grid.getView().setColumnLines(true);
 		new QuickTip(grid);
 
 		return grid;
@@ -414,9 +422,18 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		ccDoubleGoalDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				final Integer goalDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
-				final Integer goalDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
-
+				Integer goalDifference1 = 0;
+				if (o1.startsWith("+")) {
+					goalDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
+				} else {
+					goalDifference1 = Integer.parseInt(o1);
+				}
+				Integer goalDifference2 = 0;
+				if (o2.startsWith("+")) {
+					goalDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
+				} else {
+					goalDifference2 = Integer.parseInt(o2);
+				}
 				return goalDifference1.compareTo(goalDifference2);
 			}
 		});
@@ -470,7 +487,6 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		grid.getView().setAutoExpandColumn(ccPlayerName);
 		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);
-		grid.getView().setColumnLines(true);
 		new QuickTip(grid);
 
 		return grid;
@@ -577,9 +593,18 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		ccTeamGoalDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				final Integer goalDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
-				final Integer goalDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
-
+				Integer goalDifference1 = 0;
+				if (o1.startsWith("+")) {
+					goalDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
+				} else {
+					goalDifference1 = Integer.parseInt(o1);
+				}
+				Integer goalDifference2 = 0;
+				if (o2.startsWith("+")) {
+					goalDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
+				} else {
+					goalDifference2 = Integer.parseInt(o2);
+				}
 				return goalDifference1.compareTo(goalDifference2);
 			}
 		});
@@ -633,7 +658,6 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		grid.getView().setAutoExpandColumn(ccTeamName);
 		grid.getView().setAutoExpandMax(1000);
 		grid.getView().setStripeRows(true);
-		grid.getView().setColumnLines(true);
 		new QuickTip(grid);
 
 		return grid;

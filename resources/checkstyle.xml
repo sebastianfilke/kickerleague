@@ -23,14 +23,20 @@ Checkstyle configuration that checks the kicker league coding conventions.
     <module name="AvoidStarImport"/>
     <module name="GenericWhitespace"/>
     <module name="BooleanExpressionComplexity"/>
-    <module name="CyclomaticComplexity"/>
+    <module name="CyclomaticComplexity">
+      <property name="max" value="20"/>
+    </module>
     <module name="LocalFinalVariableName"/>
     <module name="ConstantName"/>
     <module name="StaticVariableName"/>
     <module name="FinalClass"/>
     <module name="FinalLocalVariable"/>
-  </module>
-  <module name="StrictDuplicateCode">
-    <property name="min" value="20"/>
+    <module name="ClassTypeParameterName"/>
+    <module name="LocalVariableName"/>
+    <module name="MethodName"/>
+    <module name="MethodTypeParameterName"/>
+    <module name="AvoidStaticImport"/>
+    <module name="IllegalImport"/>
+    <module name="RedundantImport"/>
   </module>
 </module>

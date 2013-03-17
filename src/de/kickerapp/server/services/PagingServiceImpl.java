@@ -35,6 +35,13 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 		return new PagingLoadResultBean<PlayerDto>(sublistResult, result.size(), config.getOffset());
 	}
 
+	/**
+	 * Erzeugt das gefilterte Ergebnis anhand der eingegebenen Abfrage.
+	 * 
+	 * @param query Die eingegebene Abfrage.
+	 * @param result Die Liste der Spieler.
+	 * @return Das gefilterte Ergebnis anhand der eingegebenen Abfrage.
+	 */
 	private ArrayList<PlayerDto> createFilteredResult(String query, ArrayList<PlayerDto> result) {
 		final ArrayList<PlayerDto> filteredResult = new ArrayList<PlayerDto>();
 
@@ -52,6 +59,13 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 		return filteredResult;
 	}
 
+	/**
+	 * Erzeugt das gepagde Ergebnis.
+	 * 
+	 * @param config Die PagingLoadConfig.
+	 * @param filteredResult Die gefilterte Liste der Spieler.
+	 * @return Das gepagde Ergebnis.
+	 */
 	private ArrayList<PlayerDto> createSubListResult(PagingLoadConfig config, ArrayList<PlayerDto> filteredResult) {
 		final ArrayList<PlayerDto> sublist = new ArrayList<PlayerDto>();
 
@@ -66,6 +80,11 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 		return sublist;
 	}
 
+	/**
+	 * Liefert die Liste aller Spieler der Datenbank.
+	 * 
+	 * @return Die Liste aller Spieler der Datenbank.
+	 */
 	public ArrayList<PlayerDto> getAllPlayers() {
 		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
 

@@ -5,12 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import com.sencha.gxt.core.client.util.DateWrapper;
-import com.sencha.gxt.core.client.util.DateWrapper.Unit;
 
 import de.kickerapp.server.entity.Match;
 import de.kickerapp.server.entity.Player;
@@ -33,6 +29,17 @@ import de.kickerapp.shared.dto.TeamDto;
  * @author Sebastian Filke
  */
 public class MatchServiceHelper {
+
+	/** Die Punkte, falls es sich um ein Spiel mit 2 Sätzen handelt und das erste Team bzw. Spieler mehr Punkte hat. */
+	private static final int[][] POINTS_A = new int[][] { { 20, -18 }, { 17, -14 }, { 14, -10 }, { 11, -8 }, { 9, -6 }, { 7, -4 }, { 5, -3 }, { 4, -2 } };
+	/** Die Punkte, falls es sich um ein Spiel mit 3 Sätzen handelt und das erste Team bzw. Spieler mehr Punkte hat. */
+	private static final int[][] POINTS_B = new int[][] { { 17, -15 }, { 14, -11 }, { 11, -8 }, { 9, -6 }, { 7, -4 }, { 5, -3 }, { 3, -2 }, { 2, -1 } };
+	/** Die Punkte, falls es sich um ein Spiel mit 3 Sätzen handelt und das erste Team bzw. Spieler weniger Punkte hat. */
+	private static final int[][] POINTS_C = new int[][] { { 19, -16 }, { 21, -18 }, { 23, -20 }, { 26, -23 }, { 28, -25 }, { 30, -27 }, { 32, -29 },
+			{ 34, -31 } };
+	/** Die Punkte, falls es sich um ein Spiel mit 2 Sätzen handelt und das erste Team bzw. Spieler weniger Punkte hat. */
+	private static final int[][] POINTS_D = new int[][] { { 22, -19 }, { 24, -21 }, { 25, -23 }, { 28, -25 }, { 30, -27 }, { 32, -30 }, { 35, -32 },
+			{ 38, -34 } };
 
 	/**
 	 * Comparator zur Sortierung der Team- bzw. Spielerstatistiken.
@@ -88,9 +95,11 @@ public class MatchServiceHelper {
 	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbMatch Die Objekt-Datenklasse.
+	 * @param dbPlayers Die Objekt-Datenklasse-Liste aller Spieler.
+	 * @param dbTeams Die Objekt-Datenklasse-Liste aller Teams.
 	 * @return Die Client-Datenklasse.
 	 */
-	public static MatchDto createDtoMatch(Match dbMatch) {
+	protected static MatchDto createDtoMatch(Match dbMatch, List<Player> dbPlayers, List<Team> dbTeams) {
 		final MatchDto matchDto = new MatchDto();
 		matchDto.setId(dbMatch.getKey().getId());
 		matchDto.setMatchNumber(dbMatch.getMatchNumber());
@@ -102,24 +111,24 @@ public class MatchServiceHelper {
 
 		final MatchType matchType = MatchType.NONE;
 		if (dbMatch.getMatchType() == MatchType.SINGLE) {
-			final Player team1Player1 = PMFactory.getObjectById(Player.class, dbMatch.getTeam1());
+			final Player team1Player1 = getPlayerById(dbMatch.getTeam1(), dbPlayers);
 			matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createDtoPlayer(team1Player1, matchType)));
 
-			final Player team2Player2 = PMFactory.getObjectById(Player.class, dbMatch.getTeam2());
+			final Player team2Player2 = getPlayerById(dbMatch.getTeam2(), dbPlayers);
 			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createDtoPlayer(team2Player2, matchType)));
 		} else {
-			final Team team1 = PMFactory.getObjectById(Team.class, dbMatch.getTeam1());
+			final Team team1 = getTeamById(dbMatch.getTeam1(), dbTeams);
 
-			final Player team1Player1 = PMFactory.getObjectById(Player.class, (Long) team1.getPlayers().toArray()[0]);
-			final Player team1Player2 = PMFactory.getObjectById(Player.class, (Long) team1.getPlayers().toArray()[1]);
+			final Player team1Player1 = getPlayerById((Long) team1.getPlayers().toArray()[0], dbPlayers);
+			final Player team1Player2 = getPlayerById((Long) team1.getPlayers().toArray()[1], dbPlayers);
 
 			matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createDtoPlayer(team1Player1, matchType), PlayerServiceHelper.createDtoPlayer(team1Player2,
 					matchType)));
 
-			final Team team2 = PMFactory.getObjectById(Team.class, dbMatch.getTeam2());
+			final Team team2 = getTeamById(dbMatch.getTeam2(), dbTeams);
 
-			final Player team2Player1 = PMFactory.getObjectById(Player.class, (Long) team2.getPlayers().toArray()[0]);
-			final Player team2Player2 = PMFactory.getObjectById(Player.class, (Long) team2.getPlayers().toArray()[1]);
+			final Player team2Player1 = getPlayerById((Long) team2.getPlayers().toArray()[0], dbPlayers);
+			final Player team2Player2 = getPlayerById((Long) team2.getPlayers().toArray()[1], dbPlayers);
 
 			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createDtoPlayer(team2Player1, matchType), PlayerServiceHelper.createDtoPlayer(team2Player2,
 					matchType)));
@@ -137,9 +146,72 @@ public class MatchServiceHelper {
 		return matchDto;
 	}
 
-	protected static int getGoalsTeam1(MatchDto match) {
+	/**
+	 * Liefert den Spieler anhand der Db-Id.
+	 * 
+	 * @param id Die Db-Id des Spielers.
+	 * @param dbPlayers Die Objekt-Datenklasse-Liste aller Spieler.
+	 * @return Der Spieler.
+	 */
+	private static Player getPlayerById(Long id, List<Player> dbPlayers) {
+		Player dbPlayer = null;
+		for (Player dbCurrentPlayer : dbPlayers) {
+			if (dbCurrentPlayer.getKey().getId() == id) {
+				dbPlayer = dbCurrentPlayer;
+				break;
+			}
+		}
+		return dbPlayer;
+	}
+
+	/**
+	 * Liefert das Team anhand der Db-Id.
+	 * 
+	 * @param id Die Db-Id des Teams.
+	 * @param dbTeams Die Objekt-Datenklasse-Liste aller Teams.
+	 * @return Das Team.
+	 */
+	private static Team getTeamById(Long id, List<Team> dbTeams) {
+		Team dbTeam = null;
+		for (Team dbCurrentTeam : dbTeams) {
+			if (dbCurrentTeam.getKey().getId() == id) {
+				dbTeam = dbCurrentTeam;
+				break;
+			}
+		}
+		return dbTeam;
+	}
+
+	/**
+	 * Liefert die Information ob das erste Team bzw. Spieler gewonnen hat.
+	 * 
+	 * @param matchDto Das Spiel.
+	 * @return <code>true</code> falls das erste Team bzw. Spieler gewonnen hat, andernfalls <code>false</code>.
+	 */
+	protected static boolean isTeam1Winner(MatchDto matchDto) {
+		boolean team1Winner = false;
+		int size = 0;
+		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam1()) {
+			if (result != null && result == 6) {
+				size++;
+			}
+			if (size == 2) {
+				team1Winner = true;
+				break;
+			}
+		}
+		return team1Winner;
+	}
+
+	/**
+	 * Liefert die geschossenen Tore für das erste Team bzw. Spieler.
+	 * 
+	 * @param matchDto Das Spiel.
+	 * @return Die geschossenen Tore für das erste Team bzw. Spieler.
+	 */
+	protected static int getGoalsTeam1(MatchDto matchDto) {
 		int goals = 0;
-		for (Integer result : match.getMatchSetsDto().getMatchSetsTeam1()) {
+		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam1()) {
 			if (result != null) {
 				goals = goals + result;
 			}
@@ -147,9 +219,15 @@ public class MatchServiceHelper {
 		return goals;
 	}
 
-	protected static int getGoalsTeam2(MatchDto match) {
+	/**
+	 * Liefert die geschossenen Tore für das zweite Team bzw. Spieler.
+	 * 
+	 * @param matchDto Das Spiel.
+	 * @return Die geschossenen Tore für das zweite Team bzw. Spieler.
+	 */
+	protected static int getGoalsTeam2(MatchDto matchDto) {
 		int goals = 0;
-		for (Integer result : match.getMatchSetsDto().getMatchSetsTeam2()) {
+		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam2()) {
 			if (result != null) {
 				goals = goals + result;
 			}
@@ -157,6 +235,29 @@ public class MatchServiceHelper {
 		return goals;
 	}
 
+	/**
+	 * Liefert den Spieler anhand der Db-Id.
+	 * 
+	 * @param dbTeam1Player1 Der erste Spieler.
+	 * @param dbTeam1Player2 Der zweite Spieler.
+	 * @param id Die Datenbank-Id des zu suchenden Spielers.
+	 * @return Der Spieler.
+	 */
+	protected static Player getPlayerForTeamId(Player dbTeam1Player1, Player dbTeam1Player2, Long id) {
+		Player player = null;
+		if (dbTeam1Player1.getKey().getId() == id) {
+			player = dbTeam1Player1;
+		} else if (dbTeam1Player2.getKey().getId() == id) {
+			player = dbTeam1Player2;
+		}
+		return player;
+	}
+
+	/**
+	 * Aktualisiert die Tabelle bzw. Tabellen.
+	 * 
+	 * @param matchDto Das Spiel.
+	 */
 	protected static void updateTable(MatchDto matchDto) {
 		if (matchDto.getMatchType() == MatchType.SINGLE) {
 			updateSingleStats();
@@ -166,6 +267,9 @@ public class MatchServiceHelper {
 		}
 	}
 
+	/**
+	 * Aktualisiert die Einzelspielstatistiken.
+	 */
 	private static void updateSingleStats() {
 		final List<PlayerSingleStats> dbPlayersSingleStats = PMFactory.getList(PlayerSingleStats.class);
 		removeStatsWithZeroMatches(dbPlayersSingleStats);
@@ -178,6 +282,9 @@ public class MatchServiceHelper {
 		PMFactory.persistList(dbPlayersSingleStats);
 	}
 
+	/**
+	 * Aktualisiert die Doppelspielstatistiken.
+	 */
 	private static void updateDoubleStats() {
 		final List<PlayerDoubleStats> dbPlayersDoubleStats = PMFactory.getList(PlayerDoubleStats.class);
 		removeStatsWithZeroMatches(dbPlayersDoubleStats);
@@ -190,6 +297,9 @@ public class MatchServiceHelper {
 		PMFactory.persistList(dbPlayersDoubleStats);
 	}
 
+	/**
+	 * Aktualisiert die Teamstatistiken.
+	 */
 	private static void updateTeamStats() {
 		final List<TeamStats> dbTeamStats = PMFactory.getList(TeamStats.class);
 		removeStatsWithZeroMatches(dbTeamStats);
@@ -202,6 +312,11 @@ public class MatchServiceHelper {
 		PMFactory.persistList(dbTeamStats);
 	}
 
+	/**
+	 * Entfernt aus der Liste der Statistiken, Statistiken welche noch kein Spiel haben.
+	 * 
+	 * @param dbStats Die Liste der statistiken.
+	 */
 	private static void removeStatsWithZeroMatches(List<? extends Stats> dbStats) {
 		final ArrayList<Stats> statsToRemove = new ArrayList<Stats>();
 		for (Stats stat : dbStats) {
@@ -212,204 +327,258 @@ public class MatchServiceHelper {
 		dbStats.removeAll(statsToRemove);
 	}
 
-	private static void updateStats(int i, Stats stats) {
-		stats.setPrevTablePlace(stats.getCurTablePlace());
-		stats.setCurTablePlace(i + 1);
+	/**
+	 * Aktualisiert die Statistik des Teams bzw. Spielers.
+	 * 
+	 * @param i Der aktuelle Tabelleplatz - 1.
+	 * @param dbStats Die Statistik des Teams. bzw. Spielers.
+	 */
+	private static void updateStats(int i, Stats dbStats) {
+		dbStats.setPrevTablePlace(dbStats.getCurTablePlace());
+		dbStats.setCurTablePlace(i + 1);
 
-		final int preTablePlace = stats.getPrevTablePlace();
-		final int curTablePlace = stats.getCurTablePlace();
+		final int preTablePlace = dbStats.getPrevTablePlace();
+		final int curTablePlace = dbStats.getCurTablePlace();
 
 		if (preTablePlace == 0) {
-			stats.setTendency(Tendency.Upward);
+			dbStats.setTendency(Tendency.Upward);
 		} else {
 			if (curTablePlace == preTablePlace) {
-				stats.setTendency(Tendency.Constant);
+				dbStats.setTendency(Tendency.Constant);
 			} else if (curTablePlace > preTablePlace) {
-				stats.setTendency(Tendency.Downward);
+				dbStats.setTendency(Tendency.Downward);
 			} else if (curTablePlace < preTablePlace) {
-				stats.setTendency(Tendency.Upward);
+				dbStats.setTendency(Tendency.Upward);
 			}
 		}
 	}
 
+	/**
+	 * Liefert die gewonnene oder verlorene Punktzahl eines Spielers.
+	 * 
+	 * @param winner <code>true</code> falls der Spieler gewonnen hat, andernfalls <code>false</code>.
+	 * @param dbPlayer Der Spieler.
+	 * @param dbPlayerStats Die Einzelspiel- bzw. Doppelspiel-Statistik des Spielers.
+	 * @param matchDto Das Spiel.
+	 * @return Die gewonnene oder verlorene Punktzahl eines Spielers.
+	 */
 	protected static int getPointsForPlayer(boolean winner, Player dbPlayer, Stats dbPlayerStats, MatchDto matchDto) {
 		int points = 0;
+		if (matchDto.getMatchType() == MatchType.SINGLE) {
+			int tempPoints = 0;
 
-		points = getPointsForLastMatchDate(winner, dbPlayer.getLastMatchDate(), points);
-		points = getPointsForTablePlace(winner, dbPlayer, dbPlayerStats, matchDto, points);
-		points = getPointsForNumberOfSets(winner, matchDto, points);
+			final PlayerSingleStats dbCurrentPlayerStats = (PlayerSingleStats) dbPlayerStats;
+			PlayerSingleStats dbPlayer2Stats = null;
+			if (matchDto.getTeam1Dto().getPlayer1().getId() == dbPlayer.getKey().getId()) {
+				dbPlayer2Stats = PMFactory.getObjectById(PlayerSingleStats.class, matchDto.getTeam2Dto().getPlayer1().getId());
 
+				tempPoints = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats, false);
+			} else {
+				dbPlayer2Stats = PMFactory.getObjectById(PlayerSingleStats.class, matchDto.getTeam1Dto().getPlayer1().getId());
+
+				tempPoints = getPoints(winner, matchDto, dbPlayer2Stats, dbCurrentPlayerStats, true);
+			}
+
+			points = tempPoints;
+		} else {
+			int tempPoints1 = 0;
+			int tempPoints2 = 0;
+
+			final PlayerDoubleStats dbCurrentPlayerStats = (PlayerDoubleStats) dbPlayerStats;
+			PlayerDoubleStats dbPlayer1Stats = null;
+			PlayerDoubleStats dbPlayer2Stats = null;
+			if (matchDto.getTeam1Dto().getPlayer1().getId() == dbPlayer.getKey().getId()
+					|| matchDto.getTeam1Dto().getPlayer2().getId() == dbPlayer.getKey().getId()) {
+				dbPlayer1Stats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2Dto().getPlayer1().getId());
+				dbPlayer2Stats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2Dto().getPlayer2().getId());
+
+				tempPoints1 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer1Stats, false);
+				tempPoints2 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats, false);
+			} else {
+				dbPlayer1Stats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1Dto().getPlayer1().getId());
+				dbPlayer2Stats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1Dto().getPlayer2().getId());
+
+				tempPoints1 = getPoints(winner, matchDto, dbPlayer1Stats, dbCurrentPlayerStats, true);
+				tempPoints2 = getPoints(winner, matchDto, dbPlayer2Stats, dbCurrentPlayerStats, true);
+			}
+
+			points = Math.round((float) (tempPoints1 + tempPoints2) / 2);
+		}
 		return points;
 	}
 
+	/**
+	 * Liefert die gewonnene oder verlorene Punktzahl eines Teams.
+	 * 
+	 * @param winner <code>true</code> falls das Team gewonnen hat, andernfalls <code>false</code>.
+	 * @param dbTeam Das Team.
+	 * @param dbTeamStats Die Teamspiel-Statistik des Spielers.
+	 * @param matchDto Das Spiel.
+	 * @return Die gewonnene oder verlorene Punktzahl eines Teams.
+	 */
 	protected static int getPointsForTeam(boolean winner, Team dbTeam, Stats dbTeamStats, MatchDto matchDto) {
 		int points = 0;
+		int tempPoints = 0;
 
-		points = getPointsForLastMatchDate(winner, dbTeam.getLastMatchDate(), points);
-		points = getPointsForTablePlace(winner, dbTeam, dbTeamStats, matchDto, points);
-		points = getPointsForNumberOfSets(winner, matchDto, points);
-
-		return points;
-	}
-
-	private static int getPointsForLastMatchDate(boolean winner, Date lastMatchDate, int points) {
-		final Date lastMatchCurDay = new DateWrapper().clearTime().asDate();
-		final Date lastMatch1day = new DateWrapper().clearTime().add(Unit.DAY, -1).asDate();
-		final Date lastMatch3days = new DateWrapper().clearTime().add(Unit.DAY, -3).asDate();
-		final Date lastMatch6days = new DateWrapper().clearTime().add(Unit.DAY, -6).asDate();
-		final Date lastMatch9days = new DateWrapper().clearTime().add(Unit.DAY, -9).asDate();
-		final Date lastMatch14days = new DateWrapper().clearTime().add(Unit.DAY, -14).asDate();
-		final Date lastMatch28days = new DateWrapper().clearTime().add(Unit.DAY, -28).asDate();
-
-		if (lastMatchDate != null) {
-			final Date lastMatchDay = new DateWrapper(lastMatchDate).clearTime().asDate();
-			if (lastMatchDay.compareTo(lastMatchCurDay) == 0) {
-				points = points + 1;
-			} else if (lastMatchDay.after(lastMatch1day) && lastMatchDay.before(lastMatch3days)) {
-				points = points + 2;
-			} else if (lastMatchDay.after(lastMatch3days) && lastMatchDay.before(lastMatch6days)) {
-				points = points + 3;
-			} else if (lastMatchDay.after(lastMatch6days) && lastMatchDay.before(lastMatch9days)) {
-				points = points + 4;
-			} else if (lastMatchDay.after(lastMatch9days) && lastMatchDay.before(lastMatch14days)) {
-				points = points + 6;
-			} else if (lastMatchDay.after(lastMatch14days) && lastMatchDay.before(lastMatch28days)) {
-				points = points + 8;
-			} else {
-				points = points + 10;
-			}
-		} else {
-			if (winner) {
-				points = points + 6;
-			} else {
-				points = points - 6;
-			}
-		}
-		return points;
-	}
-
-	private static int getPointsForTablePlace(boolean winner, Player dbPlayer, Stats dbPlayerStats, MatchDto matchDto, int points) {
-		if (matchDto.getMatchType() == MatchType.SINGLE) {
-			final PlayerSingleStats dbPlayer1SingleStats = (PlayerSingleStats) dbPlayerStats;
-			PlayerSingleStats dbPlayer2SingleStats = null;
-			if (matchDto.getTeam1Dto().getPlayer1().getId() == dbPlayer.getKey().getId()) {
-				dbPlayer2SingleStats = PMFactory.getObjectById(PlayerSingleStats.class, matchDto.getTeam2Dto().getPlayer1().getId());
-			} else {
-				dbPlayer2SingleStats = PMFactory.getObjectById(PlayerSingleStats.class, matchDto.getTeam1Dto().getPlayer1().getId());
-			}
-
-			points = getPointsForTablePlaceDifference(winner, points, dbPlayer1SingleStats, dbPlayer2SingleStats);
-		} else {
-			final PlayerDoubleStats dbTeam1Player1SingleStats = (PlayerDoubleStats) dbPlayerStats;
-			PlayerDoubleStats dbTeam2Player1SingleStats = null;
-			PlayerDoubleStats dbTeam2Player2SingleStats = null;
-			if (matchDto.getTeam1Dto().getPlayer1().getId() == dbPlayer.getKey().getId()) {
-				dbTeam2Player1SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2Dto().getPlayer1().getId());
-				dbTeam2Player2SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2Dto().getPlayer2().getId());
-			} else {
-				dbTeam2Player1SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1Dto().getPlayer1().getId());
-				dbTeam2Player2SingleStats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1Dto().getPlayer2().getId());
-			}
-
-			points = getPointsForTablePlaceDifference(winner, points, dbTeam1Player1SingleStats, dbTeam2Player1SingleStats, dbTeam2Player2SingleStats);
-		}
-		return points;
-	}
-
-	private static int getPointsForTablePlace(boolean winner, Team dbTeam, Stats dbTeamStats, MatchDto matchDto, int points) {
-		final TeamStats dbTeam1Stats = (TeamStats) dbTeamStats;
+		final TeamStats dbCurrentTeamStats = (TeamStats) dbTeamStats;
 		TeamStats dbTeam2Stats = null;
-
 		if (matchDto.getTeam1Dto().getId() == dbTeam.getKey().getId()) {
 			dbTeam2Stats = PMFactory.getObjectById(TeamStats.class, matchDto.getTeam2Dto().getId());
+
+			tempPoints = getPoints(winner, matchDto, dbCurrentTeamStats, dbTeam2Stats, false);
 		} else {
 			dbTeam2Stats = PMFactory.getObjectById(TeamStats.class, matchDto.getTeam1Dto().getId());
+
+			tempPoints = getPoints(winner, matchDto, dbTeam2Stats, dbCurrentTeamStats, true);
 		}
-		points = getPointsForTablePlaceDifference(winner, points, dbTeam1Stats, dbTeam2Stats);
+
+		points = tempPoints;
 
 		return points;
 	}
 
-	private static int getPointsForTablePlaceDifference(boolean winner, int points, final Stats stats1, final Stats stats2) {
-		final int differenceTablePlace = stats1.getCurTablePlace() - stats2.getCurTablePlace();
+	/**
+	 * Liefert die gewonnene oder verlorene Punktzahl eines Teams bzw. Spielers.
+	 * 
+	 * @param winner <code>true</code> falls das Team bzw. Spieler gewonnen hat, andernfalls <code>false</code>.
+	 * @param matchDto Das Spiel.
+	 * @param db1Stats Die Teamspiel-, Doppelspiel- oder Einzelspiel-Statistik des ersten Teams bzw. Spielers.
+	 * @param db2Stats Die Teamspiel-, Doppelspiel- oder Einzelspiel-Statistik des zweiten Teams bzw. Spielers.
+	 * @param reverse <code>true</code> falls die zu benutzende Punktzahl vertauscht werden soll, andernfalls <code>false</code>.
+	 * @return Die gewonnene oder verlorene Punktzahl eines Teams bzw Spielers.
+	 */
+	private static int getPoints(boolean winner, MatchDto matchDto, Stats db1Stats, Stats db2Stats, boolean reverse) {
+		int points1 = db1Stats.getPoints();
+		int points2 = db2Stats.getPoints();
 
-		points = getPointsForTablePlace(winner, points, differenceTablePlace);
-		return points;
-	}
+		final int pointsDifference = points1 - points2;
+		final int pointsAbsDifference = Math.abs(points1 - points2);
+		final boolean twoSetMatch = matchDto.getMatchSetsDto().getMatchSetsTeam1().size() == 2;
 
-	private static int getPointsForTablePlaceDifference(boolean winner, int points, Stats dbTeam1Player1Stats, Stats dbTeam2Player1Stats,
-			Stats dbTeam2Player2Stats) {
-		final double middleTablePlace = (dbTeam2Player1Stats.getCurTablePlace() + dbTeam2Player2Stats.getCurTablePlace()) / 2;
-		final int ceiledMiddleTablePlace = (int) Math.ceil(middleTablePlace);
+		if (reverse) {
+			points1 = db2Stats.getPoints();
+			points2 = db1Stats.getPoints();
+		}
 
-		final int differenceTablePlace = dbTeam1Player1Stats.getCurTablePlace() - ceiledMiddleTablePlace;
-
-		points = getPointsForTablePlace(winner, points, differenceTablePlace);
-
-		return points;
-	}
-
-	private static int getPointsForTablePlace(boolean winner, int points, final int differenceTablePlace) {
+		int points = 0;
 		if (winner) {
-			if (differenceTablePlace <= 0) {
-				points = points + 2;
-				if (differenceTablePlace <= -1 && differenceTablePlace >= -3) {
-					points = points + 4;
-				} else if (differenceTablePlace <= -4 && differenceTablePlace >= -8) {
-					points = points + 2;
-				} else if (differenceTablePlace < -8) {
-					points = points + 1;
+			if (pointsDifference <= 0) {
+				if (twoSetMatch) {
+					points = evaluatePositivePoints(points1, pointsAbsDifference, POINTS_A);
+				} else {
+					points = evaluatePositivePoints(points1, pointsAbsDifference, POINTS_B);
 				}
 			} else {
-				points = points + 4;
-				if (differenceTablePlace >= 1 && differenceTablePlace <= 3) {
-					points = points + 1;
-				} else if (differenceTablePlace >= 4 && differenceTablePlace <= 8) {
-					points = points + 2;
-				} else if (differenceTablePlace > 8) {
-					points = points + 4;
+				if (!twoSetMatch) {
+					points = evaluatePositivePoints(points1, pointsAbsDifference, POINTS_C);
+				} else {
+					points = evaluatePositivePoints(points1, pointsAbsDifference, POINTS_D);
 				}
 			}
 		} else {
-			if (differenceTablePlace <= 0) {
-				points = points - 2;
-				if (differenceTablePlace <= -1 && differenceTablePlace >= -3) {
-					points = points - 1;
-				} else if (differenceTablePlace <= -4 && differenceTablePlace >= -8) {
-					points = points - 2;
-				} else if (differenceTablePlace < -8) {
-					points = points - 4;
+			if (pointsDifference <= 0) {
+				if (twoSetMatch) {
+					points = evaluateNegativePoints(points1, pointsAbsDifference, POINTS_A);
+				} else {
+					points = evaluateNegativePoints(points1, pointsAbsDifference, POINTS_B);
 				}
 			} else {
-				points = points - 4;
-				if (differenceTablePlace >= 1 && differenceTablePlace <= 3) {
-					points = points - 4;
-				} else if (differenceTablePlace >= 4 && differenceTablePlace <= 8) {
-					points = points - 2;
-				} else if (differenceTablePlace > 8) {
-					points = points - 1;
+				if (!twoSetMatch) {
+					points = evaluateNegativePoints(points1, pointsAbsDifference, POINTS_C);
+				} else {
+					points = evaluateNegativePoints(points1, pointsAbsDifference, POINTS_D);
 				}
 			}
 		}
 		return points;
 	}
 
-	private static int getPointsForNumberOfSets(boolean winner, MatchDto matchDto, int points) {
-		final boolean twoSetGame = matchDto.getMatchSetsDto().getMatchSetsTeam1().size() == 2;
-		if (winner) {
-			if (twoSetGame) {
-				points = points + 6;
-			} else {
-				points = points + 4;
-			}
-		} else {
-			if (twoSetGame) {
-				points = points - 6;
-			} else {
-				points = points - 4;
-			}
+	/**
+	 * Liefert die gewonnen Punkte eines Teams bzw. Spielers aufgrund der Punktedifferenz.
+	 * 
+	 * @param currentPoints Die aktuellen Punkte eines Teams bzw. Spielers.
+	 * @param pointsAbsDifference Die absolute Punktedifferenz.
+	 * @param pointsToMap Die Punkte welche das Teams bzw. Spielers aufgrund der Punktedifferenz gewinnen wird.
+	 * @return Die gewonnen Punkte eines Teams bzw. Spielers aufgrund der Punktedifferenz.
+	 */
+	private static int evaluatePositivePoints(final int currentPoints, final int pointsAbsDifference, final int[][] pointsToMap) {
+		int points = 0;
+		if (pointsAbsDifference <= 25) {
+			points = calculatePositivePoints(currentPoints, pointsToMap[0][0]);
+		} else if (pointsAbsDifference > 25 && pointsAbsDifference <= 50) {
+			points = calculatePositivePoints(currentPoints, pointsToMap[1][0]);
+		} else if (pointsAbsDifference > 50 && pointsAbsDifference <= 75) {
+			points = calculatePositivePoints(currentPoints, pointsToMap[2][0]);
+		} else if (pointsAbsDifference > 75 && pointsAbsDifference <= 100) {
+			points = calculatePositivePoints(currentPoints, pointsToMap[3][0]);
+		} else if (pointsAbsDifference > 100 && pointsAbsDifference <= 150) {
+			points = calculatePositivePoints(currentPoints, pointsToMap[4][0]);
+		} else if (pointsAbsDifference > 150 && pointsAbsDifference <= 300) {
+			points = calculatePositivePoints(currentPoints, pointsToMap[5][0]);
+		} else if (pointsAbsDifference > 300 && pointsAbsDifference <= 500) {
+			points = calculatePositivePoints(currentPoints, pointsToMap[6][0]);
+		} else if (pointsAbsDifference > 500) {
+			points = calculatePositivePoints(currentPoints, pointsToMap[7][0]);
 		}
 		return points;
+	}
+
+	/**
+	 * Berechnet die finale Punktzahl anhand der Punkte welche dem Team bzw. Spieler hinzugefügt werden sollen und dem Multiplikator.
+	 * 
+	 * @param currentPoints Die aktuellen Punkte eines Teams bzw. Spielers.
+	 * @param pointsToAdd Die Punkte welche dem Team bzw. Spieler hinzugefügt werden sollen.
+	 * @return Berechnet die finale Punktzahl.
+	 */
+	private static int calculatePositivePoints(int currentPoints, int pointsToAdd) {
+		final float multiplier = 1000 / (float) currentPoints;
+		final float points = pointsToAdd * multiplier;
+
+		return Math.round(points);
+	}
+
+	/**
+	 * Liefert die verlorenen Punkte eines Teams bzw. Spielers aufgrund der Punktedifferenz.
+	 * 
+	 * @param currentPoints Die aktuellen Punkte eines Teams bzw. Spielers.
+	 * @param pointsAbsDifference Die absolute Punktedifferenz.
+	 * @param pointsToMap Die Punkte welche das Teams bzw. Spielers aufgrund der Punktedifferenz verlieren wird.
+	 * @return Die verlorenen Punkte eines Teams bzw. Spielers aufgrund der Punktedifferenz.
+	 */
+	private static int evaluateNegativePoints(final int currentPoints, final int pointsAbsDifference, final int[][] pointsToMap) {
+		int points = 0;
+		if (pointsAbsDifference <= 25) {
+			points = calculateNegativePoints(currentPoints, pointsToMap[0][1]);
+		} else if (pointsAbsDifference > 25 && pointsAbsDifference <= 50) {
+			points = calculateNegativePoints(currentPoints, pointsToMap[1][1]);
+		} else if (pointsAbsDifference > 50 && pointsAbsDifference <= 75) {
+			points = calculateNegativePoints(currentPoints, pointsToMap[2][1]);
+		} else if (pointsAbsDifference > 75 && pointsAbsDifference <= 100) {
+			points = calculateNegativePoints(currentPoints, pointsToMap[3][1]);
+		} else if (pointsAbsDifference > 100 && pointsAbsDifference <= 150) {
+			points = calculateNegativePoints(currentPoints, pointsToMap[4][1]);
+		} else if (pointsAbsDifference > 150 && pointsAbsDifference <= 300) {
+			points = calculateNegativePoints(currentPoints, pointsToMap[5][1]);
+		} else if (pointsAbsDifference > 300 && pointsAbsDifference <= 500) {
+			points = calculateNegativePoints(currentPoints, pointsToMap[6][1]);
+		} else if (pointsAbsDifference > 500) {
+			points = calculateNegativePoints(currentPoints, pointsToMap[7][1]);
+		}
+		return points;
+	}
+
+	/**
+	 * Berechnet die finale Punktzahl anhand der Punkte welche dem Team bzw. Spieler abgezogen werden sollen und dem Multiplikator.
+	 * 
+	 * @param currentPoints Die aktuellen Punkte eines Teams bzw. Spielers.
+	 * @param pointsToRemove Die Punkte welche dem Team bzw. Spieler abgezogen werden sollen.
+	 * @return Berechnet die finale Punktzahl.
+	 */
+	private static int calculateNegativePoints(final int currentPoints, int pointsToRemove) {
+		final float multiplier = (float) currentPoints / 1000;
+		final float points = pointsToRemove * multiplier;
+
+		return Math.round(points);
 	}
 
 }
