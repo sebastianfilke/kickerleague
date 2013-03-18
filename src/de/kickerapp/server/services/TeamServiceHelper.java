@@ -2,8 +2,8 @@ package de.kickerapp.server.services;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
+import java.util.TreeSet;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -124,7 +124,7 @@ public class TeamServiceHelper {
 	 * @return Das Team.
 	 */
 	protected static Team getTeam(Player dbPlayer1, Player dbPlayer2) {
-		final HashSet<Long> existingTeam = new HashSet<Long>();
+		final TreeSet<Long> existingTeam = new TreeSet<Long>();
 		existingTeam.addAll(dbPlayer1.getTeams());
 		existingTeam.retainAll(dbPlayer2.getTeams());
 

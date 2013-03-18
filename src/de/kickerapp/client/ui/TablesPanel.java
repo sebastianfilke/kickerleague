@@ -155,7 +155,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		vlcTeamTable.add(createTeamTableGrid(), new VerticalLayoutData(1, 1));
 
 		final TabItemConfig ticTeamTable = new TabItemConfig("Teamtabelle");
-		ticTeamTable.setIcon(KickerIcons.ICON.group_link());
+		ticTeamTable.setIcon(KickerIcons.ICON.groupLink());
 
 		tabPanel.add(vlcSingleTable, ticSingleTable);
 		tabPanel.add(vlcDoubleTable, ticDoubleTable);
@@ -186,7 +186,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		};
 		sfcNoMatchPlayer.setToolTip("Aktivieren um auch Spieler anzuzeigen, welche noch kein Spiel und damit keinen Tabellenplatz haben");
 		sfcNoMatchPlayer.setText("Alle Spieler anzeigen");
-		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.table_sort());
+		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.tableSort());
 		sfcNoMatchPlayer.bind(storeSingleTable);
 
 		final StoreFilterField<PlayerDto> sffSingleTable = new StoreFilterField<PlayerDto>() {
@@ -349,7 +349,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		};
 		sfcNoMatchPlayer.setToolTip("Aktivieren um auch Spieler anzuzeigen, welche noch kein Spiel und damit keinen Tabellenplatz haben");
 		sfcNoMatchPlayer.setText("Alle Spieler anzeigen");
-		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.table_sort());
+		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.tableSort());
 		sfcNoMatchPlayer.bind(storeDoubleTable);
 
 		final StoreFilterField<PlayerDto> sffDoubleTable = new StoreFilterField<PlayerDto>() {
@@ -775,7 +775,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 * @return Der erzeugte Button.
 	 */
 	private AppButton createBtnUpdate() {
-		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.table_refresh());
+		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.tableRefresh());
 		btnUpdate.setToolTip("Aktualisiert die Tabelle");
 		btnUpdate.addSelectHandler(new SelectHandler() {
 			@Override

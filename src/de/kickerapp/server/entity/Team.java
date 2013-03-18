@@ -1,7 +1,7 @@
 package de.kickerapp.server.entity;
 
 import java.util.Date;
-import java.util.HashSet;
+import java.util.TreeSet;
 
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -25,7 +25,7 @@ public class Team extends BaseEntity {
 	private Long teamStats;
 	/** Die Spieler des Teams. */
 	@Persistent
-	private HashSet<Long> players;
+	private TreeSet<Long> players;
 
 	/**
 	 * Erzeugt ein neues Team ohne Angaben und leeren Statistiken.
@@ -35,7 +35,7 @@ public class Team extends BaseEntity {
 
 		lastMatchDate = null;
 		teamStats = 0L;
-		players = new HashSet<Long>();
+		players = new TreeSet<Long>();
 	}
 
 	/**
@@ -89,18 +89,18 @@ public class Team extends BaseEntity {
 	/**
 	 * Liefert die Spieler des Teams.
 	 * 
-	 * @return Die Spieler des Teams als {@link HashSet}.
+	 * @return Die Spieler des Teams als {@link TreeSet}.
 	 */
-	public HashSet<Long> getPlayers() {
+	public TreeSet<Long> getPlayers() {
 		return players;
 	}
 
 	/**
 	 * Setzt die Spieler des Teams.
 	 * 
-	 * @param players Die Spieler des Teams als {@link HashSet}.
+	 * @param players Die Spieler des Teams als {@link TreeSet}.
 	 */
-	public void setPlayers(HashSet<Long> players) {
+	public void setPlayers(TreeSet<Long> players) {
 		this.players = players;
 	}
 

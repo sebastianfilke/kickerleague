@@ -385,7 +385,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 	 * @return Der erzeugte Button.
 	 */
 	private AppButton createBtnUpdate() {
-		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.table_refresh());
+		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.tableRefresh());
 		btnUpdate.setToolTip("Aktualisiert die Ergebnisse der zuletzt gespielten Spiele");
 		btnUpdate.addSelectHandler(new SelectHandler() {
 			@Override

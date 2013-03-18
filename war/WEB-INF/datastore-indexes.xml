@@ -2,7 +2,7 @@
 <datastore-indexes autoGenerate="false">
 
 	<datastore-index kind="Match" ancestor="false">
-		<property name="matchNumer" direction="desc" />
+		<property name="matchNumber" direction="desc" />
 		<property name="matchDate" direction="asc" />
 		<property name="matchType" direction="asc" />
 		<property name="team1" direction="asc" />

@@ -627,7 +627,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private AppButton createBtnInsert() {
-		final AppButton bReport = new AppButton("Ergebnis eintragen", KickerIcons.ICON.table_save());
+		final AppButton bReport = new AppButton("Ergebnis eintragen", KickerIcons.ICON.tableSave());
 		bReport.setToolTip("Speichert das Ergebnis und trägt es in die Liste ein");
 		bReport.addSelectHandler(new SelectHandler() {
 			@Override

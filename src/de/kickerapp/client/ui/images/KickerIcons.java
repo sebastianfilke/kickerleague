@@ -11,49 +11,49 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface KickerIcons extends ClientBundle {
 
-	/** Die Icons. */
+	/** Die Klasse für den komfortablen Zugriff auf die Icons der Applikation. */
 	public final KickerIcons ICON = GWT.create(KickerIcons.class);
-	
-	@Source("chart_bar.png")
-	ImageResource chart_bar();
 
-	@Source("group_link.png")
-	ImageResource group_link();
+	@Source("chart_bar.png")
+	ImageResource chartBar();
 
 	@Source("group.png")
 	ImageResource group();
 
-	@Source("table.png")
-	ImageResource table();
-
-	@Source("table_sort.png")
-	ImageResource table_sort();
-
-	@Source("table_edit.png")
-	ImageResource table_edit();
-
-	@Source("table_save.png")
-	ImageResource table_save();
-
-	@Source("table_refresh.png")
-	ImageResource table_refresh();
+	@Source("group_link.png")
+	ImageResource groupLink();
 
 	@Source("soccer_ball.png")
 	ImageResource soccerBall();
 
-	@Source("tendency_up.png")
-	ImageResource tendencyUp();
+	@Source("table.png")
+	ImageResource table();
 
-	@Source("tendency_down.png")
-	ImageResource tendencyDown();
+	@Source("table_edit.png")
+	ImageResource tableEdit();
+
+	@Source("table_refresh.png")
+	ImageResource tableRefresh();
+
+	@Source("table_save.png")
+	ImageResource tableSave();
+
+	@Source("table_sort.png")
+	ImageResource tableSort();
 
 	@Source("tendency_constant.png")
 	ImageResource tendencyConstant();
 
-	@Source("user_edit.png")
-	ImageResource user_edit();
-	
+	@Source("tendency_down.png")
+	ImageResource tendencyDown();
+
+	@Source("tendency_up.png")
+	ImageResource tendencyUp();
+
 	@Source("user.png")
 	ImageResource user();
+
+	@Source("user_edit.png")
+	ImageResource userEdit();
 
 }

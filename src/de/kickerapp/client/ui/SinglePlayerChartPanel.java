@@ -138,7 +138,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	}
 
 	private AppButton createBtnUpdate() {
-		final AppButton btnListUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.table_refresh());
+		final AppButton btnListUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.tableRefresh());
 		btnListUpdate.setToolTip("Aktualisiert die Liste der eingetragenen Spieler in der Datenbank");
 		btnListUpdate.addSelectHandler(new SelectHandler() {
 			@Override
@@ -207,7 +207,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	}
 
 	private AppButton createBtnUpdateChart() {
-		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.table_refresh());
+		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.tableRefresh());
 		btnUpdate.setToolTip("Aktualisiert die momentan gewählte Statistik");
 		btnUpdate.addSelectHandler(new SelectHandler() {
 			@Override
@@ -234,7 +234,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private ToggleButton createBtnGoalChart() {
 		final ToggleButton btnGoalChart = new ToggleButton("Torstatistik");
 		btnGoalChart.setToolTip("Zeigt die Torstatistik für den aktuell gewählten Spieler");
-		btnGoalChart.setIcon(KickerIcons.ICON.chart_bar());
+		btnGoalChart.setIcon(KickerIcons.ICON.chartBar());
 		btnGoalChart.setId("singleGoalsChart");
 		btnGoalChart.setAllowDepress(false);
 		btnGoalChart.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -259,7 +259,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private ToggleButton createBtnWinsChart() {
 		final ToggleButton btnWinsChart = new ToggleButton("Siegstatistik");
 		btnWinsChart.setToolTip("Zeigt die Siegstatistik für den aktuell gewählten Spieler");
-		btnWinsChart.setIcon(KickerIcons.ICON.chart_bar());
+		btnWinsChart.setIcon(KickerIcons.ICON.chartBar());
 		btnWinsChart.setId("singleWinsChart");
 		btnWinsChart.setAllowDepress(false);
 		btnWinsChart.addValueChangeHandler(new ValueChangeHandler<Boolean>() {

@@ -154,7 +154,7 @@ public class PlayerAdminPanel extends BaseContainer {
 	}
 
 	private AppButton createBtnInsert() {
-		final AppButton btnReport = new AppButton("Spieler speichern", KickerIcons.ICON.table_save());
+		final AppButton btnReport = new AppButton("Spieler speichern", KickerIcons.ICON.tableSave());
 		btnReport.setToolTip("Speichert oder Aktualisiert den Spieler mit den einegegeben Daten in der Datebank");
 		btnReport.addSelectHandler(new SelectHandler() {
 			@Override
@@ -220,7 +220,7 @@ public class PlayerAdminPanel extends BaseContainer {
 	}
 
 	private AppButton createBtnUpdate() {
-		btnListUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.table_refresh());
+		btnListUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.tableRefresh());
 		btnListUpdate.setToolTip("Aktualisiert die Liste der eingetragenen Spieler in der Datenbank");
 		btnListUpdate.addSelectHandler(new SelectHandler() {
 			@Override
@@ -238,7 +238,7 @@ public class PlayerAdminPanel extends BaseContainer {
 
 	private ToggleButton createBtnEdit() {
 		btnPlayerUpdate = new ToggleButton("Spieler bearbeiten");
-		btnPlayerUpdate.setIcon(KickerIcons.ICON.table_edit());
+		btnPlayerUpdate.setIcon(KickerIcons.ICON.tableEdit());
 		btnPlayerUpdate.setToolTip("Wählt den aktuell selektierten Spieler zum Bearbeiten");
 		btnPlayerUpdate.addBeforeSelectHandler(new BeforeSelectHandler() {
 			@Override
@@ -402,7 +402,7 @@ public class PlayerAdminPanel extends BaseContainer {
 			selectedPlayer.setFirstName(tfFirstname.getText());
 			selectedPlayer.setNickName(tfNickname.getText());
 			if (tfEMail.getValue() != null) {
-				selectedPlayer.setEMail(tfEMail.getText());
+				selectedPlayer.setEMail(tfEMail.getText().toLowerCase());
 			}
 		}
 		return selectedPlayer;
