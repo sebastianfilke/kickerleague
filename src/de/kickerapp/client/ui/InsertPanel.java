@@ -677,36 +677,75 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 					AppExceptionHandler.handleException(caught);
 				}
 			});
-		} else {
-			final MessageBox box = new MessageBox("Hinweis", "Es müssen erst alle notwendigen Angaben gemacht werden!");
-			box.setPredefinedButtons(PredefinedButton.OK);
-			box.setIcon(MessageBox.ICONS.info());
-			box.show();
 		}
 	}
 
 	private boolean inputValid() {
 		boolean valid = false;
-		valid = dfMatchDate.isValid() && tfMatchTime.isValid();
+		valid = checkRelatedSet(cbSet1Team1, cbSet1Team2);
 		if (valid) {
-			valid = checkRelatedSet(cbSet1Team1, cbSet1Team2);
+			valid = checkRelatedSet(cbSet2Team1, cbSet2Team2);
 			if (valid) {
-				valid = checkRelatedSet(cbSet2Team1, cbSet2Team2);
+				valid = checkRelatedSet(cbSet3Team1, cbSet3Team2);
 				if (valid) {
-					valid = checkRelatedSet(cbSet3Team1, cbSet3Team2);
-					if (valid) {
-						final Radio radio = (Radio) tgPlayType.getValue();
-						if (radio.getId().equals(MatchType.SINGLE.getMatchType())) {
-							valid = cbTeam1Player1.getValue() != null && cbTeam2Player1.getValue() != null
-									&& cbTeam1Player1.getValue() != cbTeam2Player1.getValue();
-						} else {
-							valid = cbTeam1Player1.getValue() != null && cbTeam1Player2.getValue() != null && cbTeam2Player1.getValue() != null
-									&& cbTeam2Player2.getValue() != null;
+					final Radio radio = (Radio) tgPlayType.getValue();
+					if (radio.getId().equals(MatchType.SINGLE.getMatchType())) {
+						valid = checkInputSinglePlayer();
+						if (!valid) {
+							createMessageBox("Es darf sich nicht um den gleichen Spieler handeln!");
+						}
+					} else {
+						valid = checkInputDoublePlayer();
+						if (!valid) {
+							createMessageBox("Ein Spieler darf nicht mehrmals vorkommen!");
 						}
 					}
+				} else {
+					createMessageBox("Die Eingabe für den dritten Satz ist noch nicht korrekt!");
 				}
+			} else {
+				createMessageBox("Die Eingabe für den zweiten Satz ist noch nicht korrekt!");
 			}
+		} else {
+			createMessageBox("Die Eingabe für den ersten Satz ist noch nicht korrekt!");
 		}
+		return valid;
+	}
+
+	private void createMessageBox(String messageHtml) {
+		final MessageBox box = new MessageBox("Hinweis", messageHtml);
+		box.setPredefinedButtons(PredefinedButton.OK);
+		box.setIcon(MessageBox.ICONS.info());
+		box.show();
+	}
+
+	private boolean checkInputSinglePlayer() {
+		final boolean valid = cbTeam1Player1.getValue() != null && cbTeam2Player1.getValue() != null
+				&& isDifferent(cbTeam1Player1.getValue().getId(), cbTeam2Player1.getValue().getId());
+
+		return valid;
+	}
+
+	private boolean isDifferent(Long player1Id, Long player2Id) {
+		final boolean valid = player1Id.compareTo(player2Id) != 0 ? true : false;
+
+		return valid;
+	}
+
+	private boolean checkInputDoublePlayer() {
+		boolean valid;
+		valid = cbTeam1Player1.getValue() != null
+				&& cbTeam1Player2.getValue() != null
+				&& cbTeam2Player1.getValue() != null
+				&& cbTeam2Player2.getValue() != null
+				&& isDifferent(cbTeam1Player1.getValue().getId(), cbTeam1Player2.getValue().getId(), cbTeam2Player1.getValue().getId(), cbTeam2Player2
+						.getValue().getId());
+		return valid;
+	}
+
+	private boolean isDifferent(Long player1Id, Long player2Id, Long player3Id, Long player4Id) {
+		final boolean valid = isDifferent(player1Id, player2Id) && isDifferent(player1Id, player3Id) && isDifferent(player1Id, player4Id);
+
 		return valid;
 	}
 

@@ -333,11 +333,11 @@ public class MatchServiceHelper {
 			if (matchDto.getTeam1Dto().getPlayer1().getId() == dbPlayer.getKey().getId()) {
 				dbPlayer2Stats = PMFactory.getObjectById(PlayerSingleStats.class, matchDto.getTeam2Dto().getPlayer1().getId());
 
-				tempPoints = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats, false);
+				tempPoints = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats);
 			} else {
 				dbPlayer2Stats = PMFactory.getObjectById(PlayerSingleStats.class, matchDto.getTeam1Dto().getPlayer1().getId());
 
-				tempPoints = getPoints(winner, matchDto, dbPlayer2Stats, dbCurrentPlayerStats, true);
+				tempPoints = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats);
 			}
 
 			points = tempPoints;
@@ -353,14 +353,14 @@ public class MatchServiceHelper {
 				dbPlayer1Stats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2Dto().getPlayer1().getId());
 				dbPlayer2Stats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2Dto().getPlayer2().getId());
 
-				tempPoints1 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer1Stats, false);
-				tempPoints2 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats, false);
+				tempPoints1 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer1Stats);
+				tempPoints2 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats);
 			} else {
 				dbPlayer1Stats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1Dto().getPlayer1().getId());
 				dbPlayer2Stats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1Dto().getPlayer2().getId());
 
-				tempPoints1 = getPoints(winner, matchDto, dbPlayer1Stats, dbCurrentPlayerStats, true);
-				tempPoints2 = getPoints(winner, matchDto, dbPlayer2Stats, dbCurrentPlayerStats, true);
+				tempPoints1 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer1Stats);
+				tempPoints2 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats);
 			}
 
 			points = Math.round((float) (tempPoints1 + tempPoints2) / 2);
@@ -386,11 +386,11 @@ public class MatchServiceHelper {
 		if (matchDto.getTeam1Dto().getId() == dbTeam.getKey().getId()) {
 			dbTeam2Stats = PMFactory.getObjectById(TeamStats.class, matchDto.getTeam2Dto().getId());
 
-			tempPoints = getPoints(winner, matchDto, dbCurrentTeamStats, dbTeam2Stats, false);
+			tempPoints = getPoints(winner, matchDto, dbCurrentTeamStats, dbTeam2Stats);
 		} else {
 			dbTeam2Stats = PMFactory.getObjectById(TeamStats.class, matchDto.getTeam1Dto().getId());
 
-			tempPoints = getPoints(winner, matchDto, dbTeam2Stats, dbCurrentTeamStats, true);
+			tempPoints = getPoints(winner, matchDto, dbCurrentTeamStats, dbTeam2Stats);
 		}
 
 		points = tempPoints;
@@ -405,25 +405,19 @@ public class MatchServiceHelper {
 	 * @param matchDto Das Spiel.
 	 * @param db1Stats Die Teamspiel-, Doppelspiel- oder Einzelspiel-Statistik des ersten Teams bzw. Spielers.
 	 * @param db2Stats Die Teamspiel-, Doppelspiel- oder Einzelspiel-Statistik des zweiten Teams bzw. Spielers.
-	 * @param reverse <code>true</code> falls die zu benutzende Punktzahl vertauscht werden soll, andernfalls <code>false</code>.
 	 * @return Die gewonnene oder verlorene Punktzahl eines Teams bzw Spielers.
 	 */
-	private static int getPoints(boolean winner, MatchDto matchDto, Stats db1Stats, Stats db2Stats, boolean reverse) {
-		int points1 = db1Stats.getPoints();
-		int points2 = db2Stats.getPoints();
+	private static int getPoints(boolean winner, MatchDto matchDto, Stats db1Stats, Stats db2Stats) {
+		final int points1 = db1Stats.getPoints();
+		final int points2 = db2Stats.getPoints();
 
 		final int pointsDifference = points1 - points2;
 		final int pointsAbsDifference = Math.abs(points1 - points2);
 		final boolean twoSetMatch = matchDto.getMatchSetsDto().getMatchSetsTeam1().size() == 2;
 
-		if (reverse) {
-			points1 = db2Stats.getPoints();
-			points2 = db1Stats.getPoints();
-		}
-
 		int points = 0;
 		if (winner) {
-			if (pointsDifference <= 0) {
+			if (pointsDifference >= 0) {
 				if (twoSetMatch) {
 					points = evaluatePositivePoints(points1, pointsAbsDifference, POINTS_A);
 				} else {
