@@ -11,6 +11,7 @@ import com.sencha.gxt.widget.core.client.container.MarginData;
 import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.event.ShowDataEventHandler;
+import de.kickerapp.client.ui.base.BasePanel;
 import de.kickerapp.client.ui.images.KickerIcons;
 
 /**
@@ -22,7 +23,7 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 
 	private PlayerAdminPanel playerAdminPanel;
 
-	// private SinglePlayerChartPanel chartPanel;
+	private SinglePlayerChartPanel chartPanel;
 
 	private TabPanel tabPanel;
 
@@ -48,7 +49,7 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 		activeTab = 0;
 
 		playerAdminPanel = new PlayerAdminPanel();
-		// chartPanel = new SinglePlayerChartPanel();
+		chartPanel = new SinglePlayerChartPanel();
 
 		tabPanel = createTabPanel();
 
@@ -87,8 +88,8 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 		final TabItemConfig ticAdminPanel = new TabItemConfig("Spieler eintragen/bearbeiten");
 		ticAdminPanel.setIcon(KickerIcons.ICON.userEdit());
 
-		// tabPanel.add(chartPanel, ticSinglePlayerChart);
 		tabPanel.add(playerAdminPanel, ticAdminPanel);
+		tabPanel.add(chartPanel, ticSinglePlayerChart);
 		tabPanel.setBodyBorder(false);
 		tabPanel.setBorders(false);
 
@@ -96,11 +97,11 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private void getData() {
-		// if (activeTab == 0) {
-		// chartPanel.getPlayerList();
-		// } else if (activeTab == 1) {
-		playerAdminPanel.getPlayerList();
-		// }
+		if (activeTab == 0) {
+			playerAdminPanel.getPlayerList();
+		} else if (activeTab == 1) {
+			chartPanel.getPlayerList();
+		}
 	}
 
 	/**

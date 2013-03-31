@@ -15,6 +15,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -46,6 +47,7 @@ import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.properties.MatchProperty;
 import de.kickerapp.client.services.KickerServices;
+import de.kickerapp.client.ui.base.BasePanel;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.shared.common.MatchType;
@@ -214,6 +216,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 	public Grid<MatchDto> createMatchesGrid() {
 		final SummaryColumnConfig<MatchDto, Integer> ccMatchNumber = new SummaryColumnConfig<MatchDto, Integer>(KickerProperties.MATCH_PROPERTY.matchNumber(),
 				60, "Nr.");
+		ccMatchNumber.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchNumber.setSummaryType(new SummaryType.CountSummaryType<Integer>());
 		ccMatchNumber.setSummaryRenderer(new SummaryRenderer<MatchDto>() {
 			@Override
@@ -224,6 +227,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		ccMatchNumber.setGroupable(false);
 		final SummaryColumnConfig<MatchDto, Date> ccMatchDate = new SummaryColumnConfig<MatchDto, Date>(KickerProperties.MATCH_PROPERTY.matchDate(), 110,
 				"Datum");
+		ccMatchDate.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchDate.setGroupable(false);
 		final TimeZoneConstants t = (TimeZoneConstants) GWT.create(TimeZoneConstants.class);
 		ccMatchDate.setCell(new DateCell(DateTimeFormat.getFormat("dd.MM.yyyy HH:mm"), TimeZone.createTimeZone(t.europeBerlin())));
@@ -254,6 +258,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 			}
 		});
 		final SummaryColumnConfig<MatchDto, String> ccMatchType = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchType, 70, "Typ");
+		ccMatchType.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final SummaryColumnConfig<MatchDto, String> ccTeam1 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.team1, 270, "Spieler/Team 1");
 		ccTeam1.setGroupable(false);
 		ccTeam1.setCell(new AbstractCell<String>() {
@@ -281,8 +286,10 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 			}
 		});
 		final SummaryColumnConfig<MatchDto, String> ccMatchResult = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchResult, 60, "Ergebnis");
+		ccMatchResult.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchResult.setGroupable(false);
 		final SummaryColumnConfig<MatchDto, String> ccMatchSets = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchSets, 80, "Sätze");
+		ccMatchSets.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchSets.setGroupable(false);
 		final SummaryColumnConfig<MatchDto, String> ccMatchPointsTeam1 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchPointsTeam1, 120,
 				"Punkte Spieler/Team1");

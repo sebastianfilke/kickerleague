@@ -11,8 +11,10 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface KickerIcons extends ClientBundle {
 
-	/** Die Klasse für den komfortablen Zugriff auf die Icons der Applikation. */
+	/** Die Icons. */
 	public final KickerIcons ICON = GWT.create(KickerIcons.class);
+
+	// CHECKSTYLE:OFF
 
 	@Source("chart_bar.png")
 	ImageResource chartBar();

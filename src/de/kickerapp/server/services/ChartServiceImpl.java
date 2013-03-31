@@ -15,7 +15,7 @@ import de.kickerapp.shared.dto.ChartDto;
 import de.kickerapp.shared.dto.PlayerDto;
 
 /**
- * Dienst zur Verarbeitung von Charts im Clienten.
+ * Dienst zur Verarbeitung von Charts im Klienten.
  * 
  * @author Sebastian Filke
  */
@@ -84,7 +84,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	/**
 	 * Liefert eine Zahl zwischen 1 und 12 zur Representation des Monats.
 	 * 
-	 * @param calendar Der Kalendar.
+	 * @param calendar Der Kalender.
 	 * @param dbMatch Das Spiel.
 	 * @return Eine Zahl zwischen 1 und 12 zur Representation des Monats.
 	 */
@@ -94,4 +94,57 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 
 		return calendar.get(Calendar.MONTH) + 1;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ArrayList<ChartDto> getWinChart(PlayerDto playerDto) throws IllegalArgumentException {
+		final List<Match> dbMatches = PMFactory.getList(Match.class);
+
+		final HashMap<Integer, ChartDto> data = new HashMap<Integer, ChartDto>();
+		for (int i = 1; i <= 12; i++) {
+			data.put(i, new ChartDto(MONTHS[i - 1]));
+		}
+
+		final Calendar calendar = Calendar.getInstance();
+
+		boolean containsPlayer = false;
+		for (Match dbMatch : dbMatches) {
+			final int month = getMonthForMatch(calendar, dbMatch);
+			final ChartDto chartDto = data.get(month);
+
+			Integer wins = chartDto.getWins();
+			Integer losses = chartDto.getLosses();
+
+			final boolean team1Winner = MatchServiceHelper.isTeam1Winner(dbMatch);
+			if (dbMatch.getMatchType() == MatchType.SINGLE) {
+				if (dbMatch.getTeam1().equals(playerDto.getId())) {
+					containsPlayer = true;
+					if (team1Winner) {
+						wins = wins + 1;
+					} else {
+						losses = losses + 1;
+					}
+				} else if (dbMatch.getTeam2().equals(playerDto.getId())) {
+					containsPlayer = true;
+					if (!team1Winner) {
+						wins = wins + 1;
+					} else {
+						losses = losses + 1;
+					}
+				}
+			}
+			chartDto.setWins(wins);
+			chartDto.setLosses(losses);
+		}
+		final ArrayList<ChartDto> chartDtos = new ArrayList<ChartDto>();
+		if (containsPlayer) {
+			for (ChartDto chartDto : data.values()) {
+				chartDtos.add(chartDto);
+			}
+		}
+		return chartDtos;
+	}
+
 }

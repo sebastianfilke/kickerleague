@@ -12,5 +12,7 @@ import de.kickerapp.shared.dto.PlayerDto;
 public interface ChartService extends RemoteService {
 
 	public ArrayList<ChartDto> getGoalChart(PlayerDto playerDto) throws IllegalArgumentException;
+	
+	public ArrayList<ChartDto> getWinChart(PlayerDto playerDto) throws IllegalArgumentException;
 
 }

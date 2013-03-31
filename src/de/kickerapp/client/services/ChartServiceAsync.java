@@ -10,5 +10,7 @@ import de.kickerapp.shared.dto.PlayerDto;
 public interface ChartServiceAsync {
 
 	public void getGoalChart(PlayerDto playerDto, AsyncCallback<ArrayList<ChartDto>> callback) throws IllegalArgumentException;
+	
+	public void getWinChart(PlayerDto playerDto, AsyncCallback<ArrayList<ChartDto>> callback) throws IllegalArgumentException;
 
 }

@@ -12,6 +12,7 @@ Checkstyle configuration that checks the kicker league coding conventions.
 <module name="Checker">
   <property name="severity" value="warning"/>
   <module name="TreeWalker">
+    <module name="FileContentsHolder"/>
     <module name="AnnotationUseStyle"/>
     <module name="MissingOverride"/>
     <module name="JavadocMethod">
@@ -38,5 +39,10 @@ Checkstyle configuration that checks the kicker league coding conventions.
     <module name="AvoidStaticImport"/>
     <module name="IllegalImport"/>
     <module name="RedundantImport"/>
+    <module name="EmptyBlock"/>
+    <module name="NeedBraces"/>
+    <module name="EmptyForInitializerPad"/>
+    <module name="EmptyForIteratorPad"/>
   </module>
+  <module name="SuppressionCommentFilter"/>
 </module>

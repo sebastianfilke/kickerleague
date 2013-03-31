@@ -36,6 +36,7 @@ import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
+import de.kickerapp.client.ui.base.BaseContainer;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.ui.util.AppInfo;
 import de.kickerapp.client.widgets.AppButton;
@@ -43,6 +44,11 @@ import de.kickerapp.client.widgets.AppTextField;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
 
+/**
+ * Controller-Klasse zum Eintragen und Bearbeiten der Spieler für die Applikation.
+ * 
+ * @author Sebastian Filke
+ */
 public class PlayerAdminPanel extends BaseContainer {
 
 	private ListStore<PlayerDto> storePlayer;

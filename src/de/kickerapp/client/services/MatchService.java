@@ -16,12 +16,20 @@ import de.kickerapp.shared.dto.MatchDto;
 public interface MatchService extends RemoteService {
 
 	/**
-	 * @param matchDto
-	 * @return
-	 * @throws IllegalArgumentException
+	 * Erzeugt ein neues Spiel.
+	 * 
+	 * @param matchDto Das zu erstellende Spiel.
+	 * @return Das neu erstellte Spiel.
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
 	public MatchDto createMatch(MatchDto matchDto) throws IllegalArgumentException;
 
+	/**
+	 * Liefert alle Spiele.
+	 * 
+	 * @return Alle Spiel.
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 */
 	public ArrayList<MatchDto> getAllMatches() throws IllegalArgumentException;
 
 }

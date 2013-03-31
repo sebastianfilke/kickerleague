@@ -8,7 +8,7 @@ import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import de.kickerapp.client.ui.dialog.AppErrorMessageBox;
 
 /**
- * Standard Fehlerbehandlungsroutine für Exceptions in der Applikation.
+ * Standard-Fehlerbehandlungsroutine für Exceptions in der Applikation.
  * 
  * @author Sebastian Filke
  */
@@ -30,18 +30,18 @@ public class AppExceptionHandler implements UncaughtExceptionHandler {
 	public static void handleException(final Throwable caught) {
 		LOGGER.log(Level.SEVERE, caught.getMessage(), caught);
 
-		String msg = "";
+		String message = "";
 		if (caught.getMessage() != null) {
-			msg = caught.getLocalizedMessage();
+			message = caught.getLocalizedMessage();
 		}
-		if (msg.isEmpty()) {
-			msg = caught.getClass().getName();
+		if (message.isEmpty()) {
+			message = caught.getClass().getName();
 		}
 
 		final String error = getCustomStackTrace(caught);
 		final AppErrorMessageBox dialog = new AppErrorMessageBox();
-		if (msg != null) {
-			dialog.setErrorMsg(msg);
+		if (message != null) {
+			dialog.setErrorMsg(message);
 		}
 		// dialog.setErrorContents(error);
 		dialog.show();

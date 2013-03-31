@@ -14,6 +14,7 @@ import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.NavigationEvent;
 import de.kickerapp.client.event.NavigationEventHandler;
 import de.kickerapp.client.event.ShowDataEvent;
+import de.kickerapp.client.ui.base.BaseContainer;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.ui.resources.KickerMessages;
 
@@ -76,7 +77,7 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		sb.append(AbstractImagePrototype.create(KickerIcons.ICON.soccerBall()).getSafeHtml());
 		sb.appendHtmlConstant("</div>");
 		sb.appendHtmlConstant("<div id='headerText'>");
-		sb.appendHtmlConstant(KickerMessages.MAIN_PANEL.mainPanelTitle());
+		sb.appendHtmlConstant(KickerMessages.MESSAGE.applicationTitle());
 		sb.appendHtmlConstant("</div><div>");
 
 		final HtmlLayoutContainer htmlLcHeader = new HtmlLayoutContainer(sb.toSafeHtml());

@@ -8,7 +8,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import de.kickerapp.shared.dto.PlayerDto;
 
 /**
- * Die Schnittstelle zur Verarbeitung der Paging-ComboBoxen.
+ * Die Schnittstelle zur Verarbeitung von paginierten-Listen.
  * 
  * @author Sebastian Filke
  */
@@ -16,10 +16,12 @@ import de.kickerapp.shared.dto.PlayerDto;
 public interface PagingService extends RemoteService {
 
 	/**
-	 * Liefert eine gepufferte Liste, welche anhand des <code>OrderPropertyIdentifier</code>s angegeben wird.
+	 * Liefert eine paginierte Spielerliste.
 	 * 
-	 * @param loadConfig Die Ladekonfiguration der gepufferten Liste.
-	 * @return Die gepufferte Liste.
+	 * @param query Die Anfrage.
+	 * @param loadConfig Die Ladekonfiguration der paginierten Spielerliste.
+	 * @return Die paginierte Spielerliste.
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
 	public PagingLoadResult<PlayerDto> getPagedPlayers(String query, PagingLoadConfig loadConfig) throws IllegalArgumentException;
 

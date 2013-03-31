@@ -61,6 +61,7 @@ import de.kickerapp.client.event.UpdatePanelEvent;
 import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
+import de.kickerapp.client.ui.base.BasePanel;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.ui.resources.KickerTemplates;
 import de.kickerapp.client.ui.util.AppInfo;
@@ -651,7 +652,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private void createMatch() {
-		if (inputValid()) {
+		if (isInputValid()) {
 			mask("Spiel wird eingetragen...");
 			final MatchDto newMatch = makeMatch();
 			KickerServices.MATCH_SERVICE.createMatch(newMatch, new AsyncCallback<MatchDto>() {
@@ -680,7 +681,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		}
 	}
 
-	private boolean inputValid() {
+	private boolean isInputValid() {
 		boolean valid = false;
 		valid = checkRelatedSet(cbSet1Team1, cbSet1Team2);
 		if (valid) {
@@ -757,7 +758,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 			} else if (cb1Team1.getValue() == 6 && cb2Team2.getValue() < 6) {
 				valid = true;
 			}
-		} else if (cb1Team1.isEnabled() == false && cb2Team2.isEnabled() == false) {
+		} else if (!cb1Team1.isEnabled() && !cb2Team2.isEnabled()) {
 			valid = true;
 		}
 		return valid;

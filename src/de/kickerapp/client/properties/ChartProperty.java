@@ -39,7 +39,7 @@ public interface ChartProperty extends PropertyAccess<ChartDto> {
 
 	public ValueProvider<ChartDto, Integer> losses();
 
-	public ValueProvider<ChartDto, Integer> winsDifference = new ValueProvider<ChartDto, Integer>() {
+	public ValueProvider<ChartDto, Integer> winDifference = new ValueProvider<ChartDto, Integer>() {
 		@Override
 		public Integer getValue(ChartDto object) {
 			final int winDifference = object.getWins() - object.getLosses();

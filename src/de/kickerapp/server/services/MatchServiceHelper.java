@@ -24,7 +24,7 @@ import de.kickerapp.shared.dto.MatchSetDto;
 import de.kickerapp.shared.dto.TeamDto;
 
 /**
- * Hilfsklasse zur Verarbeitung von Spielen im Clienten.
+ * Hilfsklasse zur Verarbeitung von Spielen im Klienten.
  * 
  * @author Sebastian Filke
  */
@@ -153,6 +153,27 @@ public class MatchServiceHelper {
 		boolean team1Winner = false;
 		int size = 0;
 		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam1()) {
+			if (result != null && result == 6) {
+				size++;
+			}
+			if (size == 2) {
+				team1Winner = true;
+				break;
+			}
+		}
+		return team1Winner;
+	}
+
+	/**
+	 * Liefert die Information ob das erste Team bzw. Spieler gewonnen hat.
+	 * 
+	 * @param dbMatch Das Spiel.
+	 * @return <code>true</code> falls das erste Team bzw. Spieler gewonnen hat, andernfalls <code>false</code>.
+	 */
+	protected static boolean isTeam1Winner(Match dbMatch) {
+		boolean team1Winner = false;
+		int size = 0;
+		for (Integer result : dbMatch.getMatchSets().getMatchSetsTeam1()) {
 			if (result != null && result == 6) {
 				size++;
 			}

@@ -5,6 +5,7 @@ import com.sencha.gxt.widget.core.client.container.MarginData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
+import de.kickerapp.client.ui.base.BaseDialog;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppContentPanel;
 

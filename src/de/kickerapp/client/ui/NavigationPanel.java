@@ -11,6 +11,7 @@ import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.NavigationEvent;
 import de.kickerapp.client.event.NavigationEventHandler;
+import de.kickerapp.client.ui.base.BaseContainer;
 
 /**
  * Controller-Klasse für die Navigationsleiste der Applikation.

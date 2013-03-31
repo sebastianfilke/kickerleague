@@ -11,6 +11,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -44,6 +45,7 @@ import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.properties.TeamProperty;
 import de.kickerapp.client.services.KickerServices;
+import de.kickerapp.client.ui.base.BasePanel;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.StoreFilterToggleButton;
@@ -235,9 +237,13 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 
 		final ColumnConfig<PlayerDto, String> ccPlayerName = new ColumnConfig<PlayerDto, String>(PlayerProperty.playerName, 140, "Spieler");
 		final ColumnConfig<PlayerDto, Integer> ccSingleMatches = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.singleMatches, 100, "Anzahl Spiele");
+		ccSingleMatches.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final ColumnConfig<PlayerDto, Integer> ccSingleWins = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.singleWins, 100, "Siege");
+		ccSingleWins.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final ColumnConfig<PlayerDto, Integer> ccSingleLosses = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.singleLosses, 100, "Niederlagen");
+		ccSingleLosses.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final ColumnConfig<PlayerDto, String> ccSingleGoals = new ColumnConfig<PlayerDto, String>(PlayerProperty.singleGoals, 100, "Tore");
+		ccSingleGoals.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccSingleGoals.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -256,6 +262,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		});
 		final ColumnConfig<PlayerDto, String> ccSingleGoalDifference = new ColumnConfig<PlayerDto, String>(PlayerProperty.singleGoalDifference, 100,
 				"Tordifferenz");
+		ccSingleGoalDifference.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccSingleGoalDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -275,6 +282,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			}
 		});
 		final ColumnConfig<PlayerDto, String> ccSinglePoints = new ColumnConfig<PlayerDto, String>(PlayerProperty.singlePoints, 100, "Punkte");
+		ccSinglePoints.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccSinglePoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
@@ -293,6 +301,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			}
 		});
 		final ColumnConfig<PlayerDto, ImageResource> ccSingleTendency = new ColumnConfig<PlayerDto, ImageResource>(PlayerProperty.singleTendency, 80, "Tendenz");
+		ccSingleTendency.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccSingleTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
@@ -398,9 +407,13 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 
 		final ColumnConfig<PlayerDto, String> ccPlayerName = new ColumnConfig<PlayerDto, String>(PlayerProperty.playerName, 140, "Spieler");
 		final ColumnConfig<PlayerDto, Integer> ccDoubleMatches = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.doubleMatches, 100, "Anzahl Spiele");
+		ccDoubleMatches.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final ColumnConfig<PlayerDto, Integer> ccDoubleWins = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.doubleWins, 100, "Siege");
+		ccDoubleWins.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final ColumnConfig<PlayerDto, Integer> ccDoubleLosses = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.doubleLosses, 100, "Niederlagen");
+		ccDoubleLosses.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final ColumnConfig<PlayerDto, String> ccDoubleGoals = new ColumnConfig<PlayerDto, String>(PlayerProperty.doubleGoals, 100, "Tore");
+		ccDoubleGoals.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccDoubleGoals.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -419,6 +432,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		});
 		final ColumnConfig<PlayerDto, String> ccDoubleGoalDifference = new ColumnConfig<PlayerDto, String>(PlayerProperty.doubleGoalDifference, 100,
 				"Tordifferenz");
+		ccDoubleGoalDifference.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccDoubleGoalDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -438,6 +452,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			}
 		});
 		final ColumnConfig<PlayerDto, String> ccDoublePoints = new ColumnConfig<PlayerDto, String>(PlayerProperty.doublePoints, 100, "Punkte");
+		ccDoublePoints.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccDoublePoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
@@ -456,6 +471,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			}
 		});
 		final ColumnConfig<PlayerDto, ImageResource> ccDoubleTendency = new ColumnConfig<PlayerDto, ImageResource>(PlayerProperty.doubleTendency, 80, "Tendenz");
+		ccDoubleTendency.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccDoubleTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
@@ -570,9 +586,13 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 
 		final ColumnConfig<TeamDto, String> ccTeamName = new ColumnConfig<TeamDto, String>(TeamProperty.teamName, 140, "Team");
 		final ColumnConfig<TeamDto, Integer> ccTeamMatches = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamMatches, 100, "Anzahl Spiele");
+		ccTeamMatches.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final ColumnConfig<TeamDto, Integer> ccTeamWins = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamWins, 100, "Siege");
+		ccTeamWins.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final ColumnConfig<TeamDto, Integer> ccTeamLosses = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamLosses, 100, "Niederlagen");
+		ccTeamLosses.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final ColumnConfig<TeamDto, String> ccTeamGoals = new ColumnConfig<TeamDto, String>(TeamProperty.teamGoals, 100, "Tore");
+		ccTeamGoals.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccTeamGoals.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -590,6 +610,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			}
 		});
 		final ColumnConfig<TeamDto, String> ccTeamGoalDifference = new ColumnConfig<TeamDto, String>(TeamProperty.teamGoalDifference, 100, "Tordifferenz");
+		ccTeamGoalDifference.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccTeamGoalDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -609,6 +630,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			}
 		});
 		final ColumnConfig<TeamDto, String> ccTeamPoints = new ColumnConfig<TeamDto, String>(TeamProperty.teamPoints, 100, "Punkte");
+		ccTeamPoints.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccTeamPoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
@@ -627,6 +649,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			}
 		});
 		final ColumnConfig<TeamDto, ImageResource> ccTeamTendency = new ColumnConfig<TeamDto, ImageResource>(TeamProperty.teamTendency, 80, "Tendenz");
+		ccTeamTendency.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccTeamTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {

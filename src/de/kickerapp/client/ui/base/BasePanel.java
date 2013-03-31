@@ -1,29 +1,29 @@
-package de.kickerapp.client.ui;
+package de.kickerapp.client.ui.base;
 
-import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import de.kickerapp.client.widgets.AppContentPanel;
 
 /**
  * Basis-Controller zur Darstellung und Verarbeitung der Applikation.
  * 
  * @author Sebastian Filke
  */
-public class BaseContainer extends SimpleContainer {
+public class BasePanel extends AppContentPanel {
 
 	/**
 	 * Erzeugt einen neuen Basis-Controller.
 	 */
-	public BaseContainer() {
+	public BasePanel() {
 		super();
 	}
 
 	/**
-	 * Initalisiert das Layout des Containers.
+	 * Initalisiert das Layout des Panels.
 	 */
 	protected void initLayout() {
 	}
 
 	/**
-	 * Initalisiert die EventHandler des Containers.
+	 * Initalisiert die EventHandler des Panels.
 	 */
 	protected void initHandlers() {
 	}
