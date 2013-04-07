@@ -2,7 +2,6 @@ package de.kickerapp.client.ui.chart;
 
 import java.util.ArrayList;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.chart.client.chart.Chart;
 import com.sencha.gxt.chart.client.chart.Chart.Position;
 import com.sencha.gxt.chart.client.chart.Legend;
@@ -19,23 +18,18 @@ import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite.TextAnchor;
 import com.sencha.gxt.data.shared.ListStore;
 
-import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.properties.ChartProperty;
 import de.kickerapp.client.properties.KickerProperties;
-import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BaseContainer;
-import de.kickerapp.shared.dto.ChartDto;
-import de.kickerapp.shared.dto.PlayerDto;
+import de.kickerapp.shared.dto.ChartDataDto;
 
 public class WinChartPanel extends BaseContainer {
 
-	private ListStore<ChartDto> storeWin;
+	private ListStore<ChartDataDto> storeWin;
 
-	private Chart<ChartDto> chartWin;
+	private Chart<ChartDataDto> chartWin;
 
-	private BarSeries<ChartDto> barWin;
-
-	private boolean doUpdateWinChart;
+	private BarSeries<ChartDataDto> barWin;
 
 	public WinChartPanel() {
 		super();
@@ -48,15 +42,13 @@ public class WinChartPanel extends BaseContainer {
 	 */
 	@Override
 	public void initLayout() {
-		doUpdateWinChart = true;
-
-		storeWin = new ListStore<ChartDto>(KickerProperties.CHART_PROPERTY.id());
+		storeWin = new ListStore<ChartDataDto>(KickerProperties.CHART_PROPERTY.id());
 
 		add(createGroupBarChart());
 	}
 
-	private Chart<ChartDto> createGroupBarChart() {
-		chartWin = new Chart<ChartDto>();
+	private Chart<ChartDataDto> createGroupBarChart() {
+		chartWin = new Chart<ChartDataDto>();
 		chartWin.setShadowChart(true);
 		chartWin.setStore(storeWin);
 		chartWin.setAnimated(true);
@@ -69,25 +61,26 @@ public class WinChartPanel extends BaseContainer {
 		return chartWin;
 	}
 
-	private NumericAxis<ChartDto> createNumericAxis() {
-		final NumericAxis<ChartDto> numAxis = new NumericAxis<ChartDto>();
+	private NumericAxis<ChartDataDto> createNumericAxis() {
+		final NumericAxis<ChartDataDto> numAxis = new NumericAxis<ChartDataDto>();
 		numAxis.setPosition(Position.LEFT);
 		numAxis.addField(ChartProperty.winDifference);
 		numAxis.addField(KickerProperties.CHART_PROPERTY.wins());
 		numAxis.addField(KickerProperties.CHART_PROPERTY.losses());
+		numAxis.setAdjustMaximumByMajorUnit(true);
+		numAxis.setAdjustMinimumByMajorUnit(true);
+		numAxis.setDisplayGrid(true);
 
 		final TextSprite title = new TextSprite("Siegbilanz");
 		title.setFontSize(20);
 		title.setFont("Tahoma");
 		numAxis.setTitleConfig(title);
 
-		numAxis.setDisplayGrid(true);
-
 		return numAxis;
 	}
 
-	private CategoryAxis<ChartDto, String> createCategoryAxis() {
-		final CategoryAxis<ChartDto, String> catAxis = new CategoryAxis<ChartDto, String>();
+	private CategoryAxis<ChartDataDto, String> createCategoryAxis() {
+		final CategoryAxis<ChartDataDto, String> catAxis = new CategoryAxis<ChartDataDto, String>();
 		catAxis.setPosition(Position.BOTTOM);
 		catAxis.setField(KickerProperties.CHART_PROPERTY.month());
 
@@ -99,8 +92,8 @@ public class WinChartPanel extends BaseContainer {
 		return catAxis;
 	}
 
-	private BarSeries<ChartDto> createBarSeries() {
-		barWin = new BarSeries<ChartDto>();
+	private BarSeries<ChartDataDto> createBarSeries() {
+		barWin = new BarSeries<ChartDataDto>();
 		barWin.setYAxisPosition(Position.LEFT);
 		barWin.addYField(ChartProperty.winDifference);
 		barWin.addYField(KickerProperties.CHART_PROPERTY.wins());
@@ -115,7 +108,7 @@ public class WinChartPanel extends BaseContainer {
 		sprite.setFontSize(12);
 		sprite.setTextAnchor(TextAnchor.MIDDLE);
 
-		final SeriesLabelConfig<ChartDto> labelConfig = new SeriesLabelConfig<ChartDto>();
+		final SeriesLabelConfig<ChartDataDto> labelConfig = new SeriesLabelConfig<ChartDataDto>();
 		labelConfig.setSpriteConfig(sprite);
 
 		barWin.setLabelConfig(labelConfig);
@@ -143,8 +136,8 @@ public class WinChartPanel extends BaseContainer {
 		return barWin;
 	}
 
-	private Legend<ChartDto> createLegend() {
-		final Legend<ChartDto> legend = new Legend<ChartDto>();
+	private Legend<ChartDataDto> createLegend() {
+		final Legend<ChartDataDto> legend = new Legend<ChartDataDto>();
 		legend.setPosition(Position.RIGHT);
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(true);
@@ -152,35 +145,14 @@ public class WinChartPanel extends BaseContainer {
 		return legend;
 	}
 
-	public void loadGoalChart(PlayerDto selectedPlayer) {
-		if (doUpdateWinChart) {
-			mask("Sieg-Statistik wird geladen...");
-			KickerServices.CHART_SERVICE.getWinChart(selectedPlayer, new AsyncCallback<ArrayList<ChartDto>>() {
-				@Override
-				public void onSuccess(ArrayList<ChartDto> result) {
-					barWin.setShownInLegend(true);
-					storeWin.replaceAll(result);
-					chartWin.redrawChart();
-					doUpdateWinChart = false;
-					unmask();
-				}
-
-				@Override
-				public void onFailure(Throwable caught) {
-					doUpdateWinChart = false;
-					unmask();
-					AppExceptionHandler.handleException(caught);
-				}
-			});
-		}
+	public void loadGoalChart(ArrayList<ChartDataDto> result) {
+		barWin.setShownInLegend(true);
+		storeWin.replaceAll(result);
+		chartWin.redrawChart();
 	}
 
-	public boolean isDoUpdateWinChart() {
-		return doUpdateWinChart;
-	}
-
-	public void setDoUpdateWinChart(boolean doUpdateWinChart) {
-		this.doUpdateWinChart = doUpdateWinChart;
+	public Chart<ChartDataDto> getChartWin() {
+		return chartWin;
 	}
 
 }

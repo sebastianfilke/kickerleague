@@ -2,7 +2,6 @@ package de.kickerapp.client.ui.chart;
 
 import java.util.ArrayList;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.chart.client.chart.Chart;
 import com.sencha.gxt.chart.client.chart.Chart.Position;
 import com.sencha.gxt.chart.client.chart.Legend;
@@ -19,23 +18,18 @@ import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite.TextAnchor;
 import com.sencha.gxt.data.shared.ListStore;
 
-import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.properties.ChartProperty;
 import de.kickerapp.client.properties.KickerProperties;
-import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BaseContainer;
-import de.kickerapp.shared.dto.ChartDto;
-import de.kickerapp.shared.dto.PlayerDto;
+import de.kickerapp.shared.dto.ChartDataDto;
 
 public class GoalChartPanel extends BaseContainer {
 
-	private ListStore<ChartDto> storeGoal;
+	private ListStore<ChartDataDto> storeGoal;
 
-	private Chart<ChartDto> chartGoal;
+	private Chart<ChartDataDto> chartGoal;
 
-	private BarSeries<ChartDto> barGoal;
-
-	private boolean doUpdateGoalChart;
+	private BarSeries<ChartDataDto> barGoal;
 
 	public GoalChartPanel() {
 		super();
@@ -48,15 +42,13 @@ public class GoalChartPanel extends BaseContainer {
 	 */
 	@Override
 	public void initLayout() {
-		doUpdateGoalChart = true;
-
-		storeGoal = new ListStore<ChartDto>(KickerProperties.CHART_PROPERTY.id());
+		storeGoal = new ListStore<ChartDataDto>(KickerProperties.CHART_PROPERTY.id());
 
 		add(createGroupBarChart());
 	}
 
-	private Chart<ChartDto> createGroupBarChart() {
-		chartGoal = new Chart<ChartDto>();
+	private Chart<ChartDataDto> createGroupBarChart() {
+		chartGoal = new Chart<ChartDataDto>();
 		chartGoal.setShadowChart(true);
 		chartGoal.setStore(storeGoal);
 		chartGoal.setAnimated(true);
@@ -69,25 +61,26 @@ public class GoalChartPanel extends BaseContainer {
 		return chartGoal;
 	}
 
-	private NumericAxis<ChartDto> createNumericAxis() {
-		final NumericAxis<ChartDto> numAxis = new NumericAxis<ChartDto>();
+	private NumericAxis<ChartDataDto> createNumericAxis() {
+		final NumericAxis<ChartDataDto> numAxis = new NumericAxis<ChartDataDto>();
 		numAxis.setPosition(Position.LEFT);
 		numAxis.addField(ChartProperty.goalDifference);
 		numAxis.addField(KickerProperties.CHART_PROPERTY.shotGoals());
 		numAxis.addField(KickerProperties.CHART_PROPERTY.getGoals());
+		numAxis.setAdjustMaximumByMajorUnit(true);
+		numAxis.setAdjustMinimumByMajorUnit(true);
+		numAxis.setDisplayGrid(true);
 
 		final TextSprite title = new TextSprite("Torbilanz");
 		title.setFontSize(20);
 		title.setFont("Tahoma");
 		numAxis.setTitleConfig(title);
 
-		numAxis.setDisplayGrid(true);
-
 		return numAxis;
 	}
 
-	private CategoryAxis<ChartDto, String> createCategoryAxis() {
-		final CategoryAxis<ChartDto, String> catAxis = new CategoryAxis<ChartDto, String>();
+	private CategoryAxis<ChartDataDto, String> createCategoryAxis() {
+		final CategoryAxis<ChartDataDto, String> catAxis = new CategoryAxis<ChartDataDto, String>();
 		catAxis.setPosition(Position.BOTTOM);
 		catAxis.setField(KickerProperties.CHART_PROPERTY.month());
 
@@ -99,8 +92,8 @@ public class GoalChartPanel extends BaseContainer {
 		return catAxis;
 	}
 
-	private BarSeries<ChartDto> createBarSeries() {
-		barGoal = new BarSeries<ChartDto>();
+	private BarSeries<ChartDataDto> createBarSeries() {
+		barGoal = new BarSeries<ChartDataDto>();
 		barGoal.setYAxisPosition(Position.LEFT);
 		barGoal.addYField(ChartProperty.goalDifference);
 		barGoal.addYField(KickerProperties.CHART_PROPERTY.shotGoals());
@@ -115,7 +108,7 @@ public class GoalChartPanel extends BaseContainer {
 		sprite.setFontSize(12);
 		sprite.setTextAnchor(TextAnchor.MIDDLE);
 
-		final SeriesLabelConfig<ChartDto> labelConfig = new SeriesLabelConfig<ChartDto>();
+		final SeriesLabelConfig<ChartDataDto> labelConfig = new SeriesLabelConfig<ChartDataDto>();
 		labelConfig.setSpriteConfig(sprite);
 
 		barGoal.setLabelConfig(labelConfig);
@@ -143,8 +136,8 @@ public class GoalChartPanel extends BaseContainer {
 		return barGoal;
 	}
 
-	private Legend<ChartDto> createLegend() {
-		final Legend<ChartDto> legend = new Legend<ChartDto>();
+	private Legend<ChartDataDto> createLegend() {
+		final Legend<ChartDataDto> legend = new Legend<ChartDataDto>();
 		legend.setPosition(Position.RIGHT);
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(true);
@@ -152,35 +145,14 @@ public class GoalChartPanel extends BaseContainer {
 		return legend;
 	}
 
-	public void loadGoalChart(PlayerDto selectedPlayer) {
-		if (doUpdateGoalChart) {
-			mask("Tor-Statistik wird geladen...");
-			KickerServices.CHART_SERVICE.getGoalChart(selectedPlayer, new AsyncCallback<ArrayList<ChartDto>>() {
-				@Override
-				public void onSuccess(ArrayList<ChartDto> result) {
-					barGoal.setShownInLegend(true);
-					storeGoal.replaceAll(result);
-					chartGoal.redrawChart();
-					doUpdateGoalChart = false;
-					unmask();
-				}
-
-				@Override
-				public void onFailure(Throwable caught) {
-					doUpdateGoalChart = false;
-					unmask();
-					AppExceptionHandler.handleException(caught);
-				}
-			});
-		}
+	public void loadGoalChart(ArrayList<ChartDataDto> result) {
+		barGoal.setShownInLegend(true);
+		storeGoal.replaceAll(result);
+		chartGoal.redrawChart();
 	}
 
-	public boolean isDoUpdateGoalChart() {
-		return doUpdateGoalChart;
-	}
-
-	public void setDoUpdateGoalChart(boolean doUpdateGoalChart) {
-		this.doUpdateGoalChart = doUpdateGoalChart;
+	public Chart<ChartDataDto> getChartGoal() {
+		return chartGoal;
 	}
 
 }

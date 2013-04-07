@@ -5,28 +5,28 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
-import de.kickerapp.shared.dto.ChartDto;
+import de.kickerapp.shared.dto.ChartDataDto;
 
-public interface ChartProperty extends PropertyAccess<ChartDto> {
+public interface ChartProperty extends PropertyAccess<ChartDataDto> {
 
 	@Path("id")
-	public ModelKeyProvider<ChartDto> id();
+	public ModelKeyProvider<ChartDataDto> id();
 
-	public ValueProvider<ChartDto, String> month();
+	public ValueProvider<ChartDataDto, String> month();
 
-	public ValueProvider<ChartDto, Integer> shotGoals();
+	public ValueProvider<ChartDataDto, Integer> shotGoals();
 
-	public ValueProvider<ChartDto, Integer> getGoals();
+	public ValueProvider<ChartDataDto, Integer> getGoals();
 
-	public ValueProvider<ChartDto, Integer> goalDifference = new ValueProvider<ChartDto, Integer>() {
+	public ValueProvider<ChartDataDto, Integer> goalDifference = new ValueProvider<ChartDataDto, Integer>() {
 		@Override
-		public Integer getValue(ChartDto object) {
+		public Integer getValue(ChartDataDto object) {
 			final int goalDifference = object.getShotGoals() - object.getGetGoals();
 			return goalDifference;
 		}
 
 		@Override
-		public void setValue(ChartDto object, Integer value) {
+		public void setValue(ChartDataDto object, Integer value) {
 		}
 
 		@Override
@@ -35,19 +35,19 @@ public interface ChartProperty extends PropertyAccess<ChartDto> {
 		}
 	};
 
-	public ValueProvider<ChartDto, Integer> wins();
+	public ValueProvider<ChartDataDto, Integer> wins();
 
-	public ValueProvider<ChartDto, Integer> losses();
+	public ValueProvider<ChartDataDto, Integer> losses();
 
-	public ValueProvider<ChartDto, Integer> winDifference = new ValueProvider<ChartDto, Integer>() {
+	public ValueProvider<ChartDataDto, Integer> winDifference = new ValueProvider<ChartDataDto, Integer>() {
 		@Override
-		public Integer getValue(ChartDto object) {
+		public Integer getValue(ChartDataDto object) {
 			final int winDifference = object.getWins() - object.getLosses();
 			return winDifference;
 		}
 
 		@Override
-		public void setValue(ChartDto object, Integer value) {
+		public void setValue(ChartDataDto object, Integer value) {
 		}
 
 		@Override

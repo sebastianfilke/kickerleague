@@ -37,6 +37,7 @@ import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
 import de.kickerapp.client.widgets.AppContentPanel;
 import de.kickerapp.shared.common.MatchType;
+import de.kickerapp.shared.dto.ChartDto;
 import de.kickerapp.shared.dto.PlayerDto;
 
 public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanelEventHandler {
@@ -44,8 +45,6 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private AppComboBox<PlayerDto> cbPlayer;
 
 	private ListStore<PlayerDto> storePlayer;
-
-	private ToggleGroup tgChart;
 
 	private CardLayoutContainer clcChart;
 
@@ -55,11 +54,15 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 	private InfoPanel infoPanel;
 
-	private ToggleButton btnGoalChart;
+	private ToggleGroup tgChart;
 
-	private ToggleButton btnWinChart;
-	
-	private boolean doUpdatePlayerList;
+	private ToggleButton btnGoalChart, btnWinChart;
+
+	private boolean doUpdatePlayerList, doUpdateSinglePlayerChart;
+
+	private ChartDto chartDto;
+
+	private AppButton btnUpdate;
 
 	public SinglePlayerChartPanel() {
 		super();
@@ -74,18 +77,15 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	public void initLayout() {
 		clcChart = new CardLayoutContainer();
 
+		infoPanel = new InfoPanel();
 		goalChartPanel = new GoalChartPanel();
-		goalChartPanel.setDoUpdateGoalChart(true);
-
 		winChartPanel = new WinChartPanel();
-		winChartPanel.setDoUpdateWinChart(true);
 
 		clcChart.add(goalChartPanel);
 		clcChart.add(winChartPanel);
 
-		infoPanel = new InfoPanel();
-
 		doUpdatePlayerList = true;
+		doUpdateSinglePlayerChart = true;
 
 		add(createBlcSingleStats());
 	}
@@ -105,7 +105,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		final VerticalLayoutContainer vlcPlayerInfo = new VerticalLayoutContainer();
 		vlcPlayerInfo.getElement().getStyle().setBackgroundColor("#FFFFFF");
 		vlcPlayerInfo.add(createToolBarPlayerInfo(), new VerticalLayoutData(1, -1));
-		vlcPlayerInfo.add(panel, new VerticalLayoutData(-1, -1));
+		vlcPlayerInfo.add(panel, new VerticalLayoutData(1, 1));
 
 		final VerticalLayoutContainer vlcCharts = new VerticalLayoutContainer();
 		vlcCharts.add(createToolBarCharts(), new VerticalLayoutData(1, -1));
@@ -172,17 +172,22 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 				final PlayerDto selectedPlayer = event.getSelectedItem();
 				if (selectedPlayer != null) {
 					setDoUpdate();
-
-					final ToggleButton tbtn = (ToggleButton) tgChart.getValue();
-					if (tbtn.getId().equals("singleGoalsChart")) {
-						goalChartPanel.loadGoalChart(selectedPlayer);
-					} else if (tbtn.getId().equals("singleWinsChart")) {
-						winChartPanel.loadGoalChart(selectedPlayer);
-					}
+					setEnabledButtons();
+					loadSinglePlayerChart(selectedPlayer);
 				}
+			}
+
+			private void setDoUpdate() {
+				doUpdateSinglePlayerChart = true;
 			}
 		});
 		return cbPlayer;
+	}
+
+	protected void setEnabledButtons() {
+		btnGoalChart.setEnabled(true);
+		btnUpdate.setEnabled(true);
+		btnWinChart.setEnabled(true);
 	}
 
 	private ToolBar createToolBarCharts() {
@@ -217,39 +222,33 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	public void buttonPressed(HasValue<Boolean> value, PlayerDto selectedPlayer) {
 		if (value == btnGoalChart) {
 			clcChart.setActiveWidget(goalChartPanel);
-			goalChartPanel.loadGoalChart(selectedPlayer);
+			goalChartPanel.loadGoalChart(chartDto.getChartDataDto());
 		} else if (value == btnWinChart) {
 			clcChart.setActiveWidget(winChartPanel);
-			winChartPanel.loadGoalChart(selectedPlayer);
+			winChartPanel.loadGoalChart(chartDto.getChartDataDto());
 		}
 		clcChart.forceLayout();
 	}
 
 	private AppButton createBtnUpdateChart() {
-		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.tableRefresh());
+		btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.tableRefresh());
 		btnUpdate.setToolTip("Aktualisiert die momentan gewählte Statistik");
+		btnUpdate.setEnabled(false);
 		btnUpdate.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
 				final PlayerDto selectedPlayer = cbPlayer.getValue();
 				if (selectedPlayer != null) {
 					setDoUpdate();
-
-					final ToggleButton tbtn = (ToggleButton) tgChart.getValue();
-					if (tbtn.getId().equals("singleGoalsChart")) {
-						goalChartPanel.loadGoalChart(selectedPlayer);
-					} else if (tbtn.getId().equals("singleWinsChart")) {
-						winChartPanel.loadGoalChart(selectedPlayer);
-					}
+					loadSinglePlayerChart(selectedPlayer);
 				}
+			}
+
+			private void setDoUpdate() {
+				doUpdateSinglePlayerChart = true;
 			}
 		});
 		return btnUpdate;
-	}
-
-	private void setDoUpdate() {
-		goalChartPanel.setDoUpdateGoalChart(true);
-		winChartPanel.setDoUpdateWinChart(true);
 	}
 
 	private ToggleButton createBtnGoalChart() {
@@ -258,6 +257,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		btnGoalChart.setIcon(KickerIcons.ICON.chartBar());
 		btnGoalChart.setId("singleGoalsChart");
 		btnGoalChart.setAllowDepress(false);
+		btnGoalChart.setEnabled(false);
 
 		return btnGoalChart;
 	}
@@ -268,6 +268,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		btnWinChart.setIcon(KickerIcons.ICON.chartBar());
 		btnWinChart.setId("singleWinsChart");
 		btnWinChart.setAllowDepress(false);
+		btnWinChart.setEnabled(false);
 
 		return btnWinChart;
 	}
@@ -293,13 +294,40 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		}
 	}
 
+	private void loadSinglePlayerChart(PlayerDto selectedPlayer) {
+		if (doUpdateSinglePlayerChart) {
+			mask("Statistik wird geladen...");
+			KickerServices.CHART_SERVICE.getGoalChart(selectedPlayer, new AsyncCallback<ChartDto>() {
+				@Override
+				public void onSuccess(ChartDto result) {
+					unmask();
+					doUpdateSinglePlayerChart = false;
+					chartDto = result;
+					if (tgChart.getValue() == btnGoalChart) {
+						goalChartPanel.loadGoalChart(result.getChartDataDto());
+					} else if (tgChart.getValue() == btnWinChart) {
+						winChartPanel.loadGoalChart(result.getChartDataDto());
+					}
+					infoPanel.setInfos(result);
+				}
+
+				@Override
+				public void onFailure(Throwable caught) {
+					unmask();
+					doUpdateSinglePlayerChart = false;
+					AppExceptionHandler.handleException(caught);
+				}
+			});
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void updatePanel(UpdatePanelEvent event) {
 		doUpdatePlayerList = true;
-		goalChartPanel.setDoUpdateGoalChart(true);
+		doUpdateSinglePlayerChart = true;
 	}
 
 }

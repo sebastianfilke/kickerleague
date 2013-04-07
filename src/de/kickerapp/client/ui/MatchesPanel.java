@@ -293,9 +293,11 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		ccMatchSets.setGroupable(false);
 		final SummaryColumnConfig<MatchDto, String> ccMatchPointsTeam1 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchPointsTeam1, 120,
 				"Punkte Spieler/Team1");
+		ccMatchPointsTeam1.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchSets.setGroupable(false);
 		final SummaryColumnConfig<MatchDto, String> ccMatchPointsTeam2 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchPointsTeam2, 120,
 				"Punkte Spieler/Team2");
+		ccMatchPointsTeam2.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchSets.setGroupable(false);
 
 		final ArrayList<ColumnConfig<MatchDto, ?>> columns = new ArrayList<ColumnConfig<MatchDto, ?>>();

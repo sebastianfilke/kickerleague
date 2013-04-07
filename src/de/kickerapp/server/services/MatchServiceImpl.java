@@ -18,7 +18,7 @@ import de.kickerapp.server.entity.Stats;
 import de.kickerapp.server.entity.Team;
 import de.kickerapp.server.entity.TeamStats;
 import de.kickerapp.server.persistence.PMFactory;
-import de.kickerapp.server.services.MatchServiceHelper.MatchComparator;
+import de.kickerapp.server.services.MatchServiceHelper.MatchDescendingComparator;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchDto;
 
@@ -318,7 +318,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		final List<Player> dbPlayers = PMFactory.getList(Player.class);
 		final List<Team> dbTeams = PMFactory.getList(Team.class);
 
-		Collections.sort(dbMatches, new MatchComparator());
+		Collections.sort(dbMatches, new MatchDescendingComparator());
 		for (Match dbMatch : dbMatches) {
 			final MatchDto matchDto = MatchServiceHelper.createDtoMatch(dbMatch, dbPlayers, dbTeams);
 

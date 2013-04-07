@@ -1,5 +1,7 @@
 package de.kickerapp.shared.dto;
 
+import java.util.ArrayList;
+
 import de.kickerapp.shared.common.BaseDto;
 
 public class ChartDto extends BaseDto {
@@ -7,69 +9,108 @@ public class ChartDto extends BaseDto {
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -4934809671424931355L;
 
-	private String month;
+	private Integer winSeries;
 
-	private Integer shotGoals;
+	private Integer lossSeries;
 
-	private Integer getGoals;
+	private Integer maxWinPoints;
 
-	private Integer wins;
+	private Integer maxLossPoints;
 
-	private Integer losses;
+	private Integer maxPoints;
+
+	private Integer minPoints;
+
+	private String averageWins;
+
+	private String averagePoints;
+
+	private ArrayList<ChartDataDto> chartDataDto;
 
 	public ChartDto() {
 		super();
 
-		month = "";
-		shotGoals = 0;
-		getGoals = 0;
-		wins = 0;
-		losses = 0;
+		winSeries = 0;
+		lossSeries = 0;
+		maxWinPoints = 0;
+		maxLossPoints = 0;
+		maxPoints = 0;
+		minPoints = 0;
+		averageWins = "0.0";
+		averagePoints = "0.0";
+		chartDataDto = new ArrayList<ChartDataDto>();
 	}
 
-	public ChartDto(String month) {
-		this();
-		this.month = month;
+	public Integer getWinSeries() {
+		return winSeries;
 	}
 
-	public String getMonth() {
-		return month;
+	public void setWinSeries(Integer winSeries) {
+		this.winSeries = winSeries;
 	}
 
-	public void setMonth(String month) {
-		this.month = month;
+	public Integer getLossSeries() {
+		return lossSeries;
 	}
 
-	public Integer getShotGoals() {
-		return shotGoals;
+	public void setLossSeries(Integer lossSeries) {
+		this.lossSeries = lossSeries;
 	}
 
-	public void setShotGoals(Integer shotGoals) {
-		this.shotGoals = shotGoals;
+	public Integer getMaxWinPoints() {
+		return maxWinPoints;
 	}
 
-	public Integer getGetGoals() {
-		return getGoals;
+	public void setMaxWinPoints(Integer maxWinPoints) {
+		this.maxWinPoints = maxWinPoints;
 	}
 
-	public void setGetGoals(Integer getGoals) {
-		this.getGoals = getGoals;
+	public Integer getMaxLossPoints() {
+		return maxLossPoints;
 	}
 
-	public Integer getWins() {
-		return wins;
+	public void setMaxLossPoints(Integer maxLossPoints) {
+		this.maxLossPoints = maxLossPoints;
 	}
 
-	public void setWins(Integer wins) {
-		this.wins = wins;
+	public Integer getMaxPoints() {
+		return maxPoints;
 	}
 
-	public Integer getLosses() {
-		return losses;
+	public void setMaxPoints(Integer maxPoints) {
+		this.maxPoints = maxPoints;
 	}
 
-	public void setLosses(Integer losses) {
-		this.losses = losses;
+	public Integer getMinPoints() {
+		return minPoints;
+	}
+
+	public void setMinPoints(Integer minPoints) {
+		this.minPoints = minPoints;
+	}
+
+	public String getAverageWins() {
+		return averageWins;
+	}
+
+	public void setAverageWins(String averageWins) {
+		this.averageWins = averageWins;
+	}
+
+	public String getAveragePoints() {
+		return averagePoints;
+	}
+
+	public void setAveragePoints(String averagePoints) {
+		this.averagePoints = averagePoints;
+	}
+
+	public ArrayList<ChartDataDto> getChartDataDto() {
+		return chartDataDto;
+	}
+
+	public void setChartDataDto(ArrayList<ChartDataDto> chartDataDto) {
+		this.chartDataDto = chartDataDto;
 	}
 
 }

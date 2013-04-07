@@ -73,11 +73,11 @@ public class MatchServiceHelper {
 	}
 
 	/**
-	 * Comparator zur Sortierung der Spiele.
+	 * Comparator zur absteigenden Sortierung der Spiele.
 	 * 
 	 * @author Sebastian Filke
 	 */
-	protected static class MatchComparator implements Comparator<Match>, Serializable {
+	protected static class MatchDescendingComparator implements Comparator<Match>, Serializable {
 
 		/** Konstante für die SerialVersionUID. */
 		private static final long serialVersionUID = 3150940865430023409L;
@@ -88,6 +88,25 @@ public class MatchServiceHelper {
 		@Override
 		public int compare(Match m1, Match m2) {
 			return m2.getMatchNumber().compareTo(m1.getMatchNumber());
+		}
+	}
+
+	/**
+	 * Comparator zur aufsteigenden Sortierung der Spiele.
+	 * 
+	 * @author Sebastian Filke
+	 */
+	protected static class MatchAscendingComparator implements Comparator<Match>, Serializable {
+
+		/** Konstante für die SerialVersionUID. */
+		private static final long serialVersionUID = 3150940865430023409L;
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int compare(Match m1, Match m2) {
+			return m1.getMatchNumber().compareTo(m2.getMatchNumber());
 		}
 	}
 
@@ -480,21 +499,29 @@ public class MatchServiceHelper {
 	private static int evaluatePositivePoints(final int currentPoints, final int pointsAbsDifference, final int[][] pointsToMap) {
 		int points = 0;
 		if (pointsAbsDifference <= 25) {
-			points = calculatePositivePoints(currentPoints, pointsToMap[0][0]);
+			points = pointsToMap[0][0];
+			// points = calculatePositivePoints(currentPoints, pointsToMap[0][0]);
 		} else if (pointsAbsDifference > 25 && pointsAbsDifference <= 50) {
-			points = calculatePositivePoints(currentPoints, pointsToMap[1][0]);
+			points = pointsToMap[1][0];
+			// points = calculatePositivePoints(currentPoints, pointsToMap[1][0]);
 		} else if (pointsAbsDifference > 50 && pointsAbsDifference <= 100) {
-			points = calculatePositivePoints(currentPoints, pointsToMap[2][0]);
+			points = pointsToMap[2][0];
+			// points = calculatePositivePoints(currentPoints, pointsToMap[2][0]);
 		} else if (pointsAbsDifference > 100 && pointsAbsDifference <= 150) {
-			points = calculatePositivePoints(currentPoints, pointsToMap[3][0]);
+			points = pointsToMap[3][0];
+			// points = calculatePositivePoints(currentPoints, pointsToMap[3][0]);
 		} else if (pointsAbsDifference > 150 && pointsAbsDifference <= 225) {
-			points = calculatePositivePoints(currentPoints, pointsToMap[4][0]);
+			points = pointsToMap[4][0];
+			// points = calculatePositivePoints(currentPoints, pointsToMap[4][0]);
 		} else if (pointsAbsDifference > 225 && pointsAbsDifference <= 350) {
-			points = calculatePositivePoints(currentPoints, pointsToMap[5][0]);
+			points = pointsToMap[5][0];
+			// points = calculatePositivePoints(currentPoints, pointsToMap[5][0]);
 		} else if (pointsAbsDifference > 350 && pointsAbsDifference <= 500) {
-			points = calculatePositivePoints(currentPoints, pointsToMap[6][0]);
+			points = pointsToMap[6][0];
+			// points = calculatePositivePoints(currentPoints, pointsToMap[6][0]);
 		} else if (pointsAbsDifference > 500) {
-			points = calculatePositivePoints(currentPoints, pointsToMap[7][0]);
+			points = pointsToMap[7][0];
+			// points = calculatePositivePoints(currentPoints, pointsToMap[7][0]);
 		}
 		return points;
 	}
@@ -524,21 +551,29 @@ public class MatchServiceHelper {
 	private static int evaluateNegativePoints(final int currentPoints, final int pointsAbsDifference, final int[][] pointsToMap) {
 		int points = 0;
 		if (pointsAbsDifference <= 25) {
-			points = calculateNegativePoints(currentPoints, pointsToMap[0][1]);
+			points = pointsToMap[0][1];
+			// points = calculateNegativePoints(currentPoints, pointsToMap[0][1]);
 		} else if (pointsAbsDifference > 25 && pointsAbsDifference <= 50) {
-			points = calculateNegativePoints(currentPoints, pointsToMap[1][1]);
+			points = pointsToMap[1][1];
+			// points = calculateNegativePoints(currentPoints, pointsToMap[1][1]);
 		} else if (pointsAbsDifference > 50 && pointsAbsDifference <= 100) {
-			points = calculateNegativePoints(currentPoints, pointsToMap[2][1]);
+			points = pointsToMap[2][1];
+			// points = calculateNegativePoints(currentPoints, pointsToMap[2][1]);
 		} else if (pointsAbsDifference > 100 && pointsAbsDifference <= 150) {
-			points = calculateNegativePoints(currentPoints, pointsToMap[3][1]);
+			points = pointsToMap[3][1];
+			// points = calculateNegativePoints(currentPoints, pointsToMap[3][1]);
 		} else if (pointsAbsDifference > 150 && pointsAbsDifference <= 225) {
-			points = calculateNegativePoints(currentPoints, pointsToMap[4][1]);
+			points = pointsToMap[4][1];
+			// points = calculateNegativePoints(currentPoints, pointsToMap[4][1]);
 		} else if (pointsAbsDifference > 225 && pointsAbsDifference <= 350) {
-			points = calculateNegativePoints(currentPoints, pointsToMap[5][1]);
+			points = pointsToMap[5][1];
+			// points = calculateNegativePoints(currentPoints, pointsToMap[5][1]);
 		} else if (pointsAbsDifference > 350 && pointsAbsDifference <= 500) {
-			points = calculateNegativePoints(currentPoints, pointsToMap[6][1]);
+			points = pointsToMap[6][1];
+			// points = calculateNegativePoints(currentPoints, pointsToMap[6][1]);
 		} else if (pointsAbsDifference > 500) {
-			points = calculateNegativePoints(currentPoints, pointsToMap[7][1]);
+			points = pointsToMap[7][1];
+			// points = calculateNegativePoints(currentPoints, pointsToMap[7][1]);
 		}
 		return points;
 	}
