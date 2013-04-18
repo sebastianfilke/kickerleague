@@ -56,7 +56,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 	private ToggleGroup tgChart;
 
-	private ToggleButton btnGoalChart, btnWinChart;
+	private ToggleButton tbtnGoalChart, tbtnWinChart;
 
 	private boolean doUpdatePlayerList, doUpdateSinglePlayerChart;
 
@@ -185,17 +185,17 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	}
 
 	protected void setEnabledButtons() {
-		btnGoalChart.setEnabled(true);
+		tbtnGoalChart.setEnabled(true);
 		btnUpdate.setEnabled(true);
-		btnWinChart.setEnabled(true);
+		tbtnWinChart.setEnabled(true);
 	}
 
 	private ToolBar createToolBarCharts() {
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
-		final ToggleButton btnGoalChart = createBtnGoalChart();
-		final ToggleButton btnWinsChart = createBtnWinChart();
+		final ToggleButton btnGoalChart = createTbtnGoalChart();
+		final ToggleButton btnWinsChart = createTbtnWinChart();
 
 		tgChart = new ToggleGroup();
 		tgChart.addValueChangeHandler(new ValueChangeHandler<HasValue<Boolean>>() {
@@ -220,10 +220,10 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	}
 
 	public void buttonPressed(HasValue<Boolean> value, PlayerDto selectedPlayer) {
-		if (value == btnGoalChart) {
+		if (value == tbtnGoalChart) {
 			clcChart.setActiveWidget(goalChartPanel);
 			goalChartPanel.loadGoalChart(chartDto.getChartDataDto());
-		} else if (value == btnWinChart) {
+		} else if (value == tbtnWinChart) {
 			clcChart.setActiveWidget(winChartPanel);
 			winChartPanel.loadGoalChart(chartDto.getChartDataDto());
 		}
@@ -251,26 +251,26 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		return btnUpdate;
 	}
 
-	private ToggleButton createBtnGoalChart() {
-		btnGoalChart = new ToggleButton("Torstatistik");
-		btnGoalChart.setToolTip("Zeigt die Torstatistik für den aktuell gewählten Spieler");
-		btnGoalChart.setIcon(KickerIcons.ICON.chartBar());
-		btnGoalChart.setId("singleGoalsChart");
-		btnGoalChart.setAllowDepress(false);
-		btnGoalChart.setEnabled(false);
+	private ToggleButton createTbtnGoalChart() {
+		tbtnGoalChart = new ToggleButton("Torstatistik");
+		tbtnGoalChart.setToolTip("Zeigt die Torstatistik für den aktuell gewählten Spieler");
+		tbtnGoalChart.setIcon(KickerIcons.ICON.chartBar());
+		tbtnGoalChart.setId("singleGoalsChart");
+		tbtnGoalChart.setAllowDepress(false);
+		tbtnGoalChart.setEnabled(false);
 
-		return btnGoalChart;
+		return tbtnGoalChart;
 	}
 
-	private ToggleButton createBtnWinChart() {
-		btnWinChart = new ToggleButton("Siegstatistik");
-		btnWinChart.setToolTip("Zeigt die Siegstatistik für den aktuell gewählten Spieler");
-		btnWinChart.setIcon(KickerIcons.ICON.chartBar());
-		btnWinChart.setId("singleWinsChart");
-		btnWinChart.setAllowDepress(false);
-		btnWinChart.setEnabled(false);
+	private ToggleButton createTbtnWinChart() {
+		tbtnWinChart = new ToggleButton("Siegstatistik");
+		tbtnWinChart.setToolTip("Zeigt die Siegstatistik für den aktuell gewählten Spieler");
+		tbtnWinChart.setIcon(KickerIcons.ICON.chartBar());
+		tbtnWinChart.setId("singleWinsChart");
+		tbtnWinChart.setAllowDepress(false);
+		tbtnWinChart.setEnabled(false);
 
-		return btnWinChart;
+		return tbtnWinChart;
 	}
 
 	protected void getPlayerList() {
@@ -303,9 +303,9 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 					unmask();
 					doUpdateSinglePlayerChart = false;
 					chartDto = result;
-					if (tgChart.getValue() == btnGoalChart) {
+					if (tgChart.getValue() == tbtnGoalChart) {
 						goalChartPanel.loadGoalChart(result.getChartDataDto());
-					} else if (tgChart.getValue() == btnWinChart) {
+					} else if (tgChart.getValue() == tbtnWinChart) {
 						winChartPanel.loadGoalChart(result.getChartDataDto());
 					}
 					infoPanel.setInfos(result);

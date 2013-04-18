@@ -15,6 +15,7 @@ public interface KickerMessages extends Messages {
 
 	// CHECKSTYLE:OFF
 
+	@DefaultMessage("Kicker League")
 	String applicationTitle();
 
 }
