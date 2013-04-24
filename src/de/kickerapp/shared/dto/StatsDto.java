@@ -16,7 +16,11 @@ public class StatsDto extends BaseDto {
 	/** Die gewonnen Spiele des Teams bzw. Spielers. */
 	private Integer wins;
 	/** Die verlorenen Spiele des Teams bzw. Spielers. */
-	private Integer losses;
+	private Integer defeats;
+	/** Die gewonnen Sätze des Teams bzw. Spielers. */
+	private Integer winSets;
+	/** Die verlorenen Sätze des Teams bzw. Spielers. */
+	private Integer lostSets;
 	/** Die geschossenen Tore des Teams bzw. Spielers. */
 	private Integer shotGoals;
 	/** Die kassierten Spiele des Teams bzw. Spielers. */
@@ -39,7 +43,9 @@ public class StatsDto extends BaseDto {
 		super();
 
 		wins = 0;
-		losses = 0;
+		defeats = 0;
+		winSets = 0;
+		lostSets = 0;
 		shotGoals = 0;
 		getGoals = 0;
 		prevTablePlace = 0;
@@ -72,17 +78,53 @@ public class StatsDto extends BaseDto {
 	 * 
 	 * @return Die verlorenen Spiele des Teams bzw. Spielers als {@link Integer}.
 	 */
-	public Integer getLosses() {
-		return losses;
+	public Integer getDefeats() {
+		return defeats;
 	}
 
 	/**
 	 * Setzt die verlorenen Spiele des Teams bzw. Spielers.
 	 * 
-	 * @param losses Die verlorenen Spiele des Teams bzw. Spielers als {@link Integer}.
+	 * @param defeats Die verlorenen Spiele des Teams bzw. Spielers als {@link Integer}.
 	 */
-	public void setLosses(Integer losses) {
-		this.losses = losses;
+	public void setDefeats(Integer defeats) {
+		this.defeats = defeats;
+	}
+
+	/**
+	 * Liefert die gewonnen Sätze des Teams bzw. Spielers.
+	 * 
+	 * @return Die gewonnen Sätze des Teams bzw. Spielers als {@link Integer}.
+	 */
+	public Integer getWinSets() {
+		return winSets;
+	}
+
+	/**
+	 * Setzt die gewonnen Sätze des Teams bzw. Spielers.
+	 * 
+	 * @param winSets Die gewonnen Sätze des Teams bzw. Spielers als {@link Integer}.
+	 */
+	public void setWinSets(Integer winSets) {
+		this.winSets = winSets;
+	}
+
+	/**
+	 * Liefert die verlorenen Sätze des Teams bzw. Spielers.
+	 * 
+	 * @return Die verlorenen Sätze des Teams bzw. Spielers als {@link Integer}.
+	 */
+	public Integer getLostSets() {
+		return lostSets;
+	}
+
+	/**
+	 * Setzt die verlorenen Sätze des Teams bzw. Spielers.
+	 * 
+	 * @param lostSets Die verlorenen Sätze des Teams bzw. Spielers als {@link Integer}.
+	 */
+	public void setLostSets(Integer lostSets) {
+		this.lostSets = lostSets;
 	}
 
 	/**

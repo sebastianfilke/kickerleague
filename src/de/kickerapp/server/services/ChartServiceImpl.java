@@ -52,16 +52,16 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
 		Integer winSeries = 0;
-		Integer lossSeries = 0;
+		Integer defeatSeries = 0;
 		Integer tempWinSeries = 0;
-		Integer tempLossSeries = 0;
+		Integer tempDefeatSeries = 0;
 		Integer maxWinPoints = 0;
-		Integer maxLossPoints = 0;
+		Integer maxDefeatPoints = 0;
 		Integer maxPoints = 1000;
 		Integer minPoints = 1000;
 		Integer points = 1000;
 		Integer sumWins = 0;
-		Integer sumLosses = 0;
+		Integer sumDefeats = 0;
 		Integer sumPoints = 0;
 		Integer sumMatches = 0;
 
@@ -73,7 +73,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 			Integer shotGoals = chartDataDto.getShotGoals();
 			Integer getGoals = chartDataDto.getGetGoals();
 			Integer wins = chartDataDto.getWins();
-			Integer losses = chartDataDto.getLosses();
+			Integer defeats = chartDataDto.getDefeats();
 
 			final boolean team1Winner = MatchServiceHelper.isTeam1Winner(dbMatch);
 			if (dbMatch.getMatchType() == MatchType.SINGLE) {
@@ -82,8 +82,8 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 					final Integer matchPoints = dbMatch.getMatchPoints().getMatchPointsTeam1().get(0);
 					if (maxWinPoints < matchPoints) {
 						maxWinPoints = matchPoints;
-					} else if (maxLossPoints > matchPoints) {
-						maxLossPoints = matchPoints;
+					} else if (maxDefeatPoints > matchPoints) {
+						maxDefeatPoints = matchPoints;
 					}
 					points = points + matchPoints;
 					if (points > maxPoints) {
@@ -101,18 +101,18 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 					if (team1Winner) {
 						wins++;
 						sumWins++;
-						tempLossSeries = 0;
+						tempDefeatSeries = 0;
 						tempWinSeries++;
 						if (winSeries < tempWinSeries) {
 							winSeries = tempWinSeries;
 						}
 					} else {
-						losses++;
-						sumLosses++;
+						defeats++;
+						sumDefeats++;
 						tempWinSeries = 0;
-						tempLossSeries++;
-						if (lossSeries < tempLossSeries) {
-							lossSeries = tempLossSeries;
+						tempDefeatSeries++;
+						if (defeatSeries < tempDefeatSeries) {
+							defeatSeries = tempDefeatSeries;
 						}
 					}
 					sumMatches++;
@@ -121,8 +121,8 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 					final Integer matchPoints = dbMatch.getMatchPoints().getMatchPointsTeam2().get(0);
 					if (maxWinPoints < matchPoints) {
 						maxWinPoints = matchPoints;
-					} else if (maxLossPoints > matchPoints) {
-						maxLossPoints = matchPoints;
+					} else if (maxDefeatPoints > matchPoints) {
+						maxDefeatPoints = matchPoints;
 					}
 					points = points + matchPoints;
 					if (points > maxPoints) {
@@ -140,18 +140,18 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 					if (!team1Winner) {
 						wins++;
 						sumWins++;
-						tempLossSeries = 0;
+						tempDefeatSeries = 0;
 						tempWinSeries++;
 						if (winSeries < tempWinSeries) {
 							winSeries = tempWinSeries;
 						}
 					} else {
-						losses++;
-						sumLosses++;
+						defeats++;
+						sumDefeats++;
 						tempWinSeries = 0;
-						tempLossSeries++;
-						if (lossSeries < tempLossSeries) {
-							lossSeries = tempLossSeries;
+						tempDefeatSeries++;
+						if (defeatSeries < tempDefeatSeries) {
+							defeatSeries = tempDefeatSeries;
 						}
 					}
 					sumMatches++;
@@ -160,16 +160,16 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 			chartDataDto.setShotGoals(shotGoals);
 			chartDataDto.setGetGoals(getGoals);
 			chartDataDto.setWins(wins);
-			chartDataDto.setLosses(losses);
+			chartDataDto.setDefeats(defeats);
 		}
 		final ChartDto chartDto = new ChartDto();
 
 		final ArrayList<ChartDataDto> chartDtos = new ArrayList<ChartDataDto>();
 		if (containsPlayer) {
 			chartDto.setWinSeries(winSeries);
-			chartDto.setLossSeries(lossSeries);
+			chartDto.setDefeatSeries(defeatSeries);
 			chartDto.setMaxWinPoints(maxWinPoints);
-			chartDto.setMaxLossPoints(maxLossPoints);
+			chartDto.setMaxDefeatPoints(maxDefeatPoints);
 			chartDto.setMaxPoints(maxPoints);
 			chartDto.setMinPoints(minPoints);
 			final double averageWins = ((double) (sumWins * 100)) / sumMatches;

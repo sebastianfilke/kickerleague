@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.IdentityValueProvider;
+import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.Store;
 import com.sencha.gxt.widget.core.client.PlainTabPanel;
@@ -49,6 +50,7 @@ import de.kickerapp.client.ui.base.BasePanel;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.StoreFilterToggleButton;
+import de.kickerapp.shared.common.BaseDto;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
@@ -236,14 +238,46 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		numberer.setSortable(true);
 
 		final ColumnConfig<PlayerDto, String> ccPlayerName = new ColumnConfig<PlayerDto, String>(PlayerProperty.playerName, 140, "Spieler");
-		final ColumnConfig<PlayerDto, Integer> ccSingleMatches = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.singleMatches, 100, "Anzahl Spiele");
-		ccSingleMatches.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		final ColumnConfig<PlayerDto, Integer> ccSingleWins = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.singleWins, 100, "Siege");
-		ccSingleWins.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		final ColumnConfig<PlayerDto, Integer> ccSingleLosses = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.singleLosses, 100, "Niederlagen");
-		ccSingleLosses.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		final ColumnConfig<PlayerDto, String> ccSingleGoals = new ColumnConfig<PlayerDto, String>(PlayerProperty.singleGoals, 100, "Tore");
-		ccSingleGoals.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		final ColumnConfig<PlayerDto, Integer> ccSingleMatches = createColumnConfig(PlayerProperty.singleMatches, 90, "Spiele");
+		final ColumnConfig<PlayerDto, Integer> ccSingleWins = createColumnConfig(PlayerProperty.singleWins, 90, "Siege");
+		final ColumnConfig<PlayerDto, Integer> ccSingleDefeats = createColumnConfig(PlayerProperty.singleDefeats, 90, "Niederlagen");
+		final ColumnConfig<PlayerDto, String> ccSingleSets = createColumnConfig(PlayerProperty.singleSets, 90, "Sätze");
+		ccSingleSets.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final Integer winSets1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
+				final Integer winSets2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
+
+				int comp = winSets1.compareTo(winSets2);
+				if (comp == 0) {
+					final Integer lostSets1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
+					final Integer lostSets2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
+
+					comp = lostSets2.compareTo(lostSets1);
+				}
+				return comp;
+			}
+		});
+		final ColumnConfig<PlayerDto, String> ccSingleSetDifference = createColumnConfig(PlayerProperty.singleSetDifference, 90, "Satzdifferenz");
+		ccSingleSetDifference.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				Integer setDifference1 = 0;
+				if (o1.startsWith("+")) {
+					setDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
+				} else {
+					setDifference1 = Integer.parseInt(o1);
+				}
+				Integer setDifference2 = 0;
+				if (o2.startsWith("+")) {
+					setDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
+				} else {
+					setDifference2 = Integer.parseInt(o2);
+				}
+				return setDifference1.compareTo(setDifference2);
+			}
+		});
+		final ColumnConfig<PlayerDto, String> ccSingleGoals = createColumnConfig(PlayerProperty.singleGoals, 90, "Tore");
 		ccSingleGoals.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -260,9 +294,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return comp;
 			}
 		});
-		final ColumnConfig<PlayerDto, String> ccSingleGoalDifference = new ColumnConfig<PlayerDto, String>(PlayerProperty.singleGoalDifference, 100,
-				"Tordifferenz");
-		ccSingleGoalDifference.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		final ColumnConfig<PlayerDto, String> ccSingleGoalDifference = createColumnConfig(PlayerProperty.singleGoalDifference, 90, "Tordifferenz");
 		ccSingleGoalDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -281,8 +313,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return goalDifference1.compareTo(goalDifference2);
 			}
 		});
-		final ColumnConfig<PlayerDto, String> ccSinglePoints = new ColumnConfig<PlayerDto, String>(PlayerProperty.singlePoints, 100, "Punkte");
-		ccSinglePoints.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		final ColumnConfig<PlayerDto, String> ccSinglePoints = createColumnConfig(PlayerProperty.singlePoints, 90, "Punkte");
 		ccSinglePoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
@@ -300,8 +331,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return points1.compareTo(points2);
 			}
 		});
-		final ColumnConfig<PlayerDto, ImageResource> ccSingleTendency = new ColumnConfig<PlayerDto, ImageResource>(PlayerProperty.singleTendency, 80, "Tendenz");
-		ccSingleTendency.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		final ColumnConfig<PlayerDto, ImageResource> ccSingleTendency = createColumnConfig(PlayerProperty.singleTendency, 80, "Tendenz");
 		ccSingleTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
@@ -323,7 +353,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccPlayerName);
 		columns.add(ccSingleMatches);
 		columns.add(ccSingleWins);
-		columns.add(ccSingleLosses);
+		columns.add(ccSingleDefeats);
+		columns.add(ccSingleSets);
+		columns.add(ccSingleSetDifference);
 		columns.add(ccSingleGoals);
 		columns.add(ccSingleGoalDifference);
 		columns.add(ccSinglePoints);
@@ -406,14 +438,46 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		numberer.setSortable(true);
 
 		final ColumnConfig<PlayerDto, String> ccPlayerName = new ColumnConfig<PlayerDto, String>(PlayerProperty.playerName, 140, "Spieler");
-		final ColumnConfig<PlayerDto, Integer> ccDoubleMatches = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.doubleMatches, 100, "Anzahl Spiele");
-		ccDoubleMatches.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		final ColumnConfig<PlayerDto, Integer> ccDoubleWins = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.doubleWins, 100, "Siege");
-		ccDoubleWins.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		final ColumnConfig<PlayerDto, Integer> ccDoubleLosses = new ColumnConfig<PlayerDto, Integer>(PlayerProperty.doubleLosses, 100, "Niederlagen");
-		ccDoubleLosses.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		final ColumnConfig<PlayerDto, String> ccDoubleGoals = new ColumnConfig<PlayerDto, String>(PlayerProperty.doubleGoals, 100, "Tore");
-		ccDoubleGoals.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		final ColumnConfig<PlayerDto, Integer> ccDoubleMatches = createColumnConfig(PlayerProperty.doubleMatches, 90, "Spiele");
+		final ColumnConfig<PlayerDto, Integer> ccDoubleWins = createColumnConfig(PlayerProperty.doubleWins, 90, "Siege");
+		final ColumnConfig<PlayerDto, Integer> ccDoubleDefeats = createColumnConfig(PlayerProperty.doubleDefeats, 90, "Niederlagen");
+		final ColumnConfig<PlayerDto, String> ccDoubleSets = createColumnConfig(PlayerProperty.doubleSets, 90, "Sätze");
+		ccDoubleSets.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final Integer winSets1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
+				final Integer winSets2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
+
+				int comp = winSets1.compareTo(winSets2);
+				if (comp == 0) {
+					final Integer lostSets1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
+					final Integer lostSets2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
+
+					comp = lostSets2.compareTo(lostSets1);
+				}
+				return comp;
+			}
+		});
+		final ColumnConfig<PlayerDto, String> ccDoubleSetDifference = createColumnConfig(PlayerProperty.doubleSetDifference, 90, "Satzdifferenz");
+		ccDoubleSetDifference.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				Integer setDifference1 = 0;
+				if (o1.startsWith("+")) {
+					setDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
+				} else {
+					setDifference1 = Integer.parseInt(o1);
+				}
+				Integer setDifference2 = 0;
+				if (o2.startsWith("+")) {
+					setDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
+				} else {
+					setDifference2 = Integer.parseInt(o2);
+				}
+				return setDifference1.compareTo(setDifference2);
+			}
+		});
+		final ColumnConfig<PlayerDto, String> ccDoubleGoals = createColumnConfig(PlayerProperty.doubleGoals, 90, "Tore");
 		ccDoubleGoals.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -430,9 +494,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return comp;
 			}
 		});
-		final ColumnConfig<PlayerDto, String> ccDoubleGoalDifference = new ColumnConfig<PlayerDto, String>(PlayerProperty.doubleGoalDifference, 100,
-				"Tordifferenz");
-		ccDoubleGoalDifference.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		final ColumnConfig<PlayerDto, String> ccDoubleGoalDifference = createColumnConfig(PlayerProperty.doubleGoalDifference, 90, "Tordifferenz");
 		ccDoubleGoalDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -451,8 +513,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return goalDifference1.compareTo(goalDifference2);
 			}
 		});
-		final ColumnConfig<PlayerDto, String> ccDoublePoints = new ColumnConfig<PlayerDto, String>(PlayerProperty.doublePoints, 100, "Punkte");
-		ccDoublePoints.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		final ColumnConfig<PlayerDto, String> ccDoublePoints = createColumnConfig(PlayerProperty.doublePoints, 90, "Punkte");
 		ccDoublePoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
@@ -470,8 +531,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return points1.compareTo(points2);
 			}
 		});
-		final ColumnConfig<PlayerDto, ImageResource> ccDoubleTendency = new ColumnConfig<PlayerDto, ImageResource>(PlayerProperty.doubleTendency, 80, "Tendenz");
-		ccDoubleTendency.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		final ColumnConfig<PlayerDto, ImageResource> ccDoubleTendency = createColumnConfig(PlayerProperty.doubleTendency, 80, "Tendenz");
 		ccDoubleTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
@@ -493,7 +553,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccPlayerName);
 		columns.add(ccDoubleMatches);
 		columns.add(ccDoubleWins);
-		columns.add(ccDoubleLosses);
+		columns.add(ccDoubleDefeats);
+		columns.add(ccDoubleSets);
+		columns.add(ccDoubleSetDifference);
 		columns.add(ccDoubleGoals);
 		columns.add(ccDoubleGoalDifference);
 		columns.add(ccDoublePoints);
@@ -585,14 +647,46 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		numberer.setSortable(true);
 
 		final ColumnConfig<TeamDto, String> ccTeamName = new ColumnConfig<TeamDto, String>(TeamProperty.teamName, 140, "Team");
-		final ColumnConfig<TeamDto, Integer> ccTeamMatches = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamMatches, 100, "Anzahl Spiele");
-		ccTeamMatches.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		final ColumnConfig<TeamDto, Integer> ccTeamWins = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamWins, 100, "Siege");
-		ccTeamWins.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		final ColumnConfig<TeamDto, Integer> ccTeamLosses = new ColumnConfig<TeamDto, Integer>(TeamProperty.teamLosses, 100, "Niederlagen");
-		ccTeamLosses.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		final ColumnConfig<TeamDto, String> ccTeamGoals = new ColumnConfig<TeamDto, String>(TeamProperty.teamGoals, 100, "Tore");
-		ccTeamGoals.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		final ColumnConfig<TeamDto, Integer> ccTeamMatches = createColumnConfig(TeamProperty.teamMatches, 90, "Spiele");
+		final ColumnConfig<TeamDto, Integer> ccTeamWins = createColumnConfig(TeamProperty.teamWins, 90, "Siege");
+		final ColumnConfig<TeamDto, Integer> ccTeamDefeats = createColumnConfig(TeamProperty.teamDefeats, 90, "Niederlagen");
+		final ColumnConfig<TeamDto, String> ccTeamSets = createColumnConfig(TeamProperty.teamSets, 90, "Sätze");
+		ccTeamSets.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final Integer winSets1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
+				final Integer winSets2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
+
+				int comp = winSets1.compareTo(winSets2);
+				if (comp == 0) {
+					final Integer lostSets1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
+					final Integer lostSets2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
+
+					comp = lostSets2.compareTo(lostSets1);
+				}
+				return comp;
+			}
+		});
+		final ColumnConfig<TeamDto, String> ccTeamSetDifference = createColumnConfig(TeamProperty.teamSetDifference, 90, "Satzdifferenz");
+		ccTeamSetDifference.setComparator(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				Integer setDifference1 = 0;
+				if (o1.startsWith("+")) {
+					setDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
+				} else {
+					setDifference1 = Integer.parseInt(o1);
+				}
+				Integer setDifference2 = 0;
+				if (o2.startsWith("+")) {
+					setDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
+				} else {
+					setDifference2 = Integer.parseInt(o2);
+				}
+				return setDifference1.compareTo(setDifference2);
+			}
+		});
+		final ColumnConfig<TeamDto, String> ccTeamGoals = createColumnConfig(TeamProperty.teamGoals, 90, "Tore");
 		ccTeamGoals.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -609,8 +703,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return comp;
 			}
 		});
-		final ColumnConfig<TeamDto, String> ccTeamGoalDifference = new ColumnConfig<TeamDto, String>(TeamProperty.teamGoalDifference, 100, "Tordifferenz");
-		ccTeamGoalDifference.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		final ColumnConfig<TeamDto, String> ccTeamGoalDifference = createColumnConfig(TeamProperty.teamGoalDifference, 90, "Tordifferenz");
 		ccTeamGoalDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -629,8 +722,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return goalDifference1.compareTo(goalDifference2);
 			}
 		});
-		final ColumnConfig<TeamDto, String> ccTeamPoints = new ColumnConfig<TeamDto, String>(TeamProperty.teamPoints, 100, "Punkte");
-		ccTeamPoints.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		final ColumnConfig<TeamDto, String> ccTeamPoints = createColumnConfig(TeamProperty.teamPoints, 90, "Punkte");
 		ccTeamPoints.setCell(new AbstractCell<String>() {
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb) {
@@ -648,8 +740,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return points1.compareTo(points2);
 			}
 		});
-		final ColumnConfig<TeamDto, ImageResource> ccTeamTendency = new ColumnConfig<TeamDto, ImageResource>(TeamProperty.teamTendency, 80, "Tendenz");
-		ccTeamTendency.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		final ColumnConfig<TeamDto, ImageResource> ccTeamTendency = createColumnConfig(TeamProperty.teamTendency, 80, "Tendenz");
 		ccTeamTendency.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
@@ -671,7 +762,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccTeamName);
 		columns.add(ccTeamMatches);
 		columns.add(ccTeamWins);
-		columns.add(ccTeamLosses);
+		columns.add(ccTeamDefeats);
+		columns.add(ccTeamSets);
+		columns.add(ccTeamSetDifference);
 		columns.add(ccTeamGoals);
 		columns.add(ccTeamGoalDifference);
 		columns.add(ccTeamPoints);
@@ -684,6 +777,24 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		new QuickTip(grid);
 
 		return grid;
+	}
+
+	/**
+	 * Erzeugt die Konfiguration für eine Spalte.
+	 * 
+	 * @param provider Der Lieferant für den Wert.
+	 * @param width Die Breite der Spalte als <code>int</code>.
+	 * @param header Der Text der Spalte als <code>String</code>.
+	 * @param <M> Der Typ der Klasse.
+	 * @param <N> Der Typ der Klasse.
+	 * @return Die erzeugte Konfiguration.
+	 */
+	private <M extends BaseDto, N extends Object> ColumnConfig<M, N> createColumnConfig(ValueProvider<M, N> provider, int width, String header) {
+		final ColumnConfig<M, N> cc = new ColumnConfig<M, N>(provider, width, header);
+		cc.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		cc.setMenuDisabled(true);
+
+		return cc;
 	}
 
 	/**

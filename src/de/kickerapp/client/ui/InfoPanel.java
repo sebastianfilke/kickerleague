@@ -10,9 +10,9 @@ import de.kickerapp.shared.dto.ChartDto;
 
 public class InfoPanel extends BaseContainer {
 
-	private Label winSeries, lossSeries;
+	private Label winSeries, defeatSeries;
 
-	private Label maxWinPoints, maxLossPoints;
+	private Label maxWinPoints, maxDefeatPoints;
 
 	private Label maxPoints, minPoints;
 
@@ -51,12 +51,12 @@ public class InfoPanel extends BaseContainer {
 		ftInfo.setHTML(0, 0, createText("Längste Gewinnserie:"));
 		ftInfo.setWidget(0, 1, winSeries);
 		ftInfo.setHTML(0, 2, createText("Längste Niederlagenserie:"));
-		ftInfo.setWidget(0, 3, lossSeries);
+		ftInfo.setWidget(0, 3, defeatSeries);
 
 		ftInfo.setHTML(1, 0, createText("Höchster Punktegewinn für Sieg:"));
 		ftInfo.setWidget(1, 1, maxWinPoints);
 		ftInfo.setHTML(1, 2, createText("Höchster Punkteverlust für Niederlage:"));
-		ftInfo.setWidget(1, 3, maxLossPoints);
+		ftInfo.setWidget(1, 3, maxDefeatPoints);
 
 		ftInfo.setHTML(2, 0, createText("Höchste Punktzahl:"));
 		ftInfo.setWidget(2, 1, maxPoints);
@@ -73,10 +73,10 @@ public class InfoPanel extends BaseContainer {
 
 	private void initLabels() {
 		winSeries = new Label("0");
-		lossSeries = new Label("0");
+		defeatSeries = new Label("0");
 
 		maxWinPoints = new Label("0");
-		maxLossPoints = new Label("0");
+		maxDefeatPoints = new Label("0");
 
 		maxPoints = new Label("0");
 		minPoints = new Label("0");
@@ -91,9 +91,9 @@ public class InfoPanel extends BaseContainer {
 
 	protected void setInfos(ChartDto chartDto) {
 		winSeries.setText(Integer.toString(chartDto.getWinSeries()));
-		lossSeries.setText(Integer.toString(chartDto.getLossSeries()));
+		defeatSeries.setText(Integer.toString(chartDto.getDefeatSeries()));
 		maxWinPoints.setText("+" + Integer.toString(chartDto.getMaxWinPoints()));
-		maxLossPoints.setText(Integer.toString(chartDto.getMaxLossPoints()));
+		maxDefeatPoints.setText(Integer.toString(chartDto.getMaxDefeatPoints()));
 		maxPoints.setText(Integer.toString(chartDto.getMaxPoints()));
 		minPoints.setText(Integer.toString(chartDto.getMinPoints()));
 		averageWins.setText(chartDto.getAverageWins() + "%");

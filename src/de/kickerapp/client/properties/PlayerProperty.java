@@ -62,7 +62,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		@Override
 		public Integer getValue(PlayerDto object) {
 			final PlayerSingleStatsDto playerSingleStatsDto = object.getPlayerSingleStatsDto();
-			return playerSingleStatsDto.getWins() + playerSingleStatsDto.getLosses();
+			return playerSingleStatsDto.getWins() + playerSingleStatsDto.getDefeats();
 		}
 
 		@Override
@@ -91,10 +91,10 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, Integer> singleLosses = new ValueProvider<PlayerDto, Integer>() {
+	public ValueProvider<PlayerDto, Integer> singleDefeats = new ValueProvider<PlayerDto, Integer>() {
 		@Override
 		public Integer getValue(PlayerDto object) {
-			return object.getPlayerSingleStatsDto().getLosses();
+			return object.getPlayerSingleStatsDto().getDefeats();
 		}
 
 		@Override
@@ -103,7 +103,55 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 
 		@Override
 		public String getPath() {
-			return "singleLosses";
+			return "singleDefeats";
+		}
+	};
+
+	public ValueProvider<PlayerDto, String> singleSets = new ValueProvider<PlayerDto, String>() {
+		@Override
+		public String getValue(PlayerDto object) {
+			final StringBuilder sb = new StringBuilder();
+
+			final PlayerSingleStatsDto playerSingleStatsDto = object.getPlayerSingleStatsDto();
+			sb.append(playerSingleStatsDto.getWinSets());
+			sb.append(":");
+			sb.append(playerSingleStatsDto.getLostSets());
+
+			return sb.toString();
+		}
+
+		@Override
+		public void setValue(PlayerDto object, String value) {
+		}
+
+		@Override
+		public String getPath() {
+			return "singleSets";
+		}
+	};
+
+	public ValueProvider<PlayerDto, String> singleSetDifference = new ValueProvider<PlayerDto, String>() {
+		@Override
+		public String getValue(PlayerDto object) {
+			final StringBuilder sb = new StringBuilder();
+
+			final PlayerSingleStatsDto playerSingleStatsDto = object.getPlayerSingleStatsDto();
+			final int setDifference = playerSingleStatsDto.getWinSets() - playerSingleStatsDto.getLostSets();
+			if (setDifference >= 0) {
+				sb.append("+" + Integer.toString(setDifference));
+			} else {
+				sb.append(Integer.toString(setDifference));
+			}
+			return sb.toString();
+		}
+
+		@Override
+		public void setValue(PlayerDto object, String value) {
+		}
+
+		@Override
+		public String getPath() {
+			return "singleSetDifference";
 		}
 	};
 
@@ -204,7 +252,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		@Override
 		public Integer getValue(PlayerDto object) {
 			final PlayerDoubleStatsDto playerDoubleStatsDto = object.getPlayerDoubleStatsDto();
-			return playerDoubleStatsDto.getWins() + playerDoubleStatsDto.getLosses();
+			return playerDoubleStatsDto.getWins() + playerDoubleStatsDto.getDefeats();
 		}
 
 		@Override
@@ -233,10 +281,10 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, Integer> doubleLosses = new ValueProvider<PlayerDto, Integer>() {
+	public ValueProvider<PlayerDto, Integer> doubleDefeats = new ValueProvider<PlayerDto, Integer>() {
 		@Override
 		public Integer getValue(PlayerDto object) {
-			return object.getPlayerDoubleStatsDto().getLosses();
+			return object.getPlayerDoubleStatsDto().getDefeats();
 		}
 
 		@Override
@@ -245,7 +293,55 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 
 		@Override
 		public String getPath() {
-			return "doubleLosses";
+			return "doubleDefeats";
+		}
+	};
+
+	public ValueProvider<PlayerDto, String> doubleSets = new ValueProvider<PlayerDto, String>() {
+		@Override
+		public String getValue(PlayerDto object) {
+			final StringBuilder sb = new StringBuilder();
+
+			final PlayerDoubleStatsDto playerDoubleStatsDto = object.getPlayerDoubleStatsDto();
+			sb.append(playerDoubleStatsDto.getWinSets()	);
+			sb.append(":");
+			sb.append(playerDoubleStatsDto.getLostSets());
+
+			return sb.toString();
+		}
+
+		@Override
+		public void setValue(PlayerDto object, String value) {
+		}
+
+		@Override
+		public String getPath() {
+			return "doubleSets";
+		}
+	};
+
+	public ValueProvider<PlayerDto, String> doubleSetDifference = new ValueProvider<PlayerDto, String>() {
+		@Override
+		public String getValue(PlayerDto object) {
+			final StringBuilder sb = new StringBuilder();
+
+			final PlayerDoubleStatsDto playerDoubleStatsDto = object.getPlayerDoubleStatsDto();
+			final int setDifference = playerDoubleStatsDto.getWinSets() - playerDoubleStatsDto.getLostSets();
+			if (setDifference >= 0) {
+				sb.append("+" + Integer.toString(setDifference));
+			} else {
+				sb.append(Integer.toString(setDifference));
+			}
+			return sb.toString();
+		}
+
+		@Override
+		public void setValue(PlayerDto object, String value) {
+		}
+
+		@Override
+		public String getPath() {
+			return "doubleSetDifference";
 		}
 	};
 

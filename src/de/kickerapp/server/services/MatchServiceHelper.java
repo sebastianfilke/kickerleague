@@ -30,17 +30,6 @@ import de.kickerapp.shared.dto.TeamDto;
  */
 public class MatchServiceHelper {
 
-	/** Die Punkte, falls es sich um ein Spiel mit 2 Sätzen handelt und das erste Team bzw. Spieler mehr Punkte hat. */
-	private static final int[][] POINTS_A = new int[][] { { 20, -18 }, { 17, -14 }, { 14, -10 }, { 11, -8 }, { 9, -6 }, { 7, -4 }, { 5, -3 }, { 4, -2 } };
-	/** Die Punkte, falls es sich um ein Spiel mit 3 Sätzen handelt und das erste Team bzw. Spieler mehr Punkte hat. */
-	private static final int[][] POINTS_B = new int[][] { { 17, -15 }, { 14, -11 }, { 11, -8 }, { 9, -6 }, { 7, -4 }, { 5, -3 }, { 3, -2 }, { 2, -1 } };
-	/** Die Punkte, falls es sich um ein Spiel mit 3 Sätzen handelt und das erste Team bzw. Spieler weniger Punkte hat. */
-	private static final int[][] POINTS_C = new int[][] { { 19, -16 }, { 21, -18 }, { 23, -20 }, { 26, -23 }, { 28, -25 }, { 30, -27 }, { 32, -29 },
-			{ 34, -31 } };
-	/** Die Punkte, falls es sich um ein Spiel mit 2 Sätzen handelt und das erste Team bzw. Spieler weniger Punkte hat. */
-	private static final int[][] POINTS_D = new int[][] { { 22, -19 }, { 24, -21 }, { 25, -23 }, { 28, -25 }, { 30, -27 }, { 32, -30 }, { 35, -32 },
-			{ 38, -34 } };
-
 	/**
 	 * Comparator zur Sortierung der Team- bzw. Spielerstatistiken.
 	 * 
@@ -60,7 +49,7 @@ public class MatchServiceHelper {
 			if (comp == 0) {
 				comp = p2.getWins().compareTo(p1.getWins());
 				if (comp == 0) {
-					comp = p2.getLosses().compareTo(p1.getLosses());
+					comp = p2.getDefeats().compareTo(p1.getDefeats());
 					if (comp == 0) {
 						final Integer goalDifferenceP1 = p1.getShotGoals() - p1.getGetGoals();
 						final Integer goalDifferenceP2 = p2.getShotGoals() - p2.getGetGoals();
@@ -237,6 +226,38 @@ public class MatchServiceHelper {
 	}
 
 	/**
+	 * Liefert die gewonnen Sätze für das erste Team bzw. Spieler.
+	 * 
+	 * @param matchDto Das Spiel.
+	 * @return Die gewonnen Sätze für das erste Team bzw. Spieler.
+	 */
+	protected static int getWinSetsTeam1(MatchDto matchDto) {
+		int winSets = 0;
+		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam1()) {
+			if (result != null && result == 6) {
+				winSets++;
+			}
+		}
+		return winSets;
+	}
+
+	/**
+	 * Liefert die gewonnen Sätze für das zweite Team bzw. Spieler.
+	 * 
+	 * @param matchDto Das Spiel.
+	 * @return Die gewonnen Sätze für das zweite Team bzw. Spieler.
+	 */
+	protected static int getWinSetsTeam2(MatchDto matchDto) {
+		int winSets = 0;
+		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam2()) {
+			if (result != null && result == 6) {
+				winSets++;
+			}
+		}
+		return winSets;
+	}
+
+	/**
 	 * Liefert den Spieler anhand der Db-Id.
 	 * 
 	 * @param dbTeam1Player1 Der erste Spieler.
@@ -321,7 +342,7 @@ public class MatchServiceHelper {
 	private static void removeStatsWithZeroMatches(List<? extends Stats> dbStats) {
 		final ArrayList<Stats> statsToRemove = new ArrayList<Stats>();
 		for (Stats stat : dbStats) {
-			if (stat.getWins() == 0 && stat.getLosses() == 0) {
+			if (stat.getWins() == 0 && stat.getDefeats() == 0) {
 				statsToRemove.add(stat);
 			}
 		}
@@ -448,148 +469,36 @@ public class MatchServiceHelper {
 	 * @return Die gewonnene oder verlorene Punktzahl eines Teams bzw Spielers.
 	 */
 	private static int getPoints(boolean winner, MatchDto matchDto, Stats db1Stats, Stats db2Stats) {
+		return calculateEloPoints(winner, db1Stats, db2Stats);
+	}
+
+	private static int calculateEloPoints(boolean winner, Stats db1Stats, Stats db2Stats) {
 		final int points1 = db1Stats.getPoints();
 		final int points2 = db2Stats.getPoints();
 
-		final int pointsDifference = points1 - points2;
-		final int pointsAbsDifference = Math.abs(points1 - points2);
-		final boolean twoSetMatch = matchDto.getMatchSetsDto().getMatchSetsTeam1().size() == 2;
-
-		int points = 0;
+		int k = 0;
 		if (winner) {
-			if (pointsDifference >= 0) {
-				if (twoSetMatch) {
-					points = evaluatePositivePoints(points1, pointsAbsDifference, POINTS_A);
-				} else {
-					points = evaluatePositivePoints(points1, pointsAbsDifference, POINTS_B);
-				}
-			} else {
-				if (!twoSetMatch) {
-					points = evaluatePositivePoints(points1, pointsAbsDifference, POINTS_C);
-				} else {
-					points = evaluatePositivePoints(points1, pointsAbsDifference, POINTS_D);
-				}
-			}
+			k = 1;
+		}
+
+		final double tempPoints = 10 * (k - calculateExpectancy(points1, points2));
+		final int points = (int) Math.round(tempPoints);
+
+		return points;
+	}
+
+	private static double calculateExpectancy(int points1, int points2) {
+		return 1 / (1 + Math.pow(10, calculateExponent(points1, points2)));
+	}
+
+	private static double calculateExponent(int points1, int points2) {
+		double exponent = 0;
+		if (Math.abs(points2 - points1) > 400) {
+			exponent = 400;
 		} else {
-			if (pointsDifference <= 0) {
-				if (twoSetMatch) {
-					points = evaluateNegativePoints(points1, pointsAbsDifference, POINTS_A);
-				} else {
-					points = evaluateNegativePoints(points1, pointsAbsDifference, POINTS_B);
-				}
-			} else {
-				if (!twoSetMatch) {
-					points = evaluateNegativePoints(points1, pointsAbsDifference, POINTS_C);
-				} else {
-					points = evaluateNegativePoints(points1, pointsAbsDifference, POINTS_D);
-				}
-			}
+			exponent = (double) (points2 - points1) / 400;
 		}
-		return points;
-	}
-
-	/**
-	 * Liefert die gewonnen Punkte eines Teams bzw. Spielers aufgrund der Punktedifferenz.
-	 * 
-	 * @param currentPoints Die aktuellen Punkte eines Teams bzw. Spielers.
-	 * @param pointsAbsDifference Die absolute Punktedifferenz.
-	 * @param pointsToMap Die Punkte welche das Teams bzw. Spielers aufgrund der Punktedifferenz gewinnen wird.
-	 * @return Die gewonnen Punkte eines Teams bzw. Spielers aufgrund der Punktedifferenz.
-	 */
-	private static int evaluatePositivePoints(final int currentPoints, final int pointsAbsDifference, final int[][] pointsToMap) {
-		int points = 0;
-		if (pointsAbsDifference <= 25) {
-			points = pointsToMap[0][0];
-			// points = calculatePositivePoints(currentPoints, pointsToMap[0][0]);
-		} else if (pointsAbsDifference > 25 && pointsAbsDifference <= 50) {
-			points = pointsToMap[1][0];
-			// points = calculatePositivePoints(currentPoints, pointsToMap[1][0]);
-		} else if (pointsAbsDifference > 50 && pointsAbsDifference <= 100) {
-			points = pointsToMap[2][0];
-			// points = calculatePositivePoints(currentPoints, pointsToMap[2][0]);
-		} else if (pointsAbsDifference > 100 && pointsAbsDifference <= 150) {
-			points = pointsToMap[3][0];
-			// points = calculatePositivePoints(currentPoints, pointsToMap[3][0]);
-		} else if (pointsAbsDifference > 150 && pointsAbsDifference <= 225) {
-			points = pointsToMap[4][0];
-			// points = calculatePositivePoints(currentPoints, pointsToMap[4][0]);
-		} else if (pointsAbsDifference > 225 && pointsAbsDifference <= 350) {
-			points = pointsToMap[5][0];
-			// points = calculatePositivePoints(currentPoints, pointsToMap[5][0]);
-		} else if (pointsAbsDifference > 350 && pointsAbsDifference <= 500) {
-			points = pointsToMap[6][0];
-			// points = calculatePositivePoints(currentPoints, pointsToMap[6][0]);
-		} else if (pointsAbsDifference > 500) {
-			points = pointsToMap[7][0];
-			// points = calculatePositivePoints(currentPoints, pointsToMap[7][0]);
-		}
-		return points;
-	}
-
-	/**
-	 * Berechnet die finale Punktzahl anhand der Punkte welche dem Team bzw. Spieler hinzugefügt werden sollen und dem Multiplikator.
-	 * 
-	 * @param currentPoints Die aktuellen Punkte eines Teams bzw. Spielers.
-	 * @param pointsToAdd Die Punkte welche dem Team bzw. Spieler hinzugefügt werden sollen.
-	 * @return Berechnet die finale Punktzahl.
-	 */
-	private static int calculatePositivePoints(int currentPoints, int pointsToAdd) {
-		final float multiplier = 1000 / (float) currentPoints;
-		final float points = pointsToAdd * multiplier;
-
-		return Math.round(points);
-	}
-
-	/**
-	 * Liefert die verlorenen Punkte eines Teams bzw. Spielers aufgrund der Punktedifferenz.
-	 * 
-	 * @param currentPoints Die aktuellen Punkte eines Teams bzw. Spielers.
-	 * @param pointsAbsDifference Die absolute Punktedifferenz.
-	 * @param pointsToMap Die Punkte welche das Teams bzw. Spielers aufgrund der Punktedifferenz verlieren wird.
-	 * @return Die verlorenen Punkte eines Teams bzw. Spielers aufgrund der Punktedifferenz.
-	 */
-	private static int evaluateNegativePoints(final int currentPoints, final int pointsAbsDifference, final int[][] pointsToMap) {
-		int points = 0;
-		if (pointsAbsDifference <= 25) {
-			points = pointsToMap[0][1];
-			// points = calculateNegativePoints(currentPoints, pointsToMap[0][1]);
-		} else if (pointsAbsDifference > 25 && pointsAbsDifference <= 50) {
-			points = pointsToMap[1][1];
-			// points = calculateNegativePoints(currentPoints, pointsToMap[1][1]);
-		} else if (pointsAbsDifference > 50 && pointsAbsDifference <= 100) {
-			points = pointsToMap[2][1];
-			// points = calculateNegativePoints(currentPoints, pointsToMap[2][1]);
-		} else if (pointsAbsDifference > 100 && pointsAbsDifference <= 150) {
-			points = pointsToMap[3][1];
-			// points = calculateNegativePoints(currentPoints, pointsToMap[3][1]);
-		} else if (pointsAbsDifference > 150 && pointsAbsDifference <= 225) {
-			points = pointsToMap[4][1];
-			// points = calculateNegativePoints(currentPoints, pointsToMap[4][1]);
-		} else if (pointsAbsDifference > 225 && pointsAbsDifference <= 350) {
-			points = pointsToMap[5][1];
-			// points = calculateNegativePoints(currentPoints, pointsToMap[5][1]);
-		} else if (pointsAbsDifference > 350 && pointsAbsDifference <= 500) {
-			points = pointsToMap[6][1];
-			// points = calculateNegativePoints(currentPoints, pointsToMap[6][1]);
-		} else if (pointsAbsDifference > 500) {
-			points = pointsToMap[7][1];
-			// points = calculateNegativePoints(currentPoints, pointsToMap[7][1]);
-		}
-		return points;
-	}
-
-	/**
-	 * Berechnet die finale Punktzahl anhand der Punkte welche dem Team bzw. Spieler abgezogen werden sollen und dem Multiplikator.
-	 * 
-	 * @param currentPoints Die aktuellen Punkte eines Teams bzw. Spielers.
-	 * @param pointsToRemove Die Punkte welche dem Team bzw. Spieler abgezogen werden sollen.
-	 * @return Berechnet die finale Punktzahl.
-	 */
-	private static int calculateNegativePoints(final int currentPoints, int pointsToRemove) {
-		final float multiplier = (float) currentPoints / 1000;
-		final float points = pointsToRemove * multiplier;
-
-		return Math.round(points);
+		return exponent;
 	}
 
 }

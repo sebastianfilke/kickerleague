@@ -66,7 +66,7 @@ public class WinChartPanel extends BaseContainer {
 		numAxis.setPosition(Position.LEFT);
 		numAxis.addField(ChartProperty.winDifference);
 		numAxis.addField(KickerProperties.CHART_PROPERTY.wins());
-		numAxis.addField(KickerProperties.CHART_PROPERTY.losses());
+		numAxis.addField(KickerProperties.CHART_PROPERTY.defeats());
 		numAxis.setAdjustMaximumByMajorUnit(true);
 		numAxis.setAdjustMinimumByMajorUnit(true);
 		numAxis.setDisplayGrid(true);
@@ -97,7 +97,7 @@ public class WinChartPanel extends BaseContainer {
 		barWin.setYAxisPosition(Position.LEFT);
 		barWin.addYField(ChartProperty.winDifference);
 		barWin.addYField(KickerProperties.CHART_PROPERTY.wins());
-		barWin.addYField(KickerProperties.CHART_PROPERTY.losses());
+		barWin.addYField(KickerProperties.CHART_PROPERTY.defeats());
 		barWin.addColor(new RGB(17, 95, 166));
 		barWin.addColor(new RGB(148, 174, 10));
 		barWin.addColor(new RGB(166, 17, 32));

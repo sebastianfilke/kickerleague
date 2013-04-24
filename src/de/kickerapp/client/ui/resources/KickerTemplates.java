@@ -23,8 +23,8 @@ public interface KickerTemplates extends XTemplates {
 	 * @return Das Template.
 	 */
 	@XTemplate("<div class='templatePagingComboBox'><h3><span>Letztes Spiel:</br>{playerDto.lastMatchDate:date(\"dd.MM.yyyy HH:mm\")}</span>{playerDto.firstName}, {playerDto.lastName} ({playerDto.nickName})</h3>"
-			+ "<span>Einzel - Siege: <font color='green'>{playerDto.playerSingleStatsDto.wins}</font> &#183; Niederlagen: <font color='red'>{playerDto.playerSingleStatsDto.losses}</font></span> | "
-			+ "<span>Doppel - Siege: <font color='green'>{playerDto.playerDoubleStatsDto.wins}</font> &#183; Niederlagen: <font color='red'>{playerDto.playerDoubleStatsDto.losses}</font></span></div>")
+			+ "<span>Einzel - Siege: <font color='green'>{playerDto.playerSingleStatsDto.wins}</font> &#183; Niederlagen: <font color='red'>{playerDto.playerSingleStatsDto.defeats}</font></span> | "
+			+ "<span>Doppel - Siege: <font color='green'>{playerDto.playerDoubleStatsDto.wins}</font> &#183; Niederlagen: <font color='red'>{playerDto.playerDoubleStatsDto.defeats}</font></span></div>")
 	SafeHtml renderPlayerPagingComboBox(PlayerDto playerDto);
 
 }

@@ -66,7 +66,9 @@ public class TeamServiceHelper {
 		final TeamStatsDto teamStatsDto = new TeamStatsDto();
 
 		teamStatsDto.setWins(dbTeamStat.getWins());
-		teamStatsDto.setLosses(dbTeamStat.getLosses());
+		teamStatsDto.setDefeats(dbTeamStat.getDefeats());
+		teamStatsDto.setWinSets(dbTeamStat.getWinSets());
+		teamStatsDto.setLostSets(dbTeamStat.getLostSets());
 		teamStatsDto.setShotGoals(dbTeamStat.getShotGoals());
 		teamStatsDto.setGetGoals(dbTeamStat.getGetGoals());
 		teamStatsDto.setPrevTablePlace(dbTeamStat.getPrevTablePlace());

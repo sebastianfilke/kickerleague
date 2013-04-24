@@ -169,17 +169,25 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 			final int wins = dbPlayerSingleStats.getWins() + 1;
 			dbPlayerSingleStats.setWins(wins);
 		} else {
-			final int losses = dbPlayerSingleStats.getLosses() + 1;
-			dbPlayerSingleStats.setLosses(losses);
+			final int defeats = dbPlayerSingleStats.getDefeats() + 1;
+			dbPlayerSingleStats.setDefeats(defeats);
 		}
 		final int points = dbPlayerSingleStats.getPoints() + matchPoints;
 		dbPlayerSingleStats.setPoints(points);
 
+		final int winSetsTeam1 = MatchServiceHelper.getWinSetsTeam1(matchDto);
+		final int winSetsTeam2 = MatchServiceHelper.getWinSetsTeam2(matchDto);
 		final int goalsTeam1 = MatchServiceHelper.getGoalsTeam1(matchDto);
 		final int goalsTeam2 = MatchServiceHelper.getGoalsTeam2(matchDto);
 		if (matchDto.getTeam1Dto().getPlayer1().getId() == playerId || matchDto.getTeam1Dto().getPlayer2() != null
 				&& matchDto.getTeam1Dto().getPlayer2().getId() == playerId) {
 			dbMatch.getMatchPoints().getMatchPointsTeam1().add(matchPoints);
+
+			final int winSets = dbPlayerSingleStats.getWinSets() + winSetsTeam1;
+			dbPlayerSingleStats.setWinSets(winSets);
+
+			final int lostSets = dbPlayerSingleStats.getLostSets() + winSetsTeam2;
+			dbPlayerSingleStats.setLostSets(lostSets);
 
 			final int shotGoals = dbPlayerSingleStats.getShotGoals() + goalsTeam1;
 			dbPlayerSingleStats.setShotGoals(shotGoals);
@@ -189,6 +197,12 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		} else if (matchDto.getTeam2Dto().getPlayer1().getId() == playerId || matchDto.getTeam2Dto().getPlayer2() != null
 				&& matchDto.getTeam2Dto().getPlayer2().getId() == playerId) {
 			dbMatch.getMatchPoints().getMatchPointsTeam2().add(matchPoints);
+
+			final int winSets = dbPlayerSingleStats.getWinSets() + winSetsTeam2;
+			dbPlayerSingleStats.setWinSets(winSets);
+
+			final int lostSets = dbPlayerSingleStats.getLostSets() + winSetsTeam1;
+			dbPlayerSingleStats.setLostSets(lostSets);
 
 			final int shotGoals = dbPlayerSingleStats.getShotGoals() + goalsTeam2;
 			dbPlayerSingleStats.setShotGoals(shotGoals);
@@ -222,17 +236,25 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 			final int wins = dbPlayerDoubleStats.getWins() + 1;
 			dbPlayerDoubleStats.setWins(wins);
 		} else {
-			final int losses = dbPlayerDoubleStats.getLosses() + 1;
-			dbPlayerDoubleStats.setLosses(losses);
+			final int defeats = dbPlayerDoubleStats.getDefeats() + 1;
+			dbPlayerDoubleStats.setDefeats(defeats);
 		}
 		final int points = dbPlayerDoubleStats.getPoints() + matchPoints;
 		dbPlayerDoubleStats.setPoints(points);
 
+		final int winSetsTeam1 = MatchServiceHelper.getWinSetsTeam1(matchDto);
+		final int winSetsTeam2 = MatchServiceHelper.getWinSetsTeam2(matchDto);
 		final int goalsTeam1 = MatchServiceHelper.getGoalsTeam1(matchDto);
 		final int goalsTeam2 = MatchServiceHelper.getGoalsTeam2(matchDto);
 		if (matchDto.getTeam1Dto().getPlayer1().getId() == playerId || matchDto.getTeam1Dto().getPlayer2() != null
 				&& matchDto.getTeam1Dto().getPlayer2().getId() == playerId) {
 			dbMatch.getMatchPoints().getMatchPointsTeam1().add(matchPoints);
+
+			final int winSets = dbPlayerDoubleStats.getWinSets() + winSetsTeam1;
+			dbPlayerDoubleStats.setWinSets(winSets);
+
+			final int lostSets = dbPlayerDoubleStats.getLostSets() + winSetsTeam2;
+			dbPlayerDoubleStats.setLostSets(lostSets);
 
 			final int shotGoals = dbPlayerDoubleStats.getShotGoals() + goalsTeam1;
 			dbPlayerDoubleStats.setShotGoals(shotGoals);
@@ -242,6 +264,12 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		} else if (matchDto.getTeam2Dto().getPlayer1().getId() == playerId || matchDto.getTeam2Dto().getPlayer2() != null
 				&& matchDto.getTeam2Dto().getPlayer2().getId() == playerId) {
 			dbMatch.getMatchPoints().getMatchPointsTeam2().add(matchPoints);
+
+			final int winSets = dbPlayerDoubleStats.getWinSets() + winSetsTeam2;
+			dbPlayerDoubleStats.setWinSets(winSets);
+
+			final int lostSets = dbPlayerDoubleStats.getLostSets() + winSetsTeam1;
+			dbPlayerDoubleStats.setLostSets(lostSets);
 
 			final int shotGoals = dbPlayerDoubleStats.getShotGoals() + goalsTeam2;
 			dbPlayerDoubleStats.setShotGoals(shotGoals);
@@ -273,17 +301,25 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 			final int wins = dbTeamStats.getWins() + 1;
 			dbTeamStats.setWins(wins);
 		} else {
-			final int losses = dbTeamStats.getLosses() + 1;
-			dbTeamStats.setLosses(losses);
+			final int defeats = dbTeamStats.getDefeats() + 1;
+			dbTeamStats.setDefeats(defeats);
 		}
 		final int points = dbTeamStats.getPoints() + matchPoints;
 		dbTeamStats.setPoints(points);
 
+		final int winSetsTeam1 = MatchServiceHelper.getWinSetsTeam1(matchDto);
+		final int winSetsTeam2 = MatchServiceHelper.getWinSetsTeam2(matchDto);
 		final int goalsTeam1 = MatchServiceHelper.getGoalsTeam1(matchDto);
 		final int goalsTeam2 = MatchServiceHelper.getGoalsTeam2(matchDto);
 		if (dbTeam.getPlayers().contains(matchDto.getTeam1Dto().getPlayer1().getId())
 				|| dbTeam.getPlayers().contains(matchDto.getTeam1Dto().getPlayer2().getId())) {
 			dbMatch.getMatchPoints().getMatchPointsTeam1().add(matchPoints);
+
+			final int winSets = dbTeamStats.getWinSets() + winSetsTeam1;
+			dbTeamStats.setWinSets(winSets);
+
+			final int lostSets = dbTeamStats.getLostSets() + winSetsTeam2;
+			dbTeamStats.setLostSets(lostSets);
 
 			final int shotGoals = dbTeamStats.getShotGoals() + goalsTeam1;
 			dbTeamStats.setShotGoals(shotGoals);
@@ -293,6 +329,12 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		} else if (dbTeam.getPlayers().contains(matchDto.getTeam2Dto().getPlayer1().getId())
 				|| dbTeam.getPlayers().contains(matchDto.getTeam2Dto().getPlayer2().getId())) {
 			dbMatch.getMatchPoints().getMatchPointsTeam2().add(matchPoints);
+
+			final int winSets = dbTeamStats.getWinSets() + winSetsTeam2;
+			dbTeamStats.setWinSets(winSets);
+
+			final int lostSets = dbTeamStats.getLostSets() + winSetsTeam1;
+			dbTeamStats.setLostSets(lostSets);
 
 			final int shotGoals = dbTeamStats.getShotGoals() + goalsTeam2;
 			dbTeamStats.setShotGoals(shotGoals);

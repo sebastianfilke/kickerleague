@@ -11,11 +11,11 @@ public class ChartDto extends BaseDto {
 
 	private Integer winSeries;
 
-	private Integer lossSeries;
+	private Integer defeatSeries;
 
 	private Integer maxWinPoints;
 
-	private Integer maxLossPoints;
+	private Integer maxDefeatPoints;
 
 	private Integer maxPoints;
 
@@ -31,9 +31,9 @@ public class ChartDto extends BaseDto {
 		super();
 
 		winSeries = 0;
-		lossSeries = 0;
+		defeatSeries = 0;
 		maxWinPoints = 0;
-		maxLossPoints = 0;
+		maxDefeatPoints = 0;
 		maxPoints = 0;
 		minPoints = 0;
 		averageWins = "0.0";
@@ -49,12 +49,12 @@ public class ChartDto extends BaseDto {
 		this.winSeries = winSeries;
 	}
 
-	public Integer getLossSeries() {
-		return lossSeries;
+	public Integer getDefeatSeries() {
+		return defeatSeries;
 	}
 
-	public void setLossSeries(Integer lossSeries) {
-		this.lossSeries = lossSeries;
+	public void setDefeatSeries(Integer defeatSeries) {
+		this.defeatSeries = defeatSeries;
 	}
 
 	public Integer getMaxWinPoints() {
@@ -65,12 +65,12 @@ public class ChartDto extends BaseDto {
 		this.maxWinPoints = maxWinPoints;
 	}
 
-	public Integer getMaxLossPoints() {
-		return maxLossPoints;
+	public Integer getMaxDefeatPoints() {
+		return maxDefeatPoints;
 	}
 
-	public void setMaxLossPoints(Integer maxLossPoints) {
-		this.maxLossPoints = maxLossPoints;
+	public void setMaxDefeatPoints(Integer maxDefeatPoints) {
+		this.maxDefeatPoints = maxDefeatPoints;
 	}
 
 	public Integer getMaxPoints() {

@@ -184,7 +184,9 @@ public class PlayerServiceHelper {
 		final PlayerSingleStatsDto playerSingleStatsDto = new PlayerSingleStatsDto();
 
 		playerSingleStatsDto.setWins(dbPlayerSingleStats.getWins());
-		playerSingleStatsDto.setLosses(dbPlayerSingleStats.getLosses());
+		playerSingleStatsDto.setDefeats(dbPlayerSingleStats.getDefeats());
+		playerSingleStatsDto.setWinSets(dbPlayerSingleStats.getWinSets());
+		playerSingleStatsDto.setLostSets(dbPlayerSingleStats.getLostSets());
 		playerSingleStatsDto.setShotGoals(dbPlayerSingleStats.getShotGoals());
 		playerSingleStatsDto.setGetGoals(dbPlayerSingleStats.getGetGoals());
 		playerSingleStatsDto.setPrevTablePlace(dbPlayerSingleStats.getPrevTablePlace());
@@ -209,7 +211,9 @@ public class PlayerServiceHelper {
 		final PlayerDoubleStatsDto playerDoubleStatsDto = new PlayerDoubleStatsDto();
 
 		playerDoubleStatsDto.setWins(dbPlayerDoubleStats.getWins());
-		playerDoubleStatsDto.setLosses(dbPlayerDoubleStats.getLosses());
+		playerDoubleStatsDto.setDefeats(dbPlayerDoubleStats.getDefeats());
+		playerDoubleStatsDto.setWinSets(dbPlayerDoubleStats.getWinSets());
+		playerDoubleStatsDto.setLostSets(dbPlayerDoubleStats.getLostSets());
 		playerDoubleStatsDto.setShotGoals(dbPlayerDoubleStats.getShotGoals());
 		playerDoubleStatsDto.setGetGoals(dbPlayerDoubleStats.getGetGoals());
 		playerDoubleStatsDto.setPrevTablePlace(dbPlayerDoubleStats.getPrevTablePlace());

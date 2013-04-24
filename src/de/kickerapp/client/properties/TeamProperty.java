@@ -47,7 +47,7 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 		@Override
 		public Integer getValue(TeamDto object) {
 			final TeamStatsDto teamStatsDto = object.getTeamStatsDto();
-			return teamStatsDto.getWins() + teamStatsDto.getLosses();
+			return teamStatsDto.getWins() + teamStatsDto.getDefeats();
 		}
 
 		@Override
@@ -76,10 +76,10 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 		}
 	};
 
-	public ValueProvider<TeamDto, Integer> teamLosses = new ValueProvider<TeamDto, Integer>() {
+	public ValueProvider<TeamDto, Integer> teamDefeats = new ValueProvider<TeamDto, Integer>() {
 		@Override
 		public Integer getValue(TeamDto object) {
-			return object.getTeamStatsDto().getLosses();
+			return object.getTeamStatsDto().getDefeats();
 		}
 
 		@Override
@@ -88,7 +88,55 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 
 		@Override
 		public String getPath() {
-			return "teamLosses";
+			return "teamDefeats";
+		}
+	};
+
+	public ValueProvider<TeamDto, String> teamSets = new ValueProvider<TeamDto, String>() {
+		@Override
+		public String getValue(TeamDto object) {
+			final StringBuilder sb = new StringBuilder();
+
+			final TeamStatsDto teamStatsDto = object.getTeamStatsDto();
+			sb.append(teamStatsDto.getWinSets());
+			sb.append(":");
+			sb.append(teamStatsDto.getLostSets());
+
+			return sb.toString();
+		}
+
+		@Override
+		public void setValue(TeamDto object, String value) {
+		}
+
+		@Override
+		public String getPath() {
+			return "teamSets";
+		}
+	};
+
+	public ValueProvider<TeamDto, String> teamSetDifference = new ValueProvider<TeamDto, String>() {
+		@Override
+		public String getValue(TeamDto object) {
+			final StringBuilder sb = new StringBuilder();
+
+			final TeamStatsDto teamStatsDto = object.getTeamStatsDto();
+			final int setDifference = teamStatsDto.getWinSets() - teamStatsDto.getLostSets();
+			if (setDifference >= 0) {
+				sb.append("+" + Integer.toString(setDifference));
+			} else {
+				sb.append(Integer.toString(setDifference));
+			}
+			return sb.toString();
+		}
+
+		@Override
+		public void setValue(TeamDto object, String value) {
+		}
+
+		@Override
+		public String getPath() {
+			return "teamSetDifference";
 		}
 	};
 

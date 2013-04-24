@@ -12,7 +12,7 @@ public class ChartDataDto extends BaseDto {
 
 	private Integer wins;
 
-	private Integer losses;
+	private Integer defeats;
 
 	public ChartDataDto() {
 		super();
@@ -21,7 +21,7 @@ public class ChartDataDto extends BaseDto {
 		shotGoals = 0;
 		getGoals = 0;
 		wins = 0;
-		losses = 0;
+		defeats = 0;
 	}
 
 	public ChartDataDto(Long id, String month) {
@@ -63,12 +63,12 @@ public class ChartDataDto extends BaseDto {
 		this.wins = wins;
 	}
 
-	public Integer getLosses() {
-		return losses;
+	public Integer getDefeats() {
+		return defeats;
 	}
 
-	public void setLosses(Integer losses) {
-		this.losses = losses;
+	public void setDefeats(Integer defeats) {
+		this.defeats = defeats;
 	}
 
 }
