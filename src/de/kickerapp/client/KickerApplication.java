@@ -13,7 +13,7 @@ import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.ui.MainPanel;
 
 /**
- * Hauptklasse welche die Applikation initalisiert und beim Start aufgerufen wird.
+ * Hauptklasse welche die Applikation initialisiert und beim Start aufgerufen wird.
  * 
  * @author Sebastian Filke
  */

@@ -2,8 +2,11 @@ package de.kickerapp.client.services;
 
 import com.google.gwt.core.client.GWT;
 
+/**
+ * @author Sebastian Filke
+ */
 public interface KickerServices {
-	
+
 	public final ChartServiceAsync CHART_SERVICE = GWT.create(ChartService.class);
 
 	public final MatchServiceAsync MATCH_SERVICE = GWT.create(MatchService.class);

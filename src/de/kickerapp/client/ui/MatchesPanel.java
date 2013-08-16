@@ -15,6 +15,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -48,8 +49,10 @@ import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.properties.MatchProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BasePanel;
+import de.kickerapp.client.ui.dialog.CommentsDialog;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
+import de.kickerapp.client.widgets.ClickableAnchorCell;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -216,7 +219,6 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 	public Grid<MatchDto> createMatchesGrid() {
 		final SummaryColumnConfig<MatchDto, Integer> ccMatchNumber = new SummaryColumnConfig<MatchDto, Integer>(KickerProperties.MATCH_PROPERTY.matchNumber(),
 				60, "Nr.");
-		ccMatchNumber.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchNumber.setSummaryType(new SummaryType.CountSummaryType<Integer>());
 		ccMatchNumber.setSummaryRenderer(new SummaryRenderer<MatchDto>() {
 			@Override
@@ -224,13 +226,15 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				return SafeHtmlUtils.fromTrustedString(value.intValue() > 1 ? "(" + value.intValue() + " Spiele)" : "(1 Spiel)");
 			}
 		});
+		ccMatchNumber.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccMatchNumber.setMenuDisabled(true);
 		ccMatchNumber.setGroupable(false);
 		final SummaryColumnConfig<MatchDto, Date> ccMatchDate = new SummaryColumnConfig<MatchDto, Date>(KickerProperties.MATCH_PROPERTY.matchDate(), 110,
 				"Datum");
 		ccMatchDate.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchDate.setGroupable(false);
-		final TimeZoneConstants t = (TimeZoneConstants) GWT.create(TimeZoneConstants.class);
-		ccMatchDate.setCell(new DateCell(DateTimeFormat.getFormat("dd.MM.yyyy HH:mm"), TimeZone.createTimeZone(t.europeBerlin())));
+		final TimeZoneConstants timeZoneConstant = (TimeZoneConstants) GWT.create(TimeZoneConstants.class);
+		ccMatchDate.setCell(new DateCell(DateTimeFormat.getFormat("dd.MM.yyyy HH:mm"), TimeZone.createTimeZone(timeZoneConstant.europeBerlin())));
 		final SummaryColumnConfig<MatchDto, String> ccGroupDate = new SummaryColumnConfig<MatchDto, String>(KickerProperties.MATCH_PROPERTY.groupDate(), 160,
 				"Gruppe");
 		ccGroupDate.setComparator(new Comparator<String>() {
@@ -260,6 +264,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		final SummaryColumnConfig<MatchDto, String> ccMatchType = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchType, 70, "Typ");
 		ccMatchType.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final SummaryColumnConfig<MatchDto, String> ccTeam1 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.team1, 270, "Spieler/Team 1");
+		ccTeam1.setMenuDisabled(true);
 		ccTeam1.setGroupable(false);
 		ccTeam1.setCell(new AbstractCell<String>() {
 			@Override
@@ -273,6 +278,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 			}
 		});
 		final SummaryColumnConfig<MatchDto, String> ccTeam2 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.team2, 270, "Spieler/Team 2");
+		ccTeam2.setMenuDisabled(true);
 		ccTeam2.setGroupable(false);
 		ccTeam2.setCell(new AbstractCell<String>() {
 			@Override
@@ -287,18 +293,40 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		});
 		final SummaryColumnConfig<MatchDto, String> ccMatchResult = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchResult, 60, "Ergebnis");
 		ccMatchResult.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccMatchResult.setMenuDisabled(true);
 		ccMatchResult.setGroupable(false);
 		final SummaryColumnConfig<MatchDto, String> ccMatchSets = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchSets, 80, "Sätze");
 		ccMatchSets.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccMatchSets.setMenuDisabled(true);
 		ccMatchSets.setGroupable(false);
 		final SummaryColumnConfig<MatchDto, String> ccMatchPointsTeam1 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchPointsTeam1, 120,
 				"Punkte Spieler/Team1");
 		ccMatchPointsTeam1.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccMatchPointsTeam1.setMenuDisabled(true);
 		ccMatchSets.setGroupable(false);
 		final SummaryColumnConfig<MatchDto, String> ccMatchPointsTeam2 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchPointsTeam2, 120,
 				"Punkte Spieler/Team2");
 		ccMatchPointsTeam2.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccMatchPointsTeam2.setMenuDisabled(true);
 		ccMatchSets.setGroupable(false);
+
+		final SummaryColumnConfig<MatchDto, String> ccLabelComment = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchComments, 25);
+		ccLabelComment.setHeader(AbstractImagePrototype.create(KickerIcons.ICON.comments_12()).getSafeHtml());
+		ccLabelComment.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccLabelComment.setToolTip(SafeHtmlUtils.fromString("Kommentare zum Spiel"));
+		ccLabelComment.setMenuDisabled(true);
+		ccLabelComment.setGroupable(false);
+		ccLabelComment.setCell(new ClickableAnchorCell() {
+			@Override
+			protected void onClick(Context context) {
+				super.onClick(context);
+				final MatchDto selectedMatch = storeMatches.findModelWithKey(context.getKey().toString());
+				if (selectedMatch != null && selectedMatch.getMatchComments() != 0) {
+					final CommentsDialog dialog = new CommentsDialog();
+					dialog.show();
+				}
+			}
+		});
 
 		final ArrayList<ColumnConfig<MatchDto, ?>> columns = new ArrayList<ColumnConfig<MatchDto, ?>>();
 		columns.add(ccMatchNumber);
@@ -311,6 +339,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		columns.add(ccMatchSets);
 		columns.add(ccMatchPointsTeam1);
 		columns.add(ccMatchPointsTeam2);
+		columns.add(ccLabelComment);
 
 		final GroupSummaryView<MatchDto> view = new GroupSummaryView<MatchDto>();
 		view.setAutoExpandColumn(ccMatchSets);

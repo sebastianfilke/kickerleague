@@ -8,7 +8,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import de.kickerapp.shared.dto.MatchDto;
 
 /**
- * Die Schnittstelle zur Verarbeitung von Spielen im Clienten.
+ * Die Schnittstelle zur Verarbeitung von Spielen im Klienten.
  * 
  * @author Sebastian Filke
  */

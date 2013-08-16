@@ -263,4 +263,20 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 		}
 	};
 
+	public ValueProvider<MatchDto, String> matchComments = new ValueProvider<MatchDto, String>() {
+		@Override
+		public String getValue(MatchDto object) {
+			return Integer.toString(object.getMatchComments());
+		}
+
+		@Override
+		public void setValue(MatchDto object, String value) {
+		}
+
+		@Override
+		public String getPath() {
+			return "matchComments";
+		}
+	};
+
 }

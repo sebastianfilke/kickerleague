@@ -30,5 +30,6 @@
 	<set-property name="gwt.logging.logLevel" value="WARNING" />
 	<set-property name="gwt.logging.enabled" value="TRUE" />
 	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
+	<set-property name="gxt.logging.enabled" value="true" />
 
 </module>

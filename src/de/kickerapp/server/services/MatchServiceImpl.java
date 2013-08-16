@@ -23,7 +23,7 @@ import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchDto;
 
 /**
- * Dienst zur Verarbeitung von Spielen im Clienten.
+ * Dienst zur Verarbeitung von Spielen im Klienten.
  * 
  * @author Sebastian Filke
  */
@@ -44,6 +44,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		dbMatch.setKey(matchKey);
 		dbMatch.setMatchNumber(matchId);
 		dbMatch.setMatchDate(matchDto.getMatchDate());
+		dbMatch.setMatchComments(matchDto.getMatchComments());
 
 		final MatchSets sets = new MatchSets(matchDto.getMatchSetsDto().getMatchSetsTeam1(), matchDto.getMatchSetsDto().getMatchSetsTeam2());
 		dbMatch.setMatchSets(sets);

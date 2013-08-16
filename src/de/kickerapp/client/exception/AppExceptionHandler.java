@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 
-import de.kickerapp.client.ui.dialog.AppErrorMessageBox;
+import de.kickerapp.client.ui.dialog.AppErrorDialog;
 
 /**
  * Standard-Fehlerbehandlungsroutine für Exceptions in der Applikation.
@@ -39,7 +39,7 @@ public class AppExceptionHandler implements UncaughtExceptionHandler {
 		}
 
 		final String error = getCustomStackTrace(caught);
-		final AppErrorMessageBox dialog = new AppErrorMessageBox();
+		final AppErrorDialog dialog = new AppErrorDialog();
 		if (message != null) {
 			dialog.setErrorMsg(message);
 		}

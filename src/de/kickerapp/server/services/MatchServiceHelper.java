@@ -30,6 +30,8 @@ import de.kickerapp.shared.dto.TeamDto;
  */
 public class MatchServiceHelper {
 
+	private static final int[] K_FAKTOR = new int[] { 10, 26, 24, 22, 20, 18, 16, 14, 12, 10 };
+
 	/**
 	 * Comparator zur Sortierung der Team- bzw. Spielerstatistiken.
 	 * 
@@ -113,6 +115,7 @@ public class MatchServiceHelper {
 		matchDto.setMatchNumber(dbMatch.getMatchNumber());
 		matchDto.setMatchDate(dbMatch.getMatchDate());
 		matchDto.setMatchType(dbMatch.getMatchType());
+		matchDto.setMatchComments(dbMatch.getMatchComments());
 
 		final SimpleDateFormat dateFormat = new SimpleDateFormat("'Spiele vom' EEEE, 'den' dd.MM.yyyy", Locale.GERMAN);
 		matchDto.setGroupDate(dateFormat.format(dbMatch.getMatchDate()));
@@ -122,7 +125,7 @@ public class MatchServiceHelper {
 			matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(team1Player1)));
 
 			final Player team2Player2 = PlayerServiceHelper.getPlayerById(dbMatch.getTeam2(), dbPlayers);
-			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createPlayerDto(team2Player2)));
+			matchDto.setTeam2Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(team2Player2)));
 		} else {
 			final Team team1 = TeamServiceHelper.getTeamById(dbMatch.getTeam1(), dbTeams);
 
@@ -136,7 +139,7 @@ public class MatchServiceHelper {
 			final Player team2Player1 = PlayerServiceHelper.getPlayerById((Long) team2.getPlayers().toArray()[0], dbPlayers);
 			final Player team2Player2 = PlayerServiceHelper.getPlayerById((Long) team2.getPlayers().toArray()[1], dbPlayers);
 
-			matchDto.setTeam2(new TeamDto(PlayerServiceHelper.createPlayerDto(team2Player1), PlayerServiceHelper.createPlayerDto(team2Player2)));
+			matchDto.setTeam2Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(team2Player1), PlayerServiceHelper.createPlayerDto(team2Player2)));
 		}
 		final MatchPointsDto pointsDto = new MatchPointsDto();
 		pointsDto.setMatchPointsTeam1(dbMatch.getMatchPoints().getMatchPointsTeam1());
@@ -337,7 +340,7 @@ public class MatchServiceHelper {
 	/**
 	 * Entfernt aus der Liste der Statistiken, Statistiken welche noch kein Spiel haben.
 	 * 
-	 * @param dbStats Die Liste der statistiken.
+	 * @param dbStats Die Liste der Statistiken.
 	 */
 	private static void removeStatsWithZeroMatches(List<? extends Stats> dbStats) {
 		final ArrayList<Stats> statsToRemove = new ArrayList<Stats>();
@@ -352,7 +355,7 @@ public class MatchServiceHelper {
 	/**
 	 * Aktualisiert die Statistik des Teams bzw. Spielers.
 	 * 
-	 * @param i Der aktuelle Tabelleplatz - 1.
+	 * @param i Der aktuelle Tabellenplatz - 1.
 	 * @param dbStats Die Statistik des Teams. bzw. Spielers.
 	 */
 	private static void updateStats(int i, Stats dbStats) {
@@ -424,7 +427,7 @@ public class MatchServiceHelper {
 				tempPoints2 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats);
 			}
 
-			points = Math.round((float) (tempPoints1 + tempPoints2) / 2);
+			points = (int) Math.round((double) (tempPoints1 + tempPoints2) / 2);
 		}
 		return points;
 	}
@@ -469,22 +472,73 @@ public class MatchServiceHelper {
 	 * @return Die gewonnene oder verlorene Punktzahl eines Teams bzw Spielers.
 	 */
 	private static int getPoints(boolean winner, MatchDto matchDto, Stats db1Stats, Stats db2Stats) {
-		return calculateEloPoints(winner, db1Stats, db2Stats);
+		final int eloPoints = calculateEloPoints(winner, db1Stats, db2Stats);
+		final int multiPoints = calculateMultiplicatorPoints(winner, eloPoints, getGoalsForTeam(matchDto, db1Stats), getGoalsForTeam(matchDto, db2Stats));
+
+		return eloPoints + multiPoints;
+	}
+
+	private static int getGoalsForTeam(MatchDto matchDto, Stats dbStats) {
+		int goals = 0;
+		if (dbStats.getKey().getId() == matchDto.getTeam1Dto().getPlayer1().getId() || matchDto.getTeam1Dto().getPlayer2() != null
+				&& dbStats.getKey().getId() == matchDto.getTeam1Dto().getPlayer2().getId()) {
+			goals = getGoalsTeam1(matchDto);
+		} else {
+			goals = getGoalsTeam2(matchDto);
+		}
+		if (goals == 0) {
+			goals = 1;
+		}
+		return goals;
 	}
 
 	private static int calculateEloPoints(boolean winner, Stats db1Stats, Stats db2Stats) {
 		final int points1 = db1Stats.getPoints();
 		final int points2 = db2Stats.getPoints();
 
+		final int kFaktor = getKFaktor(points1);
+		final int score = getScore(winner);
+		final double expectancy = calculateExpectancy(points1, points2);
+
+		final double points = kFaktor * (score - expectancy);
+
+		final int roundedPoints = (int) Math.round(points);
+
+		return roundedPoints;
+	}
+
+	private static int getKFaktor(int points) {
 		int k = 0;
-		if (winner) {
-			k = 1;
+		if (points < 500) {
+			k = K_FAKTOR[0];
+		} else if (points < 1000) {
+			k = K_FAKTOR[1];
+		} else if (points >= 1000 && points < 1300) {
+			k = K_FAKTOR[2];
+		} else if (points >= 1300 && points < 1600) {
+			k = K_FAKTOR[3];
+		} else if (points >= 1600 && points < 1900) {
+			k = K_FAKTOR[4];
+		} else if (points >= 1900 && points < 2100) {
+			k = K_FAKTOR[5];
+		} else if (points >= 2100 && points < 2300) {
+			k = K_FAKTOR[6];
+		} else if (points >= 2300 && points < 2500) {
+			k = K_FAKTOR[7];
+		} else if (points >= 2500 && points < 2700) {
+			k = K_FAKTOR[8];
+		} else if (points >= 2700) {
+			k = K_FAKTOR[9];
 		}
+		return k;
+	}
 
-		final double tempPoints = 10 * (k - calculateExpectancy(points1, points2));
-		final int points = (int) Math.round(tempPoints);
-
-		return points;
+	private static int getScore(boolean winner) {
+		int score = 0;
+		if (winner) {
+			score = 1;
+		}
+		return score;
 	}
 
 	private static double calculateExpectancy(int points1, int points2) {
@@ -493,12 +547,28 @@ public class MatchServiceHelper {
 
 	private static double calculateExponent(int points1, int points2) {
 		double exponent = 0;
-		if (Math.abs(points2 - points1) > 400) {
-			exponent = 400;
+		if (points2 - points1 > 400) {
+			exponent = 1;
+		} else if (points2 - points1 < -400) {
+			exponent = -1;
 		} else {
-			exponent = (double) (points2 - points1) / 400;
+			exponent = (double) (points2 - points1) / (double) 400;
 		}
 		return exponent;
+	}
+
+	private static int calculateMultiplicatorPoints(boolean winner, double eloPoints, int goalsPlayer1, int goalsPlayer2) {
+		final int score = getScore(winner);
+		final double multiplicator = calculateMultiplicator(goalsPlayer1, goalsPlayer2);
+
+		final double points = Math.abs(eloPoints) * (score - multiplicator);
+		final int roundedPoints = (int) Math.round(points);
+
+		return roundedPoints;
+	}
+
+	private static double calculateMultiplicator(int goal1, int goal2) {
+		return 1 / (1 + ((double) goal1 / (double) goal2));
 	}
 
 }

@@ -18,6 +18,12 @@ public interface KickerIcons extends ClientBundle {
 
 	@Source("chart_bar.png")
 	ImageResource chartBar();
+	
+	@Source("comments_12.png")
+	ImageResource comments_12();
+	
+	@Source("comments.png")
+	ImageResource comments();
 
 	@Source("group.png")
 	ImageResource group();

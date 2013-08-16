@@ -50,6 +50,7 @@ import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.form.FormPanel.LabelAlign;
 import com.sencha.gxt.widget.core.client.form.Radio;
+import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TimeField;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
@@ -104,6 +105,14 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 
 	private Label resultLabelTeam2;
 
+	private TextArea taComment;
+
+	private AppComboBox<PlayerDto> cbPlayer;
+
+	private ListStore<PlayerDto> storePlayer;
+
+	private boolean doUpdatePlayerList;
+
 	/**
 	 * Erzeugt einen neuen Controller zum Eintragen der Ergebnisse und Spieler eines Spiels.
 	 */
@@ -133,8 +142,11 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		final FieldSet fieldSetResult = createResultFieldSet();
 		vlcMain.add(fieldSetResult, new VerticalLayoutData(1, -1, new Margins(0, 10, 5, 10)));
 
-		final FieldSet fieldSetSetPlayers = createPlayersFieldSet();
-		vlcMain.add(fieldSetSetPlayers, new VerticalLayoutData(1, -1, new Margins(0, 10, 10, 10)));
+		final FieldSet fieldSetPlayers = createPlayersFieldSet();
+		vlcMain.add(fieldSetPlayers, new VerticalLayoutData(1, -1, new Margins(0, 10, 5, 10)));
+
+		final FieldSet fieldSetComment = createCommentFieldSet();
+		vlcMain.add(fieldSetComment, new VerticalLayoutData(1, -1, new Margins(0, 10, 10, 10)));
 
 		add(vlcMain);
 	}
@@ -627,6 +639,41 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		return cbPlayer;
 	}
 
+	/**
+	 * Erzeugt das Fieldset mit vier Textfeldern zum Eintragen der Spieler.
+	 * 
+	 * @return Das erzeugte Fieldset.
+	 */
+	private FieldSet createCommentFieldSet() {
+		final FieldSet fsComment = new FieldSet();
+		fsComment.setHeadingText("Kommentar (optional)");
+
+		final VerticalLayoutContainer vlcComment = new VerticalLayoutContainer();
+
+		vlcComment.add(createPlayerComboBox(), new VerticalLayoutData(-1, -1, new Margins(0, 0, 5, 0)));
+
+		taComment = new TextArea();
+		vlcComment.add(taComment, new VerticalLayoutData(1, 1));
+
+		fsComment.add(vlcComment);
+
+		return fsComment;
+	}
+
+	private AppComboBox<PlayerDto> createPlayerComboBox() {
+		final PlayerProperty props = GWT.create(PlayerProperty.class);
+
+		storePlayer = new ListStore<PlayerDto>(props.id());
+
+		cbPlayer = new AppComboBox<PlayerDto>(storePlayer, PlayerProperty.label);
+		cbPlayer.setTriggerAction(TriggerAction.ALL);
+		cbPlayer.setEmptyText("Spieler für Kommentar wählen...");
+		cbPlayer.setAllowBlank(false);
+		cbPlayer.setWidth(250);
+
+		return cbPlayer;
+	}
+
 	private AppButton createBtnInsert() {
 		final AppButton bReport = new AppButton("Ergebnis eintragen", KickerIcons.ICON.tableSave());
 		bReport.setToolTip("Speichert das Ergebnis und trägt es in die Liste ein");
@@ -649,6 +696,27 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 			}
 		});
 		return bReset;
+	}
+
+	protected void getPlayerList() {
+		if (doUpdatePlayerList) {
+			mask("Aktualisiere...");
+			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.NONE, new AsyncCallback<ArrayList<PlayerDto>>() {
+				@Override
+				public void onSuccess(ArrayList<PlayerDto> result) {
+					storePlayer.replaceAll(result);
+					doUpdatePlayerList = false;
+					unmask();
+				}
+
+				@Override
+				public void onFailure(Throwable caught) {
+					doUpdatePlayerList = false;
+					unmask();
+					AppExceptionHandler.handleException(caught);
+				}
+			});
+		}
 	}
 
 	private void createMatch() {
@@ -829,7 +897,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 			team2 = new TeamDto(cbTeam2Player1.getValue(), cbTeam2Player2.getValue());
 		}
 		newMatch.setTeam1Dto(team1);
-		newMatch.setTeam2(team2);
+		newMatch.setTeam2Dto(team2);
 
 		final MatchSetDto newSets = new MatchSetDto();
 		newSets.getMatchSetsTeam1().add(cbSet1Team1.getValue());
@@ -845,6 +913,9 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		}
 		newMatch.setMatchSetsDto(newSets);
 
+		if (taComment.getValue() != null && !taComment.getValue().isEmpty()) {
+			newMatch.setMatchComments(1);
+		}
 		return newMatch;
 	}
 
