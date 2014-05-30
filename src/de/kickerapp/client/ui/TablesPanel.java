@@ -76,10 +76,6 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	/** Der Angabe, ob die Einzelspielertabelle, Doppelspielertabelle sowie die Teamtabelle aktualisiert werden sollen. */
 	private boolean doUpdateSingleTable, doUpdateDoubleTable, doUpdateTeamTable;
 
-	private Grid<PlayerDto> gridSingleTable;
-	private Grid<PlayerDto> gridDoubleTable;
-	private Grid<TeamDto> gridTeamTable;
-
 	/**
 	 * Erzeugt einen neuen Controller für die Team- bzw. Spielertabellen.
 	 */
@@ -239,8 +235,8 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return o1.getPlayerSingleStatsDto().getCurTablePlace().compareTo(o2.getPlayerSingleStatsDto().getCurTablePlace());
 			}
 		});
-		numberer.setSortable(true);
 		numberer.setHideable(false);
+		numberer.setSortable(true);
 
 		final ColumnConfig<PlayerDto, String> ccPlayerName = new ColumnConfig<PlayerDto, String>(PlayerProperty.playerName, 140, "Spieler");
 		final ColumnConfig<PlayerDto, Integer> ccSingleMatches = createColumnConfig(PlayerProperty.singleMatches, 90, "Spiele");
@@ -366,7 +362,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccSinglePoints);
 		columns.add(ccSingleTendency);
 
-		gridSingleTable = new Grid<PlayerDto>(storeSingleTable, new ColumnModel<PlayerDto>(columns));
+		final Grid<PlayerDto> gridSingleTable = new Grid<PlayerDto>(storeSingleTable, new ColumnModel<PlayerDto>(columns));
 		gridSingleTable.getView().setAutoExpandColumn(ccPlayerName);
 		gridSingleTable.getView().setAutoExpandMax(1000);
 		gridSingleTable.getView().setStripeRows(true);
@@ -440,6 +436,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return o1.getPlayerDoubleStatsDto().getCurTablePlace().compareTo(o2.getPlayerDoubleStatsDto().getCurTablePlace());
 			}
 		});
+		numberer.setHideable(false);
 		numberer.setSortable(true);
 
 		final ColumnConfig<PlayerDto, String> ccPlayerName = new ColumnConfig<PlayerDto, String>(PlayerProperty.playerName, 140, "Spieler");
@@ -566,7 +563,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccDoublePoints);
 		columns.add(ccDoubleTendency);
 
-		gridDoubleTable = new Grid<PlayerDto>(storeDoubleTable, new ColumnModel<PlayerDto>(columns));
+		final Grid<PlayerDto> gridDoubleTable = new Grid<PlayerDto>(storeDoubleTable, new ColumnModel<PlayerDto>(columns));
 		gridDoubleTable.getView().setAutoExpandColumn(ccPlayerName);
 		gridDoubleTable.getView().setAutoExpandMax(1000);
 		gridDoubleTable.getView().setStripeRows(true);
@@ -649,6 +646,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return o1.getTeamStatsDto().getCurTablePlace().compareTo(o2.getTeamStatsDto().getCurTablePlace());
 			}
 		});
+		numberer.setHideable(false);
 		numberer.setSortable(true);
 
 		final ColumnConfig<TeamDto, String> ccTeamName = new ColumnConfig<TeamDto, String>(TeamProperty.teamName, 140, "Team");
@@ -775,7 +773,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccTeamPoints);
 		columns.add(ccTeamTendency);
 
-		gridTeamTable = new Grid<TeamDto>(storeTeamTable, new ColumnModel<TeamDto>(columns));
+		final Grid<TeamDto> gridTeamTable = new Grid<TeamDto>(storeTeamTable, new ColumnModel<TeamDto>(columns));
 		gridTeamTable.getView().setAutoExpandColumn(ccTeamName);
 		gridTeamTable.getView().setAutoExpandMax(1000);
 		gridTeamTable.getView().setStripeRows(true);
@@ -826,13 +824,10 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 */
 	private void getTableForActiveTab() {
 		if (activeTab == 0) {
-			gridSingleTable.getView().refresh(true);
 			getSingleTable();
 		} else if (activeTab == 1) {
-			gridDoubleTable.getView().refresh(true);
 			getDoubleTable();
 		} else {
-			gridTeamTable.getView().refresh(true);
 			getDoubleTableTeamView();
 		}
 	}
