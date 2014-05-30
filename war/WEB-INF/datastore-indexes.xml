@@ -11,13 +11,11 @@
 		<property name="matchPointsTeam2" direction="asc" />
 		<property name="matchSetsTeam1" direction="asc" />
 		<property name="matchSetsTeam2" direction="asc" />
-		<property name="matchComments" direction="asc" />
+		<property name="matchComment" direction="asc" />
 	</datastore-index>
 
 	<datastore-index kind="MatchComment" ancestor="false">
 		<property name="comment" direction="asc" />
-		<property name="commentDate" direction="asc" />
-		<property name="player" direction="asc" />
 		<property name="match" direction="desc" />
 	</datastore-index>
 

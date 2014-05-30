@@ -21,7 +21,6 @@ public class MatchCommentServiceImpl extends RemoteServiceServlet implements Mat
 	@Override
 	public void insertComment(MatchCommentDto matchCommentDto) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
-
 	}
 
 }
