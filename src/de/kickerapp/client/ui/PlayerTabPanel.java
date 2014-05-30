@@ -72,21 +72,21 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 			@Override
 			public void onSelection(SelectionEvent<Widget> event) {
 				final TabPanel panel = (TabPanel) event.getSource();
-				final Widget w = event.getSelectedItem();
+				final Widget widget = event.getSelectedItem();
 
-				activeTab = panel.getWidgetIndex(w);
-				tabPanel.forceLayout();
+				activeTab = panel.getWidgetIndex(widget);
 				getData();
 			}
 		});
+		tabPanel.setAutoSelect(false);
 		tabPanel.setResizeTabs(true);
 		tabPanel.setTabWidth(200);
 
 		final TabItemConfig ticSinglePlayerChart = new TabItemConfig("Einzelspielerstatistik");
-		ticSinglePlayerChart.setIcon(KickerIcons.ICON.chartBar());
+		ticSinglePlayerChart.setIcon(KickerIcons.ICON.chart_bar());
 
 		final TabItemConfig ticAdminPanel = new TabItemConfig("Spieler eintragen/bearbeiten");
-		ticAdminPanel.setIcon(KickerIcons.ICON.userEdit());
+		ticAdminPanel.setIcon(KickerIcons.ICON.player_edit());
 
 		tabPanel.add(playerAdminPanel, ticAdminPanel);
 		tabPanel.add(chartPanel, ticSinglePlayerChart);

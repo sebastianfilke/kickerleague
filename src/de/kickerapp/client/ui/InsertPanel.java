@@ -38,6 +38,7 @@ import com.sencha.gxt.widget.core.client.container.HBoxLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HBoxLayoutContainer.HBoxLayoutAlign;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer.VBoxLayoutAlign;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -68,7 +69,6 @@ import de.kickerapp.client.ui.resources.KickerTemplates;
 import de.kickerapp.client.ui.util.AppInfo;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
-import de.kickerapp.client.widgets.AppContentPanel;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.MatchSetDto;
@@ -209,7 +209,6 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 				}
 			}
 		});
-
 		return cbCurrentTime;
 	}
 
@@ -247,11 +246,8 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		final FieldSet fsResult = new FieldSet();
 		fsResult.setHeadingText("Ergebnis");
 
-		final AppContentPanel panel = new AppContentPanel();
-		panel.setHeaderVisible(false);
-		panel.setBodyBorder(false);
-		panel.setBorders(false);
-		panel.setHeight(98);
+		final SimpleContainer scResult = new SimpleContainer();
+		scResult.setHeight(120);
 
 		final HorizontalLayoutContainer hlcResult = new HorizontalLayoutContainer();
 
@@ -267,9 +263,8 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		hlcResult.add(createResultInsertContainer(), new HorizontalLayoutData(1, 1));
 		hlcResult.add(vblcResultTeam2, new HorizontalLayoutData(360, 1));
 
-		panel.add(hlcResult);
-
-		fsResult.add(panel);
+		scResult.add(hlcResult);
+		fsResult.add(scResult);
 
 		return fsResult;
 	}
@@ -296,11 +291,11 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 
 		cbSet2Team1 = createSetComboBox("Satz 2");
 		cbSet2Team2 = createSetComboBox("Satz 2");
-		vlcResult.add(createResultContainer(cbSet2Team1, cbSet2Team2), new VerticalLayoutData(1, -1, new Margins(0, 0, 4, 0)));
+		vlcResult.add(createResultContainer(cbSet2Team1, cbSet2Team2), new VerticalLayoutData(1, -1, new Margins(0, 0, 11, 0)));
 
 		cbSet3Team1 = createSetComboBox("Satz 3");
 		cbSet3Team2 = createSetComboBox("Satz 3");
-		vlcResult.add(createResultContainer(cbSet3Team1, cbSet3Team2), new VerticalLayoutData(1, -1));
+		vlcResult.add(createResultContainer(cbSet3Team1, cbSet3Team2), new VerticalLayoutData(1, -1, new Margins(0, 0, 11, 0)));
 
 		addValueChangedHandler();
 		addSelectionHandler();
@@ -433,13 +428,13 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 
 	private void enableStatusForLastSet(Integer cbSet1Team1, Integer cbSet2Team1, Integer cbSet1Team2, Integer cbSet2Team2) {
 		if ((cbSet1Team1 != null && cbSet1Team1 == 6) && (cbSet2Team1 != null && cbSet2Team1 == 6)) {
-			cbSet3Team1.clear();
-			cbSet3Team2.clear();
+			cbSet3Team1.reset();
+			cbSet3Team2.reset();
 			cbSet3Team1.setEnabled(false);
 			cbSet3Team2.setEnabled(false);
 		} else if ((cbSet1Team2 != null && cbSet1Team2 == 6) && (cbSet2Team2 != null && cbSet2Team2 == 6)) {
-			cbSet3Team1.clear();
-			cbSet3Team2.clear();
+			cbSet3Team1.reset();
+			cbSet3Team2.reset();
 			cbSet3Team1.setEnabled(false);
 			cbSet3Team2.setEnabled(false);
 		} else {
@@ -545,6 +540,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		final PlayerProperty props = GWT.create(PlayerProperty.class);
 
 		final VerticalLayoutContainer vlcPlayers = new VerticalLayoutContainer();
+		vlcPlayers.setHeight(180);
 
 		vlcPlayers.add(createRadioButtons(), new VerticalLayoutData(-1, -1, new Margins(0, 0, 5, 0)));
 
@@ -649,8 +645,9 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		fsComment.setHeadingText("Kommentar (optional)");
 
 		final VerticalLayoutContainer vlcComment = new VerticalLayoutContainer();
+		vlcComment.setHeight(100);
 
-		vlcComment.add(createPlayerComboBox(), new VerticalLayoutData(-1, -1, new Margins(0, 0, 5, 0)));
+		vlcComment.add(createPlayerComboBox(), new VerticalLayoutData(-1, -1, new Margins(0, 0, 11, 0)));
 
 		taComment = new TextArea();
 		vlcComment.add(taComment, new VerticalLayoutData(1, 1));
@@ -675,7 +672,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private AppButton createBtnInsert() {
-		final AppButton bReport = new AppButton("Ergebnis eintragen", KickerIcons.ICON.tableSave());
+		final AppButton bReport = new AppButton("Ergebnis eintragen", KickerIcons.ICON.save());
 		bReport.setToolTip("Speichert das Ergebnis und trägt es in die Liste ein");
 		bReport.addSelectHandler(new SelectHandler() {
 			@Override
@@ -687,7 +684,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private AppButton createBtnReset() {
-		final AppButton bReset = new AppButton("Eingaben zurücksetzen", KickerIcons.ICON.table());
+		final AppButton bReset = new AppButton("Eingaben zurücksetzen", KickerIcons.ICON.reset());
 		bReset.setToolTip("Setzt alle eingegebenen Daten zurück");
 		bReset.addSelectHandler(new SelectHandler() {
 			@Override
@@ -836,21 +833,21 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		resultLabelTeam1.setText("0");
 		resultLabelTeam2.setText("0");
 
-		cbSet1Team1.clear();
-		cbSet1Team2.clear();
-		cbSet2Team1.clear();
-		cbSet2Team2.clear();
-		cbSet3Team1.clear();
-		cbSet3Team2.clear();
+		cbSet1Team1.reset();
+		cbSet1Team2.reset();
+		cbSet2Team1.reset();
+		cbSet2Team2.reset();
+		cbSet3Team1.reset();
+		cbSet3Team2.reset();
 		cbSet3Team1.setEnabled(true);
 		cbSet3Team2.setEnabled(true);
 
 		cbCurrentTime.setValue(true, true);
 
-		cbTeam1Player1.clear();
-		cbTeam1Player2.clear();
-		cbTeam2Player1.clear();
-		cbTeam2Player2.clear();
+		cbTeam1Player1.reset();
+		cbTeam1Player2.reset();
+		cbTeam2Player1.reset();
+		cbTeam2Player2.reset();
 	}
 
 	private MatchDto makeMatch() {
