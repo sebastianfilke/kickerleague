@@ -1,7 +1,5 @@
 package de.kickerapp.shared.dto;
 
-import java.util.Date;
-
 import de.kickerapp.shared.common.BaseDto;
 
 /**
@@ -16,20 +14,29 @@ public class MatchCommentDto extends BaseDto {
 
 	/** Der Kommentar. */
 	private String comment;
-	/** Das Kommentardatum. */
-	private Date commentDate;
-	/** Der Spieler. */
-	private PlayerDto playerDto;
+	/** Das Spiel des Kommentars. */
+	private MatchDto matchDto;
 
 	/**
-	 * Erzeugt ein neues Spiel ohne Angaben.
+	 * Erzeugt einen neuen Kommentar ohne Angaben.
 	 */
 	public MatchCommentDto() {
 		super();
 
 		comment = "";
-		commentDate = null;
-		playerDto = null;
+		matchDto = null;
+	}
+
+	/**
+	 * Erzeugt einen neuen Kommentar mit Text und Spiel.
+	 * 
+	 * @param comment Der Kommentar als {@link String}.
+	 * @param matchDto Das Spiel des Kommentars {@link MatchDto}.
+	 */
+	public MatchCommentDto(String comment, MatchDto matchDto) {
+		this();
+		this.comment = comment;
+		this.matchDto = matchDto;
 	}
 
 	/**
@@ -51,39 +58,21 @@ public class MatchCommentDto extends BaseDto {
 	}
 
 	/**
-	 * Liefert das Kommentardatum.
+	 * Liefert das Spiel des Kommentars.
 	 * 
-	 * @return Das Kommentardatum {@link Date}.
+	 * @return Das Spiel des Kommentars als {@link MatchDto}.
 	 */
-	public Date getCommentDate() {
-		return commentDate;
+	public MatchDto getMatchDto() {
+		return matchDto;
 	}
 
 	/**
-	 * Liefert das Kommentardatum.
+	 * Setzt das Spiel des Kommentars.
 	 * 
-	 * @param commentDate Das Kommentardatum {@link Date}.
+	 * @param matchDto Das Spiel des Kommentars als {@link MatchDto}.
 	 */
-	public void setCommentDate(Date commentDate) {
-		this.commentDate = commentDate;
-	}
-
-	/**
-	 * Liefert den Spieler.
-	 * 
-	 * @return Der Spieler als {@link PlayerDto}.
-	 */
-	public PlayerDto getPlayerDto() {
-		return playerDto;
-	}
-
-	/**
-	 * Setzt den Spieler.
-	 * 
-	 * @param playerDto Der Spieler als {@link PlayerDto}.
-	 */
-	public void setPlayerDto(PlayerDto playerDto) {
-		this.playerDto = playerDto;
+	public void setMatchDto(MatchDto matchDto) {
+		this.matchDto = matchDto;
 	}
 
 }

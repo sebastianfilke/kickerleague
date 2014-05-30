@@ -70,6 +70,7 @@ import de.kickerapp.client.ui.util.AppInfo;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
 import de.kickerapp.shared.common.MatchType;
+import de.kickerapp.shared.dto.MatchCommentDto;
 import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.MatchSetDto;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -108,8 +109,6 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	private TextArea taComment;
 
 	private AppComboBox<PlayerDto> cbPlayer;
-
-	private ListStore<PlayerDto> storePlayer;
 
 	private boolean doUpdatePlayerList;
 
@@ -644,31 +643,12 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		final FieldSet fsComment = new FieldSet();
 		fsComment.setHeadingText("Kommentar (optional)");
 
-		final VerticalLayoutContainer vlcComment = new VerticalLayoutContainer();
-		vlcComment.setHeight(100);
-
-		vlcComment.add(createPlayerComboBox(), new VerticalLayoutData(-1, -1, new Margins(0, 0, 11, 0)));
-
 		taComment = new TextArea();
-		vlcComment.add(taComment, new VerticalLayoutData(1, 1));
+		taComment.setHeight(100);
 
-		fsComment.add(vlcComment);
+		fsComment.add(taComment);
 
 		return fsComment;
-	}
-
-	private AppComboBox<PlayerDto> createPlayerComboBox() {
-		final PlayerProperty props = GWT.create(PlayerProperty.class);
-
-		storePlayer = new ListStore<PlayerDto>(props.id());
-
-		cbPlayer = new AppComboBox<PlayerDto>(storePlayer, PlayerProperty.label);
-		cbPlayer.setTriggerAction(TriggerAction.ALL);
-		cbPlayer.setEmptyText("Spieler für Kommentar wählen...");
-		cbPlayer.setAllowBlank(false);
-		cbPlayer.setWidth(250);
-
-		return cbPlayer;
 	}
 
 	private AppButton createBtnInsert() {
@@ -693,27 +673,6 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 			}
 		});
 		return bReset;
-	}
-
-	protected void getPlayerList() {
-		if (doUpdatePlayerList) {
-			mask("Aktualisiere...");
-			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.NONE, new AsyncCallback<ArrayList<PlayerDto>>() {
-				@Override
-				public void onSuccess(ArrayList<PlayerDto> result) {
-					storePlayer.replaceAll(result);
-					doUpdatePlayerList = false;
-					unmask();
-				}
-
-				@Override
-				public void onFailure(Throwable caught) {
-					doUpdatePlayerList = false;
-					unmask();
-					AppExceptionHandler.handleException(caught);
-				}
-			});
-		}
 	}
 
 	private void createMatch() {
@@ -848,6 +807,8 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		cbTeam1Player2.reset();
 		cbTeam2Player1.reset();
 		cbTeam2Player2.reset();
+
+		taComment.reset();
 	}
 
 	private MatchDto makeMatch() {
@@ -911,7 +872,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		newMatch.setMatchSetsDto(newSets);
 
 		if (taComment.getValue() != null && !taComment.getValue().isEmpty()) {
-			newMatch.setMatchComments(1);
+			newMatch.setMatchCommentDto(new MatchCommentDto(taComment.getValue(), newMatch));
 		}
 		return newMatch;
 	}

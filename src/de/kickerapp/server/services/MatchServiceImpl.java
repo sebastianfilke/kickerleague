@@ -11,6 +11,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import de.kickerapp.client.services.MatchService;
 import de.kickerapp.server.entity.Match;
 import de.kickerapp.server.entity.Match.MatchSets;
+import de.kickerapp.server.entity.MatchComment;
 import de.kickerapp.server.entity.Player;
 import de.kickerapp.server.entity.PlayerDoubleStats;
 import de.kickerapp.server.entity.PlayerSingleStats;
@@ -44,7 +45,6 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		dbMatch.setKey(matchKey);
 		dbMatch.setMatchNumber(matchId);
 		dbMatch.setMatchDate(matchDto.getMatchDate());
-		dbMatch.setMatchComments(matchDto.getMatchComments());
 
 		final MatchSets sets = new MatchSets(matchDto.getMatchSetsDto().getMatchSetsTeam1(), matchDto.getMatchSetsDto().getMatchSetsTeam2());
 		dbMatch.setMatchSets(sets);
@@ -54,8 +54,11 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		} else {
 			createDoubleMatch(matchDto, dbMatch);
 		}
-		PMFactory.persistObject(dbMatch);
+		if (matchDto.getMatchCommentDto() != null) {
+			createMatchComment(matchDto, dbMatch);
+		}
 
+		PMFactory.persistObject(dbMatch);
 		MatchServiceHelper.updateTable(matchDto);
 
 		return matchDto;
@@ -348,6 +351,21 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 			dbTeam.setLastMatchDate(matchDto.getMatchDate());
 		}
 		return dbTeamStats;
+	}
+
+	/**
+	 * Erzeugt und Speichert ein Kommentar zum Spiel.
+	 * 
+	 * @param matchDto Die Client-Datenklasse.
+	 * @param dbMatch Die Objekt-Datenklasse.
+	 */
+	private void createMatchComment(final MatchDto matchDto, final Match dbMatch) {
+		final MatchComment comment = new MatchComment(matchDto.getMatchCommentDto().getComment(), dbMatch.getKey().getId());
+		final int commentId = PMFactory.getNextId(MatchComment.class.getName());
+		final Key commentKey = KeyFactory.createKey(MatchComment.class.getSimpleName(), commentId);
+		comment.setKey(commentKey);
+		PMFactory.persistObject(comment);
+		dbMatch.setMatchComment(comment.getKey().getId());
 	}
 
 	/**

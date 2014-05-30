@@ -113,6 +113,7 @@ public final class PMFactory {
 	 * @param <T> Die Typen der Klassen.
 	 * @return Die gespeicherten Db-Objekte.
 	 */
+	@SafeVarargs
 	public static <T extends Serializable> Object[] persistAllObjects(final T... objects) {
 		final PersistenceManager pm = get().getPersistenceManager();
 		final Transaction txn = pm.currentTransaction();

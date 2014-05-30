@@ -44,9 +44,9 @@ public class Match extends BaseEntity {
 	@Embedded
 	@Persistent(defaultFetchGroup = "true")
 	private MatchSets matchSets;
-	/** Die Anzahl der Kommentare zum Spiel. */
+	/** Die Datenbank-Id des Kommentars zum Spiel. */
 	@Persistent
-	private Integer matchComments;
+	private Long matchComment;
 
 	/**
 	 * Erzeugt ein neues Spiel ohne Angaben.
@@ -61,7 +61,7 @@ public class Match extends BaseEntity {
 		team2 = null;
 		matchPoints = new MatchPoints();
 		matchSets = new MatchSets();
-		matchComments = 0;
+		matchComment = null;
 	}
 
 	/**
@@ -191,21 +191,21 @@ public class Match extends BaseEntity {
 	}
 
 	/**
-	 * Liefert die Anzahl der Kommentare zum Spiel.
+	 * Liefert die Datenbank-Id des Kommentars zum Spiel.
 	 * 
-	 * @return Die Anzahl der Kommentare zum Spiel als {@link Integer}.
+	 * @return Die Datenbank-Id des Kommentars zum Spiel als {@link Long}.
 	 */
-	public Integer getMatchComments() {
-		return matchComments;
+	public Long getMatchComment() {
+		return matchComment;
 	}
 
 	/**
-	 * Setzt die Anzahl der Kommentare zum Spiel.
+	 * Setzt die Datenbank-Id des Kommentars zum Spiel.
 	 * 
-	 * @param matchComments Die Anzahl der Kommentare zum Spiel als {@link Integer}.
+	 * @param matchComment Die Datenbank-Id des Kommentars zum Spiel als {@link Long}.
 	 */
-	public void setMatchComments(Integer matchComments) {
-		this.matchComments = matchComments;
+	public void setMatchComment(Long matchComment) {
+		this.matchComment = matchComment;
 	}
 
 	/**

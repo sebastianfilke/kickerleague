@@ -31,8 +31,8 @@ public class MatchDto extends BaseDto {
 	private MatchPointsDto matchPointsDto;
 	/** Die Spielsätze der Teams bzw. Spieler. */
 	private MatchSetDto matchSetsDto;
-	/** Die Anzahl der Kommentare zum Spiel. */
-	private Integer matchComments;
+	/** Der Kommentar zum Spiel. */
+	private MatchCommentDto matchCommentDto;
 
 	/**
 	 * Erzeugt ein neues Spiel ohne Angaben.
@@ -48,7 +48,7 @@ public class MatchDto extends BaseDto {
 		team2Dto = null;
 		matchPointsDto = null;
 		matchSetsDto = null;
-		matchComments = 0;
+		matchCommentDto = null;
 	}
 
 	/**
@@ -196,21 +196,21 @@ public class MatchDto extends BaseDto {
 	}
 
 	/**
-	 * Liefert die Anzahl der Kommentare zum Spiel.
+	 * Liefert den Kommentar zum Spiel.
 	 * 
-	 * @return Die Anzahl der Kommentare zum Spiel als {@link Integer}.
+	 * @return Der Kommentar zum Spiel als {@link MatchCommentDto}.
 	 */
-	public Integer getMatchComments() {
-		return matchComments;
+	public MatchCommentDto getMatchCommentDto() {
+		return matchCommentDto;
 	}
 
 	/**
-	 * Setzt die Anzahl der Kommentare zum Spiel.
+	 * Setzt den Kommentar zum Spiel.
 	 * 
-	 * @param matchComments Die Anzahl der Kommentare zum Spiel als {@link Integer}.
+	 * @param matchCommentDto Der Kommentar zum Spiel als {@link MatchCommentDto}.
 	 */
-	public void setMatchComments(Integer matchComments) {
-		this.matchComments = matchComments;
+	public void setMatchCommentDto(MatchCommentDto matchCommentDto) {
+		this.matchCommentDto = matchCommentDto;
 	}
 
 }

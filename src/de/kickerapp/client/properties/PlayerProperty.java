@@ -434,7 +434,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 
 		@Override
 		public String getPath() {
-			return "doubleTendency	";
+			return "doubleTendency";
 		}
 	};
 

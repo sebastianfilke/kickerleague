@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 
 import de.kickerapp.server.entity.Match;
+import de.kickerapp.server.entity.MatchComment;
 import de.kickerapp.server.entity.Player;
 import de.kickerapp.server.entity.PlayerDoubleStats;
 import de.kickerapp.server.entity.PlayerSingleStats;
@@ -115,7 +116,6 @@ public class MatchServiceHelper {
 		matchDto.setMatchNumber(dbMatch.getMatchNumber());
 		matchDto.setMatchDate(dbMatch.getMatchDate());
 		matchDto.setMatchType(dbMatch.getMatchType());
-		matchDto.setMatchComments(dbMatch.getMatchComments());
 
 		final SimpleDateFormat dateFormat = new SimpleDateFormat("'Spiele vom' EEEE, 'den' dd.MM.yyyy", Locale.GERMAN);
 		matchDto.setGroupDate(dateFormat.format(dbMatch.getMatchDate()));
@@ -140,6 +140,10 @@ public class MatchServiceHelper {
 			final Player team2Player2 = PlayerServiceHelper.getPlayerById((Long) team2.getPlayers().toArray()[1], dbPlayers);
 
 			matchDto.setTeam2Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(team2Player1), PlayerServiceHelper.createPlayerDto(team2Player2)));
+		}
+		if (dbMatch.getMatchComment() != null) {
+			final MatchComment matchComment = PMFactory.getObjectById(MatchComment.class, dbMatch.getMatchComment());
+			matchDto.setMatchCommentDto(MatchCommentHelper.createMatchCommentDto(matchComment, matchDto));
 		}
 		final MatchPointsDto pointsDto = new MatchPointsDto();
 		pointsDto.setMatchPointsTeam1(dbMatch.getMatchPoints().getMatchPointsTeam1());

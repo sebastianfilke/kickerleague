@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
+import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -263,19 +265,19 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 		}
 	};
 
-	public ValueProvider<MatchDto, String> matchComments = new ValueProvider<MatchDto, String>() {
+	public ValueProvider<MatchDto, ImageResource> matchComment = new ValueProvider<MatchDto, ImageResource>() {
 		@Override
-		public String getValue(MatchDto object) {
-			return Integer.toString(object.getMatchComments());
+		public ImageResource getValue(MatchDto object) {
+			return KickerIcons.ICON.comments();
 		}
 
 		@Override
-		public void setValue(MatchDto object, String value) {
+		public void setValue(MatchDto object, ImageResource value) {
 		}
 
 		@Override
 		public String getPath() {
-			return "matchComments";
+			return "matchComment";
 		}
 	};
 

@@ -1,7 +1,5 @@
 package de.kickerapp.server.entity;
 
-import java.util.Date;
-
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
@@ -19,13 +17,7 @@ public class MatchComment extends BaseEntity {
 	/** Der Kommentar. */
 	@Persistent
 	private String comment;
-	/** Das Kommentardatum. */
-	@Persistent
-	private Date commentDate;
-	/** Die Datenbank-Id des Spielers. */
-	@Persistent
-	private Long player;
-	/** Die Datenbank-Id des Spiels. */
+	/** Das Spiel des Kommentars. */
 	@Persistent
 	private Long match;
 
@@ -36,9 +28,18 @@ public class MatchComment extends BaseEntity {
 		super();
 
 		comment = "";
-		commentDate = null;
-		player = null;
 		match = null;
+	}
+
+	/**
+	 * Erzeugt einen neuen Kommentar mit Text und Spiel.
+	 * 
+	 * @param comment Der Kommentar als {@link String}.
+	 * @param match Das Spiel des Kommentars {@link Long}.
+	 */
+	public MatchComment(String comment, Long match) {
+		this.comment = comment;
+		this.match = match;
 	}
 
 	/**
@@ -60,54 +61,18 @@ public class MatchComment extends BaseEntity {
 	}
 
 	/**
-	 * Liefert das Kommentardatum.
+	 * Liefert das Spiel des Kommentars.
 	 * 
-	 * @return Das Kommentardatum {@link Date}.
-	 */
-	public Date getCommentDate() {
-		return commentDate;
-	}
-
-	/**
-	 * Liefert das Kommentardatum.
-	 * 
-	 * @param commentDate Das Kommentardatum {@link Date}.
-	 */
-	public void setCommentDate(Date commentDate) {
-		this.commentDate = commentDate;
-	}
-
-	/**
-	 * Liefert die Datenbank-Id des Spielers.
-	 * 
-	 * @return Die Datenbank-Id des Spielers als {@link Long}.
-	 */
-	public Long getPlayer() {
-		return player;
-	}
-
-	/**
-	 * Setzt die Datenbank-Id des Spielers.
-	 * 
-	 * @param player Die Datenbank-Id des Spielers als {@link Long}.
-	 */
-	public void setPlayer(Long player) {
-		this.player = player;
-	}
-
-	/**
-	 * Liefert die Datenbank-Id des Spiels.
-	 * 
-	 * @return Die Datenbank-Id des Spiels als {@link Long}.
+	 * @return Das Spiel des Kommentars als {@link Long}.
 	 */
 	public Long getMatch() {
 		return match;
 	}
 
 	/**
-	 * Setzt die Datenbank-Id des Spiels.
+	 * Setzt das Spiel des Kommentars.
 	 * 
-	 * @param match Die Datenbank-Id des Spiels als {@link Long}.
+	 * @param match Das Spiel des Kommentars als {@link Long}.
 	 */
 	public void setMatch(Long match) {
 		this.match = match;
