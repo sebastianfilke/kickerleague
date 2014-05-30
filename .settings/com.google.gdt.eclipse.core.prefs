@@ -1,0 +1,4 @@
+eclipse.preferences.version=1
+jarsExcludedFromWebInfLib=C\:/Users/Basti/workspace/Kicker Application/lib/gxt-3.0.1.jar|C\:/Users/Basti/workspace/Kicker Application/lib/gxt-chart-3.0.1.jar
+warSrcDir=war
+warSrcDirIsOutput=true
