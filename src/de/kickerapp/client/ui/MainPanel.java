@@ -74,7 +74,7 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		final SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
 		sb.appendHtmlConstant("<div id='header'><div id='headerIcon'>");
-		sb.append(AbstractImagePrototype.create(KickerIcons.ICON.soccerBall()).getSafeHtml());
+		sb.append(AbstractImagePrototype.create(KickerIcons.ICON.soccer_ball()).getSafeHtml());
 		sb.appendHtmlConstant("</div>");
 		sb.appendHtmlConstant("<div id='headerText'>");
 		sb.appendHtmlConstant(KickerMessages.MESSAGE.applicationTitle());
@@ -142,7 +142,7 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 			clcContent.setActiveWidget(playerPanel);
 			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.PLAYER));
 		}
-		clcContent.forceLayout();
+		// clcContent.forceLayout();
 	}
 
 }

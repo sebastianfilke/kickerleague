@@ -141,7 +141,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	}
 
 	private AppButton createBtnUpdate() {
-		final AppButton btnListUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.tableRefresh());
+		final AppButton btnListUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.update());
 		btnListUpdate.setToolTip("Aktualisiert die Liste der eingetragenen Spieler in der Datenbank");
 		btnListUpdate.addSelectHandler(new SelectHandler() {
 			@Override
@@ -227,11 +227,11 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 			clcChart.setActiveWidget(winChartPanel);
 			winChartPanel.loadGoalChart(chartDto.getChartDataDto());
 		}
-		clcChart.forceLayout();
+		// clcChart.forceLayout();
 	}
 
 	private AppButton createBtnUpdateChart() {
-		btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.tableRefresh());
+		btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.update());
 		btnUpdate.setToolTip("Aktualisiert die momentan gewählte Statistik");
 		btnUpdate.setEnabled(false);
 		btnUpdate.addSelectHandler(new SelectHandler() {
@@ -254,7 +254,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private ToggleButton createTbtnGoalChart() {
 		tbtnGoalChart = new ToggleButton("Torstatistik");
 		tbtnGoalChart.setToolTip("Zeigt die Torstatistik für den aktuell gewählten Spieler");
-		tbtnGoalChart.setIcon(KickerIcons.ICON.chartBar());
+		tbtnGoalChart.setIcon(KickerIcons.ICON.chart_bar());
 		tbtnGoalChart.setId("singleGoalsChart");
 		tbtnGoalChart.setAllowDepress(false);
 		tbtnGoalChart.setEnabled(false);
@@ -265,7 +265,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private ToggleButton createTbtnWinChart() {
 		tbtnWinChart = new ToggleButton("Siegstatistik");
 		tbtnWinChart.setToolTip("Zeigt die Siegstatistik für den aktuell gewählten Spieler");
-		tbtnWinChart.setIcon(KickerIcons.ICON.chartBar());
+		tbtnWinChart.setIcon(KickerIcons.ICON.chart_bar());
 		tbtnWinChart.setId("singleWinsChart");
 		tbtnWinChart.setAllowDepress(false);
 		tbtnWinChart.setEnabled(false);

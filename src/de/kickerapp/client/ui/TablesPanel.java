@@ -5,6 +5,7 @@ import java.util.Comparator;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ImageResourceCell;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.resources.client.ImageResource;
@@ -13,7 +14,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.Store;
@@ -30,6 +30,7 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.RowNumberer;
+import com.sencha.gxt.widget.core.client.grid.RowNumberer.RowNumbererAppearance;
 import com.sencha.gxt.widget.core.client.tips.QuickTip;
 import com.sencha.gxt.widget.core.client.toolbar.SeparatorToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
@@ -130,10 +131,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			@Override
 			public void onSelection(SelectionEvent<Widget> event) {
 				final TabPanel panel = (TabPanel) event.getSource();
-				final Widget w = event.getSelectedItem();
+				final Widget widget = event.getSelectedItem();
 
-				activeTab = panel.getWidgetIndex(w);
-				tabPanel.forceLayout();
+				activeTab = panel.getWidgetIndex(widget);
 				getTableForActiveTab();
 			}
 		});
@@ -145,21 +145,21 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		vlcSingleTable.add(createSingleTableGrid(), new VerticalLayoutData(1, 1));
 
 		final TabItemConfig ticSingleTable = new TabItemConfig("Einzeltabelle");
-		ticSingleTable.setIcon(KickerIcons.ICON.user());
+		ticSingleTable.setIcon(KickerIcons.ICON.player_single());
 
 		final VerticalLayoutContainer vlcDoubleTable = new VerticalLayoutContainer();
 		vlcDoubleTable.add(createDoubleTableToolBar(), new VerticalLayoutData(1, -1));
 		vlcDoubleTable.add(createDoubleTableGrid(), new VerticalLayoutData(1, 1));
 
 		final TabItemConfig ticDoubleTable = new TabItemConfig("Doppeltabelle");
-		ticDoubleTable.setIcon(KickerIcons.ICON.group());
+		ticDoubleTable.setIcon(KickerIcons.ICON.player_double());
 
 		final VerticalLayoutContainer vlcTeamTable = new VerticalLayoutContainer();
 		vlcTeamTable.add(createTeamTableToolBar(), new VerticalLayoutData(1, -1));
 		vlcTeamTable.add(createTeamTableGrid(), new VerticalLayoutData(1, 1));
 
 		final TabItemConfig ticTeamTable = new TabItemConfig("Teamtabelle");
-		ticTeamTable.setIcon(KickerIcons.ICON.groupLink());
+		ticTeamTable.setIcon(KickerIcons.ICON.player_team());
 
 		tabPanel.add(vlcSingleTable, ticSingleTable);
 		tabPanel.add(vlcDoubleTable, ticDoubleTable);
@@ -190,7 +190,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		};
 		sfcNoMatchPlayer.setToolTip("Aktivieren um auch Spieler anzuzeigen, welche noch kein Spiel und damit keinen Tabellenplatz haben");
 		sfcNoMatchPlayer.setText("Alle Spieler anzeigen");
-		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.tableSort());
+		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.player_filter());
 		sfcNoMatchPlayer.bind(storeSingleTable);
 
 		final StoreFilterField<PlayerDto> sffSingleTable = new StoreFilterField<PlayerDto>() {
@@ -221,12 +221,12 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 * @return Das erzeugte Grid.
 	 */
 	public Grid<PlayerDto> createSingleTableGrid() {
-		final IdentityValueProvider<PlayerDto> identity = new IdentityValueProvider<PlayerDto>();
-		final RowNumberer<PlayerDto> numberer = new RowNumberer<PlayerDto>(identity);
+		final RowNumbererAppearance appearance = GWT.create(RowNumbererAppearance.class);
+		final RowNumberer<PlayerDto> numberer = new RowNumberer<PlayerDto>();
 		numberer.setCell(new AbstractCell<PlayerDto>() {
 			@Override
 			public void render(Context context, PlayerDto value, SafeHtmlBuilder sb) {
-				sb.append(value.getPlayerSingleStatsDto().getCurTablePlace());
+				appearance.renderCell(value.getPlayerSingleStatsDto().getCurTablePlace(), sb);
 			}
 		});
 		numberer.setComparator(new Comparator<PlayerDto>() {
@@ -235,6 +235,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return o1.getPlayerSingleStatsDto().getCurTablePlace().compareTo(o2.getPlayerSingleStatsDto().getCurTablePlace());
 			}
 		});
+		numberer.setHideable(false);
 		numberer.setSortable(true);
 
 		final ColumnConfig<PlayerDto, String> ccPlayerName = new ColumnConfig<PlayerDto, String>(PlayerProperty.playerName, 140, "Spieler");
@@ -336,9 +337,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final PlayerDto player = storeSingleTable.findModelWithKey(context.getKey().toString());
-				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerSingleStatsDto().getPrevTablePlace() + "'>");
+				sb.appendHtmlConstant("<div qtitle='Vorher' qtip='Platz " + player.getPlayerSingleStatsDto().getPrevTablePlace() + "'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
-				sb.appendHtmlConstant("</span>");
+				sb.appendHtmlConstant("</div>");
 			}
 		});
 		ccSingleTendency.setComparator(new Comparator<ImageResource>() {
@@ -361,13 +362,13 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccSinglePoints);
 		columns.add(ccSingleTendency);
 
-		final Grid<PlayerDto> grid = new Grid<PlayerDto>(storeSingleTable, new ColumnModel<PlayerDto>(columns));
-		grid.getView().setAutoExpandColumn(ccPlayerName);
-		grid.getView().setAutoExpandMax(1000);
-		grid.getView().setStripeRows(true);
-		new QuickTip(grid);
+		final Grid<PlayerDto> gridSingleTable = new Grid<PlayerDto>(storeSingleTable, new ColumnModel<PlayerDto>(columns));
+		gridSingleTable.getView().setAutoExpandColumn(ccPlayerName);
+		gridSingleTable.getView().setAutoExpandMax(1000);
+		gridSingleTable.getView().setStripeRows(true);
+		new QuickTip(gridSingleTable);
 
-		return grid;
+		return gridSingleTable;
 	}
 
 	/**
@@ -390,7 +391,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		};
 		sfcNoMatchPlayer.setToolTip("Aktivieren um auch Spieler anzuzeigen, welche noch kein Spiel und damit keinen Tabellenplatz haben");
 		sfcNoMatchPlayer.setText("Alle Spieler anzeigen");
-		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.tableSort());
+		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.player_filter());
 		sfcNoMatchPlayer.bind(storeDoubleTable);
 
 		final StoreFilterField<PlayerDto> sffDoubleTable = new StoreFilterField<PlayerDto>() {
@@ -421,12 +422,12 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 * @return Das erzeugte Grid.
 	 */
 	private Grid<PlayerDto> createDoubleTableGrid() {
-		final IdentityValueProvider<PlayerDto> identity = new IdentityValueProvider<PlayerDto>();
-		final RowNumberer<PlayerDto> numberer = new RowNumberer<PlayerDto>(identity);
+		final RowNumbererAppearance appearance = GWT.create(RowNumbererAppearance.class);
+		final RowNumberer<PlayerDto> numberer = new RowNumberer<PlayerDto>();
 		numberer.setCell(new AbstractCell<PlayerDto>() {
 			@Override
 			public void render(Context context, PlayerDto value, SafeHtmlBuilder sb) {
-				sb.append(value.getPlayerDoubleStatsDto().getCurTablePlace());
+				appearance.renderCell(value.getPlayerDoubleStatsDto().getCurTablePlace(), sb);
 			}
 		});
 		numberer.setComparator(new Comparator<PlayerDto>() {
@@ -435,6 +436,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return o1.getPlayerDoubleStatsDto().getCurTablePlace().compareTo(o2.getPlayerDoubleStatsDto().getCurTablePlace());
 			}
 		});
+		numberer.setHideable(false);
 		numberer.setSortable(true);
 
 		final ColumnConfig<PlayerDto, String> ccPlayerName = new ColumnConfig<PlayerDto, String>(PlayerProperty.playerName, 140, "Spieler");
@@ -536,9 +538,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final PlayerDto player = storeDoubleTable.findModelWithKey(context.getKey().toString());
-				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + player.getPlayerDoubleStatsDto().getPrevTablePlace() + "'>");
+				sb.appendHtmlConstant("<div qtitle='Vorher' qtip='Platz " + player.getPlayerDoubleStatsDto().getPrevTablePlace() + "'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
-				sb.appendHtmlConstant("</span>");
+				sb.appendHtmlConstant("</div>");
 			}
 		});
 		ccDoubleTendency.setComparator(new Comparator<ImageResource>() {
@@ -561,13 +563,13 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccDoublePoints);
 		columns.add(ccDoubleTendency);
 
-		final Grid<PlayerDto> grid = new Grid<PlayerDto>(storeDoubleTable, new ColumnModel<PlayerDto>(columns));
-		grid.getView().setAutoExpandColumn(ccPlayerName);
-		grid.getView().setAutoExpandMax(1000);
-		grid.getView().setStripeRows(true);
-		new QuickTip(grid);
+		final Grid<PlayerDto> gridDoubleTable = new Grid<PlayerDto>(storeDoubleTable, new ColumnModel<PlayerDto>(columns));
+		gridDoubleTable.getView().setAutoExpandColumn(ccPlayerName);
+		gridDoubleTable.getView().setAutoExpandMax(1000);
+		gridDoubleTable.getView().setStripeRows(true);
+		new QuickTip(gridDoubleTable);
 
-		return grid;
+		return gridDoubleTable;
 	}
 
 	/**
@@ -630,12 +632,12 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 * @return Das erzeugte Grid.
 	 */
 	public Grid<TeamDto> createTeamTableGrid() {
-		final IdentityValueProvider<TeamDto> identity = new IdentityValueProvider<TeamDto>();
-		final RowNumberer<TeamDto> numberer = new RowNumberer<TeamDto>(identity);
+		final RowNumbererAppearance appearance = GWT.create(RowNumbererAppearance.class);
+		final RowNumberer<TeamDto> numberer = new RowNumberer<TeamDto>();
 		numberer.setCell(new AbstractCell<TeamDto>() {
 			@Override
 			public void render(Context context, TeamDto value, SafeHtmlBuilder sb) {
-				sb.append(value.getTeamStatsDto().getCurTablePlace());
+				appearance.renderCell(value.getTeamStatsDto().getCurTablePlace(), sb);
 			}
 		});
 		numberer.setComparator(new Comparator<TeamDto>() {
@@ -644,6 +646,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 				return o1.getTeamStatsDto().getCurTablePlace().compareTo(o2.getTeamStatsDto().getCurTablePlace());
 			}
 		});
+		numberer.setHideable(false);
 		numberer.setSortable(true);
 
 		final ColumnConfig<TeamDto, String> ccTeamName = new ColumnConfig<TeamDto, String>(TeamProperty.teamName, 140, "Team");
@@ -745,9 +748,9 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final TeamDto team = storeTeamTable.findModelWithKey(context.getKey().toString());
-				sb.appendHtmlConstant("<span qtitle='Vorher' qtip='Platz " + team.getTeamStatsDto().getPrevTablePlace() + "'>");
+				sb.appendHtmlConstant("<div qtitle='Vorher' qtip='Platz " + team.getTeamStatsDto().getPrevTablePlace() + "'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
-				sb.appendHtmlConstant("</span>");
+				sb.appendHtmlConstant("</div>");
 			}
 		});
 		ccTeamTendency.setComparator(new Comparator<ImageResource>() {
@@ -770,13 +773,13 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		columns.add(ccTeamPoints);
 		columns.add(ccTeamTendency);
 
-		final Grid<TeamDto> grid = new Grid<TeamDto>(storeTeamTable, new ColumnModel<TeamDto>(columns));
-		grid.getView().setAutoExpandColumn(ccTeamName);
-		grid.getView().setAutoExpandMax(1000);
-		grid.getView().setStripeRows(true);
-		new QuickTip(grid);
+		final Grid<TeamDto> gridTeamTable = new Grid<TeamDto>(storeTeamTable, new ColumnModel<TeamDto>(columns));
+		gridTeamTable.getView().setAutoExpandColumn(ccTeamName);
+		gridTeamTable.getView().setAutoExpandMax(1000);
+		gridTeamTable.getView().setStripeRows(true);
+		new QuickTip(gridTeamTable);
 
-		return grid;
+		return gridTeamTable;
 	}
 
 	/**
@@ -791,8 +794,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 */
 	private <M extends BaseDto, N extends Object> ColumnConfig<M, N> createColumnConfig(ValueProvider<M, N> provider, int width, String header) {
 		final ColumnConfig<M, N> cc = new ColumnConfig<M, N>(provider, width, header);
-		cc.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		cc.setMenuDisabled(true);
+		cc.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
 		return cc;
 	}
@@ -805,7 +807,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 * @param lastMatchPoints Die letzten Punkte für ein Team bzw. Spieler.
 	 */
 	private void concatLastMatchPoints(String value, SafeHtmlBuilder sb, final int lastMatchPoints) {
-		final String style = "style='color: " + (lastMatchPoints >= 0 ? "green" : "red") + "'";
+		final String style = "style='color: " + (lastMatchPoints >= 0 ? "#82B22C" : "#FF5240") + "'";
 
 		final StringBuilder builder = new StringBuilder();
 		if (lastMatchPoints >= 0) {
@@ -813,7 +815,6 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		} else {
 			builder.append(Integer.toString(lastMatchPoints));
 		}
-
 		sb.appendHtmlConstant(value);
 		sb.appendHtmlConstant(" <span " + style + ">(" + builder.toString() + ")</span>");
 	}
@@ -909,7 +910,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 * @return Der erzeugte Button.
 	 */
 	private AppButton createBtnUpdate() {
-		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.tableRefresh());
+		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.update());
 		btnUpdate.setToolTip("Aktualisiert die Tabelle");
 		btnUpdate.addSelectHandler(new SelectHandler() {
 			@Override

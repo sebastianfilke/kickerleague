@@ -226,12 +226,12 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				return SafeHtmlUtils.fromTrustedString(value.intValue() > 1 ? "(" + value.intValue() + " Spiele)" : "(1 Spiel)");
 			}
 		});
-		ccMatchNumber.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccMatchNumber.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchNumber.setMenuDisabled(true);
 		ccMatchNumber.setGroupable(false);
 		final SummaryColumnConfig<MatchDto, Date> ccMatchDate = new SummaryColumnConfig<MatchDto, Date>(KickerProperties.MATCH_PROPERTY.matchDate(), 110,
 				"Datum");
-		ccMatchDate.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccMatchDate.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchDate.setGroupable(false);
 		final TimeZoneConstants timeZoneConstant = (TimeZoneConstants) GWT.create(TimeZoneConstants.class);
 		ccMatchDate.setCell(new DateCell(DateTimeFormat.getFormat("dd.MM.yyyy HH:mm"), TimeZone.createTimeZone(timeZoneConstant.europeBerlin())));
@@ -262,7 +262,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 			}
 		});
 		final SummaryColumnConfig<MatchDto, String> ccMatchType = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchType, 70, "Typ");
-		ccMatchType.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccMatchType.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final SummaryColumnConfig<MatchDto, String> ccTeam1 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.team1, 270, "Spieler/Team 1");
 		ccTeam1.setMenuDisabled(true);
 		ccTeam1.setGroupable(false);
@@ -292,27 +292,27 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 			}
 		});
 		final SummaryColumnConfig<MatchDto, String> ccMatchResult = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchResult, 60, "Ergebnis");
-		ccMatchResult.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccMatchResult.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchResult.setMenuDisabled(true);
 		ccMatchResult.setGroupable(false);
 		final SummaryColumnConfig<MatchDto, String> ccMatchSets = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchSets, 80, "Sätze");
-		ccMatchSets.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccMatchSets.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchSets.setMenuDisabled(true);
 		ccMatchSets.setGroupable(false);
 		final SummaryColumnConfig<MatchDto, String> ccMatchPointsTeam1 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchPointsTeam1, 120,
 				"Punkte Spieler/Team1");
-		ccMatchPointsTeam1.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccMatchPointsTeam1.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchPointsTeam1.setMenuDisabled(true);
 		ccMatchSets.setGroupable(false);
 		final SummaryColumnConfig<MatchDto, String> ccMatchPointsTeam2 = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchPointsTeam2, 120,
 				"Punkte Spieler/Team2");
-		ccMatchPointsTeam2.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccMatchPointsTeam2.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccMatchPointsTeam2.setMenuDisabled(true);
 		ccMatchSets.setGroupable(false);
 
 		final SummaryColumnConfig<MatchDto, String> ccLabelComment = new SummaryColumnConfig<MatchDto, String>(MatchProperty.matchComments, 25);
-		ccLabelComment.setHeader(AbstractImagePrototype.create(KickerIcons.ICON.comments_12()).getSafeHtml());
-		ccLabelComment.setAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccLabelComment.setHeader(AbstractImagePrototype.create(KickerIcons.ICON.comments()).getSafeHtml());
+		ccLabelComment.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccLabelComment.setToolTip(SafeHtmlUtils.fromString("Kommentare zum Spiel"));
 		ccLabelComment.setMenuDisabled(true);
 		ccLabelComment.setGroupable(false);
@@ -423,7 +423,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 	 * @return Der erzeugte Button.
 	 */
 	private AppButton createBtnUpdate() {
-		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.tableRefresh());
+		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.update());
 		btnUpdate.setToolTip("Aktualisiert die Ergebnisse der zuletzt gespielten Spiele");
 		btnUpdate.addSelectHandler(new SelectHandler() {
 			@Override

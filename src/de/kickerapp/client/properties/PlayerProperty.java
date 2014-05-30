@@ -226,13 +226,13 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 
 			switch (object.getPlayerSingleStatsDto().getTendency()) {
 			case Upward:
-				image = KickerIcons.ICON.tendencyUp();
+				image = KickerIcons.ICON.arrow_up();
 				break;
 			case Downward:
-				image = KickerIcons.ICON.tendencyDown();
+				image = KickerIcons.ICON.arrow_down();
 				break;
 			default:
-				image = KickerIcons.ICON.tendencyConstant();
+				image = KickerIcons.ICON.arrow_right();
 				break;
 			}
 			return image;
@@ -303,7 +303,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 			final StringBuilder sb = new StringBuilder();
 
 			final PlayerDoubleStatsDto playerDoubleStatsDto = object.getPlayerDoubleStatsDto();
-			sb.append(playerDoubleStatsDto.getWinSets()	);
+			sb.append(playerDoubleStatsDto.getWinSets());
 			sb.append(":");
 			sb.append(playerDoubleStatsDto.getLostSets());
 
@@ -416,13 +416,13 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 
 			switch (object.getPlayerDoubleStatsDto().getTendency()) {
 			case Upward:
-				image = KickerIcons.ICON.tendencyUp();
+				image = KickerIcons.ICON.arrow_up();
 				break;
 			case Downward:
-				image = KickerIcons.ICON.tendencyDown();
+				image = KickerIcons.ICON.arrow_down();
 				break;
 			default:
-				image = KickerIcons.ICON.tendencyConstant();
+				image = KickerIcons.ICON.arrow_right();
 				break;
 			}
 			return image;

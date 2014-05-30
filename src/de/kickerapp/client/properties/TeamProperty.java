@@ -211,13 +211,13 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 
 			switch (object.getTeamStatsDto().getTendency()) {
 			case Upward:
-				image = KickerIcons.ICON.tendencyUp();
+				image = KickerIcons.ICON.arrow_up();
 				break;
 			case Downward:
-				image = KickerIcons.ICON.tendencyDown();
+				image = KickerIcons.ICON.arrow_down();
 				break;
 			default:
-				image = KickerIcons.ICON.tendencyConstant();
+				image = KickerIcons.ICON.arrow_right();
 				break;
 			}
 			return image;

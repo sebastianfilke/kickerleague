@@ -16,52 +16,46 @@ public interface KickerIcons extends ClientBundle {
 
 	// CHECKSTYLE:OFF
 
-	@Source("chart_bar.png")
-	ImageResource chartBar();
-	
-	@Source("comments_12.png")
-	ImageResource comments_12();
-	
-	@Source("comments.png")
+	@Source("arrow-down.png")
+	ImageResource arrow_down();
+
+	@Source("arrow-right.png")
+	ImageResource arrow_right();
+
+	@Source("arrow-up.png")
+	ImageResource arrow_up();
+
+	@Source("bars.png")
+	ImageResource chart_bar();
+
+	@Source("bubbles.png")
 	ImageResource comments();
 
-	@Source("group.png")
-	ImageResource group();
+	@Source("disk.png")
+	ImageResource save();
 
-	@Source("group_link.png")
-	ImageResource groupLink();
+	@Source("filter.png")
+	ImageResource player_filter();
+
+	@Source("pencil2.png")
+	ImageResource player_edit();
+
+	@Source("undo.png")
+	ImageResource reset();
+
+	@Source("update.png")
+	ImageResource update();
 
 	@Source("soccer_ball.png")
-	ImageResource soccerBall();
-
-	@Source("table.png")
-	ImageResource table();
-
-	@Source("table_edit.png")
-	ImageResource tableEdit();
-
-	@Source("table_refresh.png")
-	ImageResource tableRefresh();
-
-	@Source("table_save.png")
-	ImageResource tableSave();
-
-	@Source("table_sort.png")
-	ImageResource tableSort();
-
-	@Source("tendency_constant.png")
-	ImageResource tendencyConstant();
-
-	@Source("tendency_down.png")
-	ImageResource tendencyDown();
-
-	@Source("tendency_up.png")
-	ImageResource tendencyUp();
+	ImageResource soccer_ball();
 
 	@Source("user.png")
-	ImageResource user();
+	ImageResource player_single();
 
-	@Source("user_edit.png")
-	ImageResource userEdit();
+	@Source("users.png")
+	ImageResource player_double();
+
+	@Source("users2.png")
+	ImageResource player_team();
 
 }
