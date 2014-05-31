@@ -268,7 +268,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 	public ValueProvider<MatchDto, ImageResource> matchComment = new ValueProvider<MatchDto, ImageResource>() {
 		@Override
 		public ImageResource getValue(MatchDto object) {
-			return KickerIcons.ICON.comments();
+			return KickerIcons.ICON.comments10();
 		}
 
 		@Override

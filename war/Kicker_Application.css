@@ -89,15 +89,6 @@ body {
 	font: 50px ChunkFiveRegular;
 	background-color: #F1F1F1;
 	text-shadow: 0 -1px 1px #fff, 0 1px 1px #666;
-	line-height: 2;
-}
-
-.resultLabelRight {
-	text-align: right;
-}
-
-.resultLabelLeft {
-	text-align: left;
 }
 
 .playerAdminInfo {

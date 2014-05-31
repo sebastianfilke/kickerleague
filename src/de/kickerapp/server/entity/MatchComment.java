@@ -3,6 +3,8 @@ package de.kickerapp.server.entity;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
+import com.google.appengine.api.datastore.Text;
+
 /**
  * Datenklasse zum Halten der Kommentare für ein Spiel.
  * 
@@ -16,7 +18,7 @@ public class MatchComment extends BaseEntity {
 
 	/** Der Kommentar. */
 	@Persistent
-	private String comment;
+	private Text comment;
 	/** Das Spiel des Kommentars. */
 	@Persistent
 	private Long match;
@@ -27,17 +29,17 @@ public class MatchComment extends BaseEntity {
 	public MatchComment() {
 		super();
 
-		comment = "";
+		comment = null;
 		match = null;
 	}
 
 	/**
 	 * Erzeugt einen neuen Kommentar mit Text und Spiel.
 	 * 
-	 * @param comment Der Kommentar als {@link String}.
+	 * @param comment Der Kommentar als {@link Text}.
 	 * @param match Das Spiel des Kommentars {@link Long}.
 	 */
-	public MatchComment(String comment, Long match) {
+	public MatchComment(Text comment, Long match) {
 		this.comment = comment;
 		this.match = match;
 	}
@@ -47,7 +49,7 @@ public class MatchComment extends BaseEntity {
 	 * 
 	 * @return Der Kommentar {@link String}.
 	 */
-	public String getComment() {
+	public Text getComment() {
 		return comment;
 	}
 
@@ -56,7 +58,7 @@ public class MatchComment extends BaseEntity {
 	 * 
 	 * @param comment Der Kommentar {@link String}.
 	 */
-	public void setComment(String comment) {
+	public void setComment(Text comment) {
 		this.comment = comment;
 	}
 

@@ -19,7 +19,7 @@ public class MatchCommentHelper {
 	 * @return Die Client-Datenklasse.
 	 */
 	protected static MatchCommentDto createMatchCommentDto(MatchComment dbMatchComment, MatchDto matchDto) {
-		final MatchCommentDto matchCommentDto = new MatchCommentDto(dbMatchComment.getComment(), matchDto);
+		final MatchCommentDto matchCommentDto = new MatchCommentDto(dbMatchComment.getComment().getValue(), matchDto);
 		matchCommentDto.setId(dbMatchComment.getKey().getId());
 
 		return matchCommentDto;

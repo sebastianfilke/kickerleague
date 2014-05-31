@@ -332,7 +332,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 
 		// Kommentar
 		final SummaryColumnConfig<MatchDto, ImageResource> ccLabelComment = new SummaryColumnConfig<MatchDto, ImageResource>(MatchProperty.matchComment, 25);
-		ccLabelComment.setHeader(AbstractImagePrototype.create(KickerIcons.ICON.comments()).getSafeHtml());
+		ccLabelComment.setHeader(AbstractImagePrototype.create(KickerIcons.ICON.comments10()).getSafeHtml());
 		ccLabelComment.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccLabelComment.setToolTip(SafeHtmlUtils.fromString("Kommentar zum Spiel"));
 		ccLabelComment.setMenuDisabled(true);
@@ -341,7 +341,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final MatchDto selectedMatch = storeMatches.findModelWithKey(context.getKey().toString());
-				if (selectedMatch != null && selectedMatch.getMatchCommentDto() != null) {
+				if (selectedMatch.getMatchCommentDto() != null) {
 					sb.appendHtmlConstant("<div qtitle='Kommentar' qtip='" + selectedMatch.getMatchCommentDto().getComment() + "'>");
 					sb.append(AbstractImagePrototype.create(value).getSafeHtml());
 					sb.appendHtmlConstant("</div>");

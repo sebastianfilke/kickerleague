@@ -21,7 +21,7 @@ public class CommentsDialog extends BaseDialog {
 		setMaximizable(true);
 		setModal(true);
 
-		getHeader().setIcon(KickerIcons.ICON.comments());
+		getHeader().setIcon(KickerIcons.ICON.comments10());
 		setHeadingHtml("<span id='panelHeading'>Kommentare zum Spiel</span>");
 		setSize("500", "300");
 

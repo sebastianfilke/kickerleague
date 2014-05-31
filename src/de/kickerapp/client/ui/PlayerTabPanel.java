@@ -78,7 +78,6 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 				getData();
 			}
 		});
-		tabPanel.setAutoSelect(false);
 		tabPanel.setResizeTabs(true);
 		tabPanel.setTabWidth(200);
 

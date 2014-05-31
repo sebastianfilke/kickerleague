@@ -142,7 +142,6 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 			clcContent.setActiveWidget(playerPanel);
 			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.PLAYER));
 		}
-		// clcContent.forceLayout();
 	}
 
 }
