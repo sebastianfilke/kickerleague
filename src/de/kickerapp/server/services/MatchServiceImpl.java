@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Text;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.MatchService;
@@ -360,7 +361,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 * @param dbMatch Die Objekt-Datenklasse.
 	 */
 	private void createMatchComment(final MatchDto matchDto, final Match dbMatch) {
-		final MatchComment comment = new MatchComment(matchDto.getMatchCommentDto().getComment(), dbMatch.getKey().getId());
+		final MatchComment comment = new MatchComment(new Text(matchDto.getMatchCommentDto().getComment()), dbMatch.getKey().getId());
 		final int commentId = PMFactory.getNextId(MatchComment.class.getName());
 		final Key commentKey = KeyFactory.createKey(MatchComment.class.getSimpleName(), commentId);
 		comment.setKey(commentKey);

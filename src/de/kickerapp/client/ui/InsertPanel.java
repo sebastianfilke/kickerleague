@@ -10,6 +10,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -34,20 +35,17 @@ import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
+import com.sencha.gxt.widget.core.client.container.CssFloatLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.CssFloatLayoutContainer.CssFloatData;
 import com.sencha.gxt.widget.core.client.container.HBoxLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HBoxLayoutContainer.HBoxLayoutAlign;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
-import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer.VBoxLayoutAlign;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.DateField;
-import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.form.FormPanel.LabelAlign;
 import com.sencha.gxt.widget.core.client.form.Radio;
@@ -69,6 +67,7 @@ import de.kickerapp.client.ui.resources.KickerTemplates;
 import de.kickerapp.client.ui.util.AppInfo;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
+import de.kickerapp.client.widgets.AppFieldLabel;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchCommentDto;
 import de.kickerapp.shared.dto.MatchDto;
@@ -83,34 +82,32 @@ import de.kickerapp.shared.dto.TeamDto;
  */
 public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 
+	/** Der Timer zum Aktualisieren der Zeit. */
+	private Timer currentTimeTimer;
+	/** Die CheckBox für die Angabe, ob die Zeit manuell oder automatisch bestimmt werden soll. */
+	private CheckBox cbCurrentTime;
+	/** Die Datumsangabe für das Spiel. */
+	private DateField dfMatchDate;
+	/** Die Zeitangabe für das Spiel. */
+	private TimeField tfMatchTime;
 	/** Die Ergebnisse für den ersten Satz. */
 	private AppComboBox<Integer> cbSet1Team1, cbSet1Team2;
 	/** Die Ergebnisse für den zweiten Satz. */
 	private AppComboBox<Integer> cbSet2Team1, cbSet2Team2;
 	/** Die Ergebnisse für den dritten Satz. */
 	private AppComboBox<Integer> cbSet3Team1, cbSet3Team2;
+	/** Die Radios für den ausgewählten Spieltyp. */
+	private ToggleGroup tgPlayType;
 	/** Die Spieler des ersten Teams. */
 	private AppComboBox<PlayerDto> cbTeam1Player1, cbTeam1Player2;
 	/** Die Spieler des zweiten Teams. */
 	private AppComboBox<PlayerDto> cbTeam2Player1, cbTeam2Player2;
-
-	private ToggleGroup tgPlayType;
-
-	private CheckBox cbCurrentTime;
-
-	private DateField dfMatchDate;
-
-	private TimeField tfMatchTime;
-
+	/** Das Label zur Angabe der gewonnen Sätze von Team1. */
 	private Label resultLabelTeam1;
-
+	/** Das Label zur Angabe der gewonnen Sätze von Team2. */
 	private Label resultLabelTeam2;
-
+	/** Die TextArea zur Angabe eines Kommentars. */
 	private TextArea taComment;
-
-	private AppComboBox<PlayerDto> cbPlayer;
-
-	private boolean doUpdatePlayerList;
 
 	/**
 	 * Erzeugt einen neuen Controller zum Eintragen der Ergebnisse und Spieler eines Spiels.
@@ -160,33 +157,48 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		AppEventBus.addHandler(ShowDataEvent.INSERT, this);
 	}
 
+	/**
+	 * Erzeugt die ToolBar zum Eintragen eines Spieles.
+	 * 
+	 * @return Die erzeugte ToolBar.
+	 */
 	private ToolBar createToolBar() {
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
 
 		toolBar.add(createBtnInsert());
 		toolBar.add(createBtnReset());
+
 		return toolBar;
 	}
 
 	/**
+	 * Erzeugt ein FieldSet zum Einstellen des Datums und der Zeit.
+	 * 
 	 * @return Das erzeugte FieldSet.
 	 */
 	private FieldSet createDateTimeFieldSet() {
 		final FieldSet fsDateTime = new FieldSet();
 		fsDateTime.setHeadingText("Datum/Uhrzeit");
 
-		final VerticalLayoutContainer vlcDateTime = new VerticalLayoutContainer();
+		createCurrentTimeTimer();
 
-		vlcDateTime.add(createCheckBox(), new VerticalLayoutData(-1, -1));
-		vlcDateTime.add(createFieldSetDateTime(), new VerticalLayoutData(-1, -1));
+		final CssFloatLayoutContainer vlcDateTime = new CssFloatLayoutContainer();
+
+		vlcDateTime.add(createCheckBoxCurrentTime(), new CssFloatData(-1, new Margins(0, 0, 8, 0)));
+		vlcDateTime.add(createDateTimeContainer(), new CssFloatData(1));
 
 		fsDateTime.add(vlcDateTime);
 
 		return fsDateTime;
 	}
 
-	private CheckBox createCheckBox() {
+	/**
+	 * Die CheckBox für die Angabe, ob die Zeit manuell oder automatisch bestimmt werden soll.
+	 * 
+	 * @return Die erzeugte CheckBox.
+	 */
+	private CheckBox createCheckBoxCurrentTime() {
 		cbCurrentTime = new CheckBox();
 		cbCurrentTime.setBoxLabel("Aktuelle Uhrzeit");
 		cbCurrentTime.setToolTip("Deaktivieren um die Zeit manuell einstellen");
@@ -194,7 +206,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		cbCurrentTime.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				final CheckBox check = (CheckBox) event.getSource();
+				final CheckBox checkBox = (CheckBox) event.getSource();
 
 				dfMatchDate.setValue(new Date());
 				dfMatchDate.clearInvalid();
@@ -202,36 +214,51 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 				tfMatchTime.setValue(new Date());
 				tfMatchTime.clearInvalid();
 				tfMatchTime.setEnabled(false);
-				if (!check.getValue()) {
+				currentTimeTimer.scheduleRepeating(1000);
+				if (!checkBox.getValue()) {
 					dfMatchDate.setEnabled(true);
 					tfMatchTime.setEnabled(true);
+					currentTimeTimer.cancel();
 				}
 			}
 		});
 		return cbCurrentTime;
 	}
 
-	private HBoxLayoutContainer createFieldSetDateTime() {
+	/**
+	 * Erzeugt einen Timer zum Aktualisieren der Zeit.
+	 */
+	private void createCurrentTimeTimer() {
+		currentTimeTimer = new Timer() {
+			@Override
+			public void run() {
+				dfMatchDate.setValue(new Date());
+				tfMatchTime.setValue(new Date());
+			}
+		};
+		currentTimeTimer.scheduleRepeating(1000);
+	}
+
+	/**
+	 * Der Container für die Angabe des Datums und der Zeit.
+	 * 
+	 * @return Der erzeugte Container.
+	 */
+	private HBoxLayoutContainer createDateTimeContainer() {
 		final HBoxLayoutContainer hblcResultInput = new HBoxLayoutContainer();
 		hblcResultInput.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
-		hblcResultInput.setPack(BoxLayoutPack.CENTER);
+		hblcResultInput.setPack(BoxLayoutPack.START);
 
 		dfMatchDate = new DateField();
 		dfMatchDate.setEnabled(false);
-
-		final FieldLabel fieldLabel1 = new FieldLabel(dfMatchDate, "Datum");
-		fieldLabel1.setLabelAlign(LabelAlign.TOP);
 
 		tfMatchTime = new TimeField();
 		tfMatchTime.setTriggerAction(TriggerAction.ALL);
 		tfMatchTime.setEnabled(false);
 		tfMatchTime.setIncrement(1);
 
-		final FieldLabel fieldLabel2 = new FieldLabel(tfMatchTime, "Zeit");
-		fieldLabel2.setLabelAlign(LabelAlign.TOP);
-
-		hblcResultInput.add(fieldLabel1, new BoxLayoutData(new Margins(0, 13, 0, 0)));
-		hblcResultInput.add(fieldLabel2, new BoxLayoutData());
+		hblcResultInput.add(new AppFieldLabel(dfMatchDate, "Datum", LabelAlign.TOP), new BoxLayoutData(new Margins(0, 8, 0, 0)));
+		hblcResultInput.add(new AppFieldLabel(tfMatchTime, "Zeit", LabelAlign.TOP), new BoxLayoutData());
 
 		return hblcResultInput;
 	}
@@ -245,61 +272,87 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		final FieldSet fsResult = new FieldSet();
 		fsResult.setHeadingText("Ergebnis");
 
-		final SimpleContainer scResult = new SimpleContainer();
-		scResult.setHeight(120);
-
-		final HorizontalLayoutContainer hlcResult = new HorizontalLayoutContainer();
+		final HBoxLayoutContainer hblcResult = new HBoxLayoutContainer();
+		hblcResult.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
+		hblcResult.setPack(BoxLayoutPack.CENTER);
 
 		resultLabelTeam1 = new Label("0");
-		resultLabelTeam1.setStyleName("resultLabel resultLabelRight", true);
-		final VBoxLayoutContainer vblcResultTeam1 = createLabelResultContainer(resultLabelTeam1);
+		resultLabelTeam1.setStyleName("resultLabel", true);
 
 		resultLabelTeam2 = new Label("0");
-		resultLabelTeam2.setStyleName("resultLabel resultLabelLeft", true);
-		final VBoxLayoutContainer vblcResultTeam2 = createLabelResultContainer(resultLabelTeam2);
+		resultLabelTeam2.setStyleName("resultLabel", true);
 
-		hlcResult.add(vblcResultTeam1, new HorizontalLayoutData(360, 1));
-		hlcResult.add(createResultInsertContainer(), new HorizontalLayoutData(1, 1));
-		hlcResult.add(vblcResultTeam2, new HorizontalLayoutData(360, 1));
+		hblcResult.add(resultLabelTeam1, new BoxLayoutData(new Margins(0, 20, 0, 0)));
+		hblcResult.add(createResultContainer());
+		hblcResult.add(resultLabelTeam2, new BoxLayoutData(new Margins(0, 0, 0, 20)));
 
-		scResult.add(hlcResult);
-		fsResult.add(scResult);
+		fsResult.add(hblcResult);
 
 		return fsResult;
 	}
 
-	private VBoxLayoutContainer createLabelResultContainer(Label labelTeam) {
-		final VBoxLayoutContainer vblcResult = new VBoxLayoutContainer();
-		vblcResult.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
-
-		final BoxLayoutData flex = new BoxLayoutData();
-		flex.setFlex(1);
-
-		vblcResult.add(labelTeam, flex);
-
-		return vblcResult;
-	}
-
-	private VerticalLayoutContainer createResultInsertContainer() {
-		final VerticalLayoutContainer vlcResult = new VerticalLayoutContainer();
-		vlcResult.getElement().getStyle().setBackgroundColor("#F1F1F1");
+	private HBoxLayoutContainer createResultContainer() {
+		final HBoxLayoutContainer hblcResultInput = new HBoxLayoutContainer();
+		hblcResultInput.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
+		hblcResultInput.setPack(BoxLayoutPack.CENTER);
 
 		cbSet1Team1 = createSetComboBox("Satz 1");
-		cbSet1Team2 = createSetComboBox("Satz 1");
-		vlcResult.add(createFieldSetResultContainer(cbSet1Team1, cbSet1Team2), new VerticalLayoutData(1, -1));
-
 		cbSet2Team1 = createSetComboBox("Satz 2");
-		cbSet2Team2 = createSetComboBox("Satz 2");
-		vlcResult.add(createResultContainer(cbSet2Team1, cbSet2Team2), new VerticalLayoutData(1, -1, new Margins(0, 0, 11, 0)));
-
 		cbSet3Team1 = createSetComboBox("Satz 3");
+
+		final VBoxLayoutContainer vblcTeam1 = new VBoxLayoutContainer();
+		vblcTeam1.add(cbSet1Team1, new BoxLayoutData(new Margins(0, 0, 8, 0)));
+		vblcTeam1.add(cbSet2Team1, new BoxLayoutData(new Margins(0, 0, 8, 0)));
+		vblcTeam1.add(cbSet3Team1);
+
+		cbSet1Team2 = createSetComboBox("Satz 1");
+		cbSet2Team2 = createSetComboBox("Satz 2");
 		cbSet3Team2 = createSetComboBox("Satz 3");
-		vlcResult.add(createResultContainer(cbSet3Team1, cbSet3Team2), new VerticalLayoutData(1, -1, new Margins(0, 0, 11, 0)));
+
+		final VBoxLayoutContainer vblcTeam2 = new VBoxLayoutContainer();
+		vblcTeam2.add(cbSet1Team2, new BoxLayoutData(new Margins(0, 0, 8, 0)));
+		vblcTeam2.add(cbSet2Team2, new BoxLayoutData(new Margins(0, 0, 8, 0)));
+		vblcTeam2.add(cbSet3Team2);
 
 		addValueChangedHandler();
 		addSelectionHandler();
 
-		return vlcResult;
+		hblcResultInput.add(new AppFieldLabel(vblcTeam1, "Team 1", LabelAlign.TOP), new BoxLayoutData(new Margins(0, 8, 0, 0)));
+		hblcResultInput.add(new AppFieldLabel(vblcTeam2, "Team 2", LabelAlign.TOP));
+
+		return hblcResultInput;
+	}
+
+	/**
+	 * Erzeugt eine ComboBox zur Eingabe des Ergebnisses.
+	 * 
+	 * @param emptyText Der Text, welcher angezeigt wird, wenn das Feld noch leer ist als {@link String}.
+	 * @return Die erzeugte ComboBox.
+	 */
+	private AppComboBox<Integer> createSetComboBox(String emptyText) {
+		final ListStore<Integer> store = new ListStore<Integer>(new ModelKeyProvider<Integer>() {
+			@Override
+			public String getKey(Integer item) {
+				return Integer.toString(item);
+			}
+		});
+		final ArrayList<Integer> matchSet = new ArrayList<Integer>();
+		for (int i = 0; i <= 6; i++) {
+			matchSet.add(i);
+		}
+		store.addAll(matchSet);
+
+		final AppComboBox<Integer> cbSet = new AppComboBox<Integer>(store, new LabelProvider<Integer>() {
+			@Override
+			public String getLabel(Integer item) {
+				return Integer.toString(item);
+			}
+		}, emptyText);
+		cbSet.setEmptyText(emptyText);
+		cbSet.setTriggerAction(TriggerAction.ALL);
+		cbSet.setAllowBlank(false);
+
+		return cbSet;
 	}
 
 	private void addValueChangedHandler() {
@@ -452,82 +505,6 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	/**
-	 * Erzeugt einen horizontal ausgerichteten Container mit zwei ComboBoxen für das Ergebnis und einem Label.
-	 * 
-	 * @param cbResultTeam1 Die ComboBox für das erste Team.
-	 * @param cbResultTeam2 Die ComboBox für das zweite Team.
-	 * @return Der erzeugte Container.
-	 */
-	private HBoxLayoutContainer createFieldSetResultContainer(AppComboBox<Integer> cbResultTeam1, AppComboBox<Integer> cbResultTeam2) {
-		final HBoxLayoutContainer hblcResultInput = new HBoxLayoutContainer();
-		hblcResultInput.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
-		hblcResultInput.setPack(BoxLayoutPack.CENTER);
-
-		final FieldLabel fieldLabel1 = new FieldLabel(cbResultTeam1, "Team 1");
-		fieldLabel1.setLabelAlign(LabelAlign.TOP);
-
-		final FieldLabel fieldLabel2 = new FieldLabel(cbResultTeam2, "Team 2");
-		fieldLabel2.setLabelAlign(LabelAlign.TOP);
-
-		hblcResultInput.add(fieldLabel1, new BoxLayoutData(new Margins(0, 5, 0, 0)));
-		hblcResultInput.add(new Label(":"), new BoxLayoutData(new Margins(15, 5, 0, 0)));
-		hblcResultInput.add(fieldLabel2, new BoxLayoutData());
-
-		return hblcResultInput;
-	}
-
-	/**
-	 * Erzeugt einen horizontal ausgerichteten Container mit zwei ComboBoxen für das Ergebnis und einem Label.
-	 * 
-	 * @param cbResultTeam1 Die ComboBox für das erste Team.
-	 * @param cbResultTeam2 Die ComboBox für das zweite Team.
-	 * @return Der erzeugte Container.
-	 */
-	private HBoxLayoutContainer createResultContainer(AppComboBox<Integer> cbResultTeam1, AppComboBox<Integer> cbResultTeam2) {
-		final HBoxLayoutContainer hblcResultInput = new HBoxLayoutContainer();
-		hblcResultInput.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
-		hblcResultInput.setPack(BoxLayoutPack.CENTER);
-
-		hblcResultInput.add(cbResultTeam1, new BoxLayoutData(new Margins(0, 5, 0, 0)));
-		hblcResultInput.add(new Label(":"), new BoxLayoutData(new Margins(0, 5, 0, 0)));
-		hblcResultInput.add(cbResultTeam2, new BoxLayoutData());
-
-		return hblcResultInput;
-	}
-
-	/**
-	 * Erzeugt eine ComboBox zur Eingabe des Ergebnisses.
-	 * 
-	 * @param emptyText Der Text, welcher angezeigt wird, wenn das Feld noch leer ist als {@link String}.
-	 * @return Die erzeugte ComboBox.
-	 */
-	private AppComboBox<Integer> createSetComboBox(String emptyText) {
-		final ListStore<Integer> store = new ListStore<Integer>(new ModelKeyProvider<Integer>() {
-			@Override
-			public String getKey(Integer item) {
-				return Integer.toString(item);
-			}
-		});
-		final ArrayList<Integer> matchSet = new ArrayList<Integer>();
-		for (int i = 0; i <= 6; i++) {
-			matchSet.add(i);
-		}
-		store.addAll(matchSet);
-
-		final AppComboBox<Integer> cbSet = new AppComboBox<Integer>(store, new LabelProvider<Integer>() {
-			@Override
-			public String getLabel(Integer item) {
-				return Integer.toString(item);
-			}
-		}, emptyText);
-		cbSet.setEmptyText(emptyText);
-		cbSet.setTriggerAction(TriggerAction.ALL);
-		cbSet.setAllowBlank(false);
-
-		return cbSet;
-	}
-
-	/**
 	 * Erzeugt das Fieldset mit vier Textfeldern zum Eintragen der Spieler.
 	 * 
 	 * @return Das erzeugte Fieldset.
@@ -538,32 +515,38 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 
 		final PlayerProperty props = GWT.create(PlayerProperty.class);
 
-		final VerticalLayoutContainer vlcPlayers = new VerticalLayoutContainer();
-		vlcPlayers.setHeight(180);
+		final CssFloatLayoutContainer cflcPlayers = new CssFloatLayoutContainer();
 
-		vlcPlayers.add(createRadioButtons(), new VerticalLayoutData(-1, -1, new Margins(0, 0, 5, 0)));
+		cflcPlayers.add(createRadioButtons(), new CssFloatData(-1, new Margins(0, 0, 8, 0)));
 
 		cbTeam1Player1 = createPlayerComboBox(props, "Nach Spieler 1 suchen");
 		cbTeam1Player2 = createPlayerComboBox(props, "Nach Spieler 2 suchen");
 
-		final FieldLabel fieldLabel1 = new FieldLabel(cbTeam1Player1, "Team 1");
-		fieldLabel1.setLabelAlign(LabelAlign.TOP);
-		vlcPlayers.add(fieldLabel1, new VerticalLayoutData(1, -1));
-		vlcPlayers.add(cbTeam1Player2, new VerticalLayoutData(1, -1, new Margins(0, 0, 8, 0)));
+		final CssFloatLayoutContainer cflcTeam1 = new CssFloatLayoutContainer();
+		cflcTeam1.add(cbTeam1Player1, new CssFloatData(1));
+		cflcTeam1.add(cbTeam1Player2, new CssFloatData(1, new Margins(8, 0, 0, 0)));
+
+		cflcPlayers.add(new AppFieldLabel(cflcTeam1, "Team 1", LabelAlign.TOP), new CssFloatData(1));
 
 		cbTeam2Player1 = createPlayerComboBox(props, "Nach Spieler 1 suchen");
 		cbTeam2Player2 = createPlayerComboBox(props, "Nach Spieler 2 suchen");
 
-		final FieldLabel fieldLabel2 = new FieldLabel(cbTeam2Player1, "Team 2");
-		fieldLabel2.setLabelAlign(LabelAlign.TOP);
-		vlcPlayers.add(fieldLabel2, new VerticalLayoutData(1, -1));
-		vlcPlayers.add(cbTeam2Player2, new VerticalLayoutData(1, -1));
+		final CssFloatLayoutContainer cflcTeam2 = new CssFloatLayoutContainer();
+		cflcTeam2.add(cbTeam2Player1, new CssFloatData(1));
+		cflcTeam2.add(cbTeam2Player2, new CssFloatData(1, new Margins(8, 0, 0, 0)));
 
-		fsPlayers.add(vlcPlayers);
+		cflcPlayers.add(new AppFieldLabel(cflcTeam2, "Team 2", LabelAlign.TOP), new CssFloatData(1));
+
+		fsPlayers.add(cflcPlayers);
 
 		return fsPlayers;
 	}
 
+	/**
+	 * Erzeugt die Radios zum Auswahl des Spieltyps.
+	 * 
+	 * @return Die erzeugten Radios.
+	 */
 	private HorizontalPanel createRadioButtons() {
 		final Radio rSingle = new Radio();
 		rSingle.setToolTip("Stellt den Spieltyp auf ein Einzelspiel (1vs1)");
@@ -589,9 +572,9 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 				final ToggleGroup group = (ToggleGroup) event.getSource();
 				final Radio radio = (Radio) group.getValue();
 
-				cbTeam1Player2.setValue(null);
+				cbTeam1Player2.reset();
 				cbTeam1Player2.setVisible(false);
-				cbTeam2Player2.setValue(null);
+				cbTeam2Player2.reset();
 				cbTeam2Player2.setVisible(false);
 				if (radio.getId().equals(MatchType.DOUBLE.getMatchType())) {
 					cbTeam1Player2.setVisible(true);
@@ -644,7 +627,8 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		fsComment.setHeadingText("Kommentar (optional)");
 
 		taComment = new TextArea();
-		taComment.setHeight(100);
+		taComment.setEmptyText("Kommentar zum Spiel");
+		taComment.setHeight(60);
 
 		fsComment.add(taComment);
 
@@ -745,16 +729,12 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private boolean checkInputSinglePlayer() {
-		final boolean valid = cbTeam1Player1.getValue() != null && cbTeam2Player1.getValue() != null
+		return cbTeam1Player1.getValue() != null && cbTeam2Player1.getValue() != null
 				&& isDifferent(cbTeam1Player1.getValue().getId(), cbTeam2Player1.getValue().getId());
-
-		return valid;
 	}
 
 	private boolean isDifferent(Long player1Id, Long player2Id) {
-		final boolean valid = player1Id.compareTo(player2Id) != 0 ? true : false;
-
-		return valid;
+		return player1Id.compareTo(player2Id) != 0 ? true : false;
 	}
 
 	private boolean checkInputDoublePlayer() {
@@ -769,9 +749,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private boolean isDifferent(Long player1Id, Long player2Id, Long player3Id, Long player4Id) {
-		final boolean valid = isDifferent(player1Id, player2Id) && isDifferent(player1Id, player3Id) && isDifferent(player1Id, player4Id);
-
-		return valid;
+		return isDifferent(player1Id, player2Id) && isDifferent(player1Id, player3Id) && isDifferent(player1Id, player4Id);
 	}
 
 	private boolean checkRelatedSet(AppComboBox<Integer> cb1Team1, AppComboBox<Integer> cb2Team2) {
@@ -789,6 +767,8 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private void clearInput() {
+		cbCurrentTime.setValue(true, true);
+
 		resultLabelTeam1.setText("0");
 		resultLabelTeam2.setText("0");
 
@@ -800,8 +780,6 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		cbSet3Team2.reset();
 		cbSet3Team1.setEnabled(true);
 		cbSet3Team2.setEnabled(true);
-
-		cbCurrentTime.setValue(true, true);
 
 		cbTeam1Player1.reset();
 		cbTeam1Player2.reset();

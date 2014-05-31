@@ -204,8 +204,8 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 			}
 		};
 		sffSingleTable.setEmptyText("Nach Spieler suchen...");
-		sffSingleTable.setWidth(250);
 		sffSingleTable.bind(storeSingleTable);
+		sffSingleTable.setWidth(250);
 
 		toolBar.add(createBtnUpdate());
 		toolBar.add(sfcNoMatchPlayer);
@@ -238,82 +238,55 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		numberer.setHideable(false);
 		numberer.setSortable(true);
 
+		// Spieler
 		final ColumnConfig<PlayerDto, String> ccPlayerName = new ColumnConfig<PlayerDto, String>(PlayerProperty.playerName, 140, "Spieler");
+
+		// Spiele
 		final ColumnConfig<PlayerDto, Integer> ccSingleMatches = createColumnConfig(PlayerProperty.singleMatches, 90, "Spiele");
+
+		// Siege
 		final ColumnConfig<PlayerDto, Integer> ccSingleWins = createColumnConfig(PlayerProperty.singleWins, 90, "Siege");
+
+		// Niederlagen
 		final ColumnConfig<PlayerDto, Integer> ccSingleDefeats = createColumnConfig(PlayerProperty.singleDefeats, 90, "Niederlagen");
+
+		// Sätze
 		final ColumnConfig<PlayerDto, String> ccSingleSets = createColumnConfig(PlayerProperty.singleSets, 90, "Sätze");
 		ccSingleSets.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				final Integer winSets1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
-				final Integer winSets2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
-
-				int comp = winSets1.compareTo(winSets2);
-				if (comp == 0) {
-					final Integer lostSets1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
-					final Integer lostSets2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
-
-					comp = lostSets2.compareTo(lostSets1);
-				}
-				return comp;
+				return compareSets(o1, o2);
 			}
 		});
+
+		// Satzdifferenz
 		final ColumnConfig<PlayerDto, String> ccSingleSetDifference = createColumnConfig(PlayerProperty.singleSetDifference, 90, "Satzdifferenz");
 		ccSingleSetDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				Integer setDifference1 = 0;
-				if (o1.startsWith("+")) {
-					setDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
-				} else {
-					setDifference1 = Integer.parseInt(o1);
-				}
-				Integer setDifference2 = 0;
-				if (o2.startsWith("+")) {
-					setDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
-				} else {
-					setDifference2 = Integer.parseInt(o2);
-				}
-				return setDifference1.compareTo(setDifference2);
+				return compareSetDifference(o1, o2);
 			}
 		});
+
+		// Tore
 		final ColumnConfig<PlayerDto, String> ccSingleGoals = createColumnConfig(PlayerProperty.singleGoals, 90, "Tore");
 		ccSingleGoals.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				final Integer shotGoals1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
-				final Integer shotGoals2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
-
-				int comp = shotGoals1.compareTo(shotGoals2);
-				if (comp == 0) {
-					final Integer getGoals1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
-					final Integer getGoals2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
-
-					comp = getGoals2.compareTo(getGoals1);
-				}
-				return comp;
+				return compareGoals(o1, o2);
 			}
 		});
+
+		// Tordifferenz
 		final ColumnConfig<PlayerDto, String> ccSingleGoalDifference = createColumnConfig(PlayerProperty.singleGoalDifference, 90, "Tordifferenz");
 		ccSingleGoalDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				Integer goalDifference1 = 0;
-				if (o1.startsWith("+")) {
-					goalDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
-				} else {
-					goalDifference1 = Integer.parseInt(o1);
-				}
-				Integer goalDifference2 = 0;
-				if (o2.startsWith("+")) {
-					goalDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
-				} else {
-					goalDifference2 = Integer.parseInt(o2);
-				}
-				return goalDifference1.compareTo(goalDifference2);
+				return compareGoalDifference(o1, o2);
 			}
 		});
+
+		// Punkte
 		final ColumnConfig<PlayerDto, String> ccSinglePoints = createColumnConfig(PlayerProperty.singlePoints, 90, "Punkte");
 		ccSinglePoints.setCell(new AbstractCell<String>() {
 			@Override
@@ -326,12 +299,11 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		ccSinglePoints.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				final Integer points1 = Integer.parseInt(o1);
-				final Integer points2 = Integer.parseInt(o2);
-
-				return points1.compareTo(points2);
+				return comparePoints(o1, o2);
 			}
 		});
+
+		// Tendenz
 		final ColumnConfig<PlayerDto, ImageResource> ccSingleTendency = createColumnConfig(PlayerProperty.singleTendency, 80, "Tendenz");
 		ccSingleTendency.setCell(new ImageResourceCell() {
 			@Override
@@ -439,82 +411,55 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		numberer.setHideable(false);
 		numberer.setSortable(true);
 
+		// Spieler
 		final ColumnConfig<PlayerDto, String> ccPlayerName = new ColumnConfig<PlayerDto, String>(PlayerProperty.playerName, 140, "Spieler");
+
+		// Spiele
 		final ColumnConfig<PlayerDto, Integer> ccDoubleMatches = createColumnConfig(PlayerProperty.doubleMatches, 90, "Spiele");
+
+		// Siege
 		final ColumnConfig<PlayerDto, Integer> ccDoubleWins = createColumnConfig(PlayerProperty.doubleWins, 90, "Siege");
+
+		// Niederlagen
 		final ColumnConfig<PlayerDto, Integer> ccDoubleDefeats = createColumnConfig(PlayerProperty.doubleDefeats, 90, "Niederlagen");
+
+		// Sätze
 		final ColumnConfig<PlayerDto, String> ccDoubleSets = createColumnConfig(PlayerProperty.doubleSets, 90, "Sätze");
 		ccDoubleSets.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				final Integer winSets1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
-				final Integer winSets2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
-
-				int comp = winSets1.compareTo(winSets2);
-				if (comp == 0) {
-					final Integer lostSets1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
-					final Integer lostSets2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
-
-					comp = lostSets2.compareTo(lostSets1);
-				}
-				return comp;
+				return compareSets(o1, o2);
 			}
 		});
+
+		// Satzdifferenz
 		final ColumnConfig<PlayerDto, String> ccDoubleSetDifference = createColumnConfig(PlayerProperty.doubleSetDifference, 90, "Satzdifferenz");
 		ccDoubleSetDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				Integer setDifference1 = 0;
-				if (o1.startsWith("+")) {
-					setDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
-				} else {
-					setDifference1 = Integer.parseInt(o1);
-				}
-				Integer setDifference2 = 0;
-				if (o2.startsWith("+")) {
-					setDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
-				} else {
-					setDifference2 = Integer.parseInt(o2);
-				}
-				return setDifference1.compareTo(setDifference2);
+				return compareSetDifference(o1, o2);
 			}
 		});
+
+		// Tore
 		final ColumnConfig<PlayerDto, String> ccDoubleGoals = createColumnConfig(PlayerProperty.doubleGoals, 90, "Tore");
 		ccDoubleGoals.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				final Integer shotGoals1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
-				final Integer shotGoals2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
-
-				int comp = shotGoals1.compareTo(shotGoals2);
-				if (comp == 0) {
-					final Integer getGoals1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
-					final Integer getGoals2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
-
-					comp = getGoals2.compareTo(getGoals1);
-				}
-				return comp;
+				return compareGoals(o1, o2);
 			}
 		});
+
+		// Tordifferenz
 		final ColumnConfig<PlayerDto, String> ccDoubleGoalDifference = createColumnConfig(PlayerProperty.doubleGoalDifference, 90, "Tordifferenz");
 		ccDoubleGoalDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				Integer goalDifference1 = 0;
-				if (o1.startsWith("+")) {
-					goalDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
-				} else {
-					goalDifference1 = Integer.parseInt(o1);
-				}
-				Integer goalDifference2 = 0;
-				if (o2.startsWith("+")) {
-					goalDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
-				} else {
-					goalDifference2 = Integer.parseInt(o2);
-				}
-				return goalDifference1.compareTo(goalDifference2);
+				return compareGoalDifference(o1, o2);
 			}
 		});
+
+		// Punkte
 		final ColumnConfig<PlayerDto, String> ccDoublePoints = createColumnConfig(PlayerProperty.doublePoints, 90, "Punkte");
 		ccDoublePoints.setCell(new AbstractCell<String>() {
 			@Override
@@ -527,12 +472,11 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		ccDoublePoints.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				final Integer points1 = Integer.parseInt(o1);
-				final Integer points2 = Integer.parseInt(o2);
-
-				return points1.compareTo(points2);
+				return comparePoints(o1, o2);
 			}
 		});
+
+		// Tendenz
 		final ColumnConfig<PlayerDto, ImageResource> ccDoubleTendency = createColumnConfig(PlayerProperty.doubleTendency, 80, "Tendenz");
 		ccDoubleTendency.setCell(new ImageResourceCell() {
 			@Override
@@ -649,82 +593,55 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		numberer.setHideable(false);
 		numberer.setSortable(true);
 
+		// Team
 		final ColumnConfig<TeamDto, String> ccTeamName = new ColumnConfig<TeamDto, String>(TeamProperty.teamName, 140, "Team");
+
+		// Spiele
 		final ColumnConfig<TeamDto, Integer> ccTeamMatches = createColumnConfig(TeamProperty.teamMatches, 90, "Spiele");
+
+		// Siege
 		final ColumnConfig<TeamDto, Integer> ccTeamWins = createColumnConfig(TeamProperty.teamWins, 90, "Siege");
+
+		// Niederlagen
 		final ColumnConfig<TeamDto, Integer> ccTeamDefeats = createColumnConfig(TeamProperty.teamDefeats, 90, "Niederlagen");
+
+		// Sätze
 		final ColumnConfig<TeamDto, String> ccTeamSets = createColumnConfig(TeamProperty.teamSets, 90, "Sätze");
 		ccTeamSets.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				final Integer winSets1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
-				final Integer winSets2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
-
-				int comp = winSets1.compareTo(winSets2);
-				if (comp == 0) {
-					final Integer lostSets1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
-					final Integer lostSets2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
-
-					comp = lostSets2.compareTo(lostSets1);
-				}
-				return comp;
+				return compareSets(o1, o2);
 			}
 		});
+
+		// Satzdifferenz
 		final ColumnConfig<TeamDto, String> ccTeamSetDifference = createColumnConfig(TeamProperty.teamSetDifference, 90, "Satzdifferenz");
 		ccTeamSetDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				Integer setDifference1 = 0;
-				if (o1.startsWith("+")) {
-					setDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
-				} else {
-					setDifference1 = Integer.parseInt(o1);
-				}
-				Integer setDifference2 = 0;
-				if (o2.startsWith("+")) {
-					setDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
-				} else {
-					setDifference2 = Integer.parseInt(o2);
-				}
-				return setDifference1.compareTo(setDifference2);
+				return compareSetDifference(o1, o2);
 			}
 		});
+
+		// Tore
 		final ColumnConfig<TeamDto, String> ccTeamGoals = createColumnConfig(TeamProperty.teamGoals, 90, "Tore");
 		ccTeamGoals.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				final Integer shotGoals1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
-				final Integer shotGoals2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
-
-				int comp = shotGoals1.compareTo(shotGoals2);
-				if (comp == 0) {
-					final Integer getGoals1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
-					final Integer getGoals2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
-
-					comp = getGoals2.compareTo(getGoals1);
-				}
-				return comp;
+				return compareGoals(o1, o2);
 			}
 		});
+
+		// Tordifferenz
 		final ColumnConfig<TeamDto, String> ccTeamGoalDifference = createColumnConfig(TeamProperty.teamGoalDifference, 90, "Tordifferenz");
 		ccTeamGoalDifference.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				Integer goalDifference1 = 0;
-				if (o1.startsWith("+")) {
-					goalDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
-				} else {
-					goalDifference1 = Integer.parseInt(o1);
-				}
-				Integer goalDifference2 = 0;
-				if (o2.startsWith("+")) {
-					goalDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
-				} else {
-					goalDifference2 = Integer.parseInt(o2);
-				}
-				return goalDifference1.compareTo(goalDifference2);
+				return compareGoalDifference(o1, o2);
 			}
 		});
+
+		// Punkte
 		final ColumnConfig<TeamDto, String> ccTeamPoints = createColumnConfig(TeamProperty.teamPoints, 90, "Punkte");
 		ccTeamPoints.setCell(new AbstractCell<String>() {
 			@Override
@@ -737,12 +654,11 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		ccTeamPoints.setComparator(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				final Integer points1 = Integer.parseInt(o1);
-				final Integer points2 = Integer.parseInt(o2);
-
-				return points1.compareTo(points2);
+				return comparePoints(o1, o2);
 			}
 		});
+
+		// Tendenz
 		final ColumnConfig<TeamDto, ImageResource> ccTeamTendency = createColumnConfig(TeamProperty.teamTendency, 80, "Tendenz");
 		ccTeamTendency.setCell(new ImageResourceCell() {
 			@Override
@@ -817,6 +733,108 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		}
 		sb.appendHtmlConstant(value);
 		sb.appendHtmlConstant(" <span " + style + ">(" + builder.toString() + ")</span>");
+	}
+
+	/**
+	 * Vergleicht die Sätze der Teams bzw. Spieler miteinander.
+	 * 
+	 * @param o1 Die Sätze vom ersten Team bzw. vom ersten Spieler.
+	 * @param o2 Die Sätze vom zweiten Team bzw. vom zweiten Spieler.
+	 * @return Der Vergleich als {@link Integer}.
+	 */
+	private int compareSets(String o1, String o2) {
+		final Integer winSets1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
+		final Integer winSets2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
+
+		int comp = winSets1.compareTo(winSets2);
+		if (comp == 0) {
+			final Integer lostSets1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
+			final Integer lostSets2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
+
+			comp = lostSets2.compareTo(lostSets1);
+		}
+		return comp;
+	}
+
+	/**
+	 * Vergleicht den Satzunterschied der Teams bzw. Spieler miteinander.
+	 * 
+	 * @param o1 Der Satzunterschied vom ersten Team bzw. vom ersten Spieler.
+	 * @param o2 Der Satzunterschied vom zweiten Team bzw. vom zweiten Spieler.
+	 * @return Der Vergleich als {@link Integer}.
+	 */
+	private int compareSetDifference(String o1, String o2) {
+		Integer setDifference1 = 0;
+		if (o1.startsWith("+")) {
+			setDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
+		} else {
+			setDifference1 = Integer.parseInt(o1);
+		}
+		Integer setDifference2 = 0;
+		if (o2.startsWith("+")) {
+			setDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
+		} else {
+			setDifference2 = Integer.parseInt(o2);
+		}
+		return setDifference1.compareTo(setDifference2);
+	}
+
+	/**
+	 * Vergleicht die Tore der Teams bzw. Spieler miteinander.
+	 * 
+	 * @param o1 Die Tore vom ersten Team bzw. vom ersten Spieler.
+	 * @param o2 Die Tore vom zweiten Team bzw. vom zweiten Spieler.
+	 * @return Der Vergleich als {@link Integer}.
+	 */
+	private int compareGoals(String o1, String o2) {
+		final Integer shotGoals1 = Integer.parseInt(o1.substring(0, o1.indexOf(":")));
+		final Integer shotGoals2 = Integer.parseInt(o2.substring(0, o2.indexOf(":")));
+
+		int comp = shotGoals1.compareTo(shotGoals2);
+		if (comp == 0) {
+			final Integer getGoals1 = Integer.parseInt(o1.substring(o1.indexOf(":") + 1, o1.length()));
+			final Integer getGoals2 = Integer.parseInt(o2.substring(o2.indexOf(":") + 1, o2.length()));
+
+			comp = getGoals2.compareTo(getGoals1);
+		}
+		return comp;
+	}
+
+	/**
+	 * Vergleicht den Punkteunterschied der Teams bzw. Spieler miteinander.
+	 * 
+	 * @param o1 Der Punkteunterschied vom ersten Team bzw. vom ersten Spieler.
+	 * @param o2 Der Punkteunterschied vom zweiten Team bzw. vom zweiten Spieler.
+	 * @return Der Vergleich als {@link Integer}.
+	 */
+	private int compareGoalDifference(String o1, String o2) {
+		Integer goalDifference1 = 0;
+		if (o1.startsWith("+")) {
+			goalDifference1 = Integer.parseInt(o1.substring(1, o1.length()));
+		} else {
+			goalDifference1 = Integer.parseInt(o1);
+		}
+		Integer goalDifference2 = 0;
+		if (o2.startsWith("+")) {
+			goalDifference2 = Integer.parseInt(o2.substring(1, o2.length()));
+		} else {
+			goalDifference2 = Integer.parseInt(o2);
+		}
+		return goalDifference1.compareTo(goalDifference2);
+	}
+
+	/**
+	 * Vergleicht die Punkte der Teams bzw. Spieler miteinander.
+	 * 
+	 * @param o1 Die Punkte vom ersten Team bzw. vom ersten Spieler.
+	 * @param o2 Die Punkte vom zweiten Team bzw. vom zweiten Spieler.
+	 * @return Der Vergleich als {@link Integer}.
+	 */
+	private int comparePoints(String o1, String o2) {
+		final Integer points1 = Integer.parseInt(o1);
+		final Integer points2 = Integer.parseInt(o2);
+
+		return points1.compareTo(points2);
 	}
 
 	/**

@@ -16,20 +16,20 @@ public interface KickerIcons extends ClientBundle {
 
 	// CHECKSTYLE:OFF
 
-	@Source("arrow-down12.png")
-	ImageResource arrow_down();
+	@Source("arrow-down10.png")
+	ImageResource arrow_down10();
 
-	@Source("arrow-right12.png")
-	ImageResource arrow_right();
+	@Source("arrow-right10.png")
+	ImageResource arrow_right10();
 
-	@Source("arrow-up12.png")
-	ImageResource arrow_up();
+	@Source("arrow-up10.png")
+	ImageResource arrow_up10();
 
 	@Source("bars.png")
 	ImageResource chart_bar();
 
 	@Source("bubbles10.png")
-	ImageResource comments();
+	ImageResource comments10();
 
 	@Source("disk.png")
 	ImageResource save();
