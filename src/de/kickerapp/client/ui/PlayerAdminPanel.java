@@ -17,6 +17,8 @@ import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.CssFloatLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.CssFloatLayoutContainer.CssFloatData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.BeforeSelectEvent;
@@ -139,22 +141,22 @@ public class PlayerAdminPanel extends BaseContainer {
 		fsPlayer = new FieldSet();
 		fsPlayer.setHeadingText("Neuen Spieler eintragen");
 
-		final VerticalLayoutContainer vlcPlayer = new VerticalLayoutContainer();
+		final CssFloatLayoutContainer cflcPlayer = new CssFloatLayoutContainer();
 
 		tfNickname = createTextField("Spitznamen eintragen (notwendig)");
-		vlcPlayer.add(new FieldLabel(tfNickname, "Spitzname"), new VerticalLayoutData(1, -1));
+		cflcPlayer.add(new FieldLabel(tfNickname, "Spitzname"), new CssFloatData(1, new Margins(0, 0, 8, 0)));
 
 		tfFirstname = createTextField("Vornamen eintragen (notwendig)");
-		vlcPlayer.add(new FieldLabel(tfFirstname, "Vorname"), new VerticalLayoutData(1, -1));
+		cflcPlayer.add(new FieldLabel(tfFirstname, "Vorname"), new CssFloatData(1, new Margins(0, 0, 8, 0)));
 
 		tfLastname = createTextField("Nachnamen eintragen (notwendig)");
-		vlcPlayer.add(new FieldLabel(tfLastname, "Nachname"), new VerticalLayoutData(1, -1));
+		cflcPlayer.add(new FieldLabel(tfLastname, "Nachname"), new CssFloatData(1, new Margins(0, 0, 8, 0)));
 
 		tfEMail = createTextField("E-Mail Adresse eintragen");
 		tfEMail.setAllowBlank(true);
-		vlcPlayer.add(new FieldLabel(tfEMail, "E-Mail"), new VerticalLayoutData(1, -1));
+		cflcPlayer.add(new FieldLabel(tfEMail, "E-Mail"), new CssFloatData(1));
 
-		fsPlayer.add(vlcPlayer);
+		fsPlayer.add(cflcPlayer);
 
 		return fsPlayer;
 	}

@@ -31,7 +31,8 @@ import de.kickerapp.shared.dto.TeamDto;
  */
 public class MatchServiceHelper {
 
-	private static final int[] K_FAKTOR = new int[] { 10, 26, 24, 22, 20, 18, 16, 14, 12, 10 };
+	/** Der Multiplikator. */
+	private static final int FAKTOR = 10;
 
 	/**
 	 * Comparator zur Sortierung der Team- bzw. Spielerstatistiken.
@@ -407,7 +408,6 @@ public class MatchServiceHelper {
 
 				tempPoints = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats);
 			}
-
 			points = tempPoints;
 		} else {
 			int tempPoints1 = 0;
@@ -430,7 +430,6 @@ public class MatchServiceHelper {
 				tempPoints1 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer1Stats);
 				tempPoints2 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats);
 			}
-
 			points = (int) Math.round((double) (tempPoints1 + tempPoints2) / 2);
 		}
 		return points;
@@ -460,7 +459,6 @@ public class MatchServiceHelper {
 
 			tempPoints = getPoints(winner, matchDto, dbCurrentTeamStats, dbTeam2Stats);
 		}
-
 		points = tempPoints;
 
 		return points;
@@ -476,103 +474,45 @@ public class MatchServiceHelper {
 	 * @return Die gewonnene oder verlorene Punktzahl eines Teams bzw Spielers.
 	 */
 	private static int getPoints(boolean winner, MatchDto matchDto, Stats db1Stats, Stats db2Stats) {
-		final int eloPoints = calculateEloPoints(winner, db1Stats, db2Stats);
-		final int multiPoints = calculateMultiplicatorPoints(winner, eloPoints, getGoalsForTeam(matchDto, db1Stats), getGoalsForTeam(matchDto, db2Stats));
+		final double weightedPoints = calculateWeightedPoints(db1Stats, db2Stats);
+		final int matchSets = matchDto.getMatchSetsDto().getMatchSetsTeam1().size();
 
-		return eloPoints + multiPoints;
-	}
-
-	private static int getGoalsForTeam(MatchDto matchDto, Stats dbStats) {
-		int goals = 0;
-		if (dbStats.getKey().getId() == matchDto.getTeam1Dto().getPlayer1().getId() || matchDto.getTeam1Dto().getPlayer2() != null
-				&& dbStats.getKey().getId() == matchDto.getTeam1Dto().getPlayer2().getId()) {
-			goals = getGoalsTeam1(matchDto);
-		} else {
-			goals = getGoalsTeam2(matchDto);
+		int multiplicatorPoints = (int) weightedPoints;
+		if (winner && matchSets == 2) {
+			multiplicatorPoints = (int) (weightedPoints * 1.5);
+		} else if (!winner && matchSets == 3) {
+			multiplicatorPoints = (int) (weightedPoints * 0.5);
 		}
-		if (goals == 0) {
-			goals = 1;
+		if (!winner) {
+			multiplicatorPoints = multiplicatorPoints * -1;
 		}
-		return goals;
+		return multiplicatorPoints;
 	}
 
-	private static int calculateEloPoints(boolean winner, Stats db1Stats, Stats db2Stats) {
-		final int points1 = db1Stats.getPoints();
-		final int points2 = db2Stats.getPoints();
+	/**
+	 * Liefert die gewichtete Punktzahl eines Teams bzw. Spielers.
+	 * 
+	 * @param db1Stats Die Teamspiel-, Doppelspiel- oder Einzelspiel-Statistik des ersten Teams bzw. Spielers.
+	 * @param db2Stats Die Teamspiel-, Doppelspiel- oder Einzelspiel-Statistik des zweiten Teams bzw. Spielers.
+	 * @return Die gewichtete Punktzahl zwischen den Teams bzw. Spielern.
+	 */
+	private static double calculateWeightedPoints(Stats db1Stats, Stats db2Stats) {
+		final double playedGames1 = db1Stats.getWins() + db1Stats.getDefeats();
+		final double playedGames2 = db2Stats.getWins() + db2Stats.getDefeats();
 
-		final int kFaktor = getKFaktor(points1);
-		final int score = getScore(winner);
-		final double expectancy = calculateExpectancy(points1, points2);
-
-		final double points = kFaktor * (score - expectancy);
-
-		final int roundedPoints = (int) Math.round(points);
-
-		return roundedPoints;
-	}
-
-	private static int getKFaktor(int points) {
-		int k = 0;
-		if (points < 500) {
-			k = K_FAKTOR[0];
-		} else if (points < 1000) {
-			k = K_FAKTOR[1];
-		} else if (points >= 1000 && points < 1300) {
-			k = K_FAKTOR[2];
-		} else if (points >= 1300 && points < 1600) {
-			k = K_FAKTOR[3];
-		} else if (points >= 1600 && points < 1900) {
-			k = K_FAKTOR[4];
-		} else if (points >= 1900 && points < 2100) {
-			k = K_FAKTOR[5];
-		} else if (points >= 2100 && points < 2300) {
-			k = K_FAKTOR[6];
-		} else if (points >= 2300 && points < 2500) {
-			k = K_FAKTOR[7];
-		} else if (points >= 2500 && points < 2700) {
-			k = K_FAKTOR[8];
-		} else if (points >= 2700) {
-			k = K_FAKTOR[9];
+		double averageWins1 = 1;
+		if (playedGames1 != 0) {
+			averageWins1 = (double) db1Stats.getWins() / playedGames1;
 		}
-		return k;
-	}
-
-	private static int getScore(boolean winner) {
-		int score = 0;
-		if (winner) {
-			score = 1;
+		double averageWins2 = 1;
+		if (playedGames2 != 0) {
+			averageWins2 = (double) db2Stats.getWins() / playedGames2;
 		}
-		return score;
-	}
-
-	private static double calculateExpectancy(int points1, int points2) {
-		return 1 / (1 + Math.pow(10, calculateExponent(points1, points2)));
-	}
-
-	private static double calculateExponent(int points1, int points2) {
-		double exponent = 0;
-		if (points2 - points1 > 400) {
-			exponent = 1;
-		} else if (points2 - points1 < -400) {
-			exponent = -1;
-		} else {
-			exponent = (double) (points2 - points1) / (double) 400;
+		double weightedFaktor = 1;
+		if (averageWins1 != 0 && averageWins2 != 0) {
+			weightedFaktor = averageWins2 / ((averageWins1 + averageWins2) / 2);
 		}
-		return exponent;
-	}
-
-	private static int calculateMultiplicatorPoints(boolean winner, double eloPoints, int goalsPlayer1, int goalsPlayer2) {
-		final int score = getScore(winner);
-		final double multiplicator = calculateMultiplicator(goalsPlayer1, goalsPlayer2);
-
-		final double points = Math.abs(eloPoints) * (score - multiplicator);
-		final int roundedPoints = (int) Math.round(points);
-
-		return roundedPoints;
-	}
-
-	private static double calculateMultiplicator(int goal1, int goal2) {
-		return 1 / (1 + ((double) goal1 / (double) goal2));
+		return weightedFaktor * FAKTOR;
 	}
 
 }

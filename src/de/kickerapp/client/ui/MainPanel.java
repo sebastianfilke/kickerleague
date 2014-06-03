@@ -25,16 +25,20 @@ import de.kickerapp.client.ui.resources.KickerMessages;
  */
 public class MainPanel extends BaseContainer implements NavigationEventHandler {
 
+	/** Der CardLayoutContainer für die Hauptansicht. */
 	private CardLayoutContainer clcContent;
-
+	/** Controller-Klasse für die Ansicht der Team- bzw. Spielertabellen. */
 	private TablesPanel tablePanel;
-
+	/** Controller-Klasse für die Ansicht der Spielergebnisse. */
 	private MatchesPanel matchesPanel;
-
+	/** Controller-Klasse zum Eintragen der Ergebnisse und Spieler eines Spiels. */
 	private InsertPanel resultPanel;
-
+	/** Controller-Klasse zum Eintragen neuer Spieler für die Applikation. */
 	private PlayerTabPanel playerPanel;
 
+	/**
+	 * Erzeugt ein neues Basis-Layout zur Darstellung und Verarbeitung der Applikation.
+	 */
 	public MainPanel() {
 		super();
 		initLayout();
@@ -82,15 +86,14 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 
 		final HtmlLayoutContainer htmlLcHeader = new HtmlLayoutContainer(sb.toSafeHtml());
 		htmlLcHeader.setId("headerBackground");
-		htmlLcHeader.setStateful(false);
 
 		return htmlLcHeader;
 	}
 
 	private VerticalLayoutContainer createContent() {
 		final VerticalLayoutContainer vlcContent = new VerticalLayoutContainer();
-		vlcContent.setId("contentBackground");
 		vlcContent.setScrollMode(ScrollMode.AUTO);
+		vlcContent.setId("contentBackground");
 
 		final BorderLayoutContainer blcContent = new BorderLayoutContainer();
 		blcContent.setId("content");
@@ -114,12 +117,11 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 
 		sb.appendHtmlConstant("<div id='footer'>");
 		sb.appendHtmlConstant("<div id='footerLinks'>Impressum | Kontakt</div>");
-		sb.appendHtmlConstant("<div id='footerText'>Design und Idee &#064; Sebastian Filke, 2013 | Version: 0.8.3</div>");
+		sb.appendHtmlConstant("<div id='footerText'>Design und Idee &#064; Sebastian Filke, 2014 | Version: 0.8.5</div>");
 		sb.appendHtmlConstant("</div>");
 
 		final HtmlLayoutContainer htmlLcTitle = new HtmlLayoutContainer(sb.toSafeHtml());
 		htmlLcTitle.setId("footerBackground");
-		htmlLcTitle.setStateful(false);
 
 		return htmlLcTitle;
 	}
