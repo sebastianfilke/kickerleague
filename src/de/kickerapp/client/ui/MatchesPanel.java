@@ -60,7 +60,7 @@ import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
 
 /**
- * Controller-Klasse für die Spielergebnisse.
+ * Controller-Klasse für die Ansicht der Spielergebnisse.
  * 
  * @author Sebastian Filke
  */
@@ -220,7 +220,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 	public Grid<MatchDto> createMatchesGrid() {
 		// Spielnummer
 		final SummaryColumnConfig<MatchDto, Integer> ccMatchNumber = new SummaryColumnConfig<MatchDto, Integer>(KickerProperties.MATCH_PROPERTY.matchNumber(),
-				60, "Nr.");
+				65, "Nr.");
 		ccMatchNumber.setSummaryType(new SummaryType.CountSummaryType<Integer>());
 		ccMatchNumber.setSummaryRenderer(new SummaryRenderer<MatchDto>() {
 			@Override

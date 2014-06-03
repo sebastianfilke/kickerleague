@@ -57,7 +57,7 @@ import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
 
 /**
- * Controller-Klasse für die Team- bzw. Spielertabellen.
+ * Controller-Klasse für die Ansicht der Team- bzw. Spielertabellen.
  * 
  * @author Sebastian Filke
  */

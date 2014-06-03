@@ -16,4 +16,13 @@ public class AppContentPanel extends ContentPanel {
 		super();
 	}
 
+	/**
+	 * Erzeugt einen neuen ContentPanel mit übergebenem Aussehen.
+	 * 
+	 * @param appearance Das Aussehen des ContentPanels.
+	 */
+	public AppContentPanel(ContentPanelAppearance appearance) {
+		super(appearance);
+	}
+
 }

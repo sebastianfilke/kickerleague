@@ -8,6 +8,9 @@
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name="com.google.gwt.logging.Logging" />
 
+	<!-- GXT stylesheet -->
+	<stylesheet src="reset.css" />
+
 	<!-- Other module inherits -->
 	<inherits name='com.sencha.gxt.ui.GXT' />
 	<inherits name='com.sencha.gxt.chart.Chart' />
@@ -29,7 +32,7 @@
 	<set-property name="gwt.logging.enabled" value="TRUE" />
 	<set-property name="gwt.logging.logLevel" value="WARNING" />
 	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
-	<!-- <set-property name="gxt.logging.enabled" value="TRUE" /> -->
+	<set-property name="gxt.logging.enabled" value="true" />
 
 	<!-- Super Dev Mode -->
 	<!-- <add-linker name="xsiframe" /> -->
