@@ -29,7 +29,7 @@ public class KickerApplication implements IsWidget, EntryPoint {
 	 */
 	@Override
 	public void onModuleLoad() {
-		GWT.setUncaughtExceptionHandler(new AppExceptionHandler());
+		GWT.setUncaughtExceptionHandler(AppExceptionHandler.getInstance());
 
 		DOM.getElementById("loading").removeFromParent();
 

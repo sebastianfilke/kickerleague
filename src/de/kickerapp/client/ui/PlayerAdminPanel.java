@@ -11,9 +11,7 @@ import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.Store;
-import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.ListView;
-import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -25,7 +23,6 @@ import com.sencha.gxt.widget.core.client.event.BeforeSelectEvent;
 import com.sencha.gxt.widget.core.client.event.BeforeSelectEvent.BeforeSelectHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.form.StoreFilterField;
 import com.sencha.gxt.widget.core.client.toolbar.SeparatorToolItem;
@@ -39,9 +36,11 @@ import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BaseContainer;
+import de.kickerapp.client.ui.dialog.AppInfoDialog;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.ui.util.AppInfo;
 import de.kickerapp.client.widgets.AppButton;
+import de.kickerapp.client.widgets.AppFieldLabel;
 import de.kickerapp.client.widgets.AppTextField;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -144,17 +143,17 @@ public class PlayerAdminPanel extends BaseContainer {
 		final CssFloatLayoutContainer cflcPlayer = new CssFloatLayoutContainer();
 
 		tfNickname = createTextField("Spitznamen eintragen (notwendig)");
-		cflcPlayer.add(new FieldLabel(tfNickname, "Spitzname"), new CssFloatData(1, new Margins(0, 0, 8, 0)));
+		cflcPlayer.add(new AppFieldLabel(tfNickname, "Spitzname", true), new CssFloatData(1, new Margins(0, 0, 8, 0)));
 
 		tfFirstname = createTextField("Vornamen eintragen (notwendig)");
-		cflcPlayer.add(new FieldLabel(tfFirstname, "Vorname"), new CssFloatData(1, new Margins(0, 0, 8, 0)));
+		cflcPlayer.add(new AppFieldLabel(tfFirstname, "Vorname", true), new CssFloatData(1, new Margins(0, 0, 8, 0)));
 
 		tfLastname = createTextField("Nachnamen eintragen (notwendig)");
-		cflcPlayer.add(new FieldLabel(tfLastname, "Nachname"), new CssFloatData(1, new Margins(0, 0, 8, 0)));
+		cflcPlayer.add(new AppFieldLabel(tfLastname, "Nachname", true), new CssFloatData(1, new Margins(0, 0, 8, 0)));
 
 		tfEMail = createTextField("E-Mail Adresse eintragen");
 		tfEMail.setAllowBlank(true);
-		cflcPlayer.add(new FieldLabel(tfEMail, "E-Mail"), new CssFloatData(1));
+		cflcPlayer.add(new AppFieldLabel(tfEMail, "E-Mail", false), new CssFloatData(1));
 
 		fsPlayer.add(cflcPlayer);
 
@@ -321,7 +320,7 @@ public class PlayerAdminPanel extends BaseContainer {
 				public void onFailure(Throwable caught) {
 					doUpdatePlayerList = false;
 					unmask();
-					AppExceptionHandler.handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught);
 				}
 			});
 		}
@@ -346,14 +345,12 @@ public class PlayerAdminPanel extends BaseContainer {
 				@Override
 				public void onFailure(Throwable caught) {
 					unmask();
-					AppExceptionHandler.handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught);
 				}
 			});
 		} else {
-			final MessageBox box = new MessageBox("Hinweis", "Es müssen erst alle notwendigen Angaben gemacht werden!");
-			box.setPredefinedButtons(PredefinedButton.OK);
-			box.setIcon(MessageBox.ICONS.info());
-			box.show();
+			AppInfoDialog.getInstance().setInfoMessage("Es müssen erst alle notwendigen Angaben gemacht werden!");
+			AppInfoDialog.getInstance().show();
 		}
 	}
 
@@ -375,14 +372,12 @@ public class PlayerAdminPanel extends BaseContainer {
 				@Override
 				public void onFailure(Throwable caught) {
 					unmask();
-					AppExceptionHandler.handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught);
 				}
 			});
 		} else {
-			final MessageBox box = new MessageBox("Hinweis", "Es müssen erst alle notwendigen Angaben gemacht werden!");
-			box.setPredefinedButtons(PredefinedButton.OK);
-			box.setIcon(MessageBox.ICONS.info());
-			box.show();
+			AppInfoDialog.getInstance().setInfoMessage("Es müssen erst alle notwendigen Angaben gemacht werden!");
+			AppInfoDialog.getInstance().show();
 		}
 	}
 

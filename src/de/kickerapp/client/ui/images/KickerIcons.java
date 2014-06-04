@@ -37,6 +37,9 @@ public interface KickerIcons extends ClientBundle {
 	@Source("filter.png")
 	ImageResource player_filter();
 
+	@Source("info.png")
+	ImageResource info();
+
 	@Source("pencil2.png")
 	ImageResource player_edit();
 
