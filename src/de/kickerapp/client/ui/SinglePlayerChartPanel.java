@@ -288,7 +288,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 				public void onFailure(Throwable caught) {
 					doUpdatePlayerList = false;
 					unmask();
-					AppExceptionHandler.handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught);
 				}
 			});
 		}
@@ -315,7 +315,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 				public void onFailure(Throwable caught) {
 					unmask();
 					doUpdateSinglePlayerChart = false;
-					AppExceptionHandler.handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught);
 				}
 			});
 		}

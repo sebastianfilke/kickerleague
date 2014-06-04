@@ -30,9 +30,7 @@ import com.sencha.gxt.data.shared.loader.LoadResultListStoreBinding;
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
-import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.ListView;
-import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
 import com.sencha.gxt.widget.core.client.container.CssFloatLayoutContainer;
@@ -62,6 +60,7 @@ import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BasePanel;
+import de.kickerapp.client.ui.dialog.AppInfoDialog;
 import de.kickerapp.client.ui.images.KickerIcons;
 import de.kickerapp.client.ui.resources.KickerTemplates;
 import de.kickerapp.client.ui.util.AppInfo;
@@ -683,7 +682,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 				@Override
 				public void onFailure(Throwable caught) {
 					unmask();
-					AppExceptionHandler.handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught);
 				}
 			});
 		}
@@ -722,10 +721,8 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private void createMessageBox(String messageHtml) {
-		final MessageBox box = new MessageBox("Hinweis", messageHtml);
-		box.setPredefinedButtons(PredefinedButton.OK);
-		box.setIcon(MessageBox.ICONS.info());
-		box.show();
+		AppInfoDialog.getInstance().setInfoMessage(messageHtml);
+		AppInfoDialog.getInstance().show();
 	}
 
 	private boolean checkInputSinglePlayer() {

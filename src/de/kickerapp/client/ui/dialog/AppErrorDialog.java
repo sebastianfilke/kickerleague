@@ -1,29 +1,47 @@
 package de.kickerapp.client.ui.dialog;
 
 import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
 import com.sencha.gxt.widget.core.client.container.MarginData;
 
 import de.kickerapp.client.ui.base.BaseDialog;
-import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppContentPanel;
 
 /**
- * Allgemeiner Fehlerdialog, der auch einen Stacktrace anzeigen kann.
+ * Dialog für Fehler, der auch einen StackTrace anzeigen kann.
  * 
  * @author Sebastian Filke
  */
-public class AppErrorDialog extends BaseDialog {
+public final class AppErrorDialog extends BaseDialog {
 
-	private AppButton btnOk;
-
-	private AppButton btnDetails;
-
-	private HTML html;
+	/** Die Fehlermeldung. */
+	private HTML errorMessage;
 
 	/**
+	 * Klasse zum Halten der Instanz von {@link AppErrorDialog}.
 	 * 
+	 * @author Sebastian Filke
 	 */
-	public AppErrorDialog() {
+	private static class LazyHolder {
+
+		/** Die Instanz der Klasse {@link AppErrorDialog}. */
+		private static final AppErrorDialog INSTANCE = new AppErrorDialog();
+	}
+
+	/**
+	 * Liefert die einzige Instanz der Klasse {@link AppErrorDialog}.
+	 * 
+	 * @return Die einzige Instanz der Klasse {@link AppErrorDialog}.
+	 */
+	public static AppErrorDialog getInstance() {
+		return LazyHolder.INSTANCE;
+	}
+
+	/**
+	 * Erzeugt einen neuen Dialog für Fehler.
+	 */
+	private AppErrorDialog() {
+		super();
 		initLayout();
 	}
 
@@ -33,24 +51,30 @@ public class AppErrorDialog extends BaseDialog {
 	@Override
 	protected void initLayout() {
 		super.initLayout();
-		setModal(true);
-
 		setHeadingHtml("<span id='panelHeading'>Fehler</span>");
-		setSize("400", "150");
+		setButtonAlign(BoxLayoutPack.CENTER);
+		setHideOnButtonClick(true);
+		setPixelSize(400, 150);
+		setBlinkModal(true);
+		setModal(true);
 
 		final AppContentPanel contentPanel = new AppContentPanel();
 		contentPanel.setHeaderVisible(false);
 
-		html = new HTML();
+		errorMessage = new HTML();
 
-		contentPanel.add(html, new MarginData(5));
+		contentPanel.add(errorMessage, new MarginData(5));
 
-		setHideOnButtonClick(true);
 		add(contentPanel);
 	}
 
-	public void setErrorMsg(String text) {
-		html.setText(text);
+	/**
+	 * Setzt die Fehlermeldung.
+	 * 
+	 * @param errorMessage Die Fehlermeldung als {@link String}.
+	 */
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage.setText(errorMessage);
 	}
 
 }

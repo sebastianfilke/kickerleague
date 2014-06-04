@@ -331,13 +331,13 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		ccMatchSets.setGroupable(false);
 
 		// Kommentar
-		final SummaryColumnConfig<MatchDto, ImageResource> ccLabelComment = new SummaryColumnConfig<MatchDto, ImageResource>(MatchProperty.matchComment, 25);
-		ccLabelComment.setHeader(AbstractImagePrototype.create(KickerIcons.ICON.comments10()).getSafeHtml());
-		ccLabelComment.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		ccLabelComment.setToolTip(SafeHtmlUtils.fromString("Kommentar zum Spiel"));
-		ccLabelComment.setMenuDisabled(true);
-		ccLabelComment.setGroupable(false);
-		ccLabelComment.setCell(new ImageResourceCell() {
+		final SummaryColumnConfig<MatchDto, ImageResource> ccComment = new SummaryColumnConfig<MatchDto, ImageResource>(MatchProperty.matchComment, 25);
+		ccComment.setHeader(AbstractImagePrototype.create(KickerIcons.ICON.comments10()).getSafeHtml());
+		ccComment.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		ccComment.setMenuDisabled(true);
+		ccComment.setGroupable(false);
+		// ccComment.setSortable(false);
+		ccComment.setCell(new ImageResourceCell() {
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final MatchDto selectedMatch = storeMatches.findModelWithKey(context.getKey().toString());
@@ -360,7 +360,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 		columns.add(ccMatchSets);
 		columns.add(ccMatchPointsTeam1);
 		columns.add(ccMatchPointsTeam2);
-		columns.add(ccLabelComment);
+		columns.add(ccComment);
 
 		final GroupSummaryView<MatchDto> view = new GroupSummaryView<MatchDto>();
 		view.setAutoExpandColumn(ccMatchSets);
@@ -433,7 +433,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				public void onFailure(Throwable caught) {
 					doUpdateMatches = false;
 					unmask();
-					AppExceptionHandler.handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught);
 				}
 			});
 		}

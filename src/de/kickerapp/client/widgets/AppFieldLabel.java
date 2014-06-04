@@ -19,6 +19,20 @@ public class AppFieldLabel extends FieldLabel {
 	}
 
 	/**
+	 * Erzeugt ein neues FieldLabel mit übergebenem Widget, Text und Pflichtangabe.
+	 * 
+	 * @param widget Das Widget für das FieldLabel.
+	 * @param label Der Text für das FieldLabel.
+	 * @param mandatory <code>true</code> falls das Element eingegeben werden muss, andernfalls <code>false</code>.
+	 */
+	public AppFieldLabel(IsWidget widget, String label, boolean mandatory) {
+		super(widget, label);
+		if (mandatory) {
+			setText(label + "*");
+		}
+	}
+
+	/**
 	 * Erzeugt ein neues FieldLabel mit übergebenem Widget, Text und Ausrichtung.
 	 * 
 	 * @param widget Das Widget für das FieldLabel.
