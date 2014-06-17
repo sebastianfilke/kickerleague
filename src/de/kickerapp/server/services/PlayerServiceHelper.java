@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
-import de.kickerapp.server.entity.Player;
-import de.kickerapp.server.entity.PlayerDoubleStats;
-import de.kickerapp.server.entity.PlayerSingleStats;
-import de.kickerapp.server.entity.Stats;
+import de.kickerapp.server.dao.Player;
+import de.kickerapp.server.dao.PlayerDoubleStats;
+import de.kickerapp.server.dao.PlayerSingleStats;
+import de.kickerapp.server.dao.Stats;
 import de.kickerapp.shared.dto.PlayerDoubleStatsDto;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.PlayerSingleStatsDto;

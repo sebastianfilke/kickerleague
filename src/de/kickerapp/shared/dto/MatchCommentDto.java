@@ -14,8 +14,6 @@ public class MatchCommentDto extends BaseDto {
 
 	/** Der Kommentar. */
 	private String comment;
-	/** Das Spiel des Kommentars. */
-	private MatchDto matchDto;
 
 	/**
 	 * Erzeugt einen neuen Kommentar ohne Angaben.
@@ -24,19 +22,16 @@ public class MatchCommentDto extends BaseDto {
 		super();
 
 		comment = "";
-		matchDto = null;
 	}
 
 	/**
 	 * Erzeugt einen neuen Kommentar mit Text und Spiel.
 	 * 
 	 * @param comment Der Kommentar als {@link String}.
-	 * @param matchDto Das Spiel des Kommentars {@link MatchDto}.
 	 */
-	public MatchCommentDto(String comment, MatchDto matchDto) {
+	public MatchCommentDto(String comment) {
 		this();
 		this.comment = comment;
-		this.matchDto = matchDto;
 	}
 
 	/**
@@ -55,24 +50,6 @@ public class MatchCommentDto extends BaseDto {
 	 */
 	public void setComment(String comment) {
 		this.comment = comment;
-	}
-
-	/**
-	 * Liefert das Spiel des Kommentars.
-	 * 
-	 * @return Das Spiel des Kommentars als {@link MatchDto}.
-	 */
-	public MatchDto getMatchDto() {
-		return matchDto;
-	}
-
-	/**
-	 * Setzt das Spiel des Kommentars.
-	 * 
-	 * @param matchDto Das Spiel des Kommentars als {@link MatchDto}.
-	 */
-	public void setMatchDto(MatchDto matchDto) {
-		this.matchDto = matchDto;
 	}
 
 }

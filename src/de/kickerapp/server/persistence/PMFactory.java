@@ -1,6 +1,5 @@
 package de.kickerapp.server.persistence;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,6 +9,8 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 import javax.jdo.Transaction;
+
+import de.kickerapp.server.dao.BaseDao;
 
 /**
  * Singeltonklasse zum Halten der Instanz des {@link PersistenceManager}s.
@@ -44,7 +45,7 @@ public final class PMFactory {
 	 * @return Die Instanzen.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Serializable> List<T> getList(final Class<T> clazz) {
+	public static <T extends BaseDao> List<T> getList(final Class<T> clazz) {
 		final PersistenceManager pm = get().getPersistenceManager();
 
 		final Query query = pm.newQuery(clazz);
@@ -67,7 +68,7 @@ public final class PMFactory {
 	 * @param <T> Der Typ der Klasse.
 	 * @return Die Instanz.
 	 */
-	public static <T extends Serializable> T getObjectById(final Class<T> clazz, final Long id) {
+	public static <T extends BaseDao> T getObjectById(final Class<T> clazz, final Long id) {
 		final PersistenceManager pm = get().getPersistenceManager();
 
 		T object = null;
@@ -87,7 +88,7 @@ public final class PMFactory {
 	 * @param <T> Der Typ der Klasse.
 	 * @return Das gespeicherte Db-Objekt.
 	 */
-	public static <T extends Serializable> T persistObject(final T object) {
+	public static <T extends BaseDao> T persistObject(final T object) {
 		final PersistenceManager pm = get().getPersistenceManager();
 		final Transaction txn = pm.currentTransaction();
 
@@ -114,7 +115,7 @@ public final class PMFactory {
 	 * @return Die gespeicherten Db-Objekte.
 	 */
 	@SafeVarargs
-	public static <T extends Serializable> Object[] persistAllObjects(final T... objects) {
+	public static <T extends BaseDao> Object[] persistAllObjects(final T... objects) {
 		final PersistenceManager pm = get().getPersistenceManager();
 		final Transaction txn = pm.currentTransaction();
 
@@ -140,7 +141,7 @@ public final class PMFactory {
 	 * @param <T> Der Typ der Klassen.
 	 * @return Die gespeicherten Db-Objekte.
 	 */
-	public static <T extends Serializable> List<T> persistList(final Collection<T> objects) {
+	public static <T extends BaseDao> List<T> persistList(final Collection<T> objects) {
 		final PersistenceManager pm = get().getPersistenceManager();
 
 		List<T> result = new ArrayList<T>();
@@ -161,7 +162,7 @@ public final class PMFactory {
 	 * @return Die nächste Db-Id.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Serializable> int getNextId(final String clazzName) {
+	public static <T extends BaseDao> int getNextId(final String clazzName) {
 		final PersistenceManager pm = get().getPersistenceManager();
 
 		final Query query = pm.newQuery("select key from " + clazzName);

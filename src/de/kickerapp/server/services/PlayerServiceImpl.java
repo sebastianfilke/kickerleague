@@ -9,9 +9,9 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.PlayerService;
-import de.kickerapp.server.entity.Player;
-import de.kickerapp.server.entity.PlayerDoubleStats;
-import de.kickerapp.server.entity.PlayerSingleStats;
+import de.kickerapp.server.dao.Player;
+import de.kickerapp.server.dao.PlayerDoubleStats;
+import de.kickerapp.server.dao.PlayerSingleStats;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerNameComparator;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerTableComparator;

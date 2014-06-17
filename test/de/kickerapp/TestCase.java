@@ -2,7 +2,7 @@ package de.kickerapp;
 
 import org.junit.Test;
 
-import de.kickerapp.server.entity.Stats;
+import de.kickerapp.server.dao.Stats;
 
 public class TestCase {
 

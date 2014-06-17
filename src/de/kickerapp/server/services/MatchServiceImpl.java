@@ -6,20 +6,20 @@ import java.util.List;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Text;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.MatchService;
-import de.kickerapp.server.entity.Match;
-import de.kickerapp.server.entity.Match.MatchSets;
-import de.kickerapp.server.entity.MatchComment;
-import de.kickerapp.server.entity.Player;
-import de.kickerapp.server.entity.PlayerDoubleStats;
-import de.kickerapp.server.entity.PlayerSingleStats;
-import de.kickerapp.server.entity.Stats;
-import de.kickerapp.server.entity.Team;
-import de.kickerapp.server.entity.TeamStats;
+import de.kickerapp.server.dao.Match;
+import de.kickerapp.server.dao.Match.MatchSets;
+import de.kickerapp.server.dao.MatchComment;
+import de.kickerapp.server.dao.Player;
+import de.kickerapp.server.dao.PlayerDoubleStats;
+import de.kickerapp.server.dao.PlayerSingleStats;
+import de.kickerapp.server.dao.Stats;
+import de.kickerapp.server.dao.Team;
+import de.kickerapp.server.dao.TeamStats;
 import de.kickerapp.server.persistence.PMFactory;
+import de.kickerapp.server.persistence.queries.MatchBean;
 import de.kickerapp.server.services.MatchServiceHelper.MatchDescendingComparator;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchDto;
@@ -361,12 +361,13 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 * @param dbMatch Die Objekt-Datenklasse.
 	 */
 	private void createMatchComment(final MatchDto matchDto, final Match dbMatch) {
-		final MatchComment comment = new MatchComment(new Text(matchDto.getMatchCommentDto().getComment()), dbMatch.getKey().getId());
 		final int commentId = PMFactory.getNextId(MatchComment.class.getName());
-		final Key commentKey = KeyFactory.createKey(MatchComment.class.getSimpleName(), commentId);
-		comment.setKey(commentKey);
-		PMFactory.persistObject(comment);
-		dbMatch.setMatchComment(comment.getKey().getId());
+		final Key commentKey = KeyFactory.createKey(dbMatch.getKey(), MatchComment.class.getSimpleName(), commentId);
+
+		final MatchComment dbComment = new MatchComment(matchDto.getMatchCommentDto().getComment());
+		dbComment.setKey(commentKey);
+
+		dbMatch.setMatchComment(dbComment);
 	}
 
 	/**
@@ -376,7 +377,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	public ArrayList<MatchDto> getAllMatches() throws IllegalArgumentException {
 		final ArrayList<MatchDto> matches = new ArrayList<MatchDto>();
 
-		final List<Match> dbMatches = PMFactory.getList(Match.class);
+		final List<Match> dbMatches = MatchBean.getAllMatches();
 		final List<Player> dbPlayers = PMFactory.getList(Player.class);
 		final List<Team> dbTeams = PMFactory.getList(Team.class);
 

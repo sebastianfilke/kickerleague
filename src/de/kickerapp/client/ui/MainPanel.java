@@ -15,8 +15,13 @@ import de.kickerapp.client.event.NavigationEvent;
 import de.kickerapp.client.event.NavigationEventHandler;
 import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.ui.base.BaseContainer;
-import de.kickerapp.client.ui.images.KickerIcons;
-import de.kickerapp.client.ui.resources.KickerMessages;
+import de.kickerapp.client.ui.controller.InsertPanel;
+import de.kickerapp.client.ui.controller.MatchesPanel;
+import de.kickerapp.client.ui.controller.PlayerTabPanel;
+import de.kickerapp.client.ui.controller.TablesPanel;
+import de.kickerapp.client.ui.controller.chart.ChartTabPanel;
+import de.kickerapp.client.ui.resources.icons.KickerIcons;
+import de.kickerapp.client.ui.resources.messages.KickerMessages;
 
 /**
  * Basis-Layout zur Darstellung und Verarbeitung der Applikation.
@@ -33,6 +38,8 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 	private MatchesPanel matchesPanel;
 	/** Controller-Klasse zum Eintragen der Ergebnisse und Spieler eines Spiels. */
 	private InsertPanel resultPanel;
+	/** Controller-Klasse zum Anzeigen der Team- bzw. Spielerstatistiken. */
+	private ChartTabPanel chartTabPanel;
 	/** Controller-Klasse zum Eintragen neuer Spieler für die Applikation. */
 	private PlayerTabPanel playerPanel;
 
@@ -53,6 +60,7 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		tablePanel = new TablesPanel();
 		matchesPanel = new MatchesPanel();
 		resultPanel = new InsertPanel();
+		chartTabPanel = new ChartTabPanel();
 		playerPanel = new PlayerTabPanel();
 
 		final VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
@@ -71,6 +79,7 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		AppEventBus.addHandler(NavigationEvent.TABLES, this);
 		AppEventBus.addHandler(NavigationEvent.MATCHES, this);
 		AppEventBus.addHandler(NavigationEvent.INSERT, this);
+		AppEventBus.addHandler(NavigationEvent.CHART, this);
 		AppEventBus.addHandler(NavigationEvent.PLAYER, this);
 	}
 
@@ -102,6 +111,7 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		clcContent.add(tablePanel);
 		clcContent.add(matchesPanel);
 		clcContent.add(resultPanel);
+		clcContent.add(chartTabPanel);
 		clcContent.add(playerPanel);
 
 		blcContent.setCenterWidget(clcContent, new MarginData(5));
@@ -140,6 +150,9 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		} else if (navEvent.getAssociatedType() == NavigationEvent.INSERT) {
 			clcContent.setActiveWidget(resultPanel);
 			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.INSERT));
+		} else if (navEvent.getAssociatedType() == NavigationEvent.CHART) {
+			clcContent.setActiveWidget(chartTabPanel);
+			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.CHART));
 		} else if (navEvent.getAssociatedType() == NavigationEvent.PLAYER) {
 			clcContent.setActiveWidget(playerPanel);
 			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.PLAYER));

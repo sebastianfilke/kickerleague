@@ -8,9 +8,9 @@ import java.util.TreeSet;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
-import de.kickerapp.server.entity.Player;
-import de.kickerapp.server.entity.Team;
-import de.kickerapp.server.entity.TeamStats;
+import de.kickerapp.server.dao.Player;
+import de.kickerapp.server.dao.Team;
+import de.kickerapp.server.dao.TeamStats;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;

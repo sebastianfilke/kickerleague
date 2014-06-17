@@ -7,9 +7,9 @@ import java.util.List;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.TeamService;
-import de.kickerapp.server.entity.Player;
-import de.kickerapp.server.entity.Team;
-import de.kickerapp.server.entity.TeamStats;
+import de.kickerapp.server.dao.Player;
+import de.kickerapp.server.dao.Team;
+import de.kickerapp.server.dao.TeamStats;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.services.TeamServiceHelper.TeamTableComparator;
 import de.kickerapp.shared.dto.TeamDto;
