@@ -8,7 +8,7 @@ import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 
 import de.kickerapp.client.ui.base.BaseDialog;
-import de.kickerapp.client.ui.images.KickerIcons;
+import de.kickerapp.client.ui.resources.icons.KickerIcons;
 
 /**
  * Dialog für Infomeldungen.

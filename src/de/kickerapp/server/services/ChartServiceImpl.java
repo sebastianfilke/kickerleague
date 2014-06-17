@@ -12,7 +12,7 @@ import java.util.List;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.ChartService;
-import de.kickerapp.server.entity.Match;
+import de.kickerapp.server.dao.Match;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.services.MatchServiceHelper.MatchAscendingComparator;
 import de.kickerapp.shared.common.MatchType;

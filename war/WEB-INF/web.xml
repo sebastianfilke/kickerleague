@@ -13,15 +13,6 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>matchCommentServlet</servlet-name>
-		<servlet-class>de.kickerapp.server.services.MatchCommentServiceImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>matchCommentServlet</servlet-name>
-		<url-pattern>/kicker_application/matchCommentService</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
 		<servlet-name>matchServlet</servlet-name>
 		<servlet-class>de.kickerapp.server.services.MatchServiceImpl</servlet-class>
 	</servlet>

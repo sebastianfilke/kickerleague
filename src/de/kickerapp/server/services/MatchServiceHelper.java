@@ -8,14 +8,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-import de.kickerapp.server.entity.Match;
-import de.kickerapp.server.entity.MatchComment;
-import de.kickerapp.server.entity.Player;
-import de.kickerapp.server.entity.PlayerDoubleStats;
-import de.kickerapp.server.entity.PlayerSingleStats;
-import de.kickerapp.server.entity.Stats;
-import de.kickerapp.server.entity.Team;
-import de.kickerapp.server.entity.TeamStats;
+import de.kickerapp.server.dao.Match;
+import de.kickerapp.server.dao.Player;
+import de.kickerapp.server.dao.PlayerDoubleStats;
+import de.kickerapp.server.dao.PlayerSingleStats;
+import de.kickerapp.server.dao.Stats;
+import de.kickerapp.server.dao.Team;
+import de.kickerapp.server.dao.TeamStats;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.common.Tendency;
@@ -142,10 +141,8 @@ public class MatchServiceHelper {
 
 			matchDto.setTeam2Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(team2Player1), PlayerServiceHelper.createPlayerDto(team2Player2)));
 		}
-		if (dbMatch.getMatchComment() != null) {
-			final MatchComment matchComment = PMFactory.getObjectById(MatchComment.class, dbMatch.getMatchComment());
-			matchDto.setMatchCommentDto(MatchCommentHelper.createMatchCommentDto(matchComment, matchDto));
-		}
+		matchDto.setMatchCommentDto(MatchCommentHelper.createMatchCommentDto(dbMatch.getMatchComment()));
+
 		final MatchPointsDto pointsDto = new MatchPointsDto();
 		pointsDto.setMatchPointsTeam1(dbMatch.getMatchPoints().getMatchPointsTeam1());
 		pointsDto.setMatchPointsTeam2(dbMatch.getMatchPoints().getMatchPointsTeam2());

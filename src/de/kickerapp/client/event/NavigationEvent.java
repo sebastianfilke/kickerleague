@@ -15,6 +15,8 @@ public class NavigationEvent extends GwtEvent<NavigationEventHandler> {
 	public static final GwtEvent.Type<NavigationEventHandler> MATCHES = new GwtEvent.Type<NavigationEventHandler>();
 	/** Das Ereignis zum Anzeigen des Panels zum Eintragen von Ergebnissen. */
 	public static final GwtEvent.Type<NavigationEventHandler> INSERT = new GwtEvent.Type<NavigationEventHandler>();
+	/** Das Ereignis zum Anzeigen des Panels zum Anzeigen der Team- bzw. Spielerstatistiken. */
+	public static final GwtEvent.Type<NavigationEventHandler> CHART = new GwtEvent.Type<NavigationEventHandler>();
 	/** Das Ereignis zum Anzeigen der Spieler und Spielerstatistiken. */
 	public static final GwtEvent.Type<NavigationEventHandler> PLAYER = new GwtEvent.Type<NavigationEventHandler>();
 
@@ -50,6 +52,8 @@ public class NavigationEvent extends GwtEvent<NavigationEventHandler> {
 			associatedType = MATCHES;
 		} else if (eventType == INSERT) {
 			associatedType = INSERT;
+		} else if (eventType == CHART) {
+			associatedType = CHART;
 		} else if (eventType == PLAYER) {
 			associatedType = PLAYER;
 		}

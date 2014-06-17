@@ -20,13 +20,15 @@ import de.kickerapp.client.ui.base.BaseContainer;
  */
 public class NavigationPanel extends BaseContainer {
 
-	/** Der Navigationspunkt für Tabellen. */
+	/** Der Navigationspunkt für die Tabellen. */
 	private Label lTables;
-	/** Der Navigationspunkt für Ergebnisse. */
+	/** Der Navigationspunkt für die Ergebnisse. */
 	private Label lResults;
 	/** Der Navigationspunkt für das Eintragen von Spielen. */
 	private Label lInsert;
-	/** Der Navigationspunkt für Spieler und Spielerstatistiken. */
+	/** Der Navigationspunkt für die Team- und Spielerstatistiken. */
+	private Label lChart;
+	/** Der Navigationspunkt für die Spielerverwaltung. */
 	private Label lPlayer;
 	/** Der momentan selektierte Navigationspunkt. */
 	private Label lSelected;
@@ -59,6 +61,7 @@ public class NavigationPanel extends BaseContainer {
 		sb.appendHtmlConstant("<li><div class='lTables'></div></li>");
 		sb.appendHtmlConstant("<li><div class='lResults'></div></li>");
 		sb.appendHtmlConstant("<li><div class='lInsert'></div></li>");
+		sb.appendHtmlConstant("<li><div class='lChart'></div></li>");
 		sb.appendHtmlConstant("<li><div class='lPlayer'></div></li>");
 		sb.appendHtmlConstant("</ul></div>");
 
@@ -71,11 +74,13 @@ public class NavigationPanel extends BaseContainer {
 
 		lResults = createNavigationLabel("Ergebnisse", NavigationEvent.MATCHES);
 		lInsert = createNavigationLabel("Spiel eintragen", NavigationEvent.INSERT);
+		lChart = createNavigationLabel("Statistiken", NavigationEvent.CHART);
 		lPlayer = createNavigationLabel("Spieler", NavigationEvent.PLAYER);
 
 		htmlLcNavigation.add(lTables, new HtmlData(".lTables"));
 		htmlLcNavigation.add(lResults, new HtmlData(".lResults"));
 		htmlLcNavigation.add(lInsert, new HtmlData(".lInsert"));
+		htmlLcNavigation.add(lChart, new HtmlData(".lChart"));
 		htmlLcNavigation.add(lPlayer, new HtmlData(".lPlayer"));
 
 		return htmlLcNavigation;

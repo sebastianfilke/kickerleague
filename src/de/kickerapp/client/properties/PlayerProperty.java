@@ -7,7 +7,7 @@ import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
-import de.kickerapp.client.ui.images.KickerIcons;
+import de.kickerapp.client.ui.resources.icons.KickerIcons;
 import de.kickerapp.shared.dto.PlayerDoubleStatsDto;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.PlayerSingleStatsDto;

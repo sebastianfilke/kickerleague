@@ -15,6 +15,8 @@ public class ShowDataEvent extends GwtEvent<ShowDataEventHandler> {
 	public static final GwtEvent.Type<ShowDataEventHandler> MATCHES = new GwtEvent.Type<ShowDataEventHandler>();
 	/** Das Ereignis zum Anzeigen der Daten für den Panel zum Eintragen von Ergebnissen. */
 	public static final GwtEvent.Type<ShowDataEventHandler> INSERT = new GwtEvent.Type<ShowDataEventHandler>();
+	/** Das Ereignis zum Anzeigen der Daten für den Panel zum Anzeigen der Team- bzw. Spielerstatistiken. */
+	public static final GwtEvent.Type<ShowDataEventHandler> CHART = new GwtEvent.Type<ShowDataEventHandler>();
 	/** Das Ereignis zum Anzeigen der Daten der Spieler und Spielerstatistiken. */
 	public static final GwtEvent.Type<ShowDataEventHandler> PLAYER = new GwtEvent.Type<ShowDataEventHandler>();
 
@@ -50,6 +52,8 @@ public class ShowDataEvent extends GwtEvent<ShowDataEventHandler> {
 			associatedType = TABLES;
 		} else if (eventType == INSERT) {
 			associatedType = INSERT;
+		} else if (eventType == CHART) {
+			associatedType = CHART;
 		} else if (eventType == PLAYER) {
 			associatedType = PLAYER;
 		}

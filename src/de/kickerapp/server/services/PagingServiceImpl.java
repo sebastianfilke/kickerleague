@@ -10,9 +10,9 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 
 import de.kickerapp.client.services.PagingService;
-import de.kickerapp.server.entity.Player;
-import de.kickerapp.server.entity.PlayerDoubleStats;
-import de.kickerapp.server.entity.PlayerSingleStats;
+import de.kickerapp.server.dao.Player;
+import de.kickerapp.server.dao.PlayerDoubleStats;
+import de.kickerapp.server.dao.PlayerSingleStats;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerNameComparator;
 import de.kickerapp.shared.dto.PlayerDto;
