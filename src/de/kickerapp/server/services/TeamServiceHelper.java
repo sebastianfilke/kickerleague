@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.Team;
 import de.kickerapp.server.dao.TeamStats;
+import de.kickerapp.server.dao.fetchplans.TeamPlan;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
@@ -46,11 +47,10 @@ public class TeamServiceHelper {
 	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbTeam Die Objekt-Datenklasse.
-	 * @param dbTeamStats Die Objekt-Datenklasse-Liste aller Teamspiel-Statistiken.
 	 * @param dbPlayers Die Objekt-Datenklasse-Liste aller Spieler.
 	 * @return Die Client-Datenklasse.
 	 */
-	protected static TeamDto createDtoTeam(Team dbTeam, List<TeamStats> dbTeamStats, List<Player> dbPlayers) {
+	protected static TeamDto createDtoTeam(Team dbTeam, List<Player> dbPlayers) {
 		final Player dbPlayer1 = PlayerServiceHelper.getPlayerById((Long) dbTeam.getPlayers().toArray()[0], dbPlayers);
 		final Player dbPlayer2 = PlayerServiceHelper.getPlayerById((Long) dbTeam.getPlayers().toArray()[1], dbPlayers);
 
@@ -61,10 +61,10 @@ public class TeamServiceHelper {
 		teamDto.setId(dbTeam.getKey().getId());
 		teamDto.setLastMatchDate(dbTeam.getLastMatchDate());
 
-		final TeamStats dbTeamStat = getTeamStatById(dbTeam.getTeamStats(), dbTeamStats);
+		final TeamStats dbTeamStat = dbTeam.getTeamStats();
 
 		final TeamStatsDto teamStatsDto = new TeamStatsDto();
-
+		teamStatsDto.setId(dbTeamStat.getKey().getId());
 		teamStatsDto.setWins(dbTeamStat.getWins());
 		teamStatsDto.setDefeats(dbTeamStat.getDefeats());
 		teamStatsDto.setWinSets(dbTeamStat.getWinSets());
@@ -142,14 +142,14 @@ public class TeamServiceHelper {
 			final Key teamStatsKey = KeyFactory.createKey(TeamStats.class.getSimpleName(), teamStatsId);
 			dbTeamStats.setKey(teamStatsKey);
 
-			dbTeam.setTeamStats(dbTeamStats.getKey().getId());
+			dbTeam.setTeamStats(dbTeamStats);
 			dbPlayer1.getTeams().add(dbTeam.getKey().getId());
 			dbPlayer2.getTeams().add(dbTeam.getKey().getId());
 
 			final Object[] persistedResult = PMFactory.persistAllObjects(dbTeamStats, dbTeam);
 			dbTeam = (Team) persistedResult[1];
 		} else {
-			dbTeam = PMFactory.getObjectById(Team.class, (Long) existingTeam.toArray()[0]);
+			dbTeam = PMFactory.getObjectById(Team.class, (Long) existingTeam.toArray()[0], TeamPlan.TEAMSTATS);
 		}
 		return dbTeam;
 	}

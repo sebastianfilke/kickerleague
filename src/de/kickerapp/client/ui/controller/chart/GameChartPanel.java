@@ -25,11 +25,11 @@ import de.kickerapp.shared.dto.ChartDataDto;
 
 public class GameChartPanel extends BaseContainer {
 
-	private ListStore<ChartDataDto> storeWin;
+	private ListStore<ChartDataDto> storeGame;
 
-	private Chart<ChartDataDto> chartWin;
+	private Chart<ChartDataDto> chartGame;
 
-	private BarSeries<ChartDataDto> barWin;
+	private BarSeries<ChartDataDto> barGame;
 
 	public GameChartPanel() {
 		super();
@@ -42,23 +42,23 @@ public class GameChartPanel extends BaseContainer {
 	 */
 	@Override
 	public void initLayout() {
-		storeWin = new ListStore<ChartDataDto>(KickerProperties.CHART_PROPERTY.id());
+		storeGame = new ListStore<ChartDataDto>(KickerProperties.CHART_PROPERTY.id());
 
 		add(createGroupBarChart());
 	}
 
 	private Chart<ChartDataDto> createGroupBarChart() {
-		chartWin = new Chart<ChartDataDto>();
-		chartWin.setShadowChart(true);
-		chartWin.setStore(storeWin);
-		chartWin.setAnimated(true);
+		chartGame = new Chart<ChartDataDto>();
+		chartGame.setShadowChart(true);
+		chartGame.setStore(storeGame);
+		chartGame.setAnimated(true);
 
-		chartWin.addAxis(createNumericAxis());
-		chartWin.addAxis(createCategoryAxis());
-		chartWin.addSeries(createBarSeries());
-		chartWin.setLegend(createLegend());
+		chartGame.addAxis(createNumericAxis());
+		chartGame.addAxis(createCategoryAxis());
+		chartGame.addSeries(createBarSeries());
+		chartGame.setLegend(createLegend());
 
-		return chartWin;
+		return chartGame;
 	}
 
 	private NumericAxis<ChartDataDto> createNumericAxis() {
@@ -71,7 +71,7 @@ public class GameChartPanel extends BaseContainer {
 		numAxis.setAdjustMinimumByMajorUnit(true);
 		numAxis.setDisplayGrid(true);
 
-		final TextSprite title = new TextSprite("Siegbilanz");
+		final TextSprite title = new TextSprite("Spielbilanz");
 		title.setFontSize(20);
 		title.setFont("Tahoma");
 		numAxis.setTitleConfig(title);
@@ -81,8 +81,8 @@ public class GameChartPanel extends BaseContainer {
 
 	private CategoryAxis<ChartDataDto, String> createCategoryAxis() {
 		final CategoryAxis<ChartDataDto, String> catAxis = new CategoryAxis<ChartDataDto, String>();
-		catAxis.setPosition(Position.BOTTOM);
 		catAxis.setField(KickerProperties.CHART_PROPERTY.month());
+		catAxis.setPosition(Position.BOTTOM);
 
 		final TextSprite title = new TextSprite("Monat");
 		title.setFontSize(20);
@@ -93,15 +93,15 @@ public class GameChartPanel extends BaseContainer {
 	}
 
 	private BarSeries<ChartDataDto> createBarSeries() {
-		barWin = new BarSeries<ChartDataDto>();
-		barWin.setYAxisPosition(Position.LEFT);
-		barWin.addYField(ChartProperty.winDifference);
-		barWin.addYField(KickerProperties.CHART_PROPERTY.wins());
-		barWin.addYField(KickerProperties.CHART_PROPERTY.defeats());
-		barWin.addColor(new RGB(17, 95, 166));
-		barWin.addColor(new RGB(148, 174, 10));
-		barWin.addColor(new RGB(166, 17, 32));
-		barWin.setColumn(true);
+		barGame = new BarSeries<ChartDataDto>();
+		barGame.setYAxisPosition(Position.LEFT);
+		barGame.addYField(ChartProperty.winDifference);
+		barGame.addYField(KickerProperties.CHART_PROPERTY.wins());
+		barGame.addYField(KickerProperties.CHART_PROPERTY.defeats());
+		barGame.addColor(new RGB(17, 95, 166));
+		barGame.addColor(new RGB(148, 174, 10));
+		barGame.addColor(new RGB(166, 17, 32));
+		barGame.setColumn(true);
 
 		final TextSprite sprite = new TextSprite();
 		sprite.setFill(RGB.WHITE);
@@ -111,16 +111,16 @@ public class GameChartPanel extends BaseContainer {
 		final SeriesLabelConfig<ChartDataDto> labelConfig = new SeriesLabelConfig<ChartDataDto>();
 		labelConfig.setSpriteConfig(sprite);
 
-		barWin.setLabelConfig(labelConfig);
+		barGame.setLabelConfig(labelConfig);
 
 		final ArrayList<String> legendTitles = new ArrayList<String>();
-		legendTitles.add("Siegdifferenz");
+		legendTitles.add("Spieldifferenz");
 		legendTitles.add("Siege");
 		legendTitles.add("Niederlagen");
-		barWin.setLegendTitles(legendTitles);
-		barWin.setShownInLegend(false);
-		barWin.setHighlighting(true);
-		barWin.setHighlighter(new SeriesHighlighter() {
+		barGame.setLegendTitles(legendTitles);
+		barGame.setShownInLegend(false);
+		barGame.setHighlighting(true);
+		barGame.setHighlighter(new SeriesHighlighter() {
 			@Override
 			public void highlight(Sprite sprite) {
 				sprite.setStroke(new RGB(0, 0, 0));
@@ -133,26 +133,31 @@ public class GameChartPanel extends BaseContainer {
 				DrawFx.createStrokeWidthAnimator(sprite, 0).run(250);
 			}
 		});
-		return barWin;
+		return barGame;
 	}
 
 	private Legend<ChartDataDto> createLegend() {
 		final Legend<ChartDataDto> legend = new Legend<ChartDataDto>();
-		legend.setPosition(Position.RIGHT);
+		legend.setPosition(Position.BOTTOM);
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(true);
 
 		return legend;
 	}
 
-	public void loadGoalChart(ArrayList<ChartDataDto> result) {
-		barWin.setShownInLegend(true);
-		storeWin.replaceAll(result);
-		chartWin.redrawChart();
+	public void loadGameChart(ArrayList<ChartDataDto> result) {
+		barGame.setShownInLegend(true);
+		if (!result.isEmpty()) {
+			barGame.setShownInLegend(true);
+		} else {
+			barGame.setShownInLegend(false);
+		}
+		storeGame.replaceAll(result);
+		chartGame.redrawChart();
 	}
 
-	public Chart<ChartDataDto> getChartWin() {
-		return chartWin;
+	public Chart<ChartDataDto> getChartGame() {
+		return chartGame;
 	}
 
 }

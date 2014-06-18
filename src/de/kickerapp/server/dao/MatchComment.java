@@ -8,7 +8,7 @@ import javax.jdo.annotations.Persistent;
  * 
  * @author Sebastian Filke
  */
-@PersistenceCapable
+@PersistenceCapable(detachable = "true")
 public class MatchComment extends BaseDao {
 
 	/** Der Kommentar. */

@@ -7,7 +7,6 @@ import java.util.List;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.PlayerDoubleStats;
 import de.kickerapp.server.dao.PlayerSingleStats;
-import de.kickerapp.server.dao.Stats;
 import de.kickerapp.shared.dto.PlayerDoubleStatsDto;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.PlayerSingleStatsDto;
@@ -94,24 +93,6 @@ public class PlayerServiceHelper {
 	}
 
 	/**
-	 * Liefert die Einzelspiel- bzw. Doppelspiel-Statistik eines Spieler anhand der Db-Id.
-	 * 
-	 * @param id Die Db-Id der Einzelspiel- bzw. Doppelspiel-Statistik des Spieler.
-	 * @param dbStats Die Objekt-Datenklasse-Liste aller Einzelspiel- bzw. Doppelspiel-Statistiken.
-	 * @return Die Einzelspiel- bzw. Doppelspiel-Statistik.
-	 */
-	protected static Stats getPlayerStatsById(Long id, List<? extends Stats> dbStats) {
-		Stats dbStat = null;
-		for (Stats dbCurrentStats : dbStats) {
-			if (dbCurrentStats.getKey().getId() == id) {
-				dbStat = dbCurrentStats;
-				break;
-			}
-		}
-		return dbStat;
-	}
-
-	/**
 	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbPlayer Die Objekt-Datenklasse.
@@ -131,12 +112,11 @@ public class PlayerServiceHelper {
 	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbPlayer Die Objekt-Datenklasse.
-	 * @param dbPlayerSingleStats Die Objekt-Datenklasse-Liste aller Einzelspiel-Statistiken.
 	 * @return Die Client-Datenklasse mit Einzelspiel-Statistik.
 	 */
-	protected static PlayerDto createPlayerDtoWithSingleStats(Player dbPlayer, List<PlayerSingleStats> dbPlayerSingleStats) {
+	protected static PlayerDto createPlayerDtoWithSingleStats(Player dbPlayer) {
 		final PlayerDto playerDto = createPlayerDto(dbPlayer);
-		setPlayerSingleStats(dbPlayer, playerDto, dbPlayerSingleStats);
+		setPlayerSingleStats(dbPlayer, playerDto);
 
 		return playerDto;
 	}
@@ -145,12 +125,11 @@ public class PlayerServiceHelper {
 	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbPlayer Die Objekt-Datenklasse.
-	 * @param dbPlayerDoubleStats Die Objekt-Datenklasse-Liste aller Doppelspiel-Statistiken.
 	 * @return Die Client-Datenklasse mit Doppelspiel-Statistik.
 	 */
-	protected static PlayerDto createPlayerDtoWithDoubleStats(Player dbPlayer, List<PlayerDoubleStats> dbPlayerDoubleStats) {
+	protected static PlayerDto createPlayerDtoWithDoubleStats(Player dbPlayer) {
 		final PlayerDto playerDto = createPlayerDto(dbPlayer);
-		setPlayerDoubleStats(dbPlayer, playerDto, dbPlayerDoubleStats);
+		setPlayerDoubleStats(dbPlayer, playerDto);
 
 		return playerDto;
 	}
@@ -159,14 +138,12 @@ public class PlayerServiceHelper {
 	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbPlayer Die Objekt-Datenklasse.
-	 * @param dbSingleStats Die Objekt-Datenklasse-Liste aller Einzelspiel-Statistiken.
-	 * @param dbPlayerDoubleStats Die Objekt-Datenklasse-Liste aller Doppelspiel-Statistiken.
 	 * @return Die Client-Datenklasse mit Einzelspiel- und Doppelspiel-Statistik.
 	 */
-	protected static PlayerDto createPlayerDtoWithAllStats(Player dbPlayer, List<PlayerSingleStats> dbSingleStats, List<PlayerDoubleStats> dbPlayerDoubleStats) {
+	protected static PlayerDto createPlayerDtoWithAllStats(Player dbPlayer) {
 		final PlayerDto playerDto = createPlayerDto(dbPlayer);
-		setPlayerSingleStats(dbPlayer, playerDto, dbSingleStats);
-		setPlayerDoubleStats(dbPlayer, playerDto, dbPlayerDoubleStats);
+		setPlayerSingleStats(dbPlayer, playerDto);
+		setPlayerDoubleStats(dbPlayer, playerDto);
 
 		return playerDto;
 	}
@@ -176,13 +153,12 @@ public class PlayerServiceHelper {
 	 * 
 	 * @param dbPlayer Die Objekt-Datenklasse.
 	 * @param playerDto Die Client-Datenklasse.
-	 * @param dbSingleStats Die Objekt-Datenklasse-Liste aller Einzelspiel-Statistiken.
 	 */
-	private static void setPlayerSingleStats(Player dbPlayer, final PlayerDto playerDto, List<PlayerSingleStats> dbSingleStats) {
-		final PlayerSingleStats dbPlayerSingleStats = (PlayerSingleStats) getPlayerStatsById(dbPlayer.getPlayerSingleStats(), dbSingleStats);
+	private static void setPlayerSingleStats(Player dbPlayer, final PlayerDto playerDto) {
+		final PlayerSingleStats dbPlayerSingleStats = dbPlayer.getPlayerSingleStats();
 
 		final PlayerSingleStatsDto playerSingleStatsDto = new PlayerSingleStatsDto();
-
+		playerSingleStatsDto.setId(dbPlayerSingleStats.getKey().getId());
 		playerSingleStatsDto.setWins(dbPlayerSingleStats.getWins());
 		playerSingleStatsDto.setDefeats(dbPlayerSingleStats.getDefeats());
 		playerSingleStatsDto.setWinSets(dbPlayerSingleStats.getWinSets());
@@ -203,13 +179,12 @@ public class PlayerServiceHelper {
 	 * 
 	 * @param dbPlayer Die Objekt-Datenklasse.
 	 * @param playerDto Die Client-Datenklasse.
-	 * @param dbDoubleStats Die Objekt-Datenklasse-Liste aller Doppelspiel-Statistiken.
 	 */
-	private static void setPlayerDoubleStats(Player dbPlayer, PlayerDto playerDto, List<PlayerDoubleStats> dbDoubleStats) {
-		final PlayerDoubleStats dbPlayerDoubleStats = (PlayerDoubleStats) getPlayerStatsById(dbPlayer.getPlayerDoubleStats(), dbDoubleStats);
+	private static void setPlayerDoubleStats(Player dbPlayer, PlayerDto playerDto) {
+		final PlayerDoubleStats dbPlayerDoubleStats = dbPlayer.getPlayerDoubleStats();
 
 		final PlayerDoubleStatsDto playerDoubleStatsDto = new PlayerDoubleStatsDto();
-
+		playerDoubleStatsDto.setId(dbPlayerDoubleStats.getKey().getId());
 		playerDoubleStatsDto.setWins(dbPlayerDoubleStats.getWins());
 		playerDoubleStatsDto.setDefeats(dbPlayerDoubleStats.getDefeats());
 		playerDoubleStatsDto.setWinSets(dbPlayerDoubleStats.getWinSets());

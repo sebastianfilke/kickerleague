@@ -9,17 +9,20 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.MatchService;
+import de.kickerapp.server.dao.DoubleMatch;
 import de.kickerapp.server.dao.Match;
 import de.kickerapp.server.dao.Match.MatchSets;
 import de.kickerapp.server.dao.MatchComment;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.PlayerDoubleStats;
 import de.kickerapp.server.dao.PlayerSingleStats;
+import de.kickerapp.server.dao.SingleMatch;
 import de.kickerapp.server.dao.Stats;
 import de.kickerapp.server.dao.Team;
 import de.kickerapp.server.dao.TeamStats;
+import de.kickerapp.server.dao.fetchplans.MatchPlan;
+import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 import de.kickerapp.server.persistence.PMFactory;
-import de.kickerapp.server.persistence.queries.MatchBean;
 import de.kickerapp.server.services.MatchServiceHelper.MatchDescendingComparator;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchDto;
@@ -39,21 +42,11 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 */
 	@Override
 	public MatchDto createMatch(MatchDto matchDto) throws IllegalArgumentException {
-		final Match dbMatch = new Match();
-
-		final int matchId = PMFactory.getNextId(Match.class.getName());
-		final Key matchKey = KeyFactory.createKey(Match.class.getSimpleName(), matchId);
-		dbMatch.setKey(matchKey);
-		dbMatch.setMatchNumber(matchId);
-		dbMatch.setMatchDate(matchDto.getMatchDate());
-
-		final MatchSets sets = new MatchSets(matchDto.getMatchSetsDto().getMatchSetsTeam1(), matchDto.getMatchSetsDto().getMatchSetsTeam2());
-		dbMatch.setMatchSets(sets);
-
+		Match dbMatch = null;
 		if (matchDto.getMatchType() == MatchType.SINGLE) {
-			createSingleMatch(matchDto, dbMatch);
+			dbMatch = createSingleMatch(matchDto);
 		} else {
-			createDoubleMatch(matchDto, dbMatch);
+			createDoubleMatch(matchDto);
 		}
 		if (matchDto.getMatchCommentDto() != null) {
 			createMatchComment(matchDto, dbMatch);
@@ -69,36 +62,53 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 * Erzeugt und Speichert ein Einzelspiel.
 	 * 
 	 * @param matchDto Die Client-Datenklasse.
-	 * @param dbMatch Die Objekt-Datenklasse.
 	 */
-	private void createSingleMatch(final MatchDto matchDto, Match dbMatch) {
-		dbMatch.setMatchType(MatchType.SINGLE);
+	private SingleMatch createSingleMatch(final MatchDto matchDto) {
+		final SingleMatch dbMatch = new SingleMatch();
 
-		final Player dbTeam1Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer1().getId());
-		final Player dbTeam2Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer1().getId());
+		final int matchId = PMFactory.getNextId(SingleMatch.class.getName());
+		final Key matchKey = KeyFactory.createKey(SingleMatch.class.getSimpleName(), matchId);
+		dbMatch.setKey(matchKey);
+		dbMatch.setMatchNumber(matchId);
+		dbMatch.setMatchDate(matchDto.getMatchDate());
 
-		dbMatch.setTeam1(dbTeam1Player1.getKey().getId());
-		dbMatch.setTeam2(dbTeam2Player1.getKey().getId());
+		final MatchSets sets = new MatchSets(matchDto.getMatchSetsDto().getMatchSetsTeam1(), matchDto.getMatchSetsDto().getMatchSetsTeam2());
+		dbMatch.setMatchSets(sets);
+
+		final Player dbTeam1Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer1().getId(), PlayerPlan.PLAYERSINGLESTATS);
+		final Player dbTeam2Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer1().getId(), PlayerPlan.PLAYERSINGLESTATS);
+
+		dbMatch.setPlayer1(dbTeam1Player1);
+		dbMatch.setPlayer2(dbTeam2Player1);
 
 		final boolean team1Winner = MatchServiceHelper.isTeam1Winner(matchDto);
-		final PlayerSingleStats dbTeam1Player1SingleStats = (PlayerSingleStats) updatePlayerStats(dbTeam1Player1, matchDto, dbMatch, team1Winner);
-		final PlayerSingleStats dbTeam2Player1SingleStats = (PlayerSingleStats) updatePlayerStats(dbTeam2Player1, matchDto, dbMatch, !team1Winner);
+		updatePlayerStats(dbTeam1Player1, matchDto, dbMatch, team1Winner);
+		updatePlayerStats(dbTeam2Player1, matchDto, dbMatch, !team1Winner);
 
-		PMFactory.persistAllObjects(dbTeam1Player1SingleStats, dbTeam1Player1);
-		PMFactory.persistAllObjects(dbTeam2Player1SingleStats, dbTeam2Player1);
+		PMFactory.persistAllObjects(dbTeam1Player1, dbTeam2Player1);
+
+		return dbMatch;
 	}
 
 	/**
 	 * Erzeugt und Speichert ein Doppelspiel.
 	 * 
 	 * @param matchDto Die Client-Datenklasse.
-	 * @param dbMatch Die Objekt-Datenklasse.
 	 */
-	private void createDoubleMatch(final MatchDto matchDto, final Match dbMatch) {
-		dbMatch.setMatchType(MatchType.DOUBLE);
+	private void createDoubleMatch(final MatchDto matchDto) {
+		final DoubleMatch dbMatch = new DoubleMatch();
 
-		final Player dbTeam1Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer1().getId());
-		final Player dbTeam1Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer2().getId());
+		final int matchId = PMFactory.getNextId(SingleMatch.class.getName());
+		final Key matchKey = KeyFactory.createKey(SingleMatch.class.getSimpleName(), matchId);
+		dbMatch.setKey(matchKey);
+		dbMatch.setMatchNumber(matchId);
+		dbMatch.setMatchDate(matchDto.getMatchDate());
+
+		final MatchSets sets = new MatchSets(matchDto.getMatchSetsDto().getMatchSetsTeam1(), matchDto.getMatchSetsDto().getMatchSetsTeam2());
+		dbMatch.setMatchSets(sets);
+
+		final Player dbTeam1Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer1().getId(), PlayerPlan.PLAYERDOUBLESTATS);
+		final Player dbTeam1Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer2().getId(), PlayerPlan.PLAYERDOUBLESTATS);
 
 		final Team dbTeam1 = TeamServiceHelper.getTeam(dbTeam1Player1, dbTeam1Player2);
 		matchDto.getTeam1Dto().setId(dbTeam1.getKey().getId());
@@ -106,8 +116,8 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		final Player dbTeam1Player1Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam1Player1, dbTeam1Player2, (Long) dbTeam1.getPlayers().toArray()[0]);
 		final Player dbTeam1Player2Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam1Player1, dbTeam1Player2, (Long) dbTeam1.getPlayers().toArray()[1]);
 
-		final Player dbTeam2Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer1().getId());
-		final Player dbTeam2Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer2().getId());
+		final Player dbTeam2Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer1().getId(), PlayerPlan.PLAYERDOUBLESTATS);
+		final Player dbTeam2Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer2().getId(), PlayerPlan.PLAYERDOUBLESTATS);
 
 		final Team dbTeam2 = TeamServiceHelper.getTeam(dbTeam2Player1, dbTeam2Player2);
 		matchDto.getTeam2Dto().setId(dbTeam2.getKey().getId());
@@ -115,25 +125,21 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		final Player dbTeam2Player1Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam2Player1, dbTeam2Player2, (Long) dbTeam2.getPlayers().toArray()[0]);
 		final Player dbTeam2Player2Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam2Player1, dbTeam2Player2, (Long) dbTeam2.getPlayers().toArray()[1]);
 
-		dbMatch.setTeam1(dbTeam1.getKey().getId());
-		dbMatch.setTeam2(dbTeam2.getKey().getId());
+		dbMatch.setTeam1(dbTeam1);
+		dbMatch.setTeam2(dbTeam2);
 
 		final boolean team1Winner = MatchServiceHelper.isTeam1Winner(matchDto);
-		final PlayerDoubleStats dbTeam1Player1DoubleStats = (PlayerDoubleStats) updatePlayerStats(dbTeam1Player1Sorted, matchDto, dbMatch, team1Winner);
-		final PlayerDoubleStats dbTeam1Player2DoubleStats = (PlayerDoubleStats) updatePlayerStats(dbTeam1Player2Sorted, matchDto, dbMatch, team1Winner);
-		final PlayerDoubleStats dbTeam2Player1DoubleStats = (PlayerDoubleStats) updatePlayerStats(dbTeam2Player1Sorted, matchDto, dbMatch, !team1Winner);
-		final PlayerDoubleStats dbTeam2Player2DoubleStats = (PlayerDoubleStats) updatePlayerStats(dbTeam2Player2Sorted, matchDto, dbMatch, !team1Winner);
+		updatePlayerStats(dbTeam1Player1Sorted, matchDto, dbMatch, team1Winner);
+		updatePlayerStats(dbTeam1Player2Sorted, matchDto, dbMatch, team1Winner);
+		updatePlayerStats(dbTeam2Player1Sorted, matchDto, dbMatch, !team1Winner);
+		updatePlayerStats(dbTeam2Player2Sorted, matchDto, dbMatch, !team1Winner);
 
-		PMFactory.persistAllObjects(dbTeam1Player1DoubleStats, dbTeam1Player1Sorted);
-		PMFactory.persistAllObjects(dbTeam1Player2DoubleStats, dbTeam1Player2Sorted);
-		PMFactory.persistAllObjects(dbTeam2Player1DoubleStats, dbTeam2Player1Sorted);
-		PMFactory.persistAllObjects(dbTeam2Player2DoubleStats, dbTeam2Player2Sorted);
+		PMFactory.persistAllObjects(dbTeam1Player1Sorted, dbTeam1Player2Sorted, dbTeam2Player1Sorted, dbTeam2Player2Sorted);
 
-		final TeamStats dbTeam1TeamStats = (TeamStats) updateTeamStats(dbTeam1, matchDto, dbMatch, team1Winner);
-		final TeamStats dbTeam2TeamStats = (TeamStats) updateTeamStats(dbTeam2, matchDto, dbMatch, !team1Winner);
+		updateTeamStats(dbTeam1, matchDto, dbMatch, team1Winner);
+		updateTeamStats(dbTeam2, matchDto, dbMatch, !team1Winner);
 
-		PMFactory.persistAllObjects(dbTeam1TeamStats, dbTeam1);
-		PMFactory.persistAllObjects(dbTeam2TeamStats, dbTeam2);
+		PMFactory.persistAllObjects(dbTeam1, dbTeam2);
 	}
 
 	/**
@@ -166,10 +172,9 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 */
 	private PlayerSingleStats updatePlayerStatsForSingleMatch(Player dbPlayer, MatchDto matchDto, Match dbMatch, boolean winner) {
 		final long playerId = dbPlayer.getKey().getId();
+		final PlayerSingleStats dbPlayerSingleStats = dbPlayer.getPlayerSingleStats();
 
-		final PlayerSingleStats dbPlayerSingleStats = PMFactory.getObjectById(PlayerSingleStats.class, dbPlayer.getPlayerSingleStats());
-
-		final int matchPoints = MatchServiceHelper.getPointsForPlayer(winner, dbPlayer, dbPlayerSingleStats, matchDto);
+		final int matchPoints = MatchServiceHelper.getPointsForPlayer(winner, dbPlayer, dbPlayerSingleStats, dbMatch, matchDto);
 		if (winner) {
 			final int wins = dbPlayerSingleStats.getWins() + 1;
 			dbPlayerSingleStats.setWins(wins);
@@ -233,10 +238,9 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 */
 	private PlayerDoubleStats updatePlayerStatsForDoubleMatch(Player dbPlayer, MatchDto matchDto, Match dbMatch, boolean winner) {
 		final long playerId = dbPlayer.getKey().getId();
+		final PlayerDoubleStats dbPlayerDoubleStats = dbPlayer.getPlayerDoubleStats();
 
-		final PlayerDoubleStats dbPlayerDoubleStats = PMFactory.getObjectById(PlayerDoubleStats.class, dbPlayer.getPlayerDoubleStats());
-
-		final int matchPoints = MatchServiceHelper.getPointsForPlayer(winner, dbPlayer, dbPlayerDoubleStats, matchDto);
+		final int matchPoints = MatchServiceHelper.getPointsForPlayer(winner, dbPlayer, dbPlayerDoubleStats, dbMatch, matchDto);
 		if (winner) {
 			final int wins = dbPlayerDoubleStats.getWins() + 1;
 			dbPlayerDoubleStats.setWins(wins);
@@ -299,7 +303,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 * @return Die aktualisierte Teamspielstatistik.
 	 */
 	private TeamStats updateTeamStats(Team dbTeam, MatchDto matchDto, Match dbMatch, boolean winner) {
-		final TeamStats dbTeamStats = PMFactory.getObjectById(TeamStats.class, dbTeam.getTeamStats());
+		final TeamStats dbTeamStats = dbTeam.getTeamStats();
 
 		final int matchPoints = MatchServiceHelper.getPointsForTeam(winner, dbTeam, dbTeamStats, matchDto);
 		if (winner) {
@@ -361,10 +365,9 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 * @param dbMatch Die Objekt-Datenklasse.
 	 */
 	private void createMatchComment(final MatchDto matchDto, final Match dbMatch) {
+		final MatchComment dbComment = new MatchComment(matchDto.getMatchCommentDto().getComment());
 		final int commentId = PMFactory.getNextId(MatchComment.class.getName());
 		final Key commentKey = KeyFactory.createKey(dbMatch.getKey(), MatchComment.class.getSimpleName(), commentId);
-
-		final MatchComment dbComment = new MatchComment(matchDto.getMatchCommentDto().getComment());
 		dbComment.setKey(commentKey);
 
 		dbMatch.setMatchComment(dbComment);
@@ -377,7 +380,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	public ArrayList<MatchDto> getAllMatches() throws IllegalArgumentException {
 		final ArrayList<MatchDto> matches = new ArrayList<MatchDto>();
 
-		final List<Match> dbMatches = MatchBean.getAllMatches();
+		final List<Match> dbMatches = PMFactory.getList(Match.class, MatchPlan.COMMENT);
 		final List<Player> dbPlayers = PMFactory.getList(Player.class);
 		final List<Team> dbTeams = PMFactory.getList(Team.class);
 

@@ -7,18 +7,21 @@ import java.util.Date;
 import javax.jdo.annotations.Element;
 import javax.jdo.annotations.Embedded;
 import javax.jdo.annotations.FetchGroup;
+import javax.jdo.annotations.Inheritance;
+import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
-import de.kickerapp.shared.common.MatchType;
+import de.kickerapp.server.dao.fetchplans.MatchPlan;
 
 /**
- * Datenklasse zum Halten der Informationen für ein Spiel.
+ * Datenklasse zum Halten der Informationen für ein Einzel- bzw. Doppelspiel.
  * 
  * @author Sebastian Filke
  */
-@PersistenceCapable
-@FetchGroup(name = "withComments", members = { @Persistent(name = "matchComment") })
+@PersistenceCapable(detachable = "true")
+@Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
+@FetchGroup(name = MatchPlan.COMMENT, members = { @Persistent(name = "matchComment") })
 public class Match extends BaseDao {
 
 	/** Die Spielnummer. */
@@ -27,15 +30,6 @@ public class Match extends BaseDao {
 	/** Das Spieldatum. */
 	@Persistent
 	private Date matchDate;
-	/** Der Spieltyp. */
-	@Persistent
-	private MatchType matchType;
-	/** Die Datenbank-Id des ersten Teams bzw. Spielers. */
-	@Persistent
-	private Long team1;
-	/** Die Datenbank-Id des zweiten Teams bzw. Spielers. */
-	@Persistent
-	private Long team2;
 	/** Der Kommentar zum Spiel. */
 	@Element(dependent = "true")
 	@Persistent(defaultFetchGroup = "false")
@@ -57,12 +51,9 @@ public class Match extends BaseDao {
 
 		matchNumber = 0;
 		matchDate = null;
-		matchType = MatchType.NONE;
-		team1 = null;
-		team2 = null;
+		matchComment = null;
 		matchPoints = new MatchPoints();
 		matchSets = new MatchSets();
-		matchComment = null;
 	}
 
 	/**
@@ -102,57 +93,21 @@ public class Match extends BaseDao {
 	}
 
 	/**
-	 * Liefert den Spieltyp.
+	 * Liefert den Kommentar zum Spiel.
 	 * 
-	 * @return Der Spieltyp als {@link MatchType}.
+	 * @return Der Kommentar zum Spiel als {@link MatchComment}.
 	 */
-	public MatchType getMatchType() {
-		return matchType;
+	public MatchComment getMatchComment() {
+		return matchComment;
 	}
 
 	/**
-	 * Setzt den Spieltyp.
+	 * Setzt den Kommentar zum Spiel.
 	 * 
-	 * @param matchType Der Spieltyp als {@link MatchType}.
+	 * @param matchComment Der Kommentar zum Spiel als {@link MatchComment}.
 	 */
-	public void setMatchType(MatchType matchType) {
-		this.matchType = matchType;
-	}
-
-	/**
-	 * Liefert die Datenbank-Id des ersten Teams bzw. Spielers.
-	 * 
-	 * @return Die Datenbank-Id des ersten Teams bzw. Spielers als {@link Long}.
-	 */
-	public Long getTeam1() {
-		return team1;
-	}
-
-	/**
-	 * Setzt die Datenbank-Id des ersten Teams bzw. Spielers.
-	 * 
-	 * @param team1 Die Datenbank-Id des ersten Teams bzw. Spielers als {@link Long}.
-	 */
-	public void setTeam1(Long team1) {
-		this.team1 = team1;
-	}
-
-	/**
-	 * Liefert die Datenbank-Id des zweiten Teams bzw. Spielers.
-	 * 
-	 * @return Die Datenbank-Id des zweiten Teams bzw. Spielers als {@link Long}.
-	 */
-	public Long getTeam2() {
-		return team2;
-	}
-
-	/**
-	 * Setzt die Datenbank-Id des zweiten Teams bzw. Spielers.
-	 * 
-	 * @param team2 Die Datenbank-Id des zweiten Teams bzw. Spielers als {@link Long}.
-	 */
-	public void setTeam2(Long team2) {
-		this.team2 = team2;
+	public void setMatchComment(MatchComment matchComment) {
+		this.matchComment = matchComment;
 	}
 
 	/**
@@ -192,29 +147,11 @@ public class Match extends BaseDao {
 	}
 
 	/**
-	 * Liefert den Kommentar zum Spiel.
-	 * 
-	 * @return Der Kommentar zum Spiel als {@link MatchComment}.
-	 */
-	public MatchComment getMatchComment() {
-		return matchComment;
-	}
-
-	/**
-	 * Setzt den Kommentar zum Spiel.
-	 * 
-	 * @param matchComment Der Kommentar zum Spiel als {@link MatchComment}.
-	 */
-	public void setMatchComment(MatchComment matchComment) {
-		this.matchComment = matchComment;
-	}
-
-	/**
 	 * Datenklasse zum Halten der Informationen für die Punkte eines Spiels.
 	 * 
 	 * @author Sebastian Filke
 	 */
-	@PersistenceCapable
+	@PersistenceCapable(detachable = "true")
 	public static class MatchPoints implements Serializable {
 
 		/** Konstante für die SerialVersionUID. */
@@ -291,7 +228,7 @@ public class Match extends BaseDao {
 	 * 
 	 * @author Sebastian Filke
 	 */
-	@PersistenceCapable
+	@PersistenceCapable(detachable = "true")
 	public static class MatchSets implements Serializable {
 
 		/** Konstante für die SerialVersionUID. */

@@ -11,8 +11,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 
 import de.kickerapp.client.services.PagingService;
 import de.kickerapp.server.dao.Player;
-import de.kickerapp.server.dao.PlayerDoubleStats;
-import de.kickerapp.server.dao.PlayerSingleStats;
+import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerNameComparator;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -89,12 +88,10 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 	public ArrayList<PlayerDto> getAllPlayers() {
 		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
 
-		final List<Player> dbPlayers = PMFactory.getList(Player.class);
-		final List<PlayerSingleStats> dbPlayerSingleStats = PMFactory.getList(PlayerSingleStats.class);
-		final List<PlayerDoubleStats> dbPlayerDoubleStats = PMFactory.getList(PlayerDoubleStats.class);
+		final List<Player> dbPlayers = PMFactory.getList(Player.class, PlayerPlan.ALLSTATS);
 
 		for (Player dbPlayer : dbPlayers) {
-			final PlayerDto player = PlayerServiceHelper.createPlayerDtoWithAllStats(dbPlayer, dbPlayerSingleStats, dbPlayerDoubleStats);
+			final PlayerDto player = PlayerServiceHelper.createPlayerDtoWithAllStats(dbPlayer);
 
 			playerDtos.add(player);
 		}

@@ -13,15 +13,15 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.ChartService;
 import de.kickerapp.server.dao.Match;
+import de.kickerapp.server.dao.SingleMatch;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.services.MatchServiceHelper.MatchAscendingComparator;
-import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.ChartDataDto;
 import de.kickerapp.shared.dto.ChartDto;
 import de.kickerapp.shared.dto.PlayerDto;
 
 /**
- * Dienst zur Verarbeitung von Charts im Klienten.
+ * Dienst zur Verarbeitung von Diagrammen im Klienten.
  * 
  * @author Sebastian Filke
  */
@@ -38,9 +38,9 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ChartDto getGoalChart(PlayerDto playerDto) throws IllegalArgumentException {
-		final List<Match> dbMatches = PMFactory.getList(Match.class);
-		Collections.sort(dbMatches, new MatchAscendingComparator());
+	public ChartDto getSinglePlayerGoalChart(PlayerDto playerDto) throws IllegalArgumentException {
+		final List<SingleMatch> dbSingleMatches = PMFactory.getList(SingleMatch.class);
+		Collections.sort(dbSingleMatches, new MatchAscendingComparator());
 
 		final HashMap<Integer, ChartDataDto> chartData = new HashMap<Integer, ChartDataDto>();
 		for (int i = 1; i <= 12; i++) {
@@ -66,7 +66,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		Integer sumMatches = 0;
 
 		boolean containsPlayer = false;
-		for (Match dbMatch : dbMatches) {
+		for (SingleMatch dbMatch : dbSingleMatches) {
 			final int month = getMonthForMatch(calendar, dbMatch);
 			final ChartDataDto chartDataDto = chartData.get(month);
 
@@ -76,86 +76,84 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 			Integer defeats = chartDataDto.getDefeats();
 
 			final boolean team1Winner = MatchServiceHelper.isTeam1Winner(dbMatch);
-			if (dbMatch.getMatchType() == MatchType.SINGLE) {
-				if (dbMatch.getTeam1().equals(playerDto.getId())) {
-					containsPlayer = true;
-					final Integer matchPoints = dbMatch.getMatchPoints().getMatchPointsTeam1().get(0);
-					if (maxWinPoints < matchPoints) {
-						maxWinPoints = matchPoints;
-					} else if (maxDefeatPoints > matchPoints) {
-						maxDefeatPoints = matchPoints;
-					}
-					points = points + matchPoints;
-					if (points > maxPoints) {
-						maxPoints = points;
-					} else if (points < minPoints) {
-						minPoints = points;
-					}
-					sumPoints = sumPoints + points;
-					for (Integer matchSet : dbMatch.getMatchSets().getMatchSetsTeam1()) {
-						shotGoals = shotGoals + matchSet;
-					}
-					for (Integer matchSet : dbMatch.getMatchSets().getMatchSetsTeam2()) {
-						getGoals = getGoals + matchSet;
-					}
-					if (team1Winner) {
-						wins++;
-						sumWins++;
-						tempDefeatSeries = 0;
-						tempWinSeries++;
-						if (winSeries < tempWinSeries) {
-							winSeries = tempWinSeries;
-						}
-					} else {
-						defeats++;
-						sumDefeats++;
-						tempWinSeries = 0;
-						tempDefeatSeries++;
-						if (defeatSeries < tempDefeatSeries) {
-							defeatSeries = tempDefeatSeries;
-						}
-					}
-					sumMatches++;
-				} else if (dbMatch.getTeam2().equals(playerDto.getId())) {
-					containsPlayer = true;
-					final Integer matchPoints = dbMatch.getMatchPoints().getMatchPointsTeam2().get(0);
-					if (maxWinPoints < matchPoints) {
-						maxWinPoints = matchPoints;
-					} else if (maxDefeatPoints > matchPoints) {
-						maxDefeatPoints = matchPoints;
-					}
-					points = points + matchPoints;
-					if (points > maxPoints) {
-						maxPoints = points;
-					} else if (points < minPoints) {
-						minPoints = points;
-					}
-					sumPoints = sumPoints + points;
-					for (Integer matchSet : dbMatch.getMatchSets().getMatchSetsTeam2()) {
-						shotGoals = shotGoals + matchSet;
-					}
-					for (Integer matchSet : dbMatch.getMatchSets().getMatchSetsTeam1()) {
-						getGoals = getGoals + matchSet;
-					}
-					if (!team1Winner) {
-						wins++;
-						sumWins++;
-						tempDefeatSeries = 0;
-						tempWinSeries++;
-						if (winSeries < tempWinSeries) {
-							winSeries = tempWinSeries;
-						}
-					} else {
-						defeats++;
-						sumDefeats++;
-						tempWinSeries = 0;
-						tempDefeatSeries++;
-						if (defeatSeries < tempDefeatSeries) {
-							defeatSeries = tempDefeatSeries;
-						}
-					}
-					sumMatches++;
+			if (dbMatch.getPlayer1().getKey().getId() == playerDto.getId()) {
+				containsPlayer = true;
+				final Integer matchPoints = dbMatch.getMatchPoints().getMatchPointsTeam1().get(0);
+				if (maxWinPoints < matchPoints) {
+					maxWinPoints = matchPoints;
+				} else if (maxDefeatPoints > matchPoints) {
+					maxDefeatPoints = matchPoints;
 				}
+				points = points + matchPoints;
+				if (points > maxPoints) {
+					maxPoints = points;
+				} else if (points < minPoints) {
+					minPoints = points;
+				}
+				sumPoints = sumPoints + points;
+				for (Integer matchSet : dbMatch.getMatchSets().getMatchSetsTeam1()) {
+					shotGoals = shotGoals + matchSet;
+				}
+				for (Integer matchSet : dbMatch.getMatchSets().getMatchSetsTeam2()) {
+					getGoals = getGoals + matchSet;
+				}
+				if (team1Winner) {
+					wins++;
+					sumWins++;
+					tempDefeatSeries = 0;
+					tempWinSeries++;
+					if (winSeries < tempWinSeries) {
+						winSeries = tempWinSeries;
+					}
+				} else {
+					defeats++;
+					sumDefeats++;
+					tempWinSeries = 0;
+					tempDefeatSeries++;
+					if (defeatSeries < tempDefeatSeries) {
+						defeatSeries = tempDefeatSeries;
+					}
+				}
+				sumMatches++;
+			} else if (dbMatch.getPlayer2().getKey().getId() == playerDto.getId()) {
+				containsPlayer = true;
+				final Integer matchPoints = dbMatch.getMatchPoints().getMatchPointsTeam2().get(0);
+				if (maxWinPoints < matchPoints) {
+					maxWinPoints = matchPoints;
+				} else if (maxDefeatPoints > matchPoints) {
+					maxDefeatPoints = matchPoints;
+				}
+				points = points + matchPoints;
+				if (points > maxPoints) {
+					maxPoints = points;
+				} else if (points < minPoints) {
+					minPoints = points;
+				}
+				sumPoints = sumPoints + points;
+				for (Integer matchSet : dbMatch.getMatchSets().getMatchSetsTeam2()) {
+					shotGoals = shotGoals + matchSet;
+				}
+				for (Integer matchSet : dbMatch.getMatchSets().getMatchSetsTeam1()) {
+					getGoals = getGoals + matchSet;
+				}
+				if (!team1Winner) {
+					wins++;
+					sumWins++;
+					tempDefeatSeries = 0;
+					tempWinSeries++;
+					if (winSeries < tempWinSeries) {
+						winSeries = tempWinSeries;
+					}
+				} else {
+					defeats++;
+					sumDefeats++;
+					tempWinSeries = 0;
+					tempDefeatSeries++;
+					if (defeatSeries < tempDefeatSeries) {
+						defeatSeries = tempDefeatSeries;
+					}
+				}
+				sumMatches++;
 			}
 			chartDataDto.setShotGoals(shotGoals);
 			chartDataDto.setGetGoals(getGoals);

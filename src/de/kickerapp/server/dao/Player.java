@@ -3,15 +3,23 @@ package de.kickerapp.server.dao;
 import java.util.Date;
 import java.util.TreeSet;
 
+import javax.jdo.annotations.Element;
+import javax.jdo.annotations.FetchGroup;
+import javax.jdo.annotations.FetchGroups;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+
+import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 
 /**
  * Datenklasse zum Halten der Informationen für einen Spieler.
  * 
  * @author Sebastian Filke
  */
-@PersistenceCapable
+@PersistenceCapable(detachable = "true")
+@FetchGroups({ @FetchGroup(name = PlayerPlan.ALLSTATS, members = { @Persistent(name = "playerSingleStats"), @Persistent(name = "playerDoubleStats") }),
+		@FetchGroup(name = PlayerPlan.PLAYERSINGLESTATS, members = { @Persistent(name = "playerSingleStats") }),
+		@FetchGroup(name = PlayerPlan.PLAYERDOUBLESTATS, members = { @Persistent(name = "playerDoubleStats") }) })
 public class Player extends BaseDao {
 
 	/** Der Nachname des Spielers. */
@@ -30,11 +38,13 @@ public class Player extends BaseDao {
 	@Persistent
 	private Date lastMatchDate;
 	/** Die Einzelspiel-Statistik des Spielers. */
-	@Persistent
-	private Long playerSingleStats;
+	@Element(dependent = "true")
+	@Persistent(defaultFetchGroup = "false")
+	private PlayerSingleStats playerSingleStats;
 	/** Die Doppelspiel-Statistik des Spielers. */
-	@Persistent
-	private Long playerDoubleStats;
+	@Element(dependent = "true")
+	@Persistent(defaultFetchGroup = "false")
+	private PlayerDoubleStats playerDoubleStats;
 	/** Die Liste der Teams zu denen der Spieler gehört. */
 	@Persistent
 	private TreeSet<Long> teams;
@@ -50,8 +60,8 @@ public class Player extends BaseDao {
 		nickName = "";
 		eMail = "";
 		lastMatchDate = null;
-		playerSingleStats = 0L;
-		playerDoubleStats = 0L;
+		playerSingleStats = null;
+		playerDoubleStats = null;
 		teams = new TreeSet<Long>();
 	}
 
@@ -160,36 +170,36 @@ public class Player extends BaseDao {
 	/**
 	 * Liefert die Einzelspiel-Statistik des Spielers.
 	 * 
-	 * @return Die Einzelspiel-Statistik des Spielers als {@link Long}.
+	 * @return Die Einzelspiel-Statistik des Spielers als {@link PlayerSingleStats}.
 	 */
-	public Long getPlayerSingleStats() {
+	public PlayerSingleStats getPlayerSingleStats() {
 		return playerSingleStats;
 	}
 
 	/**
 	 * Setzt die Einzelspiel-Statistik des Spielers.
 	 * 
-	 * @param playerSingleStats Die Einzelspiel-Statistik des Spielers als {@link Long}.
+	 * @param playerSingleStats Die Einzelspiel-Statistik des Spielers als {@link PlayerSingleStats}.
 	 */
-	public void setPlayerSingleStats(Long playerSingleStats) {
+	public void setPlayerSingleStats(PlayerSingleStats playerSingleStats) {
 		this.playerSingleStats = playerSingleStats;
 	}
 
 	/**
 	 * Liefert die Doppelspiel-Statistik des Spielers.
 	 * 
-	 * @return Die Doppelspiel-Statistik des Spielers als {@link Long}.
+	 * @return Die Doppelspiel-Statistik des Spielers als {@link PlayerDoubleStats}.
 	 */
-	public Long getPlayerDoubleStats() {
+	public PlayerDoubleStats getPlayerDoubleStats() {
 		return playerDoubleStats;
 	}
 
 	/**
 	 * Setzt die Doppelspiel-Statistik des Spielers.
 	 * 
-	 * @param playerDoubleStats Die Doppelspiel-Statistik des Spielers als {@link Long}.
+	 * @param playerDoubleStats Die Doppelspiel-Statistik des Spielers als {@link PlayerDoubleStats}.
 	 */
-	public void setPlayerDoubleStats(Long playerDoubleStats) {
+	public void setPlayerDoubleStats(PlayerDoubleStats playerDoubleStats) {
 		this.playerDoubleStats = playerDoubleStats;
 	}
 

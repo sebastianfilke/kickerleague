@@ -6,9 +6,19 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import de.kickerapp.shared.dto.ChartDto;
 import de.kickerapp.shared.dto.PlayerDto;
 
+/**
+ * Die Schnittstelle zur Verarbeitung von Diagrammen im Klienten.
+ * 
+ * @author Sebastian Filke
+ */
 @RemoteServiceRelativePath("chartService")
 public interface ChartService extends RemoteService {
 
-	public ChartDto getGoalChart(PlayerDto playerDto) throws IllegalArgumentException;
+	/**
+	 * @param playerDto Der Spieler für welchen das Diagramm angezeigt werden soll.
+	 * @return
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 */
+	public ChartDto getSinglePlayerGoalChart(PlayerDto playerDto) throws IllegalArgumentException;
 
 }

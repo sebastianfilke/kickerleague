@@ -9,7 +9,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import de.kickerapp.client.services.TeamService;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.Team;
-import de.kickerapp.server.dao.TeamStats;
+import de.kickerapp.server.dao.fetchplans.TeamPlan;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.services.TeamServiceHelper.TeamTableComparator;
 import de.kickerapp.shared.dto.TeamDto;
@@ -31,12 +31,11 @@ public class TeamServiceImpl extends RemoteServiceServlet implements TeamService
 	public ArrayList<TeamDto> getAllTeams() throws IllegalArgumentException {
 		final ArrayList<TeamDto> teamDtos = new ArrayList<TeamDto>();
 
-		final List<Team> dbTeams = PMFactory.getList(Team.class);
-		final List<TeamStats> dbTeamStats = PMFactory.getList(TeamStats.class);
+		final List<Team> dbTeams = PMFactory.getList(Team.class, TeamPlan.TEAMSTATS);
 		final List<Player> dbPlayers = PMFactory.getList(Player.class);
 
 		for (Team dbTeam : dbTeams) {
-			final TeamDto teamDto = TeamServiceHelper.createDtoTeam(dbTeam, dbTeamStats, dbPlayers);
+			final TeamDto teamDto = TeamServiceHelper.createDtoTeam(dbTeam, dbPlayers);
 
 			teamDtos.add(teamDto);
 		}

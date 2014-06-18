@@ -7,7 +7,7 @@ import javax.jdo.annotations.PersistenceCapable;
  * 
  * @author Sebastian Filke
  */
-@PersistenceCapable
+@PersistenceCapable(detachable = "true")
 public class TeamStats extends Stats {
 
 	/**

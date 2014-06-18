@@ -7,7 +7,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import de.kickerapp.shared.dto.MatchDto;
 
 /**
- * Die asynchrone Schnittstelle zur Verarbeitung von Spielen im Clienten.
+ * Die asynchrone Schnittstelle zur Verarbeitung von Spielen im Klienten.
  * 
  * @author Sebastian Filke
  */

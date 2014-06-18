@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<datastore-indexes autoGenerate="false">
+<datastore-indexes xmlns="http://appengine.google.com/ns/datastore-indexes/1.0" autoGenerate="false">
 
-	<datastore-index kind="Match" ancestor="false">
+	<datastore-index kind="SingleMatch" ancestor="false">
 		<property name="matchNumber" direction="desc" />
 		<property name="matchDate" direction="asc" />
-		<property name="matchType" direction="asc" />
+		<property name="matchComment" direction="asc" />
+		<property name="player1" direction="asc" />
+		<property name="player2" direction="asc" />
+		<property name="matchPointsTeam1" direction="asc" />
+		<property name="matchPointsTeam2" direction="asc" />
+		<property name="matchSetsTeam1" direction="asc" />
+		<property name="matchSetsTeam2" direction="asc" />
+	</datastore-index>
+
+	<datastore-index kind="DoubleMatch" ancestor="false">
+		<property name="matchNumber" direction="desc" />
+		<property name="matchDate" direction="asc" />
+		<property name="matchComment" direction="asc" />
 		<property name="team1" direction="asc" />
 		<property name="team2" direction="asc" />
 		<property name="matchPointsTeam1" direction="asc" />
 		<property name="matchPointsTeam2" direction="asc" />
 		<property name="matchSetsTeam1" direction="asc" />
 		<property name="matchSetsTeam2" direction="asc" />
-		<property name="matchComment" direction="asc" />
 	</datastore-index>
 
 	<datastore-index kind="MatchComment" ancestor="false">
 		<property name="comment" direction="asc" />
-		<property name="match" direction="desc" />
 	</datastore-index>
 
 	<datastore-index kind="Player" ancestor="false">
