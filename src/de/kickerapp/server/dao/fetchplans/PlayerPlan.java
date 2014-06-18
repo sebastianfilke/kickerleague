@@ -13,5 +13,7 @@ public final class PlayerPlan {
 	public static final String PLAYERSINGLESTATS = "playerSingleStats";
 	/** Die Doppelspiel-Statistik des Spielers. */
 	public static final String PLAYERDOUBLESTATS = "playerDoubleStats";
+	/** Die Liste der Teams zu denen der Spieler gehört. */
+	public static final String TEAMS = "teams";
 
 }

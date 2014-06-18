@@ -1,12 +1,15 @@
 package de.kickerapp.server.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.TreeSet;
 
 import javax.jdo.annotations.Element;
 import javax.jdo.annotations.FetchGroup;
+import javax.jdo.annotations.FetchGroups;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+
+import com.google.appengine.datanucleus.annotations.Unowned;
 
 import de.kickerapp.server.dao.fetchplans.TeamPlan;
 
@@ -16,7 +19,8 @@ import de.kickerapp.server.dao.fetchplans.TeamPlan;
  * @author Sebastian Filke
  */
 @PersistenceCapable(detachable = "true")
-@FetchGroup(name = TeamPlan.TEAMSTATS, members = { @Persistent(name = "teamStats") })
+@FetchGroups({ @FetchGroup(name = TeamPlan.TEAMSTATS, members = { @Persistent(name = "teamStats") }),
+		@FetchGroup(name = TeamPlan.PLAYERS, members = { @Persistent(name = "players") }) })
 public class Team extends BaseDao {
 
 	/** Das Datum des letzten Spiels des Teams. */
@@ -27,8 +31,9 @@ public class Team extends BaseDao {
 	@Persistent(defaultFetchGroup = "false")
 	private TeamStats teamStats;
 	/** Die Spieler des Teams. */
-	@Persistent
-	private TreeSet<Long> players;
+	@Unowned
+	@Persistent(defaultFetchGroup = "false")
+	private ArrayList<Player> players;
 
 	/**
 	 * Erzeugt ein neues Team ohne Angaben und leeren Statistiken.
@@ -38,7 +43,7 @@ public class Team extends BaseDao {
 
 		lastMatchDate = null;
 		teamStats = null;
-		players = new TreeSet<Long>();
+		players = new ArrayList<Player>();
 	}
 
 	/**
@@ -49,8 +54,8 @@ public class Team extends BaseDao {
 	 */
 	public Team(Player player1, Player player2) {
 		this();
-		players.add(player1.getKey().getId());
-		players.add(player2.getKey().getId());
+		players.add(player1);
+		players.add(player2);
 	}
 
 	/**
@@ -92,19 +97,32 @@ public class Team extends BaseDao {
 	/**
 	 * Liefert die Spieler des Teams.
 	 * 
-	 * @return Die Spieler des Teams als {@link TreeSet}.
+	 * @return Die Spieler des Teams als {@link ArrayList}.
 	 */
-	public TreeSet<Long> getPlayers() {
+	public ArrayList<Player> getPlayers() {
 		return players;
 	}
 
 	/**
 	 * Setzt die Spieler des Teams.
 	 * 
-	 * @param players Die Spieler des Teams als {@link TreeSet}.
+	 * @param players Die Spieler des Teams als {@link ArrayList}.
 	 */
-	public void setPlayers(TreeSet<Long> players) {
+	public void setPlayers(ArrayList<Player> players) {
 		this.players = players;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder(getClass().getName());
+		sb.append(" [");
+		sb.append("id=").append(getKey().getId()).append(", ");
+		sb.append("]");
+
+		return sb.toString();
 	}
 
 }

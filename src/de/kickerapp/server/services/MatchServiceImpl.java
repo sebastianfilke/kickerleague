@@ -107,23 +107,27 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		final MatchSets sets = new MatchSets(matchDto.getMatchSetsDto().getMatchSetsTeam1(), matchDto.getMatchSetsDto().getMatchSetsTeam2());
 		dbMatch.setMatchSets(sets);
 
-		final Player dbTeam1Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer1().getId(), PlayerPlan.PLAYERDOUBLESTATS);
-		final Player dbTeam1Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer2().getId(), PlayerPlan.PLAYERDOUBLESTATS);
+		final Player dbTeam1Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer1().getId(), PlayerPlan.PLAYERDOUBLESTATS,
+				PlayerPlan.TEAMS);
+		final Player dbTeam1Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer2().getId(), PlayerPlan.PLAYERDOUBLESTATS,
+				PlayerPlan.TEAMS);
 
 		final Team dbTeam1 = TeamServiceHelper.getTeam(dbTeam1Player1, dbTeam1Player2);
 		matchDto.getTeam1Dto().setId(dbTeam1.getKey().getId());
 
-		final Player dbTeam1Player1Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam1Player1, dbTeam1Player2, (Long) dbTeam1.getPlayers().toArray()[0]);
-		final Player dbTeam1Player2Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam1Player1, dbTeam1Player2, (Long) dbTeam1.getPlayers().toArray()[1]);
+		final Player dbTeam1Player1Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam1Player1, dbTeam1Player2, dbTeam1.getPlayers().get(0).getKey().getId());
+		final Player dbTeam1Player2Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam1Player1, dbTeam1Player2, dbTeam1.getPlayers().get(1).getKey().getId());
 
-		final Player dbTeam2Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer1().getId(), PlayerPlan.PLAYERDOUBLESTATS);
-		final Player dbTeam2Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer2().getId(), PlayerPlan.PLAYERDOUBLESTATS);
+		final Player dbTeam2Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer1().getId(), PlayerPlan.PLAYERDOUBLESTATS,
+				PlayerPlan.TEAMS);
+		final Player dbTeam2Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer2().getId(), PlayerPlan.PLAYERDOUBLESTATS,
+				PlayerPlan.TEAMS);
 
 		final Team dbTeam2 = TeamServiceHelper.getTeam(dbTeam2Player1, dbTeam2Player2);
 		matchDto.getTeam2Dto().setId(dbTeam2.getKey().getId());
 
-		final Player dbTeam2Player1Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam2Player1, dbTeam2Player2, (Long) dbTeam2.getPlayers().toArray()[0]);
-		final Player dbTeam2Player2Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam2Player1, dbTeam2Player2, (Long) dbTeam2.getPlayers().toArray()[1]);
+		final Player dbTeam2Player1Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam2Player1, dbTeam2Player2, dbTeam2.getPlayers().get(0).getKey().getId());
+		final Player dbTeam2Player2Sorted = MatchServiceHelper.getPlayerForTeamId(dbTeam2Player1, dbTeam2Player2, dbTeam2.getPlayers().get(1).getKey().getId());
 
 		dbMatch.setTeam1(dbTeam1);
 		dbMatch.setTeam2(dbTeam2);

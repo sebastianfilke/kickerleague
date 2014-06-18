@@ -105,6 +105,7 @@ public final class PMFactory {
 		try {
 			txn.begin();
 			result = pm.makePersistent(object);
+			result = (T) pm.detachCopy(object);
 			txn.commit();
 		} finally {
 			if (txn.isActive()) {
@@ -131,6 +132,7 @@ public final class PMFactory {
 		try {
 			txn.begin();
 			result = pm.makePersistentAll(objects);
+			result = (Object[]) pm.detachCopyAll(result);
 			txn.commit();
 		} finally {
 			if (txn.isActive()) {
@@ -156,6 +158,7 @@ public final class PMFactory {
 		try {
 			txn.begin();
 			result = (List<T>) pm.makePersistentAll(objects);
+			result = (List<T>) pm.detachCopyAll(result);
 			txn.commit();
 		} finally {
 			if (txn.isActive()) {

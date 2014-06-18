@@ -1,13 +1,15 @@
 package de.kickerapp.server.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.TreeSet;
 
 import javax.jdo.annotations.Element;
 import javax.jdo.annotations.FetchGroup;
 import javax.jdo.annotations.FetchGroups;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+
+import com.google.appengine.datanucleus.annotations.Unowned;
 
 import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 
@@ -19,7 +21,8 @@ import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 @PersistenceCapable(detachable = "true")
 @FetchGroups({ @FetchGroup(name = PlayerPlan.ALLSTATS, members = { @Persistent(name = "playerSingleStats"), @Persistent(name = "playerDoubleStats") }),
 		@FetchGroup(name = PlayerPlan.PLAYERSINGLESTATS, members = { @Persistent(name = "playerSingleStats") }),
-		@FetchGroup(name = PlayerPlan.PLAYERDOUBLESTATS, members = { @Persistent(name = "playerDoubleStats") }) })
+		@FetchGroup(name = PlayerPlan.PLAYERDOUBLESTATS, members = { @Persistent(name = "playerDoubleStats") }),
+		@FetchGroup(name = PlayerPlan.TEAMS, members = { @Persistent(name = "teams") }) })
 public class Player extends BaseDao {
 
 	/** Der Nachname des Spielers. */
@@ -46,8 +49,9 @@ public class Player extends BaseDao {
 	@Persistent(defaultFetchGroup = "false")
 	private PlayerDoubleStats playerDoubleStats;
 	/** Die Liste der Teams zu denen der Spieler gehört. */
-	@Persistent
-	private TreeSet<Long> teams;
+	@Unowned
+	@Persistent(defaultFetchGroup = "false")
+	private ArrayList<Team> teams;
 
 	/**
 	 * Erzeugt einen neuen Spieler ohne Angaben und leeren Statistiken.
@@ -62,7 +66,7 @@ public class Player extends BaseDao {
 		lastMatchDate = null;
 		playerSingleStats = null;
 		playerDoubleStats = null;
-		teams = new TreeSet<Long>();
+		teams = new ArrayList<Team>();
 	}
 
 	/**
@@ -206,19 +210,35 @@ public class Player extends BaseDao {
 	/**
 	 * Liefert die Liste der Teams zu denen der Spieler gehört.
 	 * 
-	 * @return Die Liste der Teams zu denen der Spieler gehört als {@link TreeSet}.
+	 * @return Die Liste der Teams zu denen der Spieler gehört als {@link ArrayList}.
 	 */
-	public TreeSet<Long> getTeams() {
+	public ArrayList<Team> getTeams() {
 		return teams;
 	}
 
 	/**
 	 * Setzt die Liste der Teams zu denen der Spieler gehört.
 	 * 
-	 * @param teams Die Liste der Teams zu denen der Spieler gehört als {@link TreeSet}.
+	 * @param teams Die Liste der Teams zu denen der Spieler gehört als {@link ArrayList}.
 	 */
-	public void setTeams(TreeSet<Long> teams) {
+	public void setTeams(ArrayList<Team> teams) {
 		this.teams = teams;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder(getClass().getName());
+		sb.append(" [");
+		sb.append("id=").append(getKey().getId()).append(", ");
+		sb.append("lastName=").append(lastName).append(", ");
+		sb.append("firstName=").append(firstName).append(", ");
+		sb.append("nickName=").append(nickName).append(", ");
+		sb.append("]");
+
+		return sb.toString();
 	}
 
 }

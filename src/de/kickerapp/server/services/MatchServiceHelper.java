@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import de.kickerapp.server.dao.DoubleMatch;
 import de.kickerapp.server.dao.Match;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.PlayerDoubleStats;
@@ -417,14 +418,14 @@ public class MatchServiceHelper {
 			PlayerDoubleStats dbPlayer2Stats = null;
 			if (matchDto.getTeam1Dto().getPlayer1().getId() == dbPlayer.getKey().getId()
 					|| matchDto.getTeam1Dto().getPlayer2().getId() == dbPlayer.getKey().getId()) {
-				dbPlayer1Stats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2Dto().getPlayer1().getId());
-				dbPlayer2Stats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam2Dto().getPlayer2().getId());
+				dbPlayer1Stats = ((DoubleMatch) dbMatch).getTeam2().getPlayers().get(0).getPlayerDoubleStats();
+				dbPlayer2Stats = ((DoubleMatch) dbMatch).getTeam2().getPlayers().get(1).getPlayerDoubleStats();
 
 				tempPoints1 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer1Stats);
 				tempPoints2 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats);
 			} else {
-				dbPlayer1Stats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1Dto().getPlayer1().getId());
-				dbPlayer2Stats = PMFactory.getObjectById(PlayerDoubleStats.class, matchDto.getTeam1Dto().getPlayer2().getId());
+				dbPlayer1Stats = ((DoubleMatch) dbMatch).getTeam1().getPlayers().get(0).getPlayerDoubleStats();
+				dbPlayer2Stats = ((DoubleMatch) dbMatch).getTeam1().getPlayers().get(1).getPlayerDoubleStats();
 
 				tempPoints1 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer1Stats);
 				tempPoints2 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats);
