@@ -1,6 +1,7 @@
 package de.kickerapp.server.services;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
@@ -47,15 +48,11 @@ public class TeamServiceHelper {
 	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbTeam Die Objekt-Datenklasse.
-	 * @param dbPlayers Die Objekt-Datenklasse-Liste aller Spieler.
 	 * @return Die Client-Datenklasse.
 	 */
-	protected static TeamDto createDtoTeam(Team dbTeam, List<Player> dbPlayers) {
-		final Player dbPlayer1 = PlayerServiceHelper.getPlayerById((Long) dbTeam.getPlayers().toArray()[0], dbPlayers);
-		final Player dbPlayer2 = PlayerServiceHelper.getPlayerById((Long) dbTeam.getPlayers().toArray()[1], dbPlayers);
-
-		final PlayerDto playerDto1 = PlayerServiceHelper.createPlayerDto(dbPlayer1);
-		final PlayerDto playerDto2 = PlayerServiceHelper.createPlayerDto(dbPlayer2);
+	protected static TeamDto createDtoTeam(Team dbTeam) {
+		final PlayerDto playerDto1 = PlayerServiceHelper.createPlayerDto(dbTeam.getPlayers().get(0));
+		final PlayerDto playerDto2 = PlayerServiceHelper.createPlayerDto(dbTeam.getPlayers().get(1));
 
 		final TeamDto teamDto = new TeamDto(playerDto1, playerDto2);
 		teamDto.setId(dbTeam.getKey().getId());
@@ -127,8 +124,17 @@ public class TeamServiceHelper {
 	 */
 	protected static Team getTeam(Player dbPlayer1, Player dbPlayer2) {
 		final TreeSet<Long> existingTeam = new TreeSet<Long>();
-		existingTeam.addAll(dbPlayer1.getTeams());
-		existingTeam.retainAll(dbPlayer2.getTeams());
+
+		final List<Long> team1Ids = new ArrayList<Long>();
+		final List<Long> team2Ids = new ArrayList<Long>();
+		for (Team team : dbPlayer1.getTeams()) {
+			team1Ids.add(team.getKey().getId());
+		}
+		for (Team team : dbPlayer2.getTeams()) {
+			team2Ids.add(team.getKey().getId());
+		}
+		existingTeam.addAll(team1Ids);
+		existingTeam.retainAll(team2Ids);
 
 		Team dbTeam = null;
 		if (existingTeam.isEmpty()) {
@@ -139,17 +145,16 @@ public class TeamServiceHelper {
 
 			final TeamStats dbTeamStats = new TeamStats();
 			final int teamStatsId = PMFactory.getNextId(TeamStats.class.getName());
-			final Key teamStatsKey = KeyFactory.createKey(TeamStats.class.getSimpleName(), teamStatsId);
+			final Key teamStatsKey = KeyFactory.createKey(dbTeam.getKey(), TeamStats.class.getSimpleName(), teamStatsId);
 			dbTeamStats.setKey(teamStatsKey);
 
 			dbTeam.setTeamStats(dbTeamStats);
-			dbPlayer1.getTeams().add(dbTeam.getKey().getId());
-			dbPlayer2.getTeams().add(dbTeam.getKey().getId());
+			dbPlayer1.getTeams().add(dbTeam);
+			dbPlayer2.getTeams().add(dbTeam);
 
-			final Object[] persistedResult = PMFactory.persistAllObjects(dbTeamStats, dbTeam);
-			dbTeam = (Team) persistedResult[1];
+			dbTeam = PMFactory.persistObject(dbTeam);
 		} else {
-			dbTeam = PMFactory.getObjectById(Team.class, (Long) existingTeam.toArray()[0], TeamPlan.TEAMSTATS);
+			dbTeam = PMFactory.getObjectById(Team.class, (Long) existingTeam.toArray()[0], TeamPlan.TEAMSTATS, TeamPlan.PLAYERS);
 		}
 		return dbTeam;
 	}
