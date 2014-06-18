@@ -81,8 +81,8 @@ public class GoalChartPanel extends BaseContainer {
 
 	private CategoryAxis<ChartDataDto, String> createCategoryAxis() {
 		final CategoryAxis<ChartDataDto, String> catAxis = new CategoryAxis<ChartDataDto, String>();
-		catAxis.setPosition(Position.BOTTOM);
 		catAxis.setField(KickerProperties.CHART_PROPERTY.month());
+		catAxis.setPosition(Position.BOTTOM);
 
 		final TextSprite title = new TextSprite("Monat");
 		title.setFontSize(20);
@@ -138,7 +138,7 @@ public class GoalChartPanel extends BaseContainer {
 
 	private Legend<ChartDataDto> createLegend() {
 		final Legend<ChartDataDto> legend = new Legend<ChartDataDto>();
-		legend.setPosition(Position.RIGHT);
+		legend.setPosition(Position.BOTTOM);
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(true);
 
@@ -146,7 +146,11 @@ public class GoalChartPanel extends BaseContainer {
 	}
 
 	public void loadGoalChart(ArrayList<ChartDataDto> result) {
-		barGoal.setShownInLegend(true);
+		if (!result.isEmpty()) {
+			barGoal.setShownInLegend(true);
+		} else {
+			barGoal.setShownInLegend(false);
+		}
 		storeGoal.replaceAll(result);
 		chartGoal.redrawChart();
 	}

@@ -224,7 +224,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 			goalChartPanel.loadGoalChart(chartDto.getChartDataDto());
 		} else if (value == tbtnWinChart) {
 			clcDoubleChart.setActiveWidget(gameChartPanel);
-			gameChartPanel.loadGoalChart(chartDto.getChartDataDto());
+			gameChartPanel.loadGameChart(chartDto.getChartDataDto());
 		}
 	}
 
@@ -295,7 +295,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private void loadSinglePlayerChart(PlayerDto selectedPlayer) {
 		if (doUpdateSinglePlayerChart) {
 			mask("Statistik wird geladen...");
-			KickerServices.CHART_SERVICE.getGoalChart(selectedPlayer, new AsyncCallback<ChartDto>() {
+			KickerServices.CHART_SERVICE.getSinglePlayerGoalChart(selectedPlayer, new AsyncCallback<ChartDto>() {
 				@Override
 				public void onSuccess(ChartDto result) {
 					unmask();
@@ -304,7 +304,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 					if (tgChart.getValue() == tbtnGoalChart) {
 						goalChartPanel.loadGoalChart(result.getChartDataDto());
 					} else if (tgChart.getValue() == tbtnWinChart) {
-						gameChartPanel.loadGoalChart(result.getChartDataDto());
+						gameChartPanel.loadGameChart(result.getChartDataDto());
 					}
 					infoPanel.setInfos(result);
 				}

@@ -12,6 +12,7 @@ import de.kickerapp.client.services.PlayerService;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.PlayerDoubleStats;
 import de.kickerapp.server.dao.PlayerSingleStats;
+import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerNameComparator;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerTableComparator;
@@ -43,20 +44,20 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 		dbPlayer.setNickName(playerDto.getNickName());
 		dbPlayer.setEMail(playerDto.getEMail());
 
-		final PlayerSingleStats dbSingleStats = new PlayerSingleStats();
+		final PlayerSingleStats dbPlayerSingleStats = new PlayerSingleStats();
 		final int playerSingleStatsId = PMFactory.getNextId(PlayerSingleStats.class.getName());
-		final Key playerSingleStatsKey = KeyFactory.createKey(PlayerSingleStats.class.getSimpleName(), playerSingleStatsId);
-		dbSingleStats.setKey(playerSingleStatsKey);
+		final Key playerSingleStatsKey = KeyFactory.createKey(dbPlayer.getKey(), PlayerSingleStats.class.getSimpleName(), playerSingleStatsId);
+		dbPlayerSingleStats.setKey(playerSingleStatsKey);
 
-		final PlayerDoubleStats dbDoubleStats = new PlayerDoubleStats();
+		final PlayerDoubleStats dbPlayerDoubleStats = new PlayerDoubleStats();
 		final int playerDoubleStatsId = PMFactory.getNextId(PlayerDoubleStats.class.getName());
-		final Key playerDoubleStatsKey = KeyFactory.createKey(PlayerDoubleStats.class.getSimpleName(), playerDoubleStatsId);
-		dbDoubleStats.setKey(playerDoubleStatsKey);
+		final Key playerDoubleStatsKey = KeyFactory.createKey(dbPlayer.getKey(), PlayerDoubleStats.class.getSimpleName(), playerDoubleStatsId);
+		dbPlayerDoubleStats.setKey(playerDoubleStatsKey);
 
-		dbPlayer.setPlayerSingleStats(dbSingleStats.getKey().getId());
-		dbPlayer.setPlayerDoubleStats(dbDoubleStats.getKey().getId());
+		dbPlayer.setPlayerSingleStats(dbPlayerSingleStats);
+		dbPlayer.setPlayerDoubleStats(dbPlayerDoubleStats);
 
-		PMFactory.persistAllObjects(dbSingleStats, dbDoubleStats, dbPlayer);
+		PMFactory.persistObject(dbPlayer);
 
 		return playerDto;
 	}
@@ -68,26 +69,25 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	public ArrayList<PlayerDto> getAllPlayers(MatchType matchType) throws IllegalArgumentException {
 		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
 
-		final List<Player> dbPlayers = PMFactory.getList(Player.class);
-		List<PlayerSingleStats> dbPlayerSingleStats = null;
-		List<PlayerDoubleStats> dbPlayerDoubleStats = null;
+		List<Player> dbPlayers = null;
 		if (matchType == MatchType.SINGLE) {
-			dbPlayerSingleStats = PMFactory.getList(PlayerSingleStats.class);
+			dbPlayers = PMFactory.getList(Player.class, PlayerPlan.PLAYERSINGLESTATS);
 		} else if (matchType == MatchType.DOUBLE) {
-			dbPlayerDoubleStats = PMFactory.getList(PlayerDoubleStats.class);
+			dbPlayers = PMFactory.getList(Player.class, PlayerPlan.PLAYERDOUBLESTATS);
 		} else if (matchType == MatchType.BOTH) {
-			dbPlayerSingleStats = PMFactory.getList(PlayerSingleStats.class);
-			dbPlayerDoubleStats = PMFactory.getList(PlayerDoubleStats.class);
+			dbPlayers = PMFactory.getList(Player.class, PlayerPlan.ALLSTATS);
+		} else {
+			dbPlayers = PMFactory.getList(Player.class);
 		}
 
 		for (Player dbPlayer : dbPlayers) {
 			PlayerDto player = null;
 			if (matchType == MatchType.SINGLE) {
-				player = PlayerServiceHelper.createPlayerDtoWithSingleStats(dbPlayer, dbPlayerSingleStats);
+				player = PlayerServiceHelper.createPlayerDtoWithSingleStats(dbPlayer);
 			} else if (matchType == MatchType.DOUBLE) {
-				player = PlayerServiceHelper.createPlayerDtoWithDoubleStats(dbPlayer, dbPlayerDoubleStats);
+				player = PlayerServiceHelper.createPlayerDtoWithDoubleStats(dbPlayer);
 			} else if (matchType == MatchType.BOTH) {
-				player = PlayerServiceHelper.createPlayerDtoWithAllStats(dbPlayer, dbPlayerSingleStats, dbPlayerDoubleStats);
+				player = PlayerServiceHelper.createPlayerDtoWithAllStats(dbPlayer);
 			} else {
 				player = PlayerServiceHelper.createPlayerDto(dbPlayer);
 			}

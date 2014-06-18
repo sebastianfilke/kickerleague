@@ -3,23 +3,29 @@ package de.kickerapp.server.dao;
 import java.util.Date;
 import java.util.TreeSet;
 
+import javax.jdo.annotations.Element;
+import javax.jdo.annotations.FetchGroup;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+
+import de.kickerapp.server.dao.fetchplans.TeamPlan;
 
 /**
  * Datenklasse zum Halten der Informationen für ein Team.
  * 
  * @author Sebastian Filke
  */
-@PersistenceCapable
+@PersistenceCapable(detachable = "true")
+@FetchGroup(name = TeamPlan.TEAMSTATS, members = { @Persistent(name = "teamStats") })
 public class Team extends BaseDao {
 
 	/** Das Datum des letzten Spiels des Teams. */
 	@Persistent
 	private Date lastMatchDate;
 	/** Die Teamspiel-Statistik des Teams. */
-	@Persistent
-	private Long teamStats;
+	@Element(dependent = "true")
+	@Persistent(defaultFetchGroup = "false")
+	private TeamStats teamStats;
 	/** Die Spieler des Teams. */
 	@Persistent
 	private TreeSet<Long> players;
@@ -31,7 +37,7 @@ public class Team extends BaseDao {
 		super();
 
 		lastMatchDate = null;
-		teamStats = 0L;
+		teamStats = null;
 		players = new TreeSet<Long>();
 	}
 
@@ -68,18 +74,18 @@ public class Team extends BaseDao {
 	/**
 	 * Liefert die Teamspiel-Statistik des Teams.
 	 * 
-	 * @return Die Teamspiel-Statistik des Teams als {@link Long}.
+	 * @return Die Teamspiel-Statistik des Teams als {@link TeamStats}.
 	 */
-	public Long getTeamStats() {
+	public TeamStats getTeamStats() {
 		return teamStats;
 	}
 
 	/**
 	 * Setzt die Teamspiel-Statistik des Teams.
 	 * 
-	 * @param teamStats Die Teamspiel-Statistik des Teams als {@link Long}.
+	 * @param teamStats Die Teamspiel-Statistik des Teams als {@link TeamStats}.
 	 */
-	public void setTeamStats(Long teamStats) {
+	public void setTeamStats(TeamStats teamStats) {
 		this.teamStats = teamStats;
 	}
 

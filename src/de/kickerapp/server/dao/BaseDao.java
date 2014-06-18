@@ -14,7 +14,7 @@ import com.google.appengine.api.datastore.Key;
  * 
  * @author Sebastian Filke
  */
-@PersistenceCapable
+@PersistenceCapable(detachable = "true")
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
 public class BaseDao {
 

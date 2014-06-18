@@ -12,7 +12,7 @@ import de.kickerapp.shared.common.Tendency;
  * 
  * @author Sebastian Filke
  */
-@PersistenceCapable
+@PersistenceCapable(detachable = "true")
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
 public class Stats extends BaseDao {
 
