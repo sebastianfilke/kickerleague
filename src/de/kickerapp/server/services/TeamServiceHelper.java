@@ -12,6 +12,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.Team;
 import de.kickerapp.server.dao.TeamStats;
+import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 import de.kickerapp.server.dao.fetchplans.TeamPlan;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -51,8 +52,8 @@ public class TeamServiceHelper {
 	 * @return Die Client-Datenklasse.
 	 */
 	protected static TeamDto createDtoTeam(Team dbTeam) {
-		final PlayerDto playerDto1 = PlayerServiceHelper.createPlayerDto(dbTeam.getPlayers().get(0));
-		final PlayerDto playerDto2 = PlayerServiceHelper.createPlayerDto(dbTeam.getPlayers().get(1));
+		final PlayerDto playerDto1 = PlayerServiceHelper.createPlayerDto(dbTeam.getPlayer1());
+		final PlayerDto playerDto2 = PlayerServiceHelper.createPlayerDto(dbTeam.getPlayer2());
 
 		final TeamDto teamDto = new TeamDto(playerDto1, playerDto2);
 		teamDto.setId(dbTeam.getKey().getId());
@@ -154,7 +155,8 @@ public class TeamServiceHelper {
 
 			dbTeam = PMFactory.persistObject(dbTeam);
 		} else {
-			dbTeam = PMFactory.getObjectById(Team.class, (Long) existingTeam.toArray()[0], TeamPlan.TEAMSTATS, TeamPlan.PLAYERS);
+			dbTeam = PMFactory.getObjectById(Team.class, (Long) existingTeam.toArray()[0], TeamPlan.TEAMSTATS, TeamPlan.BOTHPLAYERS,
+					PlayerPlan.PLAYERDOUBLESTATS);
 		}
 		return dbTeam;
 	}

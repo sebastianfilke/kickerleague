@@ -1,9 +1,13 @@
 package de.kickerapp.server.dao;
 
+import javax.jdo.annotations.FetchGroup;
+import javax.jdo.annotations.FetchGroups;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import com.google.appengine.datanucleus.annotations.Unowned;
+
+import de.kickerapp.server.dao.fetchplans.MatchPlan;
 
 /**
  * Datenklasse zum Halten der Informationen für ein Doppelspiel.
@@ -11,15 +15,16 @@ import com.google.appengine.datanucleus.annotations.Unowned;
  * @author Sebastian Filke
  */
 @PersistenceCapable(detachable = "true")
+@FetchGroups({ @FetchGroup(name = MatchPlan.BOTHTEAMS, members = { @Persistent(name = "team1"), @Persistent(name = "team2") }) })
 public class DoubleMatch extends Match {
 
 	/** Das erste Team. */
 	@Unowned
-	@Persistent(defaultFetchGroup = "true")
+	@Persistent(defaultFetchGroup = "false")
 	private Team team1;
 	/** Das zweite Team. */
 	@Unowned
-	@Persistent(defaultFetchGroup = "true")
+	@Persistent(defaultFetchGroup = "false")
 	private Team team2;
 
 	/**
@@ -63,6 +68,14 @@ public class DoubleMatch extends Match {
 	 */
 	public void setTeam2(Team team2) {
 		this.team2 = team2;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return super.toString();
 	}
 
 }

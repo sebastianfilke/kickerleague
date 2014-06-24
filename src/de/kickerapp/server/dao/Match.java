@@ -300,4 +300,19 @@ public class Match extends BaseDao {
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+		sb.append(" [");
+		sb.append("id=").append(getKey().getId()).append(", ");
+		sb.append("matchNumber=").append(matchNumber).append(", ");
+		sb.append("matchDate=").append(matchDate);
+		sb.append("]");
+
+		return sb.toString();
+	}
+
 }

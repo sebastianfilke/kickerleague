@@ -30,7 +30,7 @@ public class TeamServiceImpl extends RemoteServiceServlet implements TeamService
 	public ArrayList<TeamDto> getAllTeams() throws IllegalArgumentException {
 		final ArrayList<TeamDto> teamDtos = new ArrayList<TeamDto>();
 
-		final List<Team> dbTeams = PMFactory.getList(Team.class, TeamPlan.TEAMSTATS, TeamPlan.PLAYERS);
+		final List<Team> dbTeams = PMFactory.getList(Team.class, TeamPlan.TEAMSTATS, TeamPlan.BOTHPLAYERS);
 
 		for (Team dbTeam : dbTeams) {
 			final TeamDto teamDto = TeamServiceHelper.createDtoTeam(dbTeam);

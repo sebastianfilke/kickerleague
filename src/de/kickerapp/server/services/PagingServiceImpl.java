@@ -88,7 +88,7 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 	public ArrayList<PlayerDto> getAllPlayers() {
 		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
 
-		final List<Player> dbPlayers = PMFactory.getList(Player.class, PlayerPlan.ALLSTATS);
+		final List<Player> dbPlayers = PMFactory.getList(Player.class, PlayerPlan.BOTHSTATS);
 
 		for (Player dbPlayer : dbPlayers) {
 			final PlayerDto player = PlayerServiceHelper.createPlayerDtoWithAllStats(dbPlayer);

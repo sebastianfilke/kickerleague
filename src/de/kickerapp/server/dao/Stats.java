@@ -267,4 +267,28 @@ public class Stats extends BaseDao {
 		this.tendency = tendency;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+		sb.append(" [");
+		sb.append("id=").append(getKey().getId()).append(", ");
+		sb.append("wins=").append(wins).append(", ");
+		sb.append("defeats=").append(defeats).append(", ");
+		sb.append("winSets=").append(winSets).append(", ");
+		sb.append("lostSets=").append(lostSets).append(", ");
+		sb.append("shotGoals=").append(shotGoals).append(", ");
+		sb.append("getGoals=").append(getGoals).append(", ");
+		sb.append("prevTablePlace=").append(prevTablePlace).append(", ");
+		sb.append("curTablePlace=").append(curTablePlace).append(", ");
+		sb.append("lastMatchPoints=").append(lastMatchPoints).append(", ");
+		sb.append("points=").append(points).append(", ");
+		sb.append("tendency=").append(tendency);
+		sb.append("]");
+
+		return sb.toString();
+	}
+
 }

@@ -1,6 +1,5 @@
 package de.kickerapp.server.dao;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import javax.jdo.annotations.Element;
@@ -20,7 +19,7 @@ import de.kickerapp.server.dao.fetchplans.TeamPlan;
  */
 @PersistenceCapable(detachable = "true")
 @FetchGroups({ @FetchGroup(name = TeamPlan.TEAMSTATS, members = { @Persistent(name = "teamStats") }),
-		@FetchGroup(name = TeamPlan.PLAYERS, members = { @Persistent(name = "players") }) })
+		@FetchGroup(name = TeamPlan.BOTHPLAYERS, members = { @Persistent(name = "player1"), @Persistent(name = "player2") }) })
 public class Team extends BaseDao {
 
 	/** Das Datum des letzten Spiels des Teams. */
@@ -30,10 +29,14 @@ public class Team extends BaseDao {
 	@Element(dependent = "true")
 	@Persistent(defaultFetchGroup = "false")
 	private TeamStats teamStats;
-	/** Die Spieler des Teams. */
+	/** Der erste Spieler des Teams. */
 	@Unowned
 	@Persistent(defaultFetchGroup = "false")
-	private ArrayList<Player> players;
+	private Player player1;
+	/** Der zweite Spieler des Teams. */
+	@Unowned
+	@Persistent(defaultFetchGroup = "false")
+	private Player player2;
 
 	/**
 	 * Erzeugt ein neues Team ohne Angaben und leeren Statistiken.
@@ -43,7 +46,8 @@ public class Team extends BaseDao {
 
 		lastMatchDate = null;
 		teamStats = null;
-		players = new ArrayList<Player>();
+		player1 = null;
+		player2 = null;
 	}
 
 	/**
@@ -54,8 +58,8 @@ public class Team extends BaseDao {
 	 */
 	public Team(Player player1, Player player2) {
 		this();
-		players.add(player1);
-		players.add(player2);
+		this.player1 = player1;
+		this.player2 = player2;
 	}
 
 	/**
@@ -95,21 +99,39 @@ public class Team extends BaseDao {
 	}
 
 	/**
-	 * Liefert die Spieler des Teams.
+	 * Liefert den ersten Spieler des Teams.
 	 * 
-	 * @return Die Spieler des Teams als {@link ArrayList}.
+	 * @return Der erste Spieler des Teams als {@link Player}.
 	 */
-	public ArrayList<Player> getPlayers() {
-		return players;
+	public Player getPlayer1() {
+		return player1;
 	}
 
 	/**
-	 * Setzt die Spieler des Teams.
+	 * Setzt den ersten Spieler des Teams.
 	 * 
-	 * @param players Die Spieler des Teams als {@link ArrayList}.
+	 * @param player1 Der erste Spieler des Teams als {@link Player}.
 	 */
-	public void setPlayers(ArrayList<Player> players) {
-		this.players = players;
+	public void setPlayer1(Player player1) {
+		this.player1 = player1;
+	}
+
+	/**
+	 * Liefert den zweiten Spieler des Teams.
+	 * 
+	 * @return Der zweite Spieler des Teams als {@link Player}.
+	 */
+	public Player getPlayer2() {
+		return player2;
+	}
+
+	/**
+	 * Setzt den zweiten Spieler.
+	 * 
+	 * @param player2 Der zweite Spieler als {@link Player}.
+	 */
+	public void setPlayer2(Player player2) {
+		this.player2 = player2;
 	}
 
 	/**
@@ -117,9 +139,10 @@ public class Team extends BaseDao {
 	 */
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder(getClass().getName());
+		final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
 		sb.append(" [");
 		sb.append("id=").append(getKey().getId()).append(", ");
+		sb.append("lastMatchDate=").append(lastMatchDate);
 		sb.append("]");
 
 		return sb.toString();

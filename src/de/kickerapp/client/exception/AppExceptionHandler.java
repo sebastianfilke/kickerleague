@@ -60,7 +60,7 @@ public final class AppExceptionHandler implements UncaughtExceptionHandler {
 	 * @param caught Der Fehler der aufgetreten ist.
 	 */
 	public void handleException(final Throwable caught) {
-		LOGGER.log(Level.SEVERE, caught.getMessage(), caught);
+		// LOGGER.log(Level.SEVERE, caught.getMessage(), caught);
 
 		final SimpleRemoteLogHandler remoteLog = new SimpleRemoteLogHandler();
 		final LogRecord logRecord = new LogRecord(Level.SEVERE, caught.getMessage());

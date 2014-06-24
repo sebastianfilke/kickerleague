@@ -75,7 +75,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 		} else if (matchType == MatchType.DOUBLE) {
 			dbPlayers = PMFactory.getList(Player.class, PlayerPlan.PLAYERDOUBLESTATS);
 		} else if (matchType == MatchType.BOTH) {
-			dbPlayers = PMFactory.getList(Player.class, PlayerPlan.ALLSTATS);
+			dbPlayers = PMFactory.getList(Player.class, PlayerPlan.BOTHSTATS);
 		} else {
 			dbPlayers = PMFactory.getList(Player.class);
 		}

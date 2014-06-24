@@ -6,7 +6,9 @@ import java.util.List;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import de.kickerapp.server.dao.DoubleMatch;
 import de.kickerapp.server.dao.Match;
+import de.kickerapp.server.dao.SingleMatch;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.dto.PlayerDto;
 
@@ -34,6 +36,15 @@ public final class MatchBean {
 			pm.close();
 		}
 		return list;
+	}
+
+	public static int getNextMatchNumber() {
+		final List<SingleMatch> singleMatches = PMFactory.getList(SingleMatch.class);
+		final List<DoubleMatch> doubleMatches = PMFactory.getList(DoubleMatch.class);
+
+		final int matchNumber = singleMatches.size() + doubleMatches.size() + 1;
+
+		return matchNumber;
 	}
 
 }
