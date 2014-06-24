@@ -48,4 +48,17 @@ public class BaseDao {
 		this.key = key;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+		sb.append(" [");
+		sb.append("id=").append(key.getId());
+		sb.append("]");
+
+		return sb.toString();
+	}
+
 }

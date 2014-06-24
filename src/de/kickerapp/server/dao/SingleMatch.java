@@ -1,9 +1,13 @@
 package de.kickerapp.server.dao;
 
+import javax.jdo.annotations.FetchGroup;
+import javax.jdo.annotations.FetchGroups;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import com.google.appengine.datanucleus.annotations.Unowned;
+
+import de.kickerapp.server.dao.fetchplans.MatchPlan;
 
 /**
  * Datenklasse zum Halten der Informationen für ein Einzelspiel.
@@ -11,15 +15,16 @@ import com.google.appengine.datanucleus.annotations.Unowned;
  * @author Sebastian Filke
  */
 @PersistenceCapable(detachable = "true")
+@FetchGroups({ @FetchGroup(name = MatchPlan.BOTHPLAYERS, members = { @Persistent(name = "player1"), @Persistent(name = "player2") }) })
 public class SingleMatch extends Match {
 
 	/** Der erste Spieler. */
 	@Unowned
-	@Persistent(defaultFetchGroup = "true")
+	@Persistent(defaultFetchGroup = "false")
 	private Player player1;
 	/** Der zweite Spieler. */
 	@Unowned
-	@Persistent(defaultFetchGroup = "true")
+	@Persistent(defaultFetchGroup = "false")
 	private Player player2;
 
 	/**
@@ -53,7 +58,7 @@ public class SingleMatch extends Match {
 	/**
 	 * Liefert den zweiten Spieler.
 	 * 
-	 * @return Der zweite Spieler als {@link BaseDao}.
+	 * @return Der zweite Spieler als {@link Player}.
 	 */
 	public Player getPlayer2() {
 		return player2;
@@ -66,6 +71,14 @@ public class SingleMatch extends Match {
 	 */
 	public void setPlayer2(Player player2) {
 		this.player2 = player2;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return super.toString();
 	}
 
 }

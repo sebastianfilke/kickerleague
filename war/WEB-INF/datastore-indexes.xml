@@ -71,7 +71,8 @@
 	<datastore-index kind="Team" ancestor="false">
 		<property name="lastMatchDate" direction="asc" />
 		<property name="teamStats" direction="asc" />
-		<property name="players" direction="asc" />
+		<property name="player1" direction="asc" />
+		<property name="player2" direction="asc" />
 	</datastore-index>
 
 	<datastore-index kind="TeamStats" ancestor="false">

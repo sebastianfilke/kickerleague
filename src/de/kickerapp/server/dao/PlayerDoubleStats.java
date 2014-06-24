@@ -17,4 +17,12 @@ public class PlayerDoubleStats extends Stats {
 		super();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+
 }

@@ -19,7 +19,7 @@ import de.kickerapp.server.dao.fetchplans.PlayerPlan;
  * @author Sebastian Filke
  */
 @PersistenceCapable(detachable = "true")
-@FetchGroups({ @FetchGroup(name = PlayerPlan.ALLSTATS, members = { @Persistent(name = "playerSingleStats"), @Persistent(name = "playerDoubleStats") }),
+@FetchGroups({ @FetchGroup(name = PlayerPlan.BOTHSTATS, members = { @Persistent(name = "playerSingleStats"), @Persistent(name = "playerDoubleStats") }),
 		@FetchGroup(name = PlayerPlan.PLAYERSINGLESTATS, members = { @Persistent(name = "playerSingleStats") }),
 		@FetchGroup(name = PlayerPlan.PLAYERDOUBLESTATS, members = { @Persistent(name = "playerDoubleStats") }),
 		@FetchGroup(name = PlayerPlan.TEAMS, members = { @Persistent(name = "teams") }) })
@@ -230,12 +230,14 @@ public class Player extends BaseDao {
 	 */
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder(getClass().getName());
+		final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
 		sb.append(" [");
 		sb.append("id=").append(getKey().getId()).append(", ");
 		sb.append("lastName=").append(lastName).append(", ");
 		sb.append("firstName=").append(firstName).append(", ");
 		sb.append("nickName=").append(nickName).append(", ");
+		sb.append("eMail=").append(eMail).append(", ");
+		sb.append("lastMatchDate=").append(lastMatchDate);
 		sb.append("]");
 
 		return sb.toString();

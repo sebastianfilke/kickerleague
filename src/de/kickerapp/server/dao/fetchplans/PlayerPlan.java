@@ -8,7 +8,7 @@ package de.kickerapp.server.dao.fetchplans;
 public final class PlayerPlan {
 
 	/** Die Einzelspiel- sowie Doppelspiel-Statistik des Spielers. */
-	public static final String ALLSTATS = "allStats";
+	public static final String BOTHSTATS = "bothStats";
 	/** Die Einzelspiel-Statistik des Spielers. */
 	public static final String PLAYERSINGLESTATS = "playerSingleStats";
 	/** Die Doppelspiel-Statistik des Spielers. */

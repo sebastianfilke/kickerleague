@@ -662,7 +662,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		if (isInputValid()) {
 			mask("Spiel wird eingetragen...");
 			final MatchDto newMatch = makeMatch();
-			KickerServices.MATCH_SERVICE.createMatch(newMatch, new AsyncCallback<MatchDto>() {
+			KickerServices.MATCH_SERVICE.createDoubleMatch(newMatch, new AsyncCallback<MatchDto>() {
 				@Override
 				public void onSuccess(MatchDto result) {
 					AppInfo.showInfo("Hinweis", "Spiel wurde erfolgreich eingetragen");

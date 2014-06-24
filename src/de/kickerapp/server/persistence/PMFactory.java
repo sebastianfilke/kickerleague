@@ -8,7 +8,6 @@ import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
-import javax.jdo.Transaction;
 
 import de.kickerapp.server.dao.BaseDao;
 
@@ -99,18 +98,12 @@ public final class PMFactory {
 	 */
 	public static <T extends BaseDao> T persistObject(final T object) {
 		final PersistenceManager pm = get().getPersistenceManager();
-		final Transaction txn = pm.currentTransaction();
 
 		T result;
 		try {
-			txn.begin();
 			result = pm.makePersistent(object);
-			result = (T) pm.detachCopy(object);
-			txn.commit();
+			result = pm.detachCopy(object);
 		} finally {
-			if (txn.isActive()) {
-				txn.rollback();
-			}
 			pm.close();
 		}
 		return result;
@@ -126,18 +119,12 @@ public final class PMFactory {
 	@SafeVarargs
 	public static <T extends BaseDao> Object[] persistAllObjects(final T... objects) {
 		final PersistenceManager pm = get().getPersistenceManager();
-		final Transaction txn = pm.currentTransaction();
 
 		Object[] result;
 		try {
-			txn.begin();
 			result = pm.makePersistentAll(objects);
-			result = (Object[]) pm.detachCopyAll(result);
-			txn.commit();
+			result = pm.detachCopyAll(result);
 		} finally {
-			if (txn.isActive()) {
-				txn.rollback();
-			}
 			pm.close();
 		}
 		return result;
@@ -152,18 +139,12 @@ public final class PMFactory {
 	 */
 	public static <T extends BaseDao> List<T> persistList(final Collection<T> objects) {
 		final PersistenceManager pm = get().getPersistenceManager();
-		final Transaction txn = pm.currentTransaction();
 
 		List<T> result = new ArrayList<T>();
 		try {
-			txn.begin();
 			result = (List<T>) pm.makePersistentAll(objects);
 			result = (List<T>) pm.detachCopyAll(result);
-			txn.commit();
 		} finally {
-			if (txn.isActive()) {
-				txn.rollback();
-			}
 			pm.close();
 		}
 		return result;
