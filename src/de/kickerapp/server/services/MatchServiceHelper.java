@@ -162,27 +162,6 @@ public class MatchServiceHelper {
 	/**
 	 * Liefert die Information ob das erste Team bzw. Spieler gewonnen hat.
 	 * 
-	 * @param matchDto Das Spiel.
-	 * @return <code>true</code> falls das erste Team bzw. Spieler gewonnen hat, andernfalls <code>false</code>.
-	 */
-	protected static boolean isTeam1Winner(MatchDto matchDto) {
-		boolean team1Winner = false;
-		int size = 0;
-		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam1()) {
-			if (result != null && result == 6) {
-				size++;
-			}
-			if (size == 2) {
-				team1Winner = true;
-				break;
-			}
-		}
-		return team1Winner;
-	}
-
-	/**
-	 * Liefert die Information ob das erste Team bzw. Spieler gewonnen hat.
-	 * 
 	 * @param dbMatch Das Spiel.
 	 * @return <code>true</code> falls das erste Team bzw. Spieler gewonnen hat, andernfalls <code>false</code>.
 	 */
@@ -204,12 +183,12 @@ public class MatchServiceHelper {
 	/**
 	 * Liefert die geschossenen Tore für das erste Team bzw. Spieler.
 	 * 
-	 * @param matchDto Das Spiel.
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
 	 * @return Die geschossenen Tore für das erste Team bzw. Spieler.
 	 */
-	protected static int getGoalsTeam1(MatchDto matchDto) {
+	protected static int getGoalsTeam1(Match dbMatch) {
 		int goals = 0;
-		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam1()) {
+		for (Integer result : dbMatch.getMatchSets().getMatchSetsTeam1()) {
 			if (result != null) {
 				goals = goals + result;
 			}
@@ -220,12 +199,12 @@ public class MatchServiceHelper {
 	/**
 	 * Liefert die geschossenen Tore für das zweite Team bzw. Spieler.
 	 * 
-	 * @param matchDto Das Spiel.
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
 	 * @return Die geschossenen Tore für das zweite Team bzw. Spieler.
 	 */
-	protected static int getGoalsTeam2(MatchDto matchDto) {
+	protected static int getGoalsTeam2(Match dbMatch) {
 		int goals = 0;
-		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam2()) {
+		for (Integer result : dbMatch.getMatchSets().getMatchSetsTeam2()) {
 			if (result != null) {
 				goals = goals + result;
 			}
@@ -236,12 +215,12 @@ public class MatchServiceHelper {
 	/**
 	 * Liefert die gewonnen Sätze für das erste Team bzw. Spieler.
 	 * 
-	 * @param matchDto Das Spiel.
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
 	 * @return Die gewonnen Sätze für das erste Team bzw. Spieler.
 	 */
-	protected static int getWinSetsTeam1(MatchDto matchDto) {
+	protected static int getWinSetsTeam1(Match dbMatch) {
 		int winSets = 0;
-		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam1()) {
+		for (Integer result : dbMatch.getMatchSets().getMatchSetsTeam1()) {
 			if (result != null && result == 6) {
 				winSets++;
 			}
@@ -252,12 +231,12 @@ public class MatchServiceHelper {
 	/**
 	 * Liefert die gewonnen Sätze für das zweite Team bzw. Spieler.
 	 * 
-	 * @param matchDto Das Spiel.
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
 	 * @return Die gewonnen Sätze für das zweite Team bzw. Spieler.
 	 */
-	protected static int getWinSetsTeam2(MatchDto matchDto) {
+	protected static int getWinSetsTeam2(Match dbMatch) {
 		int winSets = 0;
-		for (Integer result : matchDto.getMatchSetsDto().getMatchSetsTeam2()) {
+		for (Integer result : dbMatch.getMatchSets().getMatchSetsTeam2()) {
 			if (result != null && result == 6) {
 				winSets++;
 			}
@@ -366,54 +345,62 @@ public class MatchServiceHelper {
 	}
 
 	/**
-	 * Liefert die gewonnene oder verlorene Punktzahl eines Spielers.
+	 * Liefert die gewonnene oder verlorene Punktzahl eines Einzelspielers.
+	 * 
+	 * @param dbPlayer Der Spieler.
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 * @param winner <code>true</code> falls der Spieler gewonnen hat, andernfalls <code>false</code>.
+	 * @return Die gewonnene oder verlorene Punktzahl eines Einzelspielers.
+	 */
+	protected static int getPointsForSinglePlayer(Player dbPlayer, SingleMatch dbMatch, boolean winner) {
+		int points = 0;
+
+		final PlayerSingleStats dbCurrentPlayerStats = dbPlayer.getPlayerSingleStats();
+		PlayerSingleStats dbPlayer2Stats = null;
+		if (dbMatch.getPlayer1() == dbPlayer) {
+			dbPlayer2Stats = ((SingleMatch) dbMatch).getPlayer1().getPlayerSingleStats();
+
+			points = getPoints(dbMatch, dbCurrentPlayerStats, dbPlayer2Stats, winner);
+		} else if (dbMatch.getPlayer2() == dbPlayer) {
+			dbPlayer2Stats = ((SingleMatch) dbMatch).getPlayer2().getPlayerSingleStats();
+
+			points = getPoints(dbMatch, dbCurrentPlayerStats, dbPlayer2Stats, winner);
+		}
+		return points;
+	}
+
+	/**
+	 * Liefert die gewonnene oder verlorene Punktzahl eines Doppelspielers.
 	 * 
 	 * @param winner <code>true</code> falls der Spieler gewonnen hat, andernfalls <code>false</code>.
 	 * @param dbPlayer Der Spieler.
 	 * @param dbMatch Das Objekt-Datenklassen Spiel.
-	 * @param matchDto Das Spiel.
-	 * @return Die gewonnene oder verlorene Punktzahl eines Spielers.
+	 * @return Die gewonnene oder verlorene Punktzahl eines Doppelspielers.
 	 */
-	protected static int getPointsForPlayer(boolean winner, Player dbPlayer, Match dbMatch, MatchDto matchDto) {
+	protected static int getPointsForDoublePlayer(Player dbPlayer, DoubleMatch dbMatch, boolean winner) {
 		int points = 0;
-		if (matchDto.getMatchType() == MatchType.SINGLE) {
-			int tempPoints = 0;
 
-			final PlayerSingleStats dbCurrentPlayerStats = dbPlayer.getPlayerSingleStats();
-			PlayerSingleStats dbPlayer2Stats = null;
-			if (matchDto.getTeam1Dto().getPlayer1().getId() == dbPlayer.getKey().getId()) {
-				dbPlayer2Stats = ((SingleMatch) dbMatch).getPlayer1().getPlayerSingleStats();
+		int tempPoints1 = 0;
+		int tempPoints2 = 0;
 
-				tempPoints = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats);
-			} else {
-				dbPlayer2Stats = ((SingleMatch) dbMatch).getPlayer2().getPlayerSingleStats();
+		final PlayerDoubleStats dbCurrentPlayerStats = dbPlayer.getPlayerDoubleStats();
+		PlayerDoubleStats dbPlayer1Stats = null;
+		PlayerDoubleStats dbPlayer2Stats = null;
+		if (dbMatch.getTeam1().getPlayer1() == dbPlayer || dbMatch.getTeam1().getPlayer2() == dbPlayer) {
+			dbPlayer1Stats = ((DoubleMatch) dbMatch).getTeam2().getPlayer1().getPlayerDoubleStats();
+			dbPlayer2Stats = ((DoubleMatch) dbMatch).getTeam2().getPlayer2().getPlayerDoubleStats();
 
-				tempPoints = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats);
-			}
-			points = tempPoints;
-		} else {
-			int tempPoints1 = 0;
-			int tempPoints2 = 0;
+			tempPoints1 = getPoints(dbMatch, dbCurrentPlayerStats, dbPlayer1Stats, winner);
+			tempPoints2 = getPoints(dbMatch, dbCurrentPlayerStats, dbPlayer2Stats, winner);
+		} else if (dbMatch.getTeam2().getPlayer1() == dbPlayer || dbMatch.getTeam2().getPlayer2() == dbPlayer) {
+			dbPlayer1Stats = ((DoubleMatch) dbMatch).getTeam1().getPlayer1().getPlayerDoubleStats();
+			dbPlayer2Stats = ((DoubleMatch) dbMatch).getTeam1().getPlayer2().getPlayerDoubleStats();
 
-			final PlayerDoubleStats dbCurrentPlayerStats = dbPlayer.getPlayerDoubleStats();
-			PlayerDoubleStats dbPlayer1Stats = null;
-			PlayerDoubleStats dbPlayer2Stats = null;
-			if (matchDto.getTeam1Dto().getPlayer1().getId() == dbPlayer.getKey().getId()
-					|| matchDto.getTeam1Dto().getPlayer2().getId() == dbPlayer.getKey().getId()) {
-				dbPlayer1Stats = ((DoubleMatch) dbMatch).getTeam2().getPlayer1().getPlayerDoubleStats();
-				dbPlayer2Stats = ((DoubleMatch) dbMatch).getTeam2().getPlayer2().getPlayerDoubleStats();
-
-				tempPoints1 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer1Stats);
-				tempPoints2 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats);
-			} else {
-				dbPlayer1Stats = ((DoubleMatch) dbMatch).getTeam1().getPlayer1().getPlayerDoubleStats();
-				dbPlayer2Stats = ((DoubleMatch) dbMatch).getTeam1().getPlayer2().getPlayerDoubleStats();
-
-				tempPoints1 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer1Stats);
-				tempPoints2 = getPoints(winner, matchDto, dbCurrentPlayerStats, dbPlayer2Stats);
-			}
-			points = (int) Math.round((double) (tempPoints1 + tempPoints2) / 2);
+			tempPoints1 = getPoints(dbMatch, dbCurrentPlayerStats, dbPlayer1Stats, winner);
+			tempPoints2 = getPoints(dbMatch, dbCurrentPlayerStats, dbPlayer2Stats, winner);
 		}
+		points = (int) Math.round((double) (tempPoints1 + tempPoints2) / 2);
+
 		return points;
 	}
 
@@ -423,23 +410,22 @@ public class MatchServiceHelper {
 	 * @param winner <code>true</code> falls das Team gewonnen hat, andernfalls <code>false</code>.
 	 * @param dbTeam Das Team.
 	 * @param dbMatch Das Objekt-Datenklassen Spiel.
-	 * @param matchDto Das Spiel.
 	 * @return Die gewonnene oder verlorene Punktzahl eines Teams.
 	 */
-	protected static int getPointsForTeam(boolean winner, Team dbTeam, Match dbMatch, MatchDto matchDto) {
+	protected static int getPointsForTeam(boolean winner, Team dbTeam, DoubleMatch dbMatch) {
 		int points = 0;
 		int tempPoints = 0;
 
 		final TeamStats dbCurrentTeamStats = (TeamStats) dbTeam.getTeamStats();
 		TeamStats dbTeam2Stats = null;
-		if (matchDto.getTeam1Dto().getId() == dbTeam.getKey().getId()) {
+		if (dbMatch.getTeam1() == dbTeam) {
 			dbTeam2Stats = ((DoubleMatch) dbMatch).getTeam2().getTeamStats();
 
-			tempPoints = getPoints(winner, matchDto, dbCurrentTeamStats, dbTeam2Stats);
-		} else {
+			tempPoints = getPoints(dbMatch, dbCurrentTeamStats, dbTeam2Stats, winner);
+		} else if (dbMatch.getTeam2() == dbTeam) {
 			dbTeam2Stats = ((DoubleMatch) dbMatch).getTeam1().getTeamStats();
 
-			tempPoints = getPoints(winner, matchDto, dbCurrentTeamStats, dbTeam2Stats);
+			tempPoints = getPoints(dbMatch, dbCurrentTeamStats, dbTeam2Stats, winner);
 		}
 		points = tempPoints;
 
@@ -449,15 +435,15 @@ public class MatchServiceHelper {
 	/**
 	 * Liefert die gewonnene oder verlorene Punktzahl eines Teams bzw. Spielers.
 	 * 
-	 * @param winner <code>true</code> falls das Team bzw. Spieler gewonnen hat, andernfalls <code>false</code>.
-	 * @param matchDto Das Spiel.
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
 	 * @param db1Stats Die Teamspiel-, Doppelspiel- oder Einzelspiel-Statistik des ersten Teams bzw. Spielers.
 	 * @param db2Stats Die Teamspiel-, Doppelspiel- oder Einzelspiel-Statistik des zweiten Teams bzw. Spielers.
+	 * @param winner <code>true</code> falls das Team bzw. Spieler gewonnen hat, andernfalls <code>false</code>.
 	 * @return Die gewonnene oder verlorene Punktzahl eines Teams bzw Spielers.
 	 */
-	private static int getPoints(boolean winner, MatchDto matchDto, Stats db1Stats, Stats db2Stats) {
+	private static int getPoints(Match dbMatch, Stats db1Stats, Stats db2Stats, boolean winner) {
 		final double weightedPoints = calculateWeightedPoints(db1Stats, db2Stats);
-		final int matchSets = matchDto.getMatchSetsDto().getMatchSetsTeam1().size();
+		final int matchSets = dbMatch.getMatchSets().getMatchSetsTeam1().size();
 
 		int multiplicatorPoints = (int) weightedPoints;
 		if (winner && matchSets == 2) {
