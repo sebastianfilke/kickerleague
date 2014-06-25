@@ -12,6 +12,13 @@ import de.kickerapp.shared.dto.PlayerDto;
  */
 public interface ChartServiceAsync {
 
+	/**
+	 * Liefert die Torstatistik für den gewählten Spieler.
+	 * 
+	 * @param playerDto Der Spieler für welchen das Diagramm angezeigt werden soll.
+	 * @param callback Der Callback-Handler.
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 */
 	public void getSinglePlayerGoalChart(PlayerDto playerDto, AsyncCallback<ChartDto> callback) throws IllegalArgumentException;
 
 }
