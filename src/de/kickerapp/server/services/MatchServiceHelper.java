@@ -23,6 +23,7 @@ import de.kickerapp.shared.common.Tendency;
 import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.MatchPointsDto;
 import de.kickerapp.shared.dto.MatchSetDto;
+import de.kickerapp.shared.dto.TeamDto;
 
 /**
  * Hilfsklasse zur Verarbeitung von Spielen im Klienten.
@@ -107,44 +108,62 @@ public class MatchServiceHelper {
 	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbMatch Die Objekt-Datenklasse.
-	 * @param dbPlayers Die Objekt-Datenklasse-Liste aller Spieler.
-	 * @param dbTeams Die Objekt-Datenklasse-Liste aller Teams.
 	 * @return Die Client-Datenklasse.
 	 */
-	protected static MatchDto createDtoMatch(Match dbMatch, List<Player> dbPlayers, List<Team> dbTeams) {
+	protected static MatchDto createSingleMatchDto(SingleMatch dbMatch) {
 		final MatchDto matchDto = new MatchDto();
 		matchDto.setId(dbMatch.getKey().getId());
 		matchDto.setMatchNumber(dbMatch.getMatchNumber());
 		matchDto.setMatchDate(dbMatch.getMatchDate());
-		// matchDto.setMatchType(dbMatch.getMatchType());
+		matchDto.setMatchType(MatchType.SINGLE);
 
 		final SimpleDateFormat dateFormat = new SimpleDateFormat("'Spiele vom' EEEE, 'den' dd.MM.yyyy", Locale.GERMAN);
 		matchDto.setGroupDate(dateFormat.format(dbMatch.getMatchDate()));
 
-		// if (dbMatch.getMatchType() == MatchType.SINGLE) {
-		// final Player team1Player1 = PlayerServiceHelper.getPlayerById(dbMatch.getTeam1().getKey().getId(), dbPlayers);
-		// matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(team1Player1)));
-		//
-		// final Player team2Player2 = PlayerServiceHelper.getPlayerById(dbMatch.getTeam2().getKey().getId(), dbPlayers);
-		// matchDto.setTeam2Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(team2Player2)));
-		// } else {
-		// final Team team1 = TeamServiceHelper.getTeamById(dbMatch.getTeam1().getKey().getId(), dbTeams);
-		//
-		// final Player team1Player1 = PlayerServiceHelper.getPlayerById((Long) team1.getPlayers().toArray()[0], dbPlayers);
-		// final Player team1Player2 = PlayerServiceHelper.getPlayerById((Long) team1.getPlayers().toArray()[1], dbPlayers);
-		//
-		// matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(team1Player1),
-		// PlayerServiceHelper.createPlayerDto(team1Player2)));
-		//
-		// final Team team2 = TeamServiceHelper.getTeamById(dbMatch.getTeam2().getKey().getId(), dbTeams);
-		//
-		// final Player team2Player1 = PlayerServiceHelper.getPlayerById((Long) team2.getPlayers().toArray()[0], dbPlayers);
-		// final Player team2Player2 = PlayerServiceHelper.getPlayerById((Long) team2.getPlayers().toArray()[1], dbPlayers);
-		//
-		// matchDto.setTeam2Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(team2Player1),
-		// PlayerServiceHelper.createPlayerDto(team2Player2)));
-		// }
-		matchDto.setMatchCommentDto(MatchCommentHelper.createMatchCommentDto(dbMatch.getMatchComment()));
+		matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(dbMatch.getPlayer1())));
+		matchDto.setTeam2Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(dbMatch.getPlayer2())));
+
+		if (dbMatch.getMatchComment() != null) {
+			matchDto.setMatchCommentDto(MatchCommentHelper.createMatchCommentDto(dbMatch.getMatchComment()));
+		}
+
+		final MatchPointsDto pointsDto = new MatchPointsDto();
+		pointsDto.setMatchPointsTeam1(dbMatch.getMatchPoints().getMatchPointsTeam1());
+		pointsDto.setMatchPointsTeam2(dbMatch.getMatchPoints().getMatchPointsTeam2());
+		matchDto.setMatchPointsDto(pointsDto);
+
+		final MatchSetDto setDto = new MatchSetDto();
+		setDto.setMatchSetsTeam1(dbMatch.getMatchSets().getMatchSetsTeam1());
+		setDto.setMatchSetsTeam2(dbMatch.getMatchSets().getMatchSetsTeam2());
+		matchDto.setMatchSetsDto(setDto);
+
+		return matchDto;
+	}
+
+	/**
+	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
+	 * 
+	 * @param dbMatch Die Objekt-Datenklasse.
+	 * @return Die Client-Datenklasse.
+	 */
+	protected static MatchDto createDoubleMatchDto(DoubleMatch dbMatch) {
+		final MatchDto matchDto = new MatchDto();
+		matchDto.setId(dbMatch.getKey().getId());
+		matchDto.setMatchNumber(dbMatch.getMatchNumber());
+		matchDto.setMatchDate(dbMatch.getMatchDate());
+		matchDto.setMatchType(MatchType.DOUBLE);
+
+		final SimpleDateFormat dateFormat = new SimpleDateFormat("'Spiele vom' EEEE, 'den' dd.MM.yyyy", Locale.GERMAN);
+		matchDto.setGroupDate(dateFormat.format(dbMatch.getMatchDate()));
+
+		matchDto.setTeam1Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(dbMatch.getTeam1().getPlayer1()), PlayerServiceHelper.createPlayerDto(dbMatch
+				.getTeam1().getPlayer2())));
+		matchDto.setTeam2Dto(new TeamDto(PlayerServiceHelper.createPlayerDto(dbMatch.getTeam2().getPlayer1()), PlayerServiceHelper.createPlayerDto(dbMatch
+				.getTeam2().getPlayer2())));
+
+		if (dbMatch.getMatchComment() != null) {
+			matchDto.setMatchCommentDto(MatchCommentHelper.createMatchCommentDto(dbMatch.getMatchComment()));
+		}
 
 		final MatchPointsDto pointsDto = new MatchPointsDto();
 		pointsDto.setMatchPointsTeam1(dbMatch.getMatchPoints().getMatchPointsTeam1());
