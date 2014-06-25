@@ -1,6 +1,5 @@
 package de.kickerapp.server.services;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,10 +39,7 @@ public class MatchServiceHelper {
 	 * 
 	 * @author Sebastian Filke
 	 */
-	protected static class StatsComparator implements Comparator<Stats>, Serializable {
-
-		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = -8784066470788748810L;
+	protected static class StatsComparator implements Comparator<Stats> {
 
 		/**
 		 * {@inheritDoc}
@@ -71,16 +67,13 @@ public class MatchServiceHelper {
 	 * 
 	 * @author Sebastian Filke
 	 */
-	protected static class MatchDescendingComparator implements Comparator<Match>, Serializable {
-
-		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = 3150940865430023409L;
+	protected static class MatchDescendingComparator implements Comparator<MatchDto> {
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public int compare(Match m1, Match m2) {
+		public int compare(MatchDto m1, MatchDto m2) {
 			return m2.getMatchNumber().compareTo(m1.getMatchNumber());
 		}
 	}
@@ -90,10 +83,7 @@ public class MatchServiceHelper {
 	 * 
 	 * @author Sebastian Filke
 	 */
-	protected static class MatchAscendingComparator implements Comparator<Match>, Serializable {
-
-		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = 3150940865430023409L;
+	protected static class MatchAscendingComparator implements Comparator<Match> {
 
 		/**
 		 * {@inheritDoc}
@@ -112,7 +102,7 @@ public class MatchServiceHelper {
 	 */
 	protected static MatchDto createSingleMatchDto(SingleMatch dbMatch) {
 		final MatchDto matchDto = new MatchDto();
-		matchDto.setId(dbMatch.getKey().getId());
+		matchDto.setId(dbMatch.getMatchNumber());
 		matchDto.setMatchNumber(dbMatch.getMatchNumber());
 		matchDto.setMatchDate(dbMatch.getMatchDate());
 		matchDto.setMatchType(MatchType.SINGLE);
@@ -148,7 +138,7 @@ public class MatchServiceHelper {
 	 */
 	protected static MatchDto createDoubleMatchDto(DoubleMatch dbMatch) {
 		final MatchDto matchDto = new MatchDto();
-		matchDto.setId(dbMatch.getKey().getId());
+		matchDto.setId(dbMatch.getMatchNumber());
 		matchDto.setMatchNumber(dbMatch.getMatchNumber());
 		matchDto.setMatchDate(dbMatch.getMatchDate());
 		matchDto.setMatchType(MatchType.DOUBLE);

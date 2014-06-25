@@ -1,6 +1,5 @@
 package de.kickerapp.server.dao;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -152,10 +151,7 @@ public class Match extends BaseDao {
 	 * @author Sebastian Filke
 	 */
 	@PersistenceCapable(detachable = "true")
-	public static class MatchPoints implements Serializable {
-
-		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = 8275268972473429142L;
+	public static class MatchPoints {
 
 		/** Die Punkte des ersten Teams bzw. Spielers. */
 		@Persistent
@@ -255,10 +251,7 @@ public class Match extends BaseDao {
 	 * @author Sebastian Filke
 	 */
 	@PersistenceCapable(detachable = "true")
-	public static class MatchSets implements Serializable {
-
-		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = 5964399211443702907L;
+	public static class MatchSets {
 
 		/** Die Sätze des ersten Teams bzw. Spielers. */
 		@Persistent

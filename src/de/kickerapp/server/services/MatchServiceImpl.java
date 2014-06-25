@@ -70,6 +70,8 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		PMFactory.persistObject(dbMatch);
 		MatchServiceHelper.updateTable(matchDto);
 
+		matchDto.setId(dbMatch.getKey().getId());
+
 		return matchDto;
 	}
 
@@ -119,6 +121,8 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 
 		PMFactory.persistObject(dbMatch);
 		MatchServiceHelper.updateTable(matchDto);
+
+		matchDto.setId(dbMatch.getKey().getId());
 
 		return matchDto;
 	}
@@ -323,24 +327,24 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 */
 	@Override
 	public ArrayList<MatchDto> getAllMatches() throws IllegalArgumentException {
-		final ArrayList<MatchDto> matches = new ArrayList<MatchDto>();
+		final ArrayList<MatchDto> matchDtos = new ArrayList<MatchDto>();
 
 		final List<SingleMatch> dbSingleMatches = PMFactory.getList(SingleMatch.class, MatchPlan.COMMENT, MatchPlan.BOTHPLAYERS);
 		final List<DoubleMatch> dbDoubleMatches = PMFactory.getList(DoubleMatch.class, MatchPlan.COMMENT, MatchPlan.BOTHTEAMS, TeamPlan.BOTHPLAYERS);
 
-		Collections.sort(dbSingleMatches, new MatchDescendingComparator());
-		Collections.sort(dbDoubleMatches, new MatchDescendingComparator());
 		for (SingleMatch dbMatch : dbSingleMatches) {
 			final MatchDto matchDto = MatchServiceHelper.createSingleMatchDto(dbMatch);
 
-			matches.add(matchDto);
+			matchDtos.add(matchDto);
 		}
 		for (DoubleMatch dbMatch : dbDoubleMatches) {
 			final MatchDto matchDto = MatchServiceHelper.createDoubleMatchDto(dbMatch);
 
-			matches.add(matchDto);
+			matchDtos.add(matchDto);
 		}
-		return matches;
+		Collections.sort(matchDtos, new MatchDescendingComparator());
+
+		return matchDtos;
 	}
 
 }

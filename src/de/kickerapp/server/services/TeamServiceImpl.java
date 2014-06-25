@@ -38,6 +38,7 @@ public class TeamServiceImpl extends RemoteServiceServlet implements TeamService
 			teamDtos.add(teamDto);
 		}
 		Collections.sort(teamDtos, new TeamTableComparator());
+
 		return teamDtos;
 	}
 

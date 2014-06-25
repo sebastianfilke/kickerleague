@@ -261,8 +261,8 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	}
 
 	private ToggleButton createTbtnWinChart() {
-		tbtnWinChart = new ToggleButton("Siegstatistik");
-		tbtnWinChart.setToolTip("Zeigt die Siegstatistik für den aktuell gewählten Spieler");
+		tbtnWinChart = new ToggleButton("Spielstatistik");
+		tbtnWinChart.setToolTip("Zeigt die Spielstatistik für den aktuell gewählten Spieler");
 		tbtnWinChart.setIcon(KickerIcons.ICON.chart_bar());
 		tbtnWinChart.setId("singleWinsChart");
 		tbtnWinChart.setAllowDepress(false);

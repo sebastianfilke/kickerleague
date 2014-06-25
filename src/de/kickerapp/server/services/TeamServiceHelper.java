@@ -1,6 +1,5 @@
 package de.kickerapp.server.services;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -31,10 +30,7 @@ public class TeamServiceHelper {
 	 * 
 	 * @author Sebastian Filke
 	 */
-	protected static class TeamTableComparator implements Comparator<TeamDto>, Serializable {
-
-		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = -3174540122634747743L;
+	protected static class TeamTableComparator implements Comparator<TeamDto> {
 
 		/**
 		 * {@inheritDoc}

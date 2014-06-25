@@ -1,8 +1,6 @@
 package de.kickerapp.server.services;
 
-import java.io.Serializable;
 import java.util.Comparator;
-import java.util.List;
 
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.PlayerDoubleStats;
@@ -23,10 +21,7 @@ public class PlayerServiceHelper {
 	 * 
 	 * @author Sebastian Filke
 	 */
-	protected static class PlayerNameComparator implements Comparator<PlayerDto>, Serializable {
-
-		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = 2081602779517954979L;
+	protected static class PlayerNameComparator implements Comparator<PlayerDto> {
 
 		/**
 		 * {@inheritDoc}
@@ -42,10 +37,7 @@ public class PlayerServiceHelper {
 	 * 
 	 * @author Sebastian Filke
 	 */
-	protected static class PlayerTableComparator implements Comparator<PlayerDto>, Serializable {
-
-		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = 7262644006482460970L;
+	protected static class PlayerTableComparator implements Comparator<PlayerDto> {
 
 		/**
 		 * {@inheritDoc}
@@ -75,24 +67,6 @@ public class PlayerServiceHelper {
 	}
 
 	/**
-	 * Liefert den Spieler anhand der Db-Id.
-	 * 
-	 * @param id Die Db-Id des Spielers.
-	 * @param dbPlayers Die Objekt-Datenklasse-Liste aller Spieler.
-	 * @return Der Spieler.
-	 */
-	protected static Player getPlayerById(Long id, List<Player> dbPlayers) {
-		Player dbPlayer = null;
-		for (Player dbCurrentPlayer : dbPlayers) {
-			if (dbCurrentPlayer.getKey().getId() == id) {
-				dbPlayer = dbCurrentPlayer;
-				break;
-			}
-		}
-		return dbPlayer;
-	}
-
-	/**
 	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbPlayer Die Objekt-Datenklasse.
@@ -116,7 +90,7 @@ public class PlayerServiceHelper {
 	 */
 	protected static PlayerDto createPlayerDtoWithSingleStats(Player dbPlayer) {
 		final PlayerDto playerDto = createPlayerDto(dbPlayer);
-		setPlayerSingleStats(dbPlayer, playerDto);
+		playerDto.setPlayerSingleStatsDto(createPlayerSingleStats(dbPlayer));
 
 		return playerDto;
 	}
@@ -129,7 +103,7 @@ public class PlayerServiceHelper {
 	 */
 	protected static PlayerDto createPlayerDtoWithDoubleStats(Player dbPlayer) {
 		final PlayerDto playerDto = createPlayerDto(dbPlayer);
-		setPlayerDoubleStats(dbPlayer, playerDto);
+		playerDto.setPlayerDoubleStatsDto(createPlayerDoubleStats(dbPlayer));
 
 		return playerDto;
 	}
@@ -142,19 +116,19 @@ public class PlayerServiceHelper {
 	 */
 	protected static PlayerDto createPlayerDtoWithAllStats(Player dbPlayer) {
 		final PlayerDto playerDto = createPlayerDto(dbPlayer);
-		setPlayerSingleStats(dbPlayer, playerDto);
-		setPlayerDoubleStats(dbPlayer, playerDto);
+		playerDto.setPlayerSingleStatsDto(createPlayerSingleStats(dbPlayer));
+		playerDto.setPlayerDoubleStatsDto(createPlayerDoubleStats(dbPlayer));
 
 		return playerDto;
 	}
 
 	/**
-	 * Setzt die die Einzelspiel-Statistik eines Spielers.
+	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbPlayer Die Objekt-Datenklasse.
-	 * @param playerDto Die Client-Datenklasse.
+	 * @return Die Client-Datenklasse.
 	 */
-	private static void setPlayerSingleStats(Player dbPlayer, final PlayerDto playerDto) {
+	private static PlayerSingleStatsDto createPlayerSingleStats(Player dbPlayer) {
 		final PlayerSingleStats dbPlayerSingleStats = dbPlayer.getPlayerSingleStats();
 
 		final PlayerSingleStatsDto playerSingleStatsDto = new PlayerSingleStatsDto();
@@ -171,16 +145,16 @@ public class PlayerServiceHelper {
 		playerSingleStatsDto.setPoints(dbPlayerSingleStats.getPoints());
 		playerSingleStatsDto.setTendency(dbPlayerSingleStats.getTendency());
 
-		playerDto.setPlayerSingleStatsDto(playerSingleStatsDto);
+		return playerSingleStatsDto;
 	}
 
 	/**
-	 * Setzt die die Doppelspiel-Statistik eines Spielers.
+	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbPlayer Die Objekt-Datenklasse.
-	 * @param playerDto Die Client-Datenklasse.
+	 * @return Die Client-Datenklasse.
 	 */
-	private static void setPlayerDoubleStats(Player dbPlayer, PlayerDto playerDto) {
+	private static PlayerDoubleStatsDto createPlayerDoubleStats(Player dbPlayer) {
 		final PlayerDoubleStats dbPlayerDoubleStats = dbPlayer.getPlayerDoubleStats();
 
 		final PlayerDoubleStatsDto playerDoubleStatsDto = new PlayerDoubleStatsDto();
@@ -197,7 +171,7 @@ public class PlayerServiceHelper {
 		playerDoubleStatsDto.setPoints(dbPlayerDoubleStats.getPoints());
 		playerDoubleStatsDto.setTendency(dbPlayerDoubleStats.getTendency());
 
-		playerDto.setPlayerDoubleStatsDto(playerDoubleStatsDto);
+		return playerDoubleStatsDto;
 	}
 
 }

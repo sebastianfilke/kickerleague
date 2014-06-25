@@ -96,6 +96,7 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 			playerDtos.add(player);
 		}
 		Collections.sort(playerDtos, new PlayerNameComparator());
+
 		return playerDtos;
 	}
 
