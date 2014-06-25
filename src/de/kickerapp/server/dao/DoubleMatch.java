@@ -1,7 +1,6 @@
 package de.kickerapp.server.dao;
 
 import javax.jdo.annotations.FetchGroup;
-import javax.jdo.annotations.FetchGroups;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
@@ -15,7 +14,7 @@ import de.kickerapp.server.dao.fetchplans.MatchPlan;
  * @author Sebastian Filke
  */
 @PersistenceCapable(detachable = "true")
-@FetchGroups({ @FetchGroup(name = MatchPlan.BOTHTEAMS, members = { @Persistent(name = "team1"), @Persistent(name = "team2") }) })
+@FetchGroup(name = MatchPlan.BOTHTEAMS, members = { @Persistent(name = "team1"), @Persistent(name = "team2") })
 public class DoubleMatch extends Match {
 
 	/** Das erste Team. */

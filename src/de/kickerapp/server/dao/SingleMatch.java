@@ -1,7 +1,6 @@
 package de.kickerapp.server.dao;
 
 import javax.jdo.annotations.FetchGroup;
-import javax.jdo.annotations.FetchGroups;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
@@ -15,7 +14,7 @@ import de.kickerapp.server.dao.fetchplans.MatchPlan;
  * @author Sebastian Filke
  */
 @PersistenceCapable(detachable = "true")
-@FetchGroups({ @FetchGroup(name = MatchPlan.BOTHPLAYERS, members = { @Persistent(name = "player1"), @Persistent(name = "player2") }) })
+@FetchGroup(name = MatchPlan.BOTHPLAYERS, members = { @Persistent(name = "player1"), @Persistent(name = "player2") })
 public class SingleMatch extends Match {
 
 	/** Der erste Spieler. */
