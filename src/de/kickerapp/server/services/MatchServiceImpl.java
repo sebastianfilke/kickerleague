@@ -21,6 +21,7 @@ import de.kickerapp.server.dao.Team;
 import de.kickerapp.server.dao.TeamStats;
 import de.kickerapp.server.dao.fetchplans.MatchPlan;
 import de.kickerapp.server.dao.fetchplans.PlayerPlan;
+import de.kickerapp.server.dao.fetchplans.TeamPlan;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.persistence.queries.MatchBean;
 import de.kickerapp.server.services.MatchServiceHelper.MatchDescendingComparator;
@@ -92,17 +93,13 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 				PlayerPlan.TEAMS);
 		final Player dbTeam1Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam1Dto().getPlayer2().getId(), PlayerPlan.PLAYERDOUBLESTATS,
 				PlayerPlan.TEAMS);
-
 		final Team dbTeam1 = TeamServiceHelper.getTeam(dbTeam1Player1, dbTeam1Player2);
-		matchDto.getTeam1Dto().setId(dbTeam1.getKey().getId());
 
 		final Player dbTeam2Player1 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer1().getId(), PlayerPlan.PLAYERDOUBLESTATS,
 				PlayerPlan.TEAMS);
 		final Player dbTeam2Player2 = PMFactory.getObjectById(Player.class, matchDto.getTeam2Dto().getPlayer2().getId(), PlayerPlan.PLAYERDOUBLESTATS,
 				PlayerPlan.TEAMS);
-
 		final Team dbTeam2 = TeamServiceHelper.getTeam(dbTeam2Player1, dbTeam2Player2);
-		matchDto.getTeam2Dto().setId(dbTeam2.getKey().getId());
 
 		dbMatch.setTeam1(dbTeam1);
 		dbMatch.setTeam2(dbTeam2);
@@ -328,13 +325,18 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	public ArrayList<MatchDto> getAllMatches() throws IllegalArgumentException {
 		final ArrayList<MatchDto> matches = new ArrayList<MatchDto>();
 
-		final List<Match> dbMatches = PMFactory.getList(Match.class, MatchPlan.COMMENT);
-		final List<Player> dbPlayers = PMFactory.getList(Player.class);
-		final List<Team> dbTeams = PMFactory.getList(Team.class);
+		final List<SingleMatch> dbSingleMatches = PMFactory.getList(SingleMatch.class, MatchPlan.COMMENT, MatchPlan.BOTHPLAYERS);
+		final List<DoubleMatch> dbDoubleMatches = PMFactory.getList(DoubleMatch.class, MatchPlan.COMMENT, MatchPlan.BOTHTEAMS, TeamPlan.BOTHPLAYERS);
 
-		Collections.sort(dbMatches, new MatchDescendingComparator());
-		for (Match dbMatch : dbMatches) {
-			final MatchDto matchDto = MatchServiceHelper.createDtoMatch(dbMatch, dbPlayers, dbTeams);
+		Collections.sort(dbSingleMatches, new MatchDescendingComparator());
+		Collections.sort(dbDoubleMatches, new MatchDescendingComparator());
+		for (SingleMatch dbMatch : dbSingleMatches) {
+			final MatchDto matchDto = MatchServiceHelper.createSingleMatchDto(dbMatch);
+
+			matches.add(matchDto);
+		}
+		for (DoubleMatch dbMatch : dbDoubleMatches) {
+			final MatchDto matchDto = MatchServiceHelper.createDoubleMatchDto(dbMatch);
 
 			matches.add(matchDto);
 		}

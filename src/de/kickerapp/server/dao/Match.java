@@ -221,6 +221,32 @@ public class Match extends BaseDao {
 			this.matchPointsTeam2 = matchPointsTeam2;
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String toString() {
+			final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+			sb.append(" [");
+			sb.append("matchPointsTeam1=");
+			for (int i = 0; i < matchPointsTeam1.size(); i++) {
+				sb.append(matchPointsTeam1.get(i));
+				if (i < matchPointsTeam1.size() - 1) {
+					sb.append(",");
+				}
+			}
+			sb.append(",").append("matchPointsTeam2=");
+			for (int i = 0; i < matchPointsTeam2.size(); i++) {
+				sb.append(matchPointsTeam2.get(i));
+				if (i < matchPointsTeam2.size() - 1) {
+					sb.append(",");
+				}
+			}
+			sb.append("]");
+
+			return sb.toString();
+		}
+
 	}
 
 	/**
@@ -296,6 +322,32 @@ public class Match extends BaseDao {
 		 */
 		public void setMatchSetsTeam2(ArrayList<Integer> matchSetsTeam2) {
 			this.matchSetsTeam2 = matchSetsTeam2;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String toString() {
+			final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+			sb.append(" [");
+			sb.append("matchSetsTeam1=");
+			for (int i = 0; i < matchSetsTeam1.size(); i++) {
+				sb.append(matchSetsTeam1.get(i));
+				if (i < matchSetsTeam1.size() - 1) {
+					sb.append(",");
+				}
+			}
+			sb.append(",").append("matchSetsTeam2=");
+			for (int i = 0; i < matchSetsTeam2.size(); i++) {
+				sb.append(matchSetsTeam2.get(i));
+				if (i < matchSetsTeam2.size() - 1) {
+					sb.append(",");
+				}
+			}
+			sb.append("]");
+
+			return sb.toString();
 		}
 
 	}
