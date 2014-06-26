@@ -3,11 +3,9 @@ package de.kickerapp.server.persistence.queries;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
-
 import de.kickerapp.server.dao.DoubleMatch;
 import de.kickerapp.server.dao.SingleMatch;
+import de.kickerapp.server.dao.fetchplans.MatchPlan;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.dto.PlayerDto;
 
@@ -41,59 +39,21 @@ public final class MatchBean {
 	public static List<SingleMatch> getSingleMatchesForPlayer(final PlayerDto playerDto) {
 		final List<SingleMatch> list = new ArrayList<SingleMatch>();
 
-		list.addAll(getSingleMatchesForPlayer1(playerDto));
-		list.addAll(getSingleMatchesForPlayer2(playerDto));
+		final QueryContainer conPlayer1 = new QueryContainer();
+		conPlayer1.setPlans(MatchPlan.BOTHPLAYERS);
+		conPlayer1.setQuery("player1 == :id");
+		conPlayer1.setParameter(playerDto.getId());
+		final List<SingleMatch> singleMatchesPlayer1 = PMFactory.getList(SingleMatch.class, conPlayer1);
 
-		return list;
-	}
+		final QueryContainer conPlayer2 = new QueryContainer();
+		conPlayer2.setPlans(MatchPlan.BOTHPLAYERS);
+		conPlayer2.setQuery("player2 == :id");
+		conPlayer2.setParameter(playerDto.getId());
+		final List<SingleMatch> singleMatchesPlayer2 = PMFactory.getList(SingleMatch.class, conPlayer2);
 
-	/**
-	 * Liefert sämtliche Einzelspiele für den übergebenen Spieler, falls es sich um den ersten Spieler handelt.
-	 * 
-	 * @param playerDto Der Spieler.
-	 * @return Die Einzelspiele.
-	 */
-	@SuppressWarnings("unchecked")
-	private static List<SingleMatch> getSingleMatchesForPlayer1(final PlayerDto playerDto) {
-		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
-		// pm.getFetchPlan().addGroup(MatchPlan.BOTHPLAYERS);
+		list.addAll(singleMatchesPlayer1);
+		list.addAll(singleMatchesPlayer2);
 
-		final Query query = pm.newQuery(SingleMatch.class);
-		query.setFilter("player1 == :id");
-
-		List<SingleMatch> list = new ArrayList<SingleMatch>();
-		try {
-			list = (List<SingleMatch>) query.execute(playerDto.getId());
-			list = (List<SingleMatch>) pm.detachCopyAll(list);
-		} finally {
-			query.closeAll();
-			pm.close();
-		}
-		return list;
-	}
-
-	/**
-	 * Liefert sämtliche Einzelspiele für den übergebenen Spieler, falls es sich um den zweiten Spieler handelt.
-	 * 
-	 * @param playerDto Der Spieler.
-	 * @return Die Einzelspiele.
-	 */
-	@SuppressWarnings("unchecked")
-	private static List<SingleMatch> getSingleMatchesForPlayer2(final PlayerDto playerDto) {
-		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
-		// pm.getFetchPlan().addGroup(MatchPlan.BOTHPLAYERS);
-
-		final Query query = pm.newQuery(SingleMatch.class);
-		query.setFilter("player2 == :id");
-
-		List<SingleMatch> list = new ArrayList<SingleMatch>();
-		try {
-			list = (List<SingleMatch>) query.execute(playerDto.getId());
-			list = (List<SingleMatch>) pm.detachCopyAll(list);
-		} finally {
-			query.closeAll();
-			pm.close();
-		}
 		return list;
 	}
 

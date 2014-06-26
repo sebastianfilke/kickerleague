@@ -10,6 +10,7 @@ import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
 import de.kickerapp.server.dao.BaseDao;
+import de.kickerapp.server.persistence.queries.QueryContainer;
 
 /**
  * Singeltonklasse zum Halten der Instanz des {@link PersistenceManager}s.
@@ -56,6 +57,35 @@ public final class PMFactory {
 		List<T> list = new ArrayList<T>();
 		try {
 			list = (List<T>) query.execute();
+			list = (List<T>) pm.detachCopyAll(list);
+		} finally {
+			query.closeAll();
+			pm.close();
+		}
+		return list;
+	}
+
+	/**
+	 * Liefert sämtliche Instanzen für die übergebene Klasse.
+	 * 
+	 * @param clazz Die Klasse für welche die Instanzen gesucht werden sollen.
+	 * @param container Der Container zum Abfragen der Instanzen.
+	 * @param <T> Der Typ der Klasse.
+	 * @return Die Instanzen.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends BaseDao> List<T> getList(final Class<T> clazz, final QueryContainer container) {
+		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
+		for (String plan : container.getPlans()) {
+			pm.getFetchPlan().addGroup(plan);
+		}
+
+		final Query query = pm.newQuery(clazz);
+		query.setFilter(container.getQuery());
+
+		List<T> list = new ArrayList<T>();
+		try {
+			list = (List<T>) query.execute(container.getParameter());
 			list = (List<T>) pm.detachCopyAll(list);
 		} finally {
 			query.closeAll();
