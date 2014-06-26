@@ -14,7 +14,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import de.kickerapp.client.services.ChartService;
 import de.kickerapp.server.dao.Match;
 import de.kickerapp.server.dao.SingleMatch;
-import de.kickerapp.server.persistence.PMFactory;
+import de.kickerapp.server.persistence.queries.MatchBean;
 import de.kickerapp.server.services.MatchServiceHelper.MatchAscendingComparator;
 import de.kickerapp.shared.dto.ChartDataDto;
 import de.kickerapp.shared.dto.ChartDto;
@@ -39,7 +39,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	 */
 	@Override
 	public ChartDto getSinglePlayerGoalChart(PlayerDto playerDto) throws IllegalArgumentException {
-		final List<SingleMatch> dbSingleMatches = PMFactory.getList(SingleMatch.class);
+		final List<SingleMatch> dbSingleMatches = MatchBean.getSingleMatchesForPlayer(playerDto);
 		Collections.sort(dbSingleMatches, new MatchAscendingComparator());
 
 		final HashMap<Integer, ChartDataDto> chartData = new HashMap<Integer, ChartDataDto>();
