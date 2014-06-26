@@ -151,6 +151,30 @@ public final class PMFactory {
 	}
 
 	/**
+	 * Liefert die Anzahl der Instanzen für die übergebene Klasse.
+	 * 
+	 * @param clazzName Der Name der Klasse für welche die Anzahl der Instanzen geliefert werden soll.
+	 * @param <T> Der Typ der Klasse.
+	 * @return Die Anzahl der Instanzen.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends BaseDao> int getEntitySize(final String clazzName) {
+		final PersistenceManager pm = get().getPersistenceManager();
+
+		final Query query = pm.newQuery("select key from " + clazzName);
+
+		int size = 0;
+		try {
+			final List<T> list = (List<T>) query.execute();
+			size = list.size();
+		} finally {
+			query.closeAll();
+			pm.close();
+		}
+		return size;
+	}
+
+	/**
 	 * Liefert die nächste DB-Id für die übergebene Klasse.
 	 * 
 	 * @param clazzName Der Name der Klasse für welche die nächste Db-Id geliefert werden soll.
@@ -165,8 +189,8 @@ public final class PMFactory {
 
 		int id = 0;
 		try {
-			final List<T> dbObject = (List<T>) query.execute();
-			id = dbObject.size();
+			final List<T> list = (List<T>) query.execute();
+			id = list.size();
 			id++;
 		} finally {
 			query.closeAll();
