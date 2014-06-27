@@ -1,9 +1,6 @@
 package de.kickerapp.server.services;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
-import java.util.TreeSet;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -19,7 +16,7 @@ import de.kickerapp.shared.dto.TeamDto;
 import de.kickerapp.shared.dto.TeamStatsDto;
 
 /**
- * Hilfsklasse für den Dienst zur Verarbeitung von Teams im Clienten.
+ * Hilfsklasse für den Dienst zur Verarbeitung von Teams im Klienten.
  * 
  * @author Sebastian Filke
  */
@@ -77,42 +74,6 @@ public class TeamServiceHelper {
 	}
 
 	/**
-	 * Liefert das Team anhand der Db-Id.
-	 * 
-	 * @param id Die Db-Id des Teams.
-	 * @param dbTeams Die Objekt-Datenklasse-Liste aller Teams.
-	 * @return Das Team.
-	 */
-	protected static Team getTeamById(Long id, List<Team> dbTeams) {
-		Team dbTeam = null;
-		for (Team dbCurrentTeam : dbTeams) {
-			if (dbCurrentTeam.getKey().getId() == id) {
-				dbTeam = dbCurrentTeam;
-				break;
-			}
-		}
-		return dbTeam;
-	}
-
-	/**
-	 * Liefert das Teamspiel-Statistik anhand der Db-Id.
-	 * 
-	 * @param id Die Db-Id der Teamspiel-Statistik.
-	 * @param dbTeamStats Die Objekt-Datenklasse-Liste aller Teamspiel-Statistiken.
-	 * @return Die Teamspiel-Statistik.
-	 */
-	protected static TeamStats getTeamStatById(Long id, List<TeamStats> dbTeamStats) {
-		TeamStats dbTeamStat = null;
-		for (TeamStats dbCurrentTeamStats : dbTeamStats) {
-			if (dbCurrentTeamStats.getKey().getId() == id) {
-				dbTeamStat = dbCurrentTeamStats;
-				break;
-			}
-		}
-		return dbTeamStat;
-	}
-
-	/**
 	 * Liefert oder erzeugt, falls noch nicht vorhanden, ein Team.
 	 * 
 	 * @param dbPlayer1 Der erste Spieler des Teams.
@@ -120,40 +81,60 @@ public class TeamServiceHelper {
 	 * @return Das Team.
 	 */
 	protected static Team getTeam(Player dbPlayer1, Player dbPlayer2) {
-		final TreeSet<Long> existingTeam = new TreeSet<Long>();
-
-		final List<Long> team1Ids = new ArrayList<Long>();
-		final List<Long> team2Ids = new ArrayList<Long>();
-		for (Team team : dbPlayer1.getTeams()) {
-			team1Ids.add(team.getKey().getId());
-		}
-		for (Team team : dbPlayer2.getTeams()) {
-			team2Ids.add(team.getKey().getId());
-		}
-		existingTeam.addAll(team1Ids);
-		existingTeam.retainAll(team2Ids);
+		final Team existingTeam = determineTeamForPlayers(dbPlayer1, dbPlayer2);
 
 		Team dbTeam = null;
-		if (existingTeam.isEmpty()) {
-			dbTeam = new Team(dbPlayer1, dbPlayer2);
-			final int teamId = PMFactory.getNextId(Team.class.getName());
-			final Key teamKey = KeyFactory.createKey(Team.class.getSimpleName(), teamId);
-			dbTeam.setKey(teamKey);
-
-			final TeamStats dbTeamStats = new TeamStats();
-			final int teamStatsId = PMFactory.getNextId(TeamStats.class.getName());
-			final Key teamStatsKey = KeyFactory.createKey(dbTeam.getKey(), TeamStats.class.getSimpleName(), teamStatsId);
-			dbTeamStats.setKey(teamStatsKey);
-
-			dbTeam.setTeamStats(dbTeamStats);
-			dbPlayer1.getTeams().add(dbTeam);
-			dbPlayer2.getTeams().add(dbTeam);
-
-			dbTeam = PMFactory.persistObject(dbTeam);
+		if (existingTeam == null) {
+			dbTeam = createTeam(dbPlayer1, dbPlayer2);
 		} else {
-			dbTeam = PMFactory.getObjectById(Team.class, (Long) existingTeam.toArray()[0], TeamPlan.TEAMSTATS, TeamPlan.BOTHPLAYERS,
+			dbTeam = PMFactory.getObjectById(Team.class, (Long) existingTeam.getKey().getId(), TeamPlan.TEAMSTATS, TeamPlan.BOTHPLAYERS,
 					PlayerPlan.PLAYERDOUBLESTATS);
 		}
+		return dbTeam;
+	}
+
+	/**
+	 * Bestimmt das gemeinsame Team der Spieler falls eines existiert.
+	 * 
+	 * @param dbPlayer1 Der erste Spieler des Teams.
+	 * @param dbPlayer2 Der zweite Spieler des Teams.
+	 * @return Das Team der Spieler oder <code>null</code>.
+	 */
+	private static Team determineTeamForPlayers(Player dbPlayer1, Player dbPlayer2) {
+		for (Team teamPlayer1 : dbPlayer1.getTeams()) {
+			for (Team teamPlayer2 : dbPlayer2.getTeams()) {
+				if (teamPlayer1.getKey().getId() == teamPlayer2.getKey().getId()) {
+					return teamPlayer1;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Erzeugt ein neues Team.
+	 * 
+	 * @param dbPlayer1 Der erste Spieler des Teams.
+	 * @param dbPlayer2 Der zweite Spieler des Teams.
+	 * @return Das neu erstellte Team.
+	 */
+	private static Team createTeam(Player dbPlayer1, Player dbPlayer2) {
+		Team dbTeam = new Team(dbPlayer1, dbPlayer2);
+		final int teamId = PMFactory.getNextId(Team.class.getName());
+		final Key teamKey = KeyFactory.createKey(Team.class.getSimpleName(), teamId);
+		dbTeam.setKey(teamKey);
+
+		final TeamStats dbTeamStats = new TeamStats();
+		final int teamStatsId = PMFactory.getNextId(TeamStats.class.getName());
+		final Key teamStatsKey = KeyFactory.createKey(dbTeam.getKey(), TeamStats.class.getSimpleName(), teamStatsId);
+		dbTeamStats.setKey(teamStatsKey);
+
+		dbTeam.setTeamStats(dbTeamStats);
+		dbPlayer1.getTeams().add(dbTeam);
+		dbPlayer2.getTeams().add(dbTeam);
+
+		dbTeam = PMFactory.persistObject(dbTeam);
+
 		return dbTeam;
 	}
 

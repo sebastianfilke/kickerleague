@@ -4,6 +4,9 @@ import de.kickerapp.shared.common.BaseDto;
 
 public class ChartDataDto extends BaseDto {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = 6112150253103851416L;
+
 	private String month;
 
 	private Integer shotGoals;

@@ -8,7 +8,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import de.kickerapp.shared.dto.TeamDto;
 
 /**
- * Die Schnittstelle zur Verarbeitung der Teams im Clienten.
+ * Die Schnittstelle zur Verarbeitung der Teams im Klienten.
  * 
  * @author Sebastian Filke
  */

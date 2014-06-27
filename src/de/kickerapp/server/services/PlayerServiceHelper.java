@@ -10,7 +10,7 @@ import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.PlayerSingleStatsDto;
 
 /**
- * Hilfsklasse für den Dienst zur Verarbeitung von Spielern im Clienten.
+ * Hilfsklasse für den Dienst zur Verarbeitung von Spielern im Klienten.
  * 
  * @author Sebastian Filke
  */

@@ -8,7 +8,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import de.kickerapp.shared.dto.PlayerDto;
 
 /**
- * Die Schnittstelle zur Verarbeitung von paginierten-Listen.
+ * Die Schnittstelle zur Verarbeitung von paginierten-Listen im Klienten.
  * 
  * @author Sebastian Filke
  */

@@ -17,7 +17,7 @@ import de.kickerapp.server.services.PlayerServiceHelper.PlayerNameComparator;
 import de.kickerapp.shared.dto.PlayerDto;
 
 /**
- * Dienst zur Verarbeitung der PagingComboBoxen im Clienten.
+ * Dienst zur Verarbeitung der PagingComboBoxen im Klienten.
  * 
  * @author Sebastian Filke
  */

@@ -20,7 +20,7 @@ import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
 
 /**
- * Dienst zur Verarbeitung von Spielern im Clienten.
+ * Dienst zur Verarbeitung von Spielern im Klienten.
  * 
  * @author Sebastian Filke
  */

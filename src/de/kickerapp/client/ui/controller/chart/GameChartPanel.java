@@ -13,6 +13,7 @@ import com.sencha.gxt.chart.client.chart.series.SeriesLabelConfig;
 import com.sencha.gxt.chart.client.draw.Color;
 import com.sencha.gxt.chart.client.draw.DrawFx;
 import com.sencha.gxt.chart.client.draw.RGB;
+import com.sencha.gxt.chart.client.draw.path.PathSprite;
 import com.sencha.gxt.chart.client.draw.sprite.Sprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite.TextAnchor;
@@ -71,6 +72,13 @@ public class GameChartPanel extends BaseContainer {
 		numAxis.setAdjustMinimumByMajorUnit(true);
 		numAxis.setDisplayGrid(true);
 
+		final PathSprite gridConfig = new PathSprite();
+		gridConfig.setStroke(new RGB("#dfdfdf"));
+		gridConfig.setFill(new RGB("#e3e3e3"));
+		gridConfig.setZIndex(1);
+		gridConfig.setStrokeWidth(1);
+		numAxis.setGridOddConfig(gridConfig);
+
 		final TextSprite title = new TextSprite("Spielbilanz");
 		title.setFontSize(20);
 		title.setFont("Tahoma");
@@ -123,7 +131,7 @@ public class GameChartPanel extends BaseContainer {
 		barGame.setHighlighter(new SeriesHighlighter() {
 			@Override
 			public void highlight(Sprite sprite) {
-				sprite.setStroke(new RGB(0, 0, 0));
+				sprite.setStroke(new RGB("#0b8db3"));
 				DrawFx.createStrokeWidthAnimator(sprite, 3).run(250);
 			}
 
@@ -138,7 +146,7 @@ public class GameChartPanel extends BaseContainer {
 
 	private Legend<ChartDataDto> createLegend() {
 		final Legend<ChartDataDto> legend = new Legend<ChartDataDto>();
-		legend.setPosition(Position.BOTTOM);
+		legend.setPosition(Position.TOP);
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(true);
 
