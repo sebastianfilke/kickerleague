@@ -14,7 +14,7 @@ import de.kickerapp.server.services.TeamServiceHelper.TeamTableComparator;
 import de.kickerapp.shared.dto.TeamDto;
 
 /**
- * Dienst zur Verarbeitung von Teams im Clienten.
+ * Dienst zur Verarbeitung von Teams im Klienten.
  * 
  * @author Sebastian Filke
  */

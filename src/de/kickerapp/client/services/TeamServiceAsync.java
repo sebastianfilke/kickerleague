@@ -7,7 +7,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import de.kickerapp.shared.dto.TeamDto;
 
 /**
- * Die asynchrone Schnittstelle zur Verarbeitung der Teams im Clienten.
+ * Die asynchrone Schnittstelle zur Verarbeitung der Teams im Klienten.
  * 
  * @author Sebastian Filke
  */

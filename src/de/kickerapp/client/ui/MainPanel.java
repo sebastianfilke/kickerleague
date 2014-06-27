@@ -83,6 +83,11 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		AppEventBus.addHandler(NavigationEvent.PLAYER, this);
 	}
 
+	/**
+	 * Erzeugt den Container für die Kopfleiste der Applikation.
+	 * 
+	 * @return Der erzeugte Container.
+	 */
 	private HtmlLayoutContainer createHeader() {
 		final SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
@@ -99,6 +104,11 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		return htmlLcHeader;
 	}
 
+	/**
+	 * Erzeugt den Container für den Inhalt der Applikation.
+	 * 
+	 * @return Der erzeugte Container.
+	 */
 	private VerticalLayoutContainer createContent() {
 		final VerticalLayoutContainer vlcContent = new VerticalLayoutContainer();
 		vlcContent.setScrollMode(ScrollMode.AUTO);
@@ -122,12 +132,17 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		return vlcContent;
 	}
 
+	/**
+	 * Erzeugt den Container für die Fußleiste der Applikation.
+	 * 
+	 * @return Der erzeugte Container.
+	 */
 	private HtmlLayoutContainer createFooter() {
 		final SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
 		sb.appendHtmlConstant("<div id='footer'>");
 		sb.appendHtmlConstant("<div id='footerLinks'>Impressum | Kontakt</div>");
-		sb.appendHtmlConstant("<div id='footerText'>Design und Idee &#064; Sebastian Filke, 2014 | Version: 0.8.5</div>");
+		sb.appendHtmlConstant("<div id='footerText'>Design und Idee &#064; Sebastian Filke, 2014 | Version: 0.9.2</div>");
 		sb.appendHtmlConstant("</div>");
 
 		final HtmlLayoutContainer htmlLcTitle = new HtmlLayoutContainer(sb.toSafeHtml());

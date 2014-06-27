@@ -4,7 +4,7 @@ import de.kickerapp.server.dao.MatchComment;
 import de.kickerapp.shared.dto.MatchCommentDto;
 
 /**
- * Hilfsklasse für den Dienst zur Verarbeitung von Kommentare zum Spiel im Clienten.
+ * Hilfsklasse für den Dienst zur Verarbeitung von Kommentare zum Spiel im Klienten.
  * 
  * @author Sebastian Filke
  */

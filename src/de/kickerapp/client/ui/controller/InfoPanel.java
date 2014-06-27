@@ -12,7 +12,7 @@ public class InfoPanel extends BaseContainer {
 
 	private Label winSeries, defeatSeries;
 
-	private Label maxWinPoints, maxDefeatPoints;
+	private Label maxWinPoints, maxLostPoints;
 
 	private Label maxPoints, minPoints;
 
@@ -56,7 +56,7 @@ public class InfoPanel extends BaseContainer {
 		ftInfo.setHTML(1, 0, createText("Höchster Punktegewinn für Sieg:"));
 		ftInfo.setWidget(1, 1, maxWinPoints);
 		ftInfo.setHTML(1, 2, createText("Höchster Punkteverlust für Niederlage:"));
-		ftInfo.setWidget(1, 3, maxDefeatPoints);
+		ftInfo.setWidget(1, 3, maxLostPoints);
 
 		ftInfo.setHTML(2, 0, createText("Höchste Punktzahl:"));
 		ftInfo.setWidget(2, 1, maxPoints);
@@ -76,7 +76,7 @@ public class InfoPanel extends BaseContainer {
 		defeatSeries = new Label("0");
 
 		maxWinPoints = new Label("0");
-		maxDefeatPoints = new Label("0");
+		maxLostPoints = new Label("0");
 
 		maxPoints = new Label("0");
 		minPoints = new Label("0");
@@ -93,7 +93,7 @@ public class InfoPanel extends BaseContainer {
 		winSeries.setText(Integer.toString(chartDto.getWinSeries()));
 		defeatSeries.setText(Integer.toString(chartDto.getDefeatSeries()));
 		maxWinPoints.setText("+" + Integer.toString(chartDto.getMaxWinPoints()));
-		maxDefeatPoints.setText(Integer.toString(chartDto.getMaxDefeatPoints()));
+		maxLostPoints.setText(Integer.toString(chartDto.getMaxLostPoints()));
 		maxPoints.setText(Integer.toString(chartDto.getMaxPoints()));
 		minPoints.setText(Integer.toString(chartDto.getMinPoints()));
 		averageWins.setText(chartDto.getAverageWins() + "%");

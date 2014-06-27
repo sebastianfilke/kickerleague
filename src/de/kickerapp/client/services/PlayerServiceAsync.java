@@ -8,7 +8,7 @@ import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
 
 /**
- * Die asynchrone Schnittstelle zur Verarbeitung der Spieler im Clienten.
+ * Die asynchrone Schnittstelle zur Verarbeitung der Spieler im Klienten.
  * 
  * @author Sebastian Filke
  */
