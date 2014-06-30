@@ -37,7 +37,7 @@ public class Stats extends BaseDao {
 	/** Der vorherige Tabellenplatz des Teams bzw. Spielers. */
 	@Persistent
 	private Integer prevTablePlace;
-	/** Die aktuelle Tabellenplatz des Teams bzw. Spielers. */
+	/** Der aktuelle Tabellenplatz des Teams bzw. Spielers. */
 	@Persistent
 	private Integer curTablePlace;
 	/** Die letzten Punkte des Teams bzw. Spielers. */

@@ -10,7 +10,6 @@ import com.sencha.gxt.chart.client.chart.axis.NumericAxis;
 import com.sencha.gxt.chart.client.chart.series.BarSeries;
 import com.sencha.gxt.chart.client.chart.series.SeriesHighlighter;
 import com.sencha.gxt.chart.client.chart.series.SeriesLabelConfig;
-import com.sencha.gxt.chart.client.draw.Color;
 import com.sencha.gxt.chart.client.draw.DrawFx;
 import com.sencha.gxt.chart.client.draw.RGB;
 import com.sencha.gxt.chart.client.draw.path.PathSprite;
@@ -131,13 +130,13 @@ public class GameChartPanel extends BaseContainer {
 		barGame.setHighlighter(new SeriesHighlighter() {
 			@Override
 			public void highlight(Sprite sprite) {
-				sprite.setStroke(new RGB("#0b8db3"));
+				final RGB rgb = (RGB) sprite.getFill();
+				sprite.setStroke(rgb.getLighter(0.2));
 				DrawFx.createStrokeWidthAnimator(sprite, 3).run(250);
 			}
 
 			@Override
 			public void unHighlight(Sprite sprite) {
-				sprite.setStroke(Color.NONE);
 				DrawFx.createStrokeWidthAnimator(sprite, 0).run(250);
 			}
 		});
