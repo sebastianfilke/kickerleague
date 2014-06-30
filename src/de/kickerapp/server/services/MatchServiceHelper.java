@@ -7,15 +7,20 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+
 import de.kickerapp.server.dao.DoubleMatch;
 import de.kickerapp.server.dao.Match;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.PlayerDoubleStats;
 import de.kickerapp.server.dao.PlayerSingleStats;
 import de.kickerapp.server.dao.SingleMatch;
+import de.kickerapp.server.dao.SingleMatchHistory;
 import de.kickerapp.server.dao.Stats;
 import de.kickerapp.server.dao.Team;
 import de.kickerapp.server.dao.TeamStats;
+import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.common.Tendency;
@@ -32,7 +37,7 @@ import de.kickerapp.shared.dto.TeamDto;
 public class MatchServiceHelper {
 
 	/** Der Multiplikator. */
-	private static final int FAKTOR = 10;
+	private static final int FACTOR = 10;
 
 	/**
 	 * Comparator zur Sortierung der Team- bzw. Spielerstatistiken.
@@ -367,11 +372,11 @@ public class MatchServiceHelper {
 		final PlayerSingleStats dbCurrentPlayerStats = dbPlayer.getPlayerSingleStats();
 		PlayerSingleStats dbPlayer2Stats = null;
 		if (dbMatch.getPlayer1() == dbPlayer) {
-			dbPlayer2Stats = ((SingleMatch) dbMatch).getPlayer1().getPlayerSingleStats();
+			dbPlayer2Stats = ((SingleMatch) dbMatch).getPlayer2().getPlayerSingleStats();
 
 			points = getPoints(dbMatch, dbCurrentPlayerStats, dbPlayer2Stats, winner);
 		} else if (dbMatch.getPlayer2() == dbPlayer) {
-			dbPlayer2Stats = ((SingleMatch) dbMatch).getPlayer2().getPlayerSingleStats();
+			dbPlayer2Stats = ((SingleMatch) dbMatch).getPlayer1().getPlayerSingleStats();
 
 			points = getPoints(dbMatch, dbCurrentPlayerStats, dbPlayer2Stats, winner);
 		}
@@ -485,11 +490,48 @@ public class MatchServiceHelper {
 		if (playedGames2 != 0) {
 			averageWins2 = (double) db2Stats.getWins() / playedGames2;
 		}
-		double weightedFaktor = 1;
+		double weightedFactor = 1;
 		if (averageWins1 != 0 && averageWins2 != 0) {
-			weightedFaktor = averageWins2 / ((averageWins1 + averageWins2) / 2);
+			weightedFactor = averageWins2 / ((averageWins1 + averageWins2) / 2);
 		}
-		return weightedFaktor * FAKTOR;
+		return weightedFactor * FACTOR;
+	}
+
+	public static void createSingleMatchHistory(SingleMatch dbMatch, boolean team1Winner) {
+		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, dbMatch.getPlayer1().getKey().getId(), PlayerPlan.PLAYERSINGLESTATS);
+		final Player dbPlayer2 = PMFactory.getObjectById(Player.class, dbMatch.getPlayer2().getKey().getId(), PlayerPlan.PLAYERSINGLESTATS);
+
+		final SingleMatchHistory singleMatchHistoryPlayer1 = createSingleMatchHistory(dbMatch, team1Winner, dbPlayer1, dbPlayer2);
+		PMFactory.persistObject(singleMatchHistoryPlayer1);
+
+		final SingleMatchHistory singleMatchHistoryPlayer2 = createSingleMatchHistory(dbMatch, !team1Winner, dbPlayer2, dbPlayer1);
+		PMFactory.persistObject(singleMatchHistoryPlayer2);
+	}
+
+	private static SingleMatchHistory createSingleMatchHistory(SingleMatch dbMatch, boolean team1Winner, final Player dbPlayer1, final Player dbPlayer2) {
+		final SingleMatchHistory singleMatchHistory = new SingleMatchHistory();
+		final int matchHistoryId = PMFactory.getNextId(SingleMatchHistory.class.getName());
+		final Key matchHistoryKey = KeyFactory.createKey(SingleMatchHistory.class.getSimpleName(), matchHistoryId);
+		singleMatchHistory.setKey(matchHistoryKey);
+		singleMatchHistory.setMatchNumber(dbMatch.getMatchNumber());
+		singleMatchHistory.setMatchDate(dbMatch.getMatchDate());
+		singleMatchHistory.setTotalPoints(dbPlayer1.getPlayerSingleStats().getPoints());
+
+		if (dbMatch.getPlayer1().getKey().getId() == dbPlayer1.getKey().getId()) {
+			singleMatchHistory.setMatchPoints(dbMatch.getMatchPoints().getMatchPointsTeam1().get(0));
+			singleMatchHistory.setShotGoals(getGoalsTeam1(dbMatch));
+			singleMatchHistory.setGetGoals(getGoalsTeam2(dbMatch));
+		} else if (dbMatch.getPlayer2().getKey().getId() == dbPlayer2.getKey().getId()) {
+			singleMatchHistory.setMatchPoints(dbMatch.getMatchPoints().getMatchPointsTeam2().get(0));
+			singleMatchHistory.setShotGoals(getGoalsTeam2(dbMatch));
+			singleMatchHistory.setGetGoals(getGoalsTeam1(dbMatch));
+		}
+		singleMatchHistory.setTablePlace(dbPlayer1.getPlayerSingleStats().getCurTablePlace());
+		singleMatchHistory.setWinner(team1Winner);
+		singleMatchHistory.setPlayer1(dbPlayer1);
+		singleMatchHistory.setPlayer2(dbPlayer2);
+
+		return singleMatchHistory;
 	}
 
 }
