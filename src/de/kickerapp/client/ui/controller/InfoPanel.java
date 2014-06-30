@@ -6,7 +6,7 @@ import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.MarginData;
 
 import de.kickerapp.client.ui.base.BaseContainer;
-import de.kickerapp.shared.dto.ChartDto;
+import de.kickerapp.shared.dto.InfoDto;
 
 public class InfoPanel extends BaseContainer {
 
@@ -89,7 +89,7 @@ public class InfoPanel extends BaseContainer {
 		return "<span style='font-size:14px; font-family:Tahoma; font-weight:bold'>" + text + "</span>";
 	}
 
-	public void setInfos(ChartDto chartDto) {
+	public void setInfos(InfoDto chartDto) {
 		winSeries.setText(Integer.toString(chartDto.getWinSeries()));
 		defeatSeries.setText(Integer.toString(chartDto.getDefeatSeries()));
 		maxWinPoints.setText("+" + Integer.toString(chartDto.getMaxWinPoints()));

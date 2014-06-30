@@ -521,7 +521,7 @@ public class MatchServiceHelper {
 			singleMatchHistory.setMatchPoints(dbMatch.getMatchPoints().getMatchPointsTeam1().get(0));
 			singleMatchHistory.setShotGoals(getGoalsTeam1(dbMatch));
 			singleMatchHistory.setGetGoals(getGoalsTeam2(dbMatch));
-		} else if (dbMatch.getPlayer2().getKey().getId() == dbPlayer2.getKey().getId()) {
+		} else if (dbMatch.getPlayer2().getKey().getId() == dbPlayer1.getKey().getId()) {
 			singleMatchHistory.setMatchPoints(dbMatch.getMatchPoints().getMatchPointsTeam2().get(0));
 			singleMatchHistory.setShotGoals(getGoalsTeam2(dbMatch));
 			singleMatchHistory.setGetGoals(getGoalsTeam1(dbMatch));

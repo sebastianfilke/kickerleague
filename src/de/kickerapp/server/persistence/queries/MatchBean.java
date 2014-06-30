@@ -1,11 +1,11 @@
 package de.kickerapp.server.persistence.queries;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.kickerapp.server.dao.DoubleMatch;
 import de.kickerapp.server.dao.SingleMatch;
-import de.kickerapp.server.dao.fetchplans.MatchPlan;
+import de.kickerapp.server.dao.SingleMatchHistory;
+import de.kickerapp.server.dao.fetchplans.MatchHistoryPlan;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.shared.dto.PlayerDto;
 
@@ -36,25 +36,15 @@ public final class MatchBean {
 	 * @param playerDto Der Spieler.
 	 * @return Die Einzelspiele.
 	 */
-	public static List<SingleMatch> getSingleMatchesForPlayer(final PlayerDto playerDto) {
-		final List<SingleMatch> list = new ArrayList<SingleMatch>();
+	public static List<SingleMatchHistory> getSingleMatchesForPlayer(final PlayerDto playerDto) {
+		final QueryContainer conPlayer = new QueryContainer();
+		conPlayer.setPlans(MatchHistoryPlan.PLAYER1);
+		conPlayer.setQuery("player1 == :id");
+		conPlayer.setOrdering("matchNumber asc");
+		conPlayer.setParameter(playerDto.getId());
+		final List<SingleMatchHistory> singleMatchesPlayer1 = PMFactory.getList(SingleMatchHistory.class, conPlayer);
 
-		final QueryContainer conPlayer1 = new QueryContainer();
-		conPlayer1.setPlans(MatchPlan.BOTHPLAYERS);
-		conPlayer1.setQuery("player1 == :id");
-		conPlayer1.setParameter(playerDto.getId());
-		final List<SingleMatch> singleMatchesPlayer1 = PMFactory.getList(SingleMatch.class, conPlayer1);
-
-		final QueryContainer conPlayer2 = new QueryContainer();
-		conPlayer2.setPlans(MatchPlan.BOTHPLAYERS);
-		conPlayer2.setQuery("player2 == :id");
-		conPlayer2.setParameter(playerDto.getId());
-		final List<SingleMatch> singleMatchesPlayer2 = PMFactory.getList(SingleMatch.class, conPlayer2);
-
-		list.addAll(singleMatchesPlayer1);
-		list.addAll(singleMatchesPlayer2);
-
-		return list;
+		return singleMatchesPlayer1;
 	}
 
 }

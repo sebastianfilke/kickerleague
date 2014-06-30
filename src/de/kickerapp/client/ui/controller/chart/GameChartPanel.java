@@ -21,15 +21,15 @@ import com.sencha.gxt.data.shared.ListStore;
 import de.kickerapp.client.properties.ChartProperty;
 import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.ui.base.BaseContainer;
-import de.kickerapp.shared.dto.ChartDataDto;
+import de.kickerapp.shared.dto.ChartGameDataDto;
 
 public class GameChartPanel extends BaseContainer {
 
-	private ListStore<ChartDataDto> storeGame;
+	private ListStore<ChartGameDataDto> storeGame;
 
-	private Chart<ChartDataDto> chartGame;
+	private Chart<ChartGameDataDto> chartGame;
 
-	private BarSeries<ChartDataDto> barGame;
+	private BarSeries<ChartGameDataDto> barGame;
 
 	public GameChartPanel() {
 		super();
@@ -42,13 +42,13 @@ public class GameChartPanel extends BaseContainer {
 	 */
 	@Override
 	public void initLayout() {
-		storeGame = new ListStore<ChartDataDto>(KickerProperties.CHART_PROPERTY.id());
+		storeGame = new ListStore<ChartGameDataDto>(KickerProperties.CHART_PROPERTY.id());
 
 		add(createGroupBarChart());
 	}
 
-	private Chart<ChartDataDto> createGroupBarChart() {
-		chartGame = new Chart<ChartDataDto>();
+	private Chart<ChartGameDataDto> createGroupBarChart() {
+		chartGame = new Chart<ChartGameDataDto>();
 		chartGame.setShadowChart(true);
 		chartGame.setStore(storeGame);
 		chartGame.setAnimated(true);
@@ -61,8 +61,8 @@ public class GameChartPanel extends BaseContainer {
 		return chartGame;
 	}
 
-	private NumericAxis<ChartDataDto> createNumericAxis() {
-		final NumericAxis<ChartDataDto> numAxis = new NumericAxis<ChartDataDto>();
+	private NumericAxis<ChartGameDataDto> createNumericAxis() {
+		final NumericAxis<ChartGameDataDto> numAxis = new NumericAxis<ChartGameDataDto>();
 		numAxis.setPosition(Position.LEFT);
 		numAxis.addField(ChartProperty.winDifference);
 		numAxis.addField(KickerProperties.CHART_PROPERTY.wins());
@@ -86,8 +86,8 @@ public class GameChartPanel extends BaseContainer {
 		return numAxis;
 	}
 
-	private CategoryAxis<ChartDataDto, String> createCategoryAxis() {
-		final CategoryAxis<ChartDataDto, String> catAxis = new CategoryAxis<ChartDataDto, String>();
+	private CategoryAxis<ChartGameDataDto, String> createCategoryAxis() {
+		final CategoryAxis<ChartGameDataDto, String> catAxis = new CategoryAxis<ChartGameDataDto, String>();
 		catAxis.setField(KickerProperties.CHART_PROPERTY.month());
 		catAxis.setPosition(Position.BOTTOM);
 
@@ -99,8 +99,8 @@ public class GameChartPanel extends BaseContainer {
 		return catAxis;
 	}
 
-	private BarSeries<ChartDataDto> createBarSeries() {
-		barGame = new BarSeries<ChartDataDto>();
+	private BarSeries<ChartGameDataDto> createBarSeries() {
+		barGame = new BarSeries<ChartGameDataDto>();
 		barGame.setYAxisPosition(Position.LEFT);
 		barGame.addYField(ChartProperty.winDifference);
 		barGame.addYField(KickerProperties.CHART_PROPERTY.wins());
@@ -115,7 +115,7 @@ public class GameChartPanel extends BaseContainer {
 		sprite.setFontSize(12);
 		sprite.setTextAnchor(TextAnchor.MIDDLE);
 
-		final SeriesLabelConfig<ChartDataDto> labelConfig = new SeriesLabelConfig<ChartDataDto>();
+		final SeriesLabelConfig<ChartGameDataDto> labelConfig = new SeriesLabelConfig<ChartGameDataDto>();
 		labelConfig.setSpriteConfig(sprite);
 
 		barGame.setLabelConfig(labelConfig);
@@ -143,8 +143,8 @@ public class GameChartPanel extends BaseContainer {
 		return barGame;
 	}
 
-	private Legend<ChartDataDto> createLegend() {
-		final Legend<ChartDataDto> legend = new Legend<ChartDataDto>();
+	private Legend<ChartGameDataDto> createLegend() {
+		final Legend<ChartGameDataDto> legend = new Legend<ChartGameDataDto>();
 		legend.setPosition(Position.TOP);
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(true);
@@ -152,7 +152,7 @@ public class GameChartPanel extends BaseContainer {
 		return legend;
 	}
 
-	public void loadGameChart(ArrayList<ChartDataDto> result) {
+	public void loadGameChart(ArrayList<ChartGameDataDto> result) {
 		barGame.setShownInLegend(true);
 		if (!result.isEmpty()) {
 			barGame.setShownInLegend(true);
@@ -163,7 +163,7 @@ public class GameChartPanel extends BaseContainer {
 		chartGame.redrawChart();
 	}
 
-	public Chart<ChartDataDto> getChartGame() {
+	public Chart<ChartGameDataDto> getChartGame() {
 		return chartGame;
 	}
 

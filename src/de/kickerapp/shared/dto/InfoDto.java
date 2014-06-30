@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import de.kickerapp.shared.common.BaseDto;
 
-public class ChartDto extends BaseDto {
+public class InfoDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -4934809671424931355L;
@@ -25,9 +25,9 @@ public class ChartDto extends BaseDto {
 
 	private String averagePoints;
 
-	private ArrayList<ChartDataDto> chartDataDto;
+	private ArrayList<ChartGameDataDto> chartDataDto;
 
-	public ChartDto() {
+	public InfoDto() {
 		super();
 
 		winSeries = 0;
@@ -38,7 +38,7 @@ public class ChartDto extends BaseDto {
 		minPoints = 0;
 		averageWins = "0.0";
 		averagePoints = "0.0";
-		chartDataDto = new ArrayList<ChartDataDto>();
+		chartDataDto = new ArrayList<ChartGameDataDto>();
 	}
 
 	public Integer getWinSeries() {
@@ -105,11 +105,11 @@ public class ChartDto extends BaseDto {
 		this.averagePoints = averagePoints;
 	}
 
-	public ArrayList<ChartDataDto> getChartDataDto() {
+	public ArrayList<ChartGameDataDto> getChartDataDto() {
 		return chartDataDto;
 	}
 
-	public void setChartDataDto(ArrayList<ChartDataDto> chartDataDto) {
+	public void setChartDataDto(ArrayList<ChartGameDataDto> chartDataDto) {
 		this.chartDataDto = chartDataDto;
 	}
 
