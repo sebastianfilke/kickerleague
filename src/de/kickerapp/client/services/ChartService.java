@@ -1,9 +1,12 @@
 package de.kickerapp.client.services;
 
+import java.util.ArrayList;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import de.kickerapp.shared.dto.ChartDto;
+import de.kickerapp.shared.dto.ChartGoalDataDto;
+import de.kickerapp.shared.dto.InfoDto;
 import de.kickerapp.shared.dto.PlayerDto;
 
 /**
@@ -14,6 +17,8 @@ import de.kickerapp.shared.dto.PlayerDto;
 @RemoteServiceRelativePath("chartService")
 public interface ChartService extends RemoteService {
 
+	public InfoDto getSinglePlayerInfo(PlayerDto playerDto) throws IllegalArgumentException;
+
 	/**
 	 * Liefert die Torstatistik für den gewählten Spieler.
 	 * 
@@ -21,6 +26,6 @@ public interface ChartService extends RemoteService {
 	 * @return Die Torstatistik.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public ChartDto getSinglePlayerGoalChart(PlayerDto playerDto) throws IllegalArgumentException;
+	public ArrayList<ChartGoalDataDto> getSinglePlayerGoalChart(PlayerDto playerDto) throws IllegalArgumentException;
 
 }

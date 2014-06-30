@@ -1,9 +1,13 @@
 package de.kickerapp.server.dao;
 
+import javax.jdo.annotations.FetchGroup;
+import javax.jdo.annotations.FetchGroups;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import com.google.appengine.datanucleus.annotations.Unowned;
+
+import de.kickerapp.server.dao.fetchplans.MatchHistoryPlan;
 
 /**
  * Datenklasse zum Halten der Informationen für den Verlauf eines Einzelspiels.
@@ -11,6 +15,9 @@ import com.google.appengine.datanucleus.annotations.Unowned;
  * @author Sebastian Filke
  */
 @PersistenceCapable(detachable = "true")
+@FetchGroups({ @FetchGroup(name = MatchHistoryPlan.PLAYER1, members = { @Persistent(name = "player1") }),
+		@FetchGroup(name = MatchHistoryPlan.PLAYER2, members = { @Persistent(name = "player2") }),
+		@FetchGroup(name = MatchHistoryPlan.BOTHPLAYERS, members = { @Persistent(name = "player1"), @Persistent(name = "player2") }) })
 public class SingleMatchHistory extends MatchHistory {
 
 	/** Der erste Spieler. */

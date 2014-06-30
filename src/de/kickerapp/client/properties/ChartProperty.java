@@ -5,28 +5,28 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
-import de.kickerapp.shared.dto.ChartDataDto;
+import de.kickerapp.shared.dto.ChartGameDataDto;
 
-public interface ChartProperty extends PropertyAccess<ChartDataDto> {
+public interface ChartProperty extends PropertyAccess<ChartGameDataDto> {
 
 	@Path("id")
-	public ModelKeyProvider<ChartDataDto> id();
+	public ModelKeyProvider<ChartGameDataDto> id();
 
-	public ValueProvider<ChartDataDto, String> month();
+	public ValueProvider<ChartGameDataDto, String> month();
 
-	public ValueProvider<ChartDataDto, Integer> shotGoals();
+	public ValueProvider<ChartGameDataDto, Integer> shotGoals();
 
-	public ValueProvider<ChartDataDto, Integer> getGoals();
+	public ValueProvider<ChartGameDataDto, Integer> getGoals();
 
-	public ValueProvider<ChartDataDto, Integer> goalDifference = new ValueProvider<ChartDataDto, Integer>() {
+	public ValueProvider<ChartGameDataDto, Integer> goalDifference = new ValueProvider<ChartGameDataDto, Integer>() {
 		@Override
-		public Integer getValue(ChartDataDto object) {
+		public Integer getValue(ChartGameDataDto object) {
 			final int goalDifference = object.getShotGoals() - object.getGetGoals();
 			return goalDifference;
 		}
 
 		@Override
-		public void setValue(ChartDataDto object, Integer value) {
+		public void setValue(ChartGameDataDto object, Integer value) {
 		}
 
 		@Override
@@ -35,19 +35,19 @@ public interface ChartProperty extends PropertyAccess<ChartDataDto> {
 		}
 	};
 
-	public ValueProvider<ChartDataDto, Integer> wins();
+	public ValueProvider<ChartGameDataDto, Integer> wins();
 
-	public ValueProvider<ChartDataDto, Integer> defeats();
+	public ValueProvider<ChartGameDataDto, Integer> defeats();
 
-	public ValueProvider<ChartDataDto, Integer> winDifference = new ValueProvider<ChartDataDto, Integer>() {
+	public ValueProvider<ChartGameDataDto, Integer> winDifference = new ValueProvider<ChartGameDataDto, Integer>() {
 		@Override
-		public Integer getValue(ChartDataDto object) {
+		public Integer getValue(ChartGameDataDto object) {
 			final int winDifference = object.getWins() - object.getDefeats();
 			return winDifference;
 		}
 
 		@Override
-		public void setValue(ChartDataDto object, Integer value) {
+		public void setValue(ChartGameDataDto object, Integer value) {
 		}
 
 		@Override

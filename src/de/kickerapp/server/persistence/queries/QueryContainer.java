@@ -11,6 +11,8 @@ public class QueryContainer {
 
 	private String query;
 
+	private String ordering;
+
 	private Object parameter;
 
 	public QueryContainer() {
@@ -18,6 +20,7 @@ public class QueryContainer {
 
 		plans = new String[] {};
 		query = "";
+		ordering = "";
 		parameter = null;
 	}
 
@@ -35,6 +38,14 @@ public class QueryContainer {
 
 	public void setQuery(String query) {
 		this.query = query;
+	}
+
+	public String getOrdering() {
+		return ordering;
+	}
+
+	public void setOrdering(String ordering) {
+		this.ordering = ordering;
 	}
 
 	public Object getParameter() {

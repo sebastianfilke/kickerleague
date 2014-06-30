@@ -82,6 +82,7 @@ public final class PMFactory {
 
 		final Query query = pm.newQuery(clazz);
 		query.setFilter(container.getQuery());
+		query.setOrdering(container.getOrdering());
 
 		List<T> list = new ArrayList<T>();
 		try {

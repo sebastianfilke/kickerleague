@@ -36,7 +36,8 @@ import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
 import de.kickerapp.client.widgets.AppContentPanel;
 import de.kickerapp.shared.common.MatchType;
-import de.kickerapp.shared.dto.ChartDto;
+import de.kickerapp.shared.dto.ChartGoalDataDto;
+import de.kickerapp.shared.dto.InfoDto;
 import de.kickerapp.shared.dto.PlayerDto;
 
 public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanelEventHandler {
@@ -59,7 +60,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 	private boolean doUpdatePlayerList, doUpdateSinglePlayerChart;
 
-	private ChartDto chartDto;
+	private InfoDto chartDto;
 
 	private AppButton btnUpdate;
 
@@ -295,16 +296,16 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private void loadSinglePlayerChart(PlayerDto selectedPlayer) {
 		if (doUpdateSinglePlayerChart) {
 			mask("Statistik wird geladen...");
-			KickerServices.CHART_SERVICE.getSinglePlayerGoalChart(selectedPlayer, new AsyncCallback<ChartDto>() {
+			KickerServices.CHART_SERVICE.getSinglePlayerGoalChart(selectedPlayer, new AsyncCallback<ArrayList<ChartGoalDataDto>>() {
 				@Override
-				public void onSuccess(ChartDto result) {
+				public void onSuccess(ArrayList<ChartGoalDataDto> result) {
 					unmask();
 					doUpdateSinglePlayerChart = false;
-					chartDto = result;
+					// chartDto = result;
 					if (tgChart.getValue() == tbtnGoalChart) {
-						goalChartPanel.loadGoalChart(result.getChartDataDto());
+						goalChartPanel.loadGoalChart(result);
 					} else if (tgChart.getValue() == tbtnWinChart) {
-						gameChartPanel.loadGameChart(result.getChartDataDto());
+						gameChartPanel.loadGameChart(result);
 					}
 					infoPanel.setInfos(result);
 				}

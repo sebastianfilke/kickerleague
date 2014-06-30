@@ -21,15 +21,16 @@ import com.sencha.gxt.data.shared.ListStore;
 import de.kickerapp.client.properties.ChartProperty;
 import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.ui.base.BaseContainer;
-import de.kickerapp.shared.dto.ChartDataDto;
+import de.kickerapp.shared.dto.ChartGameDataDto;
+import de.kickerapp.shared.dto.ChartGoalDataDto;
 
 public class GoalChartPanel extends BaseContainer {
 
-	private ListStore<ChartDataDto> storeGoal;
+	private ListStore<ChartGoalDataDto> storeGoal;
 
-	private Chart<ChartDataDto> chartGoal;
+	private Chart<ChartGoalDataDto> chartGoal;
 
-	private BarSeries<ChartDataDto> barGoal;
+	private BarSeries<ChartGoalDataDto> barGoal;
 
 	public GoalChartPanel() {
 		super();
@@ -42,13 +43,13 @@ public class GoalChartPanel extends BaseContainer {
 	 */
 	@Override
 	public void initLayout() {
-		storeGoal = new ListStore<ChartDataDto>(KickerProperties.CHART_PROPERTY.id());
+		storeGoal = new ListStore<ChartGoalDataDto>(KickerProperties.CHART_PROPERTY.id());
 
 		add(createGroupBarChart());
 	}
 
-	private Chart<ChartDataDto> createGroupBarChart() {
-		chartGoal = new Chart<ChartDataDto>();
+	private Chart<ChartGameDataDto> createGroupBarChart() {
+		chartGoal = new Chart<ChartGoalDataDto>();
 		chartGoal.setShadowChart(true);
 		chartGoal.setStore(storeGoal);
 		chartGoal.setAnimated(true);
@@ -61,8 +62,8 @@ public class GoalChartPanel extends BaseContainer {
 		return chartGoal;
 	}
 
-	private NumericAxis<ChartDataDto> createNumericAxis() {
-		final NumericAxis<ChartDataDto> numAxis = new NumericAxis<ChartDataDto>();
+	private NumericAxis<ChartGameDataDto> createNumericAxis() {
+		final NumericAxis<ChartGoalDataDto> numAxis = new NumericAxis<ChartGoalDataDto>();
 		numAxis.setPosition(Position.LEFT);
 		numAxis.addField(ChartProperty.goalDifference);
 		numAxis.addField(KickerProperties.CHART_PROPERTY.shotGoals());
@@ -86,8 +87,8 @@ public class GoalChartPanel extends BaseContainer {
 		return numAxis;
 	}
 
-	private CategoryAxis<ChartDataDto, String> createCategoryAxis() {
-		final CategoryAxis<ChartDataDto, String> catAxis = new CategoryAxis<ChartDataDto, String>();
+	private CategoryAxis<ChartGoalDataDto, String> createCategoryAxis() {
+		final CategoryAxis<ChartGoalDataDto, String> catAxis = new CategoryAxis<ChartGoalDataDto, String>();
 		catAxis.setField(KickerProperties.CHART_PROPERTY.month());
 		catAxis.setPosition(Position.BOTTOM);
 
@@ -99,8 +100,8 @@ public class GoalChartPanel extends BaseContainer {
 		return catAxis;
 	}
 
-	private BarSeries<ChartDataDto> createBarSeries() {
-		barGoal = new BarSeries<ChartDataDto>();
+	private BarSeries<ChartGoalDataDto> createBarSeries() {
+		barGoal = new BarSeries<ChartGoalDataDto>();
 		barGoal.setYAxisPosition(Position.LEFT);
 		barGoal.addYField(ChartProperty.goalDifference);
 		barGoal.addYField(KickerProperties.CHART_PROPERTY.shotGoals());
@@ -115,7 +116,7 @@ public class GoalChartPanel extends BaseContainer {
 		sprite.setFontSize(12);
 		sprite.setTextAnchor(TextAnchor.MIDDLE);
 
-		final SeriesLabelConfig<ChartDataDto> labelConfig = new SeriesLabelConfig<ChartDataDto>();
+		final SeriesLabelConfig<ChartGoalDataDto> labelConfig = new SeriesLabelConfig<ChartGoalDataDto>();
 		labelConfig.setSpriteConfig(sprite);
 
 		barGoal.setLabelConfig(labelConfig);
@@ -143,8 +144,8 @@ public class GoalChartPanel extends BaseContainer {
 		return barGoal;
 	}
 
-	private Legend<ChartDataDto> createLegend() {
-		final Legend<ChartDataDto> legend = new Legend<ChartDataDto>();
+	private Legend<ChartGoalDataDto> createLegend() {
+		final Legend<ChartGoalDataDto> legend = new Legend<ChartGoalDataDto>();
 		legend.setPosition(Position.TOP);
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(true);
@@ -152,7 +153,7 @@ public class GoalChartPanel extends BaseContainer {
 		return legend;
 	}
 
-	public void loadGoalChart(ArrayList<ChartDataDto> result) {
+	public void loadGoalChart(ArrayList<ChartGoalDataDto> result) {
 		if (!result.isEmpty()) {
 			barGoal.setShownInLegend(true);
 		} else {
@@ -162,7 +163,7 @@ public class GoalChartPanel extends BaseContainer {
 		chartGoal.redrawChart();
 	}
 
-	public Chart<ChartDataDto> getChartGoal() {
+	public Chart<ChartGoalDataDto> getChartGoal() {
 		return chartGoal;
 	}
 
