@@ -17,4 +17,12 @@ public class PlayerSingleStatsDto extends StatsDto {
 		super();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+
 }

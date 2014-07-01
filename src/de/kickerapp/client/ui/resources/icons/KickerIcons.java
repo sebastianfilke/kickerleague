@@ -43,6 +43,9 @@ public interface KickerIcons extends ClientBundle {
 	@Source("pencil2.png")
 	ImageResource player_edit();
 
+	@Source("pie.png")
+	ImageResource chart_pie();
+
 	@Source("undo.png")
 	ImageResource reset();
 

@@ -5,7 +5,7 @@ package de.kickerapp.shared.common;
  * 
  * @author Sebastian Filke
  */
-public class BaseDto implements IBase {
+public class BaseDto implements BaseSerializable {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = -4326262956527591125L;
@@ -21,17 +21,19 @@ public class BaseDto implements IBase {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Liefert die DB-Id für das Objekt.
+	 * 
+	 * @return Die DB-Id für das Objekt als {@link long}.
 	 */
-	@Override
 	public long getId() {
 		return id;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Setzt die DB-Id für das Objekt.
+	 * 
+	 * @param id Die DB-Id für das Objekt als {@link long}.
 	 */
-	@Override
 	public void setId(long id) {
 		this.id = id;
 	}

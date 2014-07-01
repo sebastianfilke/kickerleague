@@ -52,4 +52,18 @@ public class MatchCommentDto extends BaseDto {
 		this.comment = comment;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+		sb.append(" [");
+		sb.append("id=").append(getId()).append(", ");
+		sb.append("comment=").append(comment);
+		sb.append("]");
+
+		return sb.toString();
+	}
+
 }

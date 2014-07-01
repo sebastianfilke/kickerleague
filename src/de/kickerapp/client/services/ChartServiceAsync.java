@@ -1,10 +1,8 @@
 package de.kickerapp.client.services;
 
-import java.util.ArrayList;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import de.kickerapp.shared.dto.ChartGoalDataDto;
+import de.kickerapp.shared.container.ChartContainer;
 import de.kickerapp.shared.dto.InfoDto;
 import de.kickerapp.shared.dto.PlayerDto;
 
@@ -15,15 +13,22 @@ import de.kickerapp.shared.dto.PlayerDto;
  */
 public interface ChartServiceAsync {
 
-	public void getSinglePlayerInfo(PlayerDto playerDto, AsyncCallback<InfoDto> callback) throws IllegalArgumentException;
-
 	/**
-	 * Liefert die Torstatistik für den gewählten Spieler.
+	 * Liefert die Einzelspieler-Informationen für den gewählten Spieler.
 	 * 
-	 * @param playerDto Der Spieler für welchen das Diagramm angezeigt werden soll.
+	 * @param playerDto Der Spieler für welchen die Informationen angezeigt werden sollen.
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getSinglePlayerGoalChart(PlayerDto playerDto, AsyncCallback<ArrayList<ChartGoalDataDto>> callback) throws IllegalArgumentException;
+	public void getSinglePlayerInfo(PlayerDto playerDto, AsyncCallback<InfoDto> callback) throws IllegalArgumentException;
+
+	/**
+	 * Liefert die Einzelspieler-Statistiken für den gewählten Spieler.
+	 * 
+	 * @param playerDto Der Spieler für welchen die Einzelspieler-Statistiken angezeigt werden sollen.
+	 * @param callback Der Callback-Handler.
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 */
+	public void getSinglePlayerChart(PlayerDto playerDto, AsyncCallback<ChartContainer> callback) throws IllegalArgumentException;
 
 }

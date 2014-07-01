@@ -4,7 +4,11 @@ import com.google.gwt.core.client.GWT;
 
 public interface KickerProperties {
 
-	public final ChartProperty CHART_PROPERTY = GWT.create(ChartProperty.class);
+	public final ChartGameProperty CHART_GAME_PROPERTY = GWT.create(ChartGameProperty.class);
+
+	public final ChartGoalProperty CHART_GOAL_PROPERTY = GWT.create(ChartGoalProperty.class);
+
+	public final ChartOpponentProperty CHART_OPPONENT_PROPERTY = GWT.create(ChartOpponentProperty.class);
 
 	public final MatchProperty MATCH_PROPERTY = GWT.create(MatchProperty.class);
 
