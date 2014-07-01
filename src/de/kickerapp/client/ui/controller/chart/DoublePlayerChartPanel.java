@@ -221,10 +221,10 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 	public void buttonPressed(HasValue<Boolean> value, PlayerDto selectedPlayer) {
 		if (value == tbtnGoalChart) {
 			clcDoubleChart.setActiveWidget(goalChartPanel);
-			goalChartPanel.loadGoalChart(chartDto.getChartDataDto());
+			// goalChartPanel.loadGoalChart(chartDto);
 		} else if (value == tbtnWinChart) {
 			clcDoubleChart.setActiveWidget(gameChartPanel);
-			gameChartPanel.loadGameChart(chartDto.getChartDataDto());
+			// gameChartPanel.loadGameChart(chartDto);
 		}
 	}
 
@@ -295,27 +295,27 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private void loadSinglePlayerChart(PlayerDto selectedPlayer) {
 		if (doUpdateSinglePlayerChart) {
 			mask("Statistik wird geladen...");
-			KickerServices.CHART_SERVICE.getSinglePlayerGoalChart(selectedPlayer, new AsyncCallback<InfoDto>() {
-				@Override
-				public void onSuccess(InfoDto result) {
-					unmask();
-					doUpdateSinglePlayerChart = false;
-					chartDto = result;
-					if (tgChart.getValue() == tbtnGoalChart) {
-						goalChartPanel.loadGoalChart(result.getChartDataDto());
-					} else if (tgChart.getValue() == tbtnWinChart) {
-						gameChartPanel.loadGameChart(result.getChartDataDto());
-					}
-					infoPanel.setInfos(result);
-				}
-
-				@Override
-				public void onFailure(Throwable caught) {
-					unmask();
-					doUpdateSinglePlayerChart = false;
-					AppExceptionHandler.getInstance().handleException(caught);
-				}
-			});
+			// KickerServices.CHART_SERVICE.getSinglePlayerGoalChart(selectedPlayer, new AsyncCallback<InfoDto>() {
+			// @Override
+			// public void onSuccess(InfoDto result) {
+			// unmask();
+			// doUpdateSinglePlayerChart = false;
+			// chartDto = result;
+			// if (tgChart.getValue() == tbtnGoalChart) {
+			// goalChartPanel.loadGoalChart(result.getChartDataDto());
+			// } else if (tgChart.getValue() == tbtnWinChart) {
+			// gameChartPanel.loadGameChart(result.getChartDataDto());
+			// }
+			// infoPanel.setInfos(result);
+			// }
+			//
+			// @Override
+			// public void onFailure(Throwable caught) {
+			// unmask();
+			// doUpdateSinglePlayerChart = false;
+			// AppExceptionHandler.getInstance().handleException(caught);
+			// }
+			// });
 		}
 	}
 

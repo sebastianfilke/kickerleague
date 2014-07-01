@@ -213,4 +213,21 @@ public class MatchDto extends BaseDto {
 		this.matchCommentDto = matchCommentDto;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+		sb.append(" [");
+		sb.append("id=").append(getId()).append(", ");
+		sb.append("matchNumber=").append(matchNumber).append(", ");
+		sb.append("matchDate=").append(matchDate).append(", ");
+		sb.append("groupDate=").append(groupDate).append(", ");
+		sb.append("matchType=").append(matchType);
+		sb.append("]");
+
+		return sb.toString();
+	}
+
 }

@@ -3,7 +3,6 @@ package de.kickerapp.server.services;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +10,9 @@ import java.util.List;
 import de.kickerapp.server.dao.MatchHistory;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.SingleMatchHistory;
-import de.kickerapp.shared.dto.ChartGoalDataDto;
+import de.kickerapp.shared.dto.ChartGameDto;
+import de.kickerapp.shared.dto.ChartGoalDto;
+import de.kickerapp.shared.dto.ChartOpponentDto;
 
 /**
  * Hilfsklasse für den Dienst zur Verarbeitung von Diagrammen im Klienten.
@@ -19,10 +20,6 @@ import de.kickerapp.shared.dto.ChartGoalDataDto;
  * @author Sebastian Filke
  */
 public class ChartServiceHelper {
-
-	/** Die Monate. */
-	private static final String[] MONTHS = new String[] { "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober",
-			"November", "Dezember" };
 
 	/**
 	 * Liefert eine Zahl zwischen 1 und 12 zur Representation des Monats.
@@ -94,7 +91,7 @@ public class ChartServiceHelper {
 	}
 
 	public static Integer getSingleMatchMaxPoints(List<SingleMatchHistory> dbSingleMatches) {
-		Integer maxPoints = 0;
+		Integer maxPoints = 1000;
 
 		for (SingleMatchHistory dbHistory : dbSingleMatches) {
 			if (maxPoints < dbHistory.getTotalPoints()) {
@@ -105,7 +102,7 @@ public class ChartServiceHelper {
 	}
 
 	public static Integer getSingleMatchMinPoints(List<SingleMatchHistory> dbSingleMatches) {
-		Integer minPoints = 0;
+		Integer minPoints = 1000;
 
 		for (SingleMatchHistory dbHistory : dbSingleMatches) {
 			if (minPoints > dbHistory.getTotalPoints()) {
@@ -142,38 +139,68 @@ public class ChartServiceHelper {
 		return numberFormat.format(averagePoints);
 	}
 
-	public static ArrayList<ChartGoalDataDto> getChartDataDto(List<SingleMatchHistory> dbSingleMatches) {
-		final HashMap<Integer, ChartGoalDataDto> chartData = new HashMap<Integer, ChartGoalDataDto>();
-		for (int i = 1; i <= 12; i++) {
-			chartData.put(i, new ChartGoalDataDto((long) i, MONTHS[i - 1]));
-		}
+	public static void updateGameForMatch(SingleMatchHistory dbHistory, HashMap<Integer, ChartGameDto> chartGameDtos) {
+		final int month = ChartServiceHelper.getMonthForMatch(dbHistory);
 
-		final ArrayList<ChartGoalDataDto> chartDataDtos = new ArrayList<ChartGoalDataDto>();
-		for (SingleMatchHistory dbHistory : dbSingleMatches) {
-			final int month = ChartServiceHelper.getMonthForMatch(dbHistory);
-			final ChartGoalDataDto chartDataDto = chartData.get(month);
+		final ChartGameDto chartDataDto = chartGameDtos.get(month);
 
-			Integer shotGoals = chartDataDto.getShotGoals();
-			Integer getGoals = chartDataDto.getGetGoals();
-			// Integer wins = chartDataDto.getWins();
-			// Integer defeats = chartDataDto.getDefeats();
+		Integer wins = chartDataDto.getWins();
+		Integer defeats = chartDataDto.getDefeats();
 
-			shotGoals = shotGoals + dbHistory.getShotGoals();
-			getGoals = getGoals + dbHistory.getGetGoals();
-			// if (dbHistory.isWinner()) {
-			// wins++;
-			// } else {
-			// defeats++;
-			// }
-			chartDataDto.setShotGoals(shotGoals);
-			chartDataDto.setGetGoals(getGoals);
-			// chartDataDto.setWins(wins);
-			// chartDataDto.setDefeats(defeats);
+		if (dbHistory.isWinner()) {
+			wins++;
+		} else {
+			defeats++;
 		}
-		for (ChartGoalDataDto chartDataDto : chartData.values()) {
-			chartDataDtos.add(chartDataDto);
+		chartDataDto.setWins(wins);
+		chartDataDto.setDefeats(defeats);
+	}
+
+	public static void updateGoalForMatch(SingleMatchHistory dbHistory, HashMap<Integer, ChartGoalDto> chartGoalDtos) {
+		final int month = ChartServiceHelper.getMonthForMatch(dbHistory);
+
+		final ChartGoalDto chartDataDto = chartGoalDtos.get(month);
+
+		Integer shotGoals = chartDataDto.getShotGoals();
+		Integer getGoals = chartDataDto.getGetGoals();
+
+		shotGoals = shotGoals + dbHistory.getShotGoals();
+		getGoals = getGoals + dbHistory.getGetGoals();
+
+		chartDataDto.setShotGoals(shotGoals);
+		chartDataDto.setGetGoals(getGoals);
+	}
+
+	public static void updateOpponentForMatch(SingleMatchHistory dbHistory, HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
+		final Player opponent = dbHistory.getPlayer2();
+
+		ChartOpponentDto chartOpponentDto = chartOpponentDtos.get(opponent.getKey().getId());
+		if (chartOpponentDto == null) {
+			chartOpponentDto = new ChartOpponentDto();
+			chartOpponentDto.setId(opponent.getKey().getId());
+			chartOpponentDto.setOpponentName(opponent.getLastName() + ", " + opponent.getFirstName());
+			chartOpponentDto.setPlayedGames(1);
+
+			if (dbHistory.isWinner()) {
+				final int wins = chartOpponentDto.getWins() + 1;
+				chartOpponentDto.setWins(wins);
+			} else {
+				final int defeats = chartOpponentDto.getDefeats() + 1;
+				chartOpponentDto.setDefeats(defeats);
+			}
+			chartOpponentDtos.put(opponent.getKey().getId(), chartOpponentDto);
+		} else {
+			final int playedGames = chartOpponentDto.getPlayedGames() + 1;
+			chartOpponentDto.setPlayedGames(playedGames);
+
+			if (dbHistory.isWinner()) {
+				final int wins = chartOpponentDto.getWins() + 1;
+				chartOpponentDto.setWins(wins);
+			} else {
+				final int defeats = chartOpponentDto.getDefeats() + 1;
+				chartOpponentDto.setDefeats(defeats);
+			}
 		}
-		return chartDataDtos;
 	}
 
 }

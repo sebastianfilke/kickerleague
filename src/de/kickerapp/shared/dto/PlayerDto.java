@@ -182,4 +182,22 @@ public class PlayerDto extends BaseDto {
 		this.playerDoubleStatsDto = playerDoubleStatsDto;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+		sb.append(" [");
+		sb.append("id=").append(getId()).append(", ");
+		sb.append("lastName=").append(lastName).append(", ");
+		sb.append("firstName=").append(firstName).append(", ");
+		sb.append("nickName=").append(nickName).append(", ");
+		sb.append("eMail=").append(eMail).append(", ");
+		sb.append("lastMatchDate=").append(lastMatchDate);
+		sb.append("]");
+
+		return sb.toString();
+	}
+
 }

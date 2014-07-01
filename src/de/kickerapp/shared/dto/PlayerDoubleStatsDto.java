@@ -17,4 +17,12 @@ public class PlayerDoubleStatsDto extends StatsDto {
 		super();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+
 }

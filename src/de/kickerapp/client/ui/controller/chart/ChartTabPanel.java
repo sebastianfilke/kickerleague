@@ -75,7 +75,7 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler {
 				final Widget widget = event.getSelectedItem();
 
 				activeTab = panel.getWidgetIndex(widget);
-				getData();
+				getChartForActiveTab();
 			}
 		});
 		tabPanel.setResizeTabs(true);
@@ -95,7 +95,7 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler {
 		return tabPanel;
 	}
 
-	private void getData() {
+	private void getChartForActiveTab() {
 		if (activeTab == 0) {
 			singlePlayerChartPanel.getPlayerList();
 		} else if (activeTab == 1) {
@@ -108,7 +108,7 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler {
 	 */
 	@Override
 	public void showData(ShowDataEvent event) {
-		getData();
+		getChartForActiveTab();
 	}
 
 }

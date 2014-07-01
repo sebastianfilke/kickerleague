@@ -129,4 +129,18 @@ public class TeamDto extends BaseDto {
 		this.teamStatsDto = teamStatsDto;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+		sb.append(" [");
+		sb.append("id=").append(getId()).append(", ");
+		sb.append("lastMatchDate=").append(lastMatchDate);
+		sb.append("]");
+
+		return sb.toString();
+	}
+
 }

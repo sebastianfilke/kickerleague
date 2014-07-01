@@ -18,18 +18,18 @@ import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite.TextAnchor;
 import com.sencha.gxt.data.shared.ListStore;
 
-import de.kickerapp.client.properties.ChartProperty;
+import de.kickerapp.client.properties.ChartGameProperty;
 import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.ui.base.BaseContainer;
-import de.kickerapp.shared.dto.ChartGameDataDto;
+import de.kickerapp.shared.dto.ChartGameDto;
 
 public class GameChartPanel extends BaseContainer {
 
-	private ListStore<ChartGameDataDto> storeGame;
+	private ListStore<ChartGameDto> storeGame;
 
-	private Chart<ChartGameDataDto> chartGame;
+	private Chart<ChartGameDto> chartGame;
 
-	private BarSeries<ChartGameDataDto> barGame;
+	private BarSeries<ChartGameDto> barGame;
 
 	public GameChartPanel() {
 		super();
@@ -42,13 +42,14 @@ public class GameChartPanel extends BaseContainer {
 	 */
 	@Override
 	public void initLayout() {
-		storeGame = new ListStore<ChartGameDataDto>(KickerProperties.CHART_PROPERTY.id());
+		storeGame = new ListStore<ChartGameDto>(KickerProperties.CHART_GAME_PROPERTY.id());
 
 		add(createGroupBarChart());
 	}
 
-	private Chart<ChartGameDataDto> createGroupBarChart() {
-		chartGame = new Chart<ChartGameDataDto>();
+	private Chart<ChartGameDto> createGroupBarChart() {
+		chartGame = new Chart<ChartGameDto>();
+		chartGame.setDefaultInsets(20);
 		chartGame.setShadowChart(true);
 		chartGame.setStore(storeGame);
 		chartGame.setAnimated(true);
@@ -61,12 +62,12 @@ public class GameChartPanel extends BaseContainer {
 		return chartGame;
 	}
 
-	private NumericAxis<ChartGameDataDto> createNumericAxis() {
-		final NumericAxis<ChartGameDataDto> numAxis = new NumericAxis<ChartGameDataDto>();
+	private NumericAxis<ChartGameDto> createNumericAxis() {
+		final NumericAxis<ChartGameDto> numAxis = new NumericAxis<ChartGameDto>();
 		numAxis.setPosition(Position.LEFT);
-		numAxis.addField(ChartProperty.winDifference);
-		numAxis.addField(KickerProperties.CHART_PROPERTY.wins());
-		numAxis.addField(KickerProperties.CHART_PROPERTY.defeats());
+		numAxis.addField(ChartGameProperty.winDifference);
+		numAxis.addField(KickerProperties.CHART_GAME_PROPERTY.wins());
+		numAxis.addField(KickerProperties.CHART_GAME_PROPERTY.defeats());
 		numAxis.setAdjustMaximumByMajorUnit(true);
 		numAxis.setAdjustMinimumByMajorUnit(true);
 		numAxis.setDisplayGrid(true);
@@ -86,9 +87,9 @@ public class GameChartPanel extends BaseContainer {
 		return numAxis;
 	}
 
-	private CategoryAxis<ChartGameDataDto, String> createCategoryAxis() {
-		final CategoryAxis<ChartGameDataDto, String> catAxis = new CategoryAxis<ChartGameDataDto, String>();
-		catAxis.setField(KickerProperties.CHART_PROPERTY.month());
+	private CategoryAxis<ChartGameDto, String> createCategoryAxis() {
+		final CategoryAxis<ChartGameDto, String> catAxis = new CategoryAxis<ChartGameDto, String>();
+		catAxis.setField(KickerProperties.CHART_GAME_PROPERTY.month());
 		catAxis.setPosition(Position.BOTTOM);
 
 		final TextSprite title = new TextSprite("Monat");
@@ -99,12 +100,12 @@ public class GameChartPanel extends BaseContainer {
 		return catAxis;
 	}
 
-	private BarSeries<ChartGameDataDto> createBarSeries() {
-		barGame = new BarSeries<ChartGameDataDto>();
+	private BarSeries<ChartGameDto> createBarSeries() {
+		barGame = new BarSeries<ChartGameDto>();
 		barGame.setYAxisPosition(Position.LEFT);
-		barGame.addYField(ChartProperty.winDifference);
-		barGame.addYField(KickerProperties.CHART_PROPERTY.wins());
-		barGame.addYField(KickerProperties.CHART_PROPERTY.defeats());
+		barGame.addYField(ChartGameProperty.winDifference);
+		barGame.addYField(KickerProperties.CHART_GAME_PROPERTY.wins());
+		barGame.addYField(KickerProperties.CHART_GAME_PROPERTY.defeats());
 		barGame.addColor(new RGB(17, 95, 166));
 		barGame.addColor(new RGB(148, 174, 10));
 		barGame.addColor(new RGB(166, 17, 32));
@@ -115,7 +116,7 @@ public class GameChartPanel extends BaseContainer {
 		sprite.setFontSize(12);
 		sprite.setTextAnchor(TextAnchor.MIDDLE);
 
-		final SeriesLabelConfig<ChartGameDataDto> labelConfig = new SeriesLabelConfig<ChartGameDataDto>();
+		final SeriesLabelConfig<ChartGameDto> labelConfig = new SeriesLabelConfig<ChartGameDto>();
 		labelConfig.setSpriteConfig(sprite);
 
 		barGame.setLabelConfig(labelConfig);
@@ -143,8 +144,8 @@ public class GameChartPanel extends BaseContainer {
 		return barGame;
 	}
 
-	private Legend<ChartGameDataDto> createLegend() {
-		final Legend<ChartGameDataDto> legend = new Legend<ChartGameDataDto>();
+	private Legend<ChartGameDto> createLegend() {
+		final Legend<ChartGameDto> legend = new Legend<ChartGameDto>();
 		legend.setPosition(Position.TOP);
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(true);
@@ -152,7 +153,7 @@ public class GameChartPanel extends BaseContainer {
 		return legend;
 	}
 
-	public void loadGameChart(ArrayList<ChartGameDataDto> result) {
+	public void loadGameChart(ArrayList<ChartGameDto> result) {
 		barGame.setShownInLegend(true);
 		if (!result.isEmpty()) {
 			barGame.setShownInLegend(true);
@@ -163,7 +164,7 @@ public class GameChartPanel extends BaseContainer {
 		chartGame.redrawChart();
 	}
 
-	public Chart<ChartGameDataDto> getChartGame() {
+	public Chart<ChartGameDto> getChartGame() {
 		return chartGame;
 	}
 

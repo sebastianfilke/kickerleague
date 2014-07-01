@@ -38,7 +38,7 @@ public final class MatchBean {
 	 */
 	public static List<SingleMatchHistory> getSingleMatchesForPlayer(final PlayerDto playerDto) {
 		final QueryContainer conPlayer = new QueryContainer();
-		conPlayer.setPlans(MatchHistoryPlan.PLAYER1);
+		conPlayer.setPlans(MatchHistoryPlan.BOTHPLAYERS);
 		conPlayer.setQuery("player1 == :id");
 		conPlayer.setOrdering("matchNumber asc");
 		conPlayer.setParameter(playerDto.getId());

@@ -18,19 +18,18 @@ import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite.TextAnchor;
 import com.sencha.gxt.data.shared.ListStore;
 
-import de.kickerapp.client.properties.ChartProperty;
+import de.kickerapp.client.properties.ChartGoalProperty;
 import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.ui.base.BaseContainer;
-import de.kickerapp.shared.dto.ChartGameDataDto;
-import de.kickerapp.shared.dto.ChartGoalDataDto;
+import de.kickerapp.shared.dto.ChartGoalDto;
 
 public class GoalChartPanel extends BaseContainer {
 
-	private ListStore<ChartGoalDataDto> storeGoal;
+	private ListStore<ChartGoalDto> storeGoal;
 
-	private Chart<ChartGoalDataDto> chartGoal;
+	private Chart<ChartGoalDto> chartGoal;
 
-	private BarSeries<ChartGoalDataDto> barGoal;
+	private BarSeries<ChartGoalDto> barGoal;
 
 	public GoalChartPanel() {
 		super();
@@ -43,13 +42,14 @@ public class GoalChartPanel extends BaseContainer {
 	 */
 	@Override
 	public void initLayout() {
-		storeGoal = new ListStore<ChartGoalDataDto>(KickerProperties.CHART_PROPERTY.id());
+		storeGoal = new ListStore<ChartGoalDto>(KickerProperties.CHART_GOAL_PROPERTY.id());
 
 		add(createGroupBarChart());
 	}
 
-	private Chart<ChartGameDataDto> createGroupBarChart() {
-		chartGoal = new Chart<ChartGoalDataDto>();
+	private Chart<ChartGoalDto> createGroupBarChart() {
+		chartGoal = new Chart<ChartGoalDto>();
+		chartGoal.setDefaultInsets(20);
 		chartGoal.setShadowChart(true);
 		chartGoal.setStore(storeGoal);
 		chartGoal.setAnimated(true);
@@ -62,12 +62,12 @@ public class GoalChartPanel extends BaseContainer {
 		return chartGoal;
 	}
 
-	private NumericAxis<ChartGameDataDto> createNumericAxis() {
-		final NumericAxis<ChartGoalDataDto> numAxis = new NumericAxis<ChartGoalDataDto>();
+	private NumericAxis<ChartGoalDto> createNumericAxis() {
+		final NumericAxis<ChartGoalDto> numAxis = new NumericAxis<ChartGoalDto>();
 		numAxis.setPosition(Position.LEFT);
-		numAxis.addField(ChartProperty.goalDifference);
-		numAxis.addField(KickerProperties.CHART_PROPERTY.shotGoals());
-		numAxis.addField(KickerProperties.CHART_PROPERTY.getGoals());
+		numAxis.addField(ChartGoalProperty.goalDifference);
+		numAxis.addField(KickerProperties.CHART_GOAL_PROPERTY.shotGoals());
+		numAxis.addField(KickerProperties.CHART_GOAL_PROPERTY.getGoals());
 		numAxis.setAdjustMaximumByMajorUnit(true);
 		numAxis.setAdjustMinimumByMajorUnit(true);
 		numAxis.setDisplayGrid(true);
@@ -87,9 +87,9 @@ public class GoalChartPanel extends BaseContainer {
 		return numAxis;
 	}
 
-	private CategoryAxis<ChartGoalDataDto, String> createCategoryAxis() {
-		final CategoryAxis<ChartGoalDataDto, String> catAxis = new CategoryAxis<ChartGoalDataDto, String>();
-		catAxis.setField(KickerProperties.CHART_PROPERTY.month());
+	private CategoryAxis<ChartGoalDto, String> createCategoryAxis() {
+		final CategoryAxis<ChartGoalDto, String> catAxis = new CategoryAxis<ChartGoalDto, String>();
+		catAxis.setField(KickerProperties.CHART_GOAL_PROPERTY.month());
 		catAxis.setPosition(Position.BOTTOM);
 
 		final TextSprite title = new TextSprite("Monat");
@@ -100,12 +100,12 @@ public class GoalChartPanel extends BaseContainer {
 		return catAxis;
 	}
 
-	private BarSeries<ChartGoalDataDto> createBarSeries() {
-		barGoal = new BarSeries<ChartGoalDataDto>();
+	private BarSeries<ChartGoalDto> createBarSeries() {
+		barGoal = new BarSeries<ChartGoalDto>();
 		barGoal.setYAxisPosition(Position.LEFT);
-		barGoal.addYField(ChartProperty.goalDifference);
-		barGoal.addYField(KickerProperties.CHART_PROPERTY.shotGoals());
-		barGoal.addYField(KickerProperties.CHART_PROPERTY.getGoals());
+		barGoal.addYField(ChartGoalProperty.goalDifference);
+		barGoal.addYField(KickerProperties.CHART_GOAL_PROPERTY.shotGoals());
+		barGoal.addYField(KickerProperties.CHART_GOAL_PROPERTY.getGoals());
 		barGoal.addColor(new RGB(17, 95, 166));
 		barGoal.addColor(new RGB(148, 174, 10));
 		barGoal.addColor(new RGB(166, 17, 32));
@@ -116,7 +116,7 @@ public class GoalChartPanel extends BaseContainer {
 		sprite.setFontSize(12);
 		sprite.setTextAnchor(TextAnchor.MIDDLE);
 
-		final SeriesLabelConfig<ChartGoalDataDto> labelConfig = new SeriesLabelConfig<ChartGoalDataDto>();
+		final SeriesLabelConfig<ChartGoalDto> labelConfig = new SeriesLabelConfig<ChartGoalDto>();
 		labelConfig.setSpriteConfig(sprite);
 
 		barGoal.setLabelConfig(labelConfig);
@@ -144,8 +144,8 @@ public class GoalChartPanel extends BaseContainer {
 		return barGoal;
 	}
 
-	private Legend<ChartGoalDataDto> createLegend() {
-		final Legend<ChartGoalDataDto> legend = new Legend<ChartGoalDataDto>();
+	private Legend<ChartGoalDto> createLegend() {
+		final Legend<ChartGoalDto> legend = new Legend<ChartGoalDto>();
 		legend.setPosition(Position.TOP);
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(true);
@@ -153,7 +153,7 @@ public class GoalChartPanel extends BaseContainer {
 		return legend;
 	}
 
-	public void loadGoalChart(ArrayList<ChartGoalDataDto> result) {
+	public void loadGoalChart(ArrayList<ChartGoalDto> result) {
 		if (!result.isEmpty()) {
 			barGoal.setShownInLegend(true);
 		} else {
@@ -163,7 +163,7 @@ public class GoalChartPanel extends BaseContainer {
 		chartGoal.redrawChart();
 	}
 
-	public Chart<ChartGoalDataDto> getChartGoal() {
+	public Chart<ChartGoalDto> getChartGoal() {
 		return chartGoal;
 	}
 
