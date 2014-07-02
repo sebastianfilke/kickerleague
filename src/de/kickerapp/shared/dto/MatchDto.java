@@ -6,7 +6,7 @@ import de.kickerapp.shared.common.BaseDto;
 import de.kickerapp.shared.common.MatchType;
 
 /**
- * Client-Datenklasse zum Halten der Informationen für ein Spiel.
+ * Client-Basisdatenklasse zum Halten der Informationen für ein Spiel.
  * 
  * @author Sebastian Filke
  */

@@ -17,7 +17,9 @@ public class BaseDto implements BaseSerializable {
 	 * Erzeugt eine neue Basisklasse.
 	 */
 	public BaseDto() {
-		this.id = 0;
+		super();
+
+		id = 0;
 	}
 
 	/**

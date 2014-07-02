@@ -3,6 +3,7 @@ package de.kickerapp.server.services;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import de.kickerapp.server.dao.SingleMatchHistory;
 import de.kickerapp.shared.dto.ChartGameDto;
 import de.kickerapp.shared.dto.ChartGoalDto;
 import de.kickerapp.shared.dto.ChartOpponentDto;
+import de.kickerapp.shared.dto.ChartPointDto;
 
 /**
  * Hilfsklasse für den Dienst zur Verarbeitung von Diagrammen im Klienten.
@@ -215,6 +217,15 @@ public class ChartServiceHelper {
 				chartOpponentDto.setDefeats(defeats);
 			}
 		}
+	}
+
+	public static void updatePointForMatch(SingleMatchHistory dbHistory, ArrayList<ChartPointDto> chartPointDtos) {
+		final ChartPointDto chartPointDto = new ChartPointDto();
+		chartPointDto.setId(chartPointDtos.size() + 1);
+		chartPointDto.setMatchNumber(dbHistory.getMatchNumber());
+		chartPointDto.setPoints(dbHistory.getTotalPoints());
+
+		chartPointDtos.add(chartPointDto);
 	}
 
 }

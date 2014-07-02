@@ -10,12 +10,15 @@ import com.sencha.gxt.chart.client.chart.axis.NumericAxis;
 import com.sencha.gxt.chart.client.chart.series.BarSeries;
 import com.sencha.gxt.chart.client.chart.series.SeriesHighlighter;
 import com.sencha.gxt.chart.client.chart.series.SeriesLabelConfig;
+import com.sencha.gxt.chart.client.chart.series.SeriesLabelProvider;
+import com.sencha.gxt.chart.client.chart.series.SeriesToolTipConfig;
 import com.sencha.gxt.chart.client.draw.DrawFx;
 import com.sencha.gxt.chart.client.draw.RGB;
 import com.sencha.gxt.chart.client.draw.path.PathSprite;
 import com.sencha.gxt.chart.client.draw.sprite.Sprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite.TextAnchor;
+import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 
 import de.kickerapp.client.properties.ChartGameProperty;
@@ -109,8 +112,19 @@ public class GameChartPanel extends BaseContainer {
 		barGame.addColor(new RGB(17, 95, 166));
 		barGame.addColor(new RGB(148, 174, 10));
 		barGame.addColor(new RGB(166, 17, 32));
+		barGame.setShownInLegend(false);
+		barGame.setHighlighting(true);
 		barGame.setColumn(true);
 
+		barGame.setLabelConfig(createLabelConfig());
+		barGame.setToolTipConfig(createToolTipConfig());
+		barGame.setHighlighter(createHighlighter());
+		barGame.setLegendTitles(createLegendTitles());
+
+		return barGame;
+	}
+
+	private SeriesLabelConfig<ChartGameDto> createLabelConfig() {
 		final TextSprite sprite = new TextSprite();
 		sprite.setFill(RGB.WHITE);
 		sprite.setFontSize(12);
@@ -118,17 +132,42 @@ public class GameChartPanel extends BaseContainer {
 
 		final SeriesLabelConfig<ChartGameDto> labelConfig = new SeriesLabelConfig<ChartGameDto>();
 		labelConfig.setSpriteConfig(sprite);
+		return labelConfig;
+	}
 
-		barGame.setLabelConfig(labelConfig);
+	private SeriesToolTipConfig<ChartGameDto> createToolTipConfig() {
+		final SeriesToolTipConfig<ChartGameDto> toolTipConfig = new SeriesToolTipConfig<ChartGameDto>();
+		toolTipConfig.setLabelProvider(new SeriesLabelProvider<ChartGameDto>() {
+			@Override
+			public String getLabel(ChartGameDto item, ValueProvider<? super ChartGameDto, ? extends Number> valueProvider) {
+				final int value = valueProvider.getValue(item).intValue();
 
-		final ArrayList<String> legendTitles = new ArrayList<String>();
-		legendTitles.add("Spieldifferenz");
-		legendTitles.add("Siege");
-		legendTitles.add("Niederlagen");
-		barGame.setLegendTitles(legendTitles);
-		barGame.setShownInLegend(false);
-		barGame.setHighlighting(true);
-		barGame.setHighlighter(new SeriesHighlighter() {
+				final StringBuilder sb = new StringBuilder(Integer.toString(Math.abs(value)));
+				if (valueProvider.getPath().equals("wins")) {
+					sb.append(value == 1 ? " Spiel gewonnen" : " Spiele gewonnen");
+				} else if (valueProvider.getPath().equals("defeats")) {
+					sb.append(value == 1 ? " Spiel verloren" : " Spiele verloren");
+				} else if (valueProvider.getPath().equals("winDifference")) {
+					sb.append(value == 1 ? " Spiel " : " Spiele ");
+					if (value <= 0) {
+						sb.append("mehr verloren");
+					} else {
+						sb.append("mehr gewonnen");
+					}
+				}
+				sb.append(" im ").append(item.getMonth());
+
+				return sb.toString();
+			}
+		});
+		toolTipConfig.setTrackMouse(true);
+		toolTipConfig.setHideDelay(200);
+
+		return toolTipConfig;
+	}
+
+	private SeriesHighlighter createHighlighter() {
+		final SeriesHighlighter highlighter = new SeriesHighlighter() {
 			@Override
 			public void highlight(Sprite sprite) {
 				final RGB rgb = (RGB) sprite.getFill();
@@ -140,8 +179,18 @@ public class GameChartPanel extends BaseContainer {
 			public void unHighlight(Sprite sprite) {
 				DrawFx.createStrokeWidthAnimator(sprite, 0).run(250);
 			}
-		});
-		return barGame;
+		};
+		return highlighter;
+	}
+
+	private ArrayList<String> createLegendTitles() {
+		final ArrayList<String> legendTitles = new ArrayList<String>();
+
+		legendTitles.add("Spieldifferenz");
+		legendTitles.add("Siege");
+		legendTitles.add("Niederlagen");
+
+		return legendTitles;
 	}
 
 	private Legend<ChartGameDto> createLegend() {

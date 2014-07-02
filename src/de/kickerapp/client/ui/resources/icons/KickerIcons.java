@@ -55,6 +55,9 @@ public interface KickerIcons extends ClientBundle {
 	@Source("soccer_ball.png")
 	ImageResource soccer_ball();
 
+	@Source("stats.png")
+	ImageResource chart_line();
+
 	@Source("trophy_bronze.png")
 	ImageResource trophy_bronze();
 

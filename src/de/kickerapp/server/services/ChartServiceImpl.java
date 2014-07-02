@@ -1,5 +1,6 @@
 package de.kickerapp.server.services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import de.kickerapp.shared.container.ChartContainer;
 import de.kickerapp.shared.dto.ChartGameDto;
 import de.kickerapp.shared.dto.ChartGoalDto;
 import de.kickerapp.shared.dto.ChartOpponentDto;
+import de.kickerapp.shared.dto.ChartPointDto;
 import de.kickerapp.shared.dto.InfoDto;
 import de.kickerapp.shared.dto.PlayerDto;
 
@@ -69,17 +71,20 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 			chartGoalDtos.put(i, new ChartGoalDto((long) i, MONTHS[i - 1]));
 		}
 		final HashMap<Long, ChartOpponentDto> chartOpponentDtos = new HashMap<Long, ChartOpponentDto>();
+		final ArrayList<ChartPointDto> chartPointDtos = new ArrayList<ChartPointDto>();
 
 		for (SingleMatchHistory dbHistory : dbSingleMatches) {
 			ChartServiceHelper.updateGameForMatch(dbHistory, chartGameDtos);
 			ChartServiceHelper.updateGoalForMatch(dbHistory, chartGoalDtos);
 			ChartServiceHelper.updateOpponentForMatch(dbHistory, chartOpponentDtos);
+			ChartServiceHelper.updatePointForMatch(dbHistory, chartPointDtos);
 		}
 
 		final ChartContainer container = new ChartContainer();
 		container.getChartGameDtos().addAll(chartGameDtos.values());
 		container.getChartGoalDtos().addAll(chartGoalDtos.values());
 		container.getChartOpponentDtos().addAll(chartOpponentDtos.values());
+		container.getChartPointDtos().addAll(chartPointDtos);
 
 		return container;
 	}

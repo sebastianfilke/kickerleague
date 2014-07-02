@@ -56,4 +56,20 @@ public class ChartOpponentDto extends BaseDto {
 		this.defeats = defeats;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+		sb.append(" [");
+		sb.append("id=").append(getId()).append(", ");
+		sb.append("opponentName=").append(opponentName).append(", ");
+		sb.append("wins=").append(wins).append(", ");
+		sb.append("defeats=").append(defeats);
+		sb.append("]");
+
+		return sb.toString();
+	}
+
 }

@@ -4,7 +4,7 @@ import de.kickerapp.shared.common.BaseDto;
 import de.kickerapp.shared.common.Tendency;
 
 /**
- * Client-Basidatenklasse zum Halten der Informationen für die Statistiken von Teams bzw. Spielern.
+ * Client-Basisdatenklasse zum Halten der Informationen für die Statistiken von Teams bzw. Spielern.
  * 
  * @author Sebastian Filke
  */

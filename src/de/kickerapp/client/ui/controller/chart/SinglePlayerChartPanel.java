@@ -50,11 +50,13 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 	private OpponentChartPanel opponentChartPanel;
 
+	private PointChartPanel pointChartPanel;
+
 	private InfoPanel infoPanel;
 
 	private ToggleGroup tgChart;
 
-	private ToggleButton tbtnGoalChart, tbtnGameChart, tbtnOpponentChart;
+	private ToggleButton tbtnGoalChart, tbtnGameChart, tbtnOpponentChart, tbtnPointChart;
 
 	private boolean doUpdatePlayerList, doUpdatePlayerInfo, doUpdateSinglePlayerChart;
 
@@ -79,10 +81,12 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		goalChartPanel = new GoalChartPanel();
 		gameChartPanel = new GameChartPanel();
 		opponentChartPanel = new OpponentChartPanel();
+		pointChartPanel = new PointChartPanel();
 
 		clcSingleChart.add(gameChartPanel);
 		clcSingleChart.add(goalChartPanel);
 		clcSingleChart.add(opponentChartPanel);
+		clcSingleChart.add(pointChartPanel);
 
 		doUpdatePlayerList = true;
 		doUpdatePlayerInfo = true;
@@ -164,7 +168,6 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 				final PlayerDto selectedPlayer = event.getSelectedItem();
 				if (selectedPlayer != null) {
 					setDoUpdate();
-					setEnabledButtons();
 					loadSinglePlayerChart(selectedPlayer);
 					loadSingleInfo(selectedPlayer);
 				}
@@ -178,13 +181,6 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		return cbPlayer;
 	}
 
-	protected void setEnabledButtons() {
-		btnUpdate.setEnabled(true);
-		tbtnGoalChart.setEnabled(true);
-		tbtnGameChart.setEnabled(true);
-		tbtnOpponentChart.setEnabled(true);
-	}
-
 	private ToolBar createToolBarCharts() {
 		final ToolBar toolBar = new ToolBar();
 		toolBar.setEnableOverflow(false);
@@ -192,6 +188,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		final ToggleButton btnGameChart = createTbtnGameChart();
 		final ToggleButton btnGoalChart = createTbtnGoalChart();
 		final ToggleButton btnOpponentChart = createTbtnOpponentChart();
+		final ToggleButton btnPointChart = createTbtnPointChart();
 
 		tgChart = new ToggleGroup();
 		tgChart.addValueChangeHandler(new ValueChangeHandler<HasValue<Boolean>>() {
@@ -206,6 +203,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		tgChart.add(btnGameChart);
 		tgChart.add(btnGoalChart);
 		tgChart.add(btnOpponentChart);
+		tgChart.add(btnPointChart);
 		tgChart.setValue(btnGameChart);
 
 		toolBar.add(createBtnUpdateChart());
@@ -213,6 +211,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		toolBar.add(btnGameChart);
 		toolBar.add(btnGoalChart);
 		toolBar.add(btnOpponentChart);
+		toolBar.add(btnPointChart);
 
 		return toolBar;
 	}
@@ -250,6 +249,17 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		return tbtnOpponentChart;
 	}
 
+	private ToggleButton createTbtnPointChart() {
+		tbtnPointChart = new ToggleButton("Punktestatistik");
+		tbtnPointChart.setToolTip("Zeigt die Punktestatistik für den aktuell gewählten Spieler");
+		tbtnPointChart.setIcon(KickerIcons.ICON.chart_line());
+		tbtnPointChart.setId("singlePointChart");
+		tbtnPointChart.setAllowDepress(false);
+		tbtnPointChart.setEnabled(false);
+
+		return tbtnPointChart;
+	}
+
 	public void buttonPressed(HasValue<Boolean> value, PlayerDto selectedPlayer) {
 		if (value == tbtnGameChart) {
 			clcSingleChart.setActiveWidget(gameChartPanel);
@@ -260,6 +270,9 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		} else if (value == tbtnOpponentChart) {
 			clcSingleChart.setActiveWidget(opponentChartPanel);
 			opponentChartPanel.loadOpponentChart(chartContainer.getChartOpponentDtos());
+		} else if (value == tbtnPointChart) {
+			clcSingleChart.setActiveWidget(pointChartPanel);
+			pointChartPanel.loadPointChart(chartContainer.getChartPointDtos());
 		}
 	}
 
@@ -339,7 +352,10 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 						goalChartPanel.loadGoalChart(result.getChartGoalDtos());
 					} else if (tgChart.getValue() == tbtnOpponentChart) {
 						opponentChartPanel.loadOpponentChart(result.getChartOpponentDtos());
+					} else if (tgChart.getValue() == tbtnPointChart) {
+						pointChartPanel.loadPointChart(chartContainer.getChartPointDtos());
 					}
+					setEnabledButtons();
 					doUpdateSinglePlayerChart = false;
 					unmask();
 				}
@@ -351,6 +367,18 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 					AppExceptionHandler.getInstance().handleException(caught);
 				}
 			});
+		}
+	}
+
+	protected void setEnabledButtons() {
+		btnUpdate.setEnabled(true);
+		tbtnGoalChart.setEnabled(true);
+		tbtnGameChart.setEnabled(true);
+		tbtnOpponentChart.setEnabled(true);
+		if (chartContainer.getChartPointDtos().size() <= 1) {
+			tbtnPointChart.setEnabled(false);
+		} else {
+			tbtnPointChart.setEnabled(true);
 		}
 	}
 
