@@ -21,12 +21,13 @@ import de.kickerapp.shared.dto.InfoDto;
  */
 public class InfoPanel extends BaseContainer {
 
+	/** Die längste Gewinn-/Niederlagenserie des Team bzw. Spielers. */
 	private HTML winSeries, defeatSeries;
-
+	/** Der höchste Punktegewinn/-verlust des Team bzw. Spielers. */
 	private HTML maxWinPoints, maxLostPoints;
-
+	/** Die höchste/niedrigste Punktezahl des Team bzw. Spielers. */
 	private HTML maxPoints, minPoints;
-
+	/** Die prozentualen Siege/Punktedurchschnitt/durchschnittliche Tabellenplatz des Team bzw. Spielers. */
 	private HTML averageWins, averagePoints, averageTablePlace;
 
 	/**
@@ -44,26 +45,26 @@ public class InfoPanel extends BaseContainer {
 	public void initLayout() {
 		super.initLayout();
 
-		initLabels();
-		add(createInfoContainer());
+		initHtml();
+		add(createClcInfoContainer());
 	}
 
-	private void initLabels() {
-		winSeries = new HTML(createLabelText("0"));
-		defeatSeries = new HTML(createLabelText("0"));
+	private void initHtml() {
+		winSeries = new HTML(createInfoHtml("0"));
+		defeatSeries = new HTML(createInfoHtml("0"));
 
-		maxWinPoints = new HTML(createLabelText("0"));
-		maxLostPoints = new HTML(createLabelText("0"));
+		maxWinPoints = new HTML(createInfoHtml("0"));
+		maxLostPoints = new HTML(createInfoHtml("0"));
 
-		maxPoints = new HTML(createLabelText("0"));
-		minPoints = new HTML(createLabelText("0"));
+		maxPoints = new HTML(createInfoHtml("0"));
+		minPoints = new HTML(createInfoHtml("0"));
 
-		averageWins = new HTML(createLabelText("0"));
-		averagePoints = new HTML(createLabelText("0"));
-		averageTablePlace = new HTML(createLabelText("0"));
+		averageWins = new HTML(createInfoHtml("0.0"));
+		averagePoints = new HTML(createInfoHtml("0.0"));
+		averageTablePlace = new HTML(createInfoHtml("0.0"));
 	}
 
-	private CenterLayoutContainer createInfoContainer() {
+	private CenterLayoutContainer createClcInfoContainer() {
 		final CenterLayoutContainer clcInfo = new CenterLayoutContainer();
 
 		final HBoxLayoutContainer hblc = new HBoxLayoutContainer();
@@ -76,7 +77,7 @@ public class InfoPanel extends BaseContainer {
 		hblc.add(createFlexTable("HÖCHSTE PUNKTZAHL", maxPoints), new BoxLayoutData(new Margins(0, 5, 0, 0)));
 		hblc.add(createFlexTable("NIEDRIGSTE PUNKTZAHL", minPoints), new BoxLayoutData(new Margins(0, 20, 0, 0)));
 		hblc.add(createFlexTable("SIEGE <br>(PROZENTUAL)", averageWins), new BoxLayoutData(new Margins(0, 5, 0, 0)));
-		hblc.add(createFlexTable("PUNKTE-DURCHSCHNITT", averagePoints), new BoxLayoutData(new Margins(0, 5, 0, 0)));
+		hblc.add(createFlexTable("DURCHSCHNITTL. PUNKTE", averagePoints), new BoxLayoutData(new Margins(0, 5, 0, 0)));
 		hblc.add(createFlexTable("DURCHSCHNITTL. TABELLENPLATZ", averageTablePlace));
 
 		clcInfo.add(hblc);
@@ -90,7 +91,7 @@ public class InfoPanel extends BaseContainer {
 		ftInfo.setCellSpacing(0);
 		ftInfo.setCellPadding(0);
 
-		ftInfo.setHTML(0, 0, createText(text));
+		ftInfo.setHTML(0, 0, createHtml(text));
 		ftInfo.setWidget(1, 0, html);
 
 		final FlexCellFormatter formatter = ftInfo.getFlexCellFormatter();
@@ -98,6 +99,7 @@ public class InfoPanel extends BaseContainer {
 		formatter.setHeight(0, 0, "40");
 		formatter.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER);
 		formatter.setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_MIDDLE);
+
 		formatter.setWidth(1, 0, "120");
 		formatter.setHeight(1, 0, "60");
 		formatter.setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_CENTER);
@@ -106,24 +108,24 @@ public class InfoPanel extends BaseContainer {
 		return ftInfo;
 	}
 
-	private String createText(String text) {
+	private String createHtml(String text) {
 		return "<span style='font-size:11px; font-family:Arial; font-weight:bold;'>" + text + "</span>";
 	}
 
-	private String createLabelText(String text) {
+	private String createInfoHtml(String text) {
 		return "<span style='font-size:34px; font-family:Arial; font-weight:bold;'>" + text + "</span>";
 	}
 
 	public void setInfos(InfoDto infoDto) {
-		winSeries.setHTML(createLabelText(Integer.toString(infoDto.getWinSeries())));
-		defeatSeries.setHTML(createLabelText(Integer.toString(infoDto.getDefeatSeries())));
-		maxWinPoints.setHTML(createLabelText("+" + Integer.toString(infoDto.getMaxWinPoints())));
-		maxLostPoints.setHTML(createLabelText(Integer.toString(infoDto.getMaxLostPoints())));
-		maxPoints.setHTML(createLabelText(Integer.toString(infoDto.getMaxPoints())));
-		minPoints.setHTML(createLabelText(Integer.toString(infoDto.getMinPoints())));
-		averageWins.setHTML(createLabelText(infoDto.getAverageWins() + "%"));
-		averagePoints.setHTML(createLabelText(infoDto.getAveragePoints()));
-		averageTablePlace.setHTML(createLabelText(infoDto.getAverageTablePlace()));
+		winSeries.setHTML(createInfoHtml(Integer.toString(infoDto.getWinSeries())));
+		defeatSeries.setHTML(createInfoHtml(Integer.toString(infoDto.getDefeatSeries())));
+		maxWinPoints.setHTML(createInfoHtml("+" + Integer.toString(infoDto.getMaxWinPoints())));
+		maxLostPoints.setHTML(createInfoHtml(Integer.toString(infoDto.getMaxLostPoints())));
+		maxPoints.setHTML(createInfoHtml(Integer.toString(infoDto.getMaxPoints())));
+		minPoints.setHTML(createInfoHtml(Integer.toString(infoDto.getMinPoints())));
+		averageWins.setHTML(createInfoHtml(infoDto.getAverageWins() + "%"));
+		averagePoints.setHTML(createInfoHtml(infoDto.getAveragePoints()));
+		averageTablePlace.setHTML(createInfoHtml(infoDto.getAverageTablePlace()));
 	}
 
 }

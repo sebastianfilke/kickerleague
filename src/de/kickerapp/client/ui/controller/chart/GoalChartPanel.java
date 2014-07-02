@@ -10,12 +10,15 @@ import com.sencha.gxt.chart.client.chart.axis.NumericAxis;
 import com.sencha.gxt.chart.client.chart.series.BarSeries;
 import com.sencha.gxt.chart.client.chart.series.SeriesHighlighter;
 import com.sencha.gxt.chart.client.chart.series.SeriesLabelConfig;
+import com.sencha.gxt.chart.client.chart.series.SeriesLabelProvider;
+import com.sencha.gxt.chart.client.chart.series.SeriesToolTipConfig;
 import com.sencha.gxt.chart.client.draw.DrawFx;
 import com.sencha.gxt.chart.client.draw.RGB;
 import com.sencha.gxt.chart.client.draw.path.PathSprite;
 import com.sencha.gxt.chart.client.draw.sprite.Sprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite.TextAnchor;
+import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 
 import de.kickerapp.client.properties.ChartGoalProperty;
@@ -109,26 +112,63 @@ public class GoalChartPanel extends BaseContainer {
 		barGoal.addColor(new RGB(17, 95, 166));
 		barGoal.addColor(new RGB(148, 174, 10));
 		barGoal.addColor(new RGB(166, 17, 32));
+		barGoal.setShownInLegend(false);
+		barGoal.setHighlighting(true);
 		barGoal.setColumn(true);
 
+		barGoal.setLabelConfig(crateLabelConfig());
+		barGoal.setToolTipConfig(createToolTipConfig());
+		barGoal.setHighlighter(crateHighlighter());
+		barGoal.setLegendTitles(createLegendTitles());
+
+		return barGoal;
+	}
+
+	private SeriesLabelConfig<ChartGoalDto> crateLabelConfig() {
 		final TextSprite sprite = new TextSprite();
+		sprite.setTextAnchor(TextAnchor.MIDDLE);
 		sprite.setFill(RGB.WHITE);
 		sprite.setFontSize(12);
-		sprite.setTextAnchor(TextAnchor.MIDDLE);
 
 		final SeriesLabelConfig<ChartGoalDto> labelConfig = new SeriesLabelConfig<ChartGoalDto>();
 		labelConfig.setSpriteConfig(sprite);
 
-		barGoal.setLabelConfig(labelConfig);
+		return labelConfig;
+	}
 
-		final ArrayList<String> legendTitles = new ArrayList<String>();
-		legendTitles.add("Tordifferenz");
-		legendTitles.add("Tore geschossen");
-		legendTitles.add("Tore kassiert");
-		barGoal.setLegendTitles(legendTitles);
-		barGoal.setShownInLegend(false);
-		barGoal.setHighlighting(true);
-		barGoal.setHighlighter(new SeriesHighlighter() {
+	private SeriesToolTipConfig<ChartGoalDto> createToolTipConfig() {
+		final SeriesToolTipConfig<ChartGoalDto> toolTipConfig = new SeriesToolTipConfig<ChartGoalDto>();
+		toolTipConfig.setLabelProvider(new SeriesLabelProvider<ChartGoalDto>() {
+			@Override
+			public String getLabel(ChartGoalDto item, ValueProvider<? super ChartGoalDto, ? extends Number> valueProvider) {
+				final int value = valueProvider.getValue(item).intValue();
+
+				final StringBuilder sb = new StringBuilder(Integer.toString(Math.abs(value)));
+				if (valueProvider.getPath().equals("shotGoals")) {
+					sb.append(value == 1 ? " Tor geschossen" : " Tore geschossen");
+				} else if (valueProvider.getPath().equals("getGoals")) {
+					sb.append(value == 1 ? " Tor kassiert" : " Tore kassiert");
+				} else if (valueProvider.getPath().equals("goalDifference")) {
+					sb.append(value == 1 ? " Tor " : " Tore ");
+					if (value <= 0) {
+						sb.append("mehr kassiert");
+					} else {
+						sb.append("mehr geschossen");
+					}
+				}
+				sb.append(" im ").append(item.getMonth());
+
+				return sb.toString();
+			}
+		});
+		toolTipConfig.setTrackMouse(true);
+		toolTipConfig.setHideDelay(200);
+
+		return toolTipConfig;
+	}
+
+	private SeriesHighlighter crateHighlighter() {
+		final SeriesHighlighter highlighter = new SeriesHighlighter() {
 			@Override
 			public void highlight(Sprite sprite) {
 				final RGB rgb = (RGB) sprite.getFill();
@@ -140,8 +180,18 @@ public class GoalChartPanel extends BaseContainer {
 			public void unHighlight(Sprite sprite) {
 				DrawFx.createStrokeWidthAnimator(sprite, 0).run(250);
 			}
-		});
-		return barGoal;
+		};
+		return highlighter;
+	}
+
+	private ArrayList<String> createLegendTitles() {
+		final ArrayList<String> legendTitles = new ArrayList<String>();
+
+		legendTitles.add("Tordifferenz");
+		legendTitles.add("Tore geschossen");
+		legendTitles.add("Tore kassiert");
+
+		return legendTitles;
 	}
 
 	private Legend<ChartGoalDto> createLegend() {

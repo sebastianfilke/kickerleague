@@ -25,6 +25,7 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.StringLabelProvider;
 
+import de.kickerapp.client.properties.ChartOpponentProperty;
 import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.ui.base.BaseContainer;
 import de.kickerapp.shared.dto.ChartOpponentDto;
@@ -67,7 +68,7 @@ public class OpponentChartPanel extends BaseContainer {
 
 	private Series<ChartOpponentDto> createPieSeries() {
 		pieOpponent = new PieSeries<ChartOpponentDto>();
-		pieOpponent.setAngleField(KickerProperties.CHART_OPPONENT_PROPERTY.playedGames());
+		pieOpponent.setAngleField(ChartOpponentProperty.playedGames);
 		pieOpponent.setHighlighter(new AreaHighlighter());
 		pieOpponent.setHighlighting(true);
 		pieOpponent.setPopOutMargin(0);
@@ -153,7 +154,7 @@ public class OpponentChartPanel extends BaseContainer {
 
 	private void addColorsForResult(ArrayList<ChartOpponentDto> result) {
 		for (int i = 0; i < result.size(); i++) {
-			final Color color = new RGB((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
+			final Color color = new RGB((int) (Math.random() * 255), 255, (int) (Math.random() * 255));
 			if (pieOpponent.getColors().size() <= result.size()) {
 				pieOpponent.addColor(color);
 			} else {

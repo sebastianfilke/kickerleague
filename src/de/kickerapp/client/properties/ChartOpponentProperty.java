@@ -12,8 +12,22 @@ public interface ChartOpponentProperty extends PropertyAccess<ChartOpponentDto> 
 	@Path("id")
 	public ModelKeyProvider<ChartOpponentDto> id();
 
-	public ValueProvider<ChartOpponentDto, String> opponentName();
+	public ValueProvider<ChartOpponentDto, Integer> playedGames = new ValueProvider<ChartOpponentDto, Integer>() {
+		@Override
+		public Integer getValue(ChartOpponentDto object) {
+			return object.getWins() + object.getDefeats();
+		}
 
-	public ValueProvider<ChartOpponentDto, Integer> playedGames();
+		@Override
+		public void setValue(ChartOpponentDto object, Integer value) {
+		}
+
+		@Override
+		public String getPath() {
+			return "playedGames";
+		}
+	};
+
+	public ValueProvider<ChartOpponentDto, String> opponentName();
 
 }

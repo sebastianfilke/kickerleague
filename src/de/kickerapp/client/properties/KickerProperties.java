@@ -10,6 +10,8 @@ public interface KickerProperties {
 
 	public final ChartOpponentProperty CHART_OPPONENT_PROPERTY = GWT.create(ChartOpponentProperty.class);
 
+	public final ChartPointProperty CHART_POINT_PROPERTY = GWT.create(ChartPointProperty.class);
+
 	public final MatchProperty MATCH_PROPERTY = GWT.create(MatchProperty.class);
 
 	public final PlayerProperty PLAYER_PROPERTY = GWT.create(PlayerProperty.class);

@@ -52,4 +52,20 @@ public class ChartGoalDto extends BaseDto {
 		this.getGoals = getGoals;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+		sb.append(" [");
+		sb.append("id=").append(getId()).append(", ");
+		sb.append("month=").append(month).append(", ");
+		sb.append("shotGoals=").append(shotGoals).append(", ");
+		sb.append("getGoals=").append(getGoals);
+		sb.append("]");
+
+		return sb.toString();
+	}
+
 }
