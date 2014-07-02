@@ -50,6 +50,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		infoDto.setMinPoints(ChartServiceHelper.getSingleMatchMinPoints(dbSingleMatches));
 		infoDto.setAverageWins(ChartServiceHelper.getSingleAverageWins(dbSingleMatches, dbPlayer));
 		infoDto.setAveragePoints(ChartServiceHelper.getSingleAveragePoints(dbSingleMatches, dbPlayer));
+		infoDto.setAverageTablePlace(ChartServiceHelper.getSingleAverageTablePlace(dbSingleMatches, dbPlayer));
 
 		return infoDto;
 	}

@@ -109,6 +109,10 @@ body {
 	border-style: solid;
 }
 
+#stats {
+	background: transparent url(../images/stats_bg.png) repeat-x top left;
+}
+
 /* Navigation */
 /*-----------------------------------------------------------------------------------------*/
 #tabs26 {

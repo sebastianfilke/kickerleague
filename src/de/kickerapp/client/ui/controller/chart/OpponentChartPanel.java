@@ -71,6 +71,8 @@ public class OpponentChartPanel extends BaseContainer {
 		pieOpponent.setHighlighter(new AreaHighlighter());
 		pieOpponent.setHighlighting(true);
 		pieOpponent.setPopOutMargin(0);
+		pieOpponent.addColor(new RGB((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)));
+		pieOpponent.addColor(new RGB((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)));
 
 		final TextSprite textConfig = new TextSprite();
 		textConfig.setFont("Arial");
@@ -144,8 +146,12 @@ public class OpponentChartPanel extends BaseContainer {
 		} else {
 			pieOpponent.setShownInLegend(false);
 		}
+		addColorsForResult(result);
 		storeOpponent.replaceAll(result);
+		chartOpponent.redrawChart();
+	}
 
+	private void addColorsForResult(ArrayList<ChartOpponentDto> result) {
 		for (int i = 0; i < result.size(); i++) {
 			final Color color = new RGB((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
 			if (pieOpponent.getColors().size() <= result.size()) {
@@ -154,8 +160,6 @@ public class OpponentChartPanel extends BaseContainer {
 				break;
 			}
 		}
-
-		chartOpponent.redrawChart();
 	}
 
 	public Chart<ChartOpponentDto> getChartGoal() {
