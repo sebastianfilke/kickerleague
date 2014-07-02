@@ -7,3 +7,4 @@ gaeHrdEnabled=true
 gaeLaunchAppInBrowser=true
 googleCloudSqlEnabled=false
 localDevMySqlEnabled=true
+ormEnhancementInclusions=src/de/kickerapp/server/dao/

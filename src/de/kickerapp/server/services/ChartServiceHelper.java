@@ -127,16 +127,30 @@ public class ChartServiceHelper {
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
 		Integer sumPoints = 0;
-		Integer points = 1000;
 
 		for (SingleMatchHistory dbHistory : dbSingleMatches) {
-			points = points + dbHistory.getMatchPoints();
-			sumPoints = sumPoints + points;
+			sumPoints = sumPoints + dbHistory.getTotalPoints();
 		}
 		final Integer sumMatches = dbPlayer.getPlayerSingleStats().getWins() + dbPlayer.getPlayerSingleStats().getDefeats();
 		final double averagePoints = ((double) sumPoints / sumMatches);
 
 		return numberFormat.format(averagePoints);
+	}
+
+	public static String getSingleAverageTablePlace(List<SingleMatchHistory> dbSingleMatches, Player dbPlayer) {
+		final NumberFormat numberFormat = new DecimalFormat("0.0");
+		numberFormat.setRoundingMode(RoundingMode.DOWN);
+
+		Integer sumTablePlace = 0;
+
+		for (SingleMatchHistory dbHistory : dbSingleMatches) {
+			sumTablePlace = sumTablePlace + dbHistory.getTablePlace();
+		}
+
+		final Integer sumMatches = dbPlayer.getPlayerSingleStats().getWins() + dbPlayer.getPlayerSingleStats().getDefeats();
+		final double averageTablePlace = ((double) sumTablePlace / sumMatches);
+
+		return numberFormat.format(averageTablePlace);
 	}
 
 	public static void updateGameForMatch(SingleMatchHistory dbHistory, HashMap<Integer, ChartGameDto> chartGameDtos) {

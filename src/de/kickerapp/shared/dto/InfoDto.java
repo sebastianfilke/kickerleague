@@ -28,6 +28,8 @@ public class InfoDto extends BaseDto {
 	private String averageWins;
 	/** Der Punktedurchschnitt des Team bzw. Spielers. */
 	private String averagePoints;
+	/** Der durchschnittliche Tabellenplatz des Team bzw. Spielers. */
+	private String averageTablePlace;
 
 	/**
 	 * Erstellt einen neuen Spielverlauf ohne Angaben.
@@ -43,6 +45,7 @@ public class InfoDto extends BaseDto {
 		minPoints = 0;
 		averageWins = "0.0";
 		averagePoints = "0.0";
+		averageTablePlace = "0.0";
 	}
 
 	public Integer getWinSeries() {
@@ -109,6 +112,14 @@ public class InfoDto extends BaseDto {
 		this.averagePoints = averagePoints;
 	}
 
+	public String getAverageTablePlace() {
+		return averageTablePlace;
+	}
+
+	public void setAverageTablePlace(String averageTablePlace) {
+		this.averageTablePlace = averageTablePlace;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -124,7 +135,8 @@ public class InfoDto extends BaseDto {
 		sb.append("maxPoints=").append(maxPoints).append(", ");
 		sb.append("minPoints=").append(minPoints).append(", ");
 		sb.append("averageWins=").append(averageWins).append(", ");
-		sb.append("averagePoints=").append(averagePoints);
+		sb.append("averagePoints=").append(averagePoints).append(", ");
+		sb.append("averageTablePlace=").append(averageTablePlace);
 		sb.append("]");
 
 		return sb.toString();

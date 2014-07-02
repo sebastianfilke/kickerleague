@@ -30,7 +30,6 @@ import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BaseContainer;
-import de.kickerapp.client.ui.controller.InfoPanel;
 import de.kickerapp.client.ui.resources.icons.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;

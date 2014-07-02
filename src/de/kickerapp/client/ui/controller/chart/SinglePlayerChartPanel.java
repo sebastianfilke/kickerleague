@@ -13,8 +13,6 @@ import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.ToggleGroup;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;
-import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
@@ -30,11 +28,9 @@ import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BaseContainer;
-import de.kickerapp.client.ui.controller.InfoPanel;
 import de.kickerapp.client.ui.resources.icons.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
-import de.kickerapp.client.widgets.AppContentPanel;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.container.ChartContainer;
 import de.kickerapp.shared.dto.InfoDto;
@@ -92,34 +88,25 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		doUpdatePlayerInfo = true;
 		doUpdateSinglePlayerChart = true;
 
-		add(createBlcSingleStats());
+		add(createVlcSingleStats());
 	}
 
-	private BorderLayoutContainer createBlcSingleStats() {
-		final BorderLayoutContainer blcSinglePlayer = new BorderLayoutContainer();
-
-		final BorderLayoutData northData = new BorderLayoutData(0.2);
-		northData.setSplit(true);
-
-		final AppContentPanel panel = new AppContentPanel();
-		panel.setHeaderVisible(false);
-		panel.setBodyBorder(false);
-		panel.setBorders(false);
-		panel.add(infoPanel);
+	private VerticalLayoutContainer createVlcSingleStats() {
+		final VerticalLayoutContainer vlcSingleStats = new VerticalLayoutContainer();
 
 		final VerticalLayoutContainer vlcPlayerInfo = new VerticalLayoutContainer();
 		vlcPlayerInfo.getElement().getStyle().setBackgroundColor("#FFFFFF");
 		vlcPlayerInfo.add(createToolBarPlayerInfo(), new VerticalLayoutData(1, -1));
-		vlcPlayerInfo.add(panel, new VerticalLayoutData(1, 1));
+		vlcPlayerInfo.add(infoPanel, new VerticalLayoutData(1, 1));
 
 		final VerticalLayoutContainer vlcCharts = new VerticalLayoutContainer();
 		vlcCharts.add(createToolBarCharts(), new VerticalLayoutData(1, -1));
 		vlcCharts.add(clcSingleChart, new VerticalLayoutData(1, 1));
 
-		blcSinglePlayer.setNorthWidget(vlcPlayerInfo, northData);
-		blcSinglePlayer.setCenterWidget(vlcCharts);
+		vlcSingleStats.add(vlcPlayerInfo, new VerticalLayoutData(1, 0.18));
+		vlcSingleStats.add(vlcCharts, new VerticalLayoutData(1, 0.82));
 
-		return blcSinglePlayer;
+		return vlcSingleStats;
 	}
 
 	/**
@@ -184,6 +171,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 			}
 
 			private void setDoUpdate() {
+				doUpdatePlayerInfo = true;
 				doUpdateSinglePlayerChart = true;
 			}
 		});
