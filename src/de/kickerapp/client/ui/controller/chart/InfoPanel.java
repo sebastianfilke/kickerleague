@@ -28,7 +28,7 @@ public class InfoPanel extends BaseContainer {
 	/** Die höchste/niedrigste Punktezahl des Team bzw. Spielers. */
 	private HTML maxPoints, minPoints;
 	/** Die prozentualen Siege/Punktedurchschnitt/durchschnittliche Tabellenplatz des Team bzw. Spielers. */
-	private HTML averageWins, averagePoints, averageTablePlace;
+	private HTML percentageWins, averagePoints, averageTablePlace;
 
 	/**
 	 * Erzeugt einen neuen Controller für die Ansicht der Statistiken von Team- bzw. Spieler.
@@ -59,7 +59,7 @@ public class InfoPanel extends BaseContainer {
 		maxPoints = new HTML(createInfoHtml("0"));
 		minPoints = new HTML(createInfoHtml("0"));
 
-		averageWins = new HTML(createInfoHtml("0.0"));
+		percentageWins = new HTML(createInfoHtml("0.0"));
 		averagePoints = new HTML(createInfoHtml("0.0"));
 		averageTablePlace = new HTML(createInfoHtml("0.0"));
 	}
@@ -76,7 +76,7 @@ public class InfoPanel extends BaseContainer {
 		hblc.add(createFlexTable("HÖCHSTER PUNKTEVERLUST", maxLostPoints), new BoxLayoutData(new Margins(0, 20, 0, 0)));
 		hblc.add(createFlexTable("HÖCHSTE PUNKTZAHL", maxPoints), new BoxLayoutData(new Margins(0, 5, 0, 0)));
 		hblc.add(createFlexTable("NIEDRIGSTE PUNKTZAHL", minPoints), new BoxLayoutData(new Margins(0, 20, 0, 0)));
-		hblc.add(createFlexTable("SIEGE <br>(PROZENTUAL)", averageWins), new BoxLayoutData(new Margins(0, 5, 0, 0)));
+		hblc.add(createFlexTable("SIEGE <br>(PROZENTUAL)", percentageWins), new BoxLayoutData(new Margins(0, 5, 0, 0)));
 		hblc.add(createFlexTable("DURCHSCHNITTL. PUNKTE", averagePoints), new BoxLayoutData(new Margins(0, 5, 0, 0)));
 		hblc.add(createFlexTable("DURCHSCHNITTL. TABELLENPLATZ", averageTablePlace));
 
@@ -95,13 +95,13 @@ public class InfoPanel extends BaseContainer {
 		ftInfo.setWidget(1, 0, html);
 
 		final FlexCellFormatter formatter = ftInfo.getFlexCellFormatter();
-		formatter.setWidth(0, 0, "120");
-		formatter.setHeight(0, 0, "40");
+		formatter.setWidth(0, 0, "120px");
+		formatter.setHeight(0, 0, "40px");
 		formatter.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER);
 		formatter.setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_MIDDLE);
 
-		formatter.setWidth(1, 0, "120");
-		formatter.setHeight(1, 0, "60");
+		formatter.setWidth(1, 0, "120px");
+		formatter.setHeight(1, 0, "60px");
 		formatter.setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_CENTER);
 		formatter.setVerticalAlignment(1, 0, HasVerticalAlignment.ALIGN_MIDDLE);
 
@@ -123,7 +123,7 @@ public class InfoPanel extends BaseContainer {
 		maxLostPoints.setHTML(createInfoHtml(Integer.toString(infoDto.getMaxLostPoints())));
 		maxPoints.setHTML(createInfoHtml(Integer.toString(infoDto.getMaxPoints())));
 		minPoints.setHTML(createInfoHtml(Integer.toString(infoDto.getMinPoints())));
-		averageWins.setHTML(createInfoHtml(infoDto.getAverageWins() + "%"));
+		percentageWins.setHTML(createInfoHtml(infoDto.getPercentageWins() + "%"));
 		averagePoints.setHTML(createInfoHtml(infoDto.getAveragePoints()));
 		averageTablePlace.setHTML(createInfoHtml(infoDto.getAverageTablePlace()));
 	}

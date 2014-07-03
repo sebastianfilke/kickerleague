@@ -25,7 +25,7 @@ public class InfoDto extends BaseDto {
 	/** Die niedrigste Punktezahl des Team bzw. Spielers. */
 	private Integer minPoints;
 	/** Die prozentualen Siege des Team bzw. Spielers. */
-	private String averageWins;
+	private String percentageWins;
 	/** Die durchschnittlichen Punkte des Team bzw. Spielers. */
 	private String averagePoints;
 	/** Der durchschnittliche Tabellenplatz des Team bzw. Spielers. */
@@ -43,7 +43,7 @@ public class InfoDto extends BaseDto {
 		maxLostPoints = 0;
 		maxPoints = 0;
 		minPoints = 0;
-		averageWins = "0.0";
+		percentageWins = "0.0";
 		averagePoints = "0.0";
 		averageTablePlace = "0.0";
 	}
@@ -161,8 +161,8 @@ public class InfoDto extends BaseDto {
 	 * 
 	 * @return Die prozentualen Siege des Team bzw. Spielers als {@link String}.
 	 */
-	public String getAverageWins() {
-		return averageWins;
+	public String getPercentageWins() {
+		return percentageWins;
 	}
 
 	/**
@@ -170,8 +170,8 @@ public class InfoDto extends BaseDto {
 	 * 
 	 * @param averageWins Die prozentualen Siege des Team bzw. Spielers als {@link String}.
 	 */
-	public void setAverageWins(String averageWins) {
-		this.averageWins = averageWins;
+	public void setPercentageWins(String averageWins) {
+		this.percentageWins = averageWins;
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class InfoDto extends BaseDto {
 		sb.append("maxLostPoints=").append(maxLostPoints).append(", ");
 		sb.append("maxPoints=").append(maxPoints).append(", ");
 		sb.append("minPoints=").append(minPoints).append(", ");
-		sb.append("averageWins=").append(averageWins).append(", ");
+		sb.append("averageWins=").append(percentageWins).append(", ");
 		sb.append("averagePoints=").append(averagePoints).append(", ");
 		sb.append("averageTablePlace=").append(averageTablePlace);
 		sb.append("]");

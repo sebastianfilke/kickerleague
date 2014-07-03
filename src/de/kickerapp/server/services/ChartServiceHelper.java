@@ -114,14 +114,14 @@ public class ChartServiceHelper {
 		return minPoints;
 	}
 
-	public static String getSingleAverageWins(List<SingleMatchHistory> dbSingleMatches, Player dbPlayer) {
+	public static String getSinglePercentageWins(List<SingleMatchHistory> dbSingleMatches, Player dbPlayer) {
 		final NumberFormat numberFormat = new DecimalFormat("0.0");
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
 		final Integer sumMatches = dbPlayer.getPlayerSingleStats().getWins() + dbPlayer.getPlayerSingleStats().getDefeats();
-		final double averageWins = ((double) (dbPlayer.getPlayerSingleStats().getWins() * 100)) / sumMatches;
+		final double percentageWins = ((double) (dbPlayer.getPlayerSingleStats().getWins() * 100)) / sumMatches;
 
-		return numberFormat.format(averageWins);
+		return numberFormat.format(percentageWins);
 	}
 
 	public static String getSingleAveragePoints(List<SingleMatchHistory> dbSingleMatches, Player dbPlayer) {
@@ -195,28 +195,47 @@ public class ChartServiceHelper {
 			chartOpponentDto = new ChartOpponentDto();
 			chartOpponentDto.setId(opponent.getKey().getId());
 			chartOpponentDto.setOpponentName(opponent.getLastName() + ", " + opponent.getFirstName());
-			chartOpponentDto.setPlayedGames(1);
 
-			if (dbHistory.isWinner()) {
-				final int wins = chartOpponentDto.getWins() + 1;
-				chartOpponentDto.setWins(wins);
-			} else {
-				final int defeats = chartOpponentDto.getDefeats() + 1;
-				chartOpponentDto.setDefeats(defeats);
-			}
 			chartOpponentDtos.put(opponent.getKey().getId(), chartOpponentDto);
-		} else {
-			final int playedGames = chartOpponentDto.getPlayedGames() + 1;
-			chartOpponentDto.setPlayedGames(playedGames);
-
-			if (dbHistory.isWinner()) {
-				final int wins = chartOpponentDto.getWins() + 1;
-				chartOpponentDto.setWins(wins);
-			} else {
-				final int defeats = chartOpponentDto.getDefeats() + 1;
-				chartOpponentDto.setDefeats(defeats);
-			}
 		}
+
+		if (dbHistory.isWinner()) {
+			final int wins = chartOpponentDto.getWins() + 1;
+			chartOpponentDto.setWins(wins);
+		} else {
+			final int defeats = chartOpponentDto.getDefeats() + 1;
+			chartOpponentDto.setDefeats(defeats);
+		}
+		updatePercentages(chartOpponentDtos);
+	}
+
+	private static void updatePercentages(HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
+		final NumberFormat numberFormat = new DecimalFormat("0.0");
+		numberFormat.setRoundingMode(RoundingMode.DOWN);
+
+		final int sumMatches = getCurrentSumMatches(chartOpponentDtos);
+
+		for (ChartOpponentDto chartOpponentDto : chartOpponentDtos.values()) {
+			final int wins = chartOpponentDto.getWins();
+			final int defeats = chartOpponentDto.getDefeats();
+
+			final int sumMatchesForOpponent = wins + defeats;
+			final double percentageWins = ((double) (wins * 100)) / sumMatchesForOpponent;
+			final double percentageDefeats = ((double) (defeats * 100)) / sumMatchesForOpponent;
+			final double percentageMatches = ((double) (sumMatchesForOpponent * 100)) / sumMatches;
+
+			chartOpponentDto.setPercentageWins(numberFormat.format(percentageWins));
+			chartOpponentDto.setPercentageDefeats(numberFormat.format(percentageDefeats));
+			chartOpponentDto.setPercentageMatches(numberFormat.format(percentageMatches));
+		}
+	}
+
+	private static int getCurrentSumMatches(HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
+		int sumMatches = 0;
+		for (ChartOpponentDto chartOpponentDto : chartOpponentDtos.values()) {
+			sumMatches = sumMatches + chartOpponentDto.getWins() + chartOpponentDto.getDefeats();
+		}
+		return sumMatches;
 	}
 
 	public static void updatePointForMatch(SingleMatchHistory dbHistory, ArrayList<ChartPointDto> chartPointDtos) {

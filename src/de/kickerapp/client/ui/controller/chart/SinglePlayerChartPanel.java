@@ -353,7 +353,13 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 					} else if (tgChart.getValue() == tbtnOpponentChart) {
 						opponentChartPanel.loadOpponentChart(result.getChartOpponentDtos());
 					} else if (tgChart.getValue() == tbtnPointChart) {
-						pointChartPanel.loadPointChart(chartContainer.getChartPointDtos());
+						if (chartContainer.getChartPointDtos().size() > 1) {
+							pointChartPanel.loadPointChart(chartContainer.getChartPointDtos());
+						} else {
+							tgChart.setValue(tbtnOpponentChart);
+							clcSingleChart.setActiveWidget(opponentChartPanel);
+							opponentChartPanel.loadOpponentChart(chartContainer.getChartOpponentDtos());
+						}
 					}
 					setEnabledButtons();
 					doUpdateSinglePlayerChart = false;
