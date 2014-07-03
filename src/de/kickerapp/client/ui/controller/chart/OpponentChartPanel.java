@@ -2,6 +2,11 @@ package de.kickerapp.client.ui.controller.chart;
 
 import java.util.ArrayList;
 
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.sencha.gxt.chart.client.chart.Chart;
 import com.sencha.gxt.chart.client.chart.Chart.Position;
 import com.sencha.gxt.chart.client.chart.Legend;
@@ -68,7 +73,7 @@ public class OpponentChartPanel extends BaseContainer {
 
 	private Series<ChartOpponentDto> createPieSeries() {
 		pieOpponent = new PieSeries<ChartOpponentDto>();
-		pieOpponent.setAngleField(ChartOpponentProperty.playedGames);
+		pieOpponent.setAngleField(ChartOpponentProperty.playedMatches);
 		pieOpponent.setHighlighter(new AreaHighlighter());
 		pieOpponent.setHighlighting(true);
 		pieOpponent.setPopOutMargin(0);
@@ -88,12 +93,15 @@ public class OpponentChartPanel extends BaseContainer {
 		labelConfig.setLabelProvider(new SeriesLabelProvider<ChartOpponentDto>() {
 			@Override
 			public String getLabel(ChartOpponentDto item, ValueProvider<? super ChartOpponentDto, ? extends Number> valueProvider) {
+				final int matches = item.getWins() + item.getDefeats();
+
 				final StringBuilder sb = new StringBuilder();
 
 				sb.append(item.getOpponentName());
 				sb.append("\n");
-				sb.append(item.getPlayedGames());
-				sb.append(item.getPlayedGames() == 1 ? " Spiel" : " Spiele");
+				sb.append(matches);
+				sb.append(matches == 1 ? " Spiel" : " Spiele");
+				sb.append(" (").append(item.getPercentageMatches()).append("%)");
 
 				return sb.toString();
 			}
@@ -105,6 +113,7 @@ public class OpponentChartPanel extends BaseContainer {
 		toolTipConfig.setLabelProvider(null);
 		toolTipConfig.setTrackMouse(true);
 		toolTipConfig.setHideDelay(200);
+		toolTipConfig.setMinWidth(400);
 
 		pieOpponent.addSeriesItemOverHandler(new SeriesItemOverHandler<ChartOpponentDto>() {
 			@Override
@@ -112,11 +121,13 @@ public class OpponentChartPanel extends BaseContainer {
 				final ChartOpponentDto chartOpponentDto = event.getItem();
 				toolTipConfig.setTitleHtml("Spielbilanz gegen " + chartOpponentDto.getOpponentName());
 
-				final StringBuilder sb = new StringBuilder();
-				sb.append("<br>Siege: " + chartOpponentDto.getWins());
-				sb.append(" | Niederlagen: " + chartOpponentDto.getDefeats());
+				final StringBuilder sbWins = new StringBuilder();
+				sbWins.append(chartOpponentDto.getWins()).append(" (").append(chartOpponentDto.getPercentageWins()).append("%)");
 
-				toolTipConfig.setBodyHtml(sb.toString());
+				final StringBuilder sbDefeats = new StringBuilder();
+				sbDefeats.append(chartOpponentDto.getDefeats()).append(" (").append(chartOpponentDto.getPercentageDefeats()).append("%)");
+
+				toolTipConfig.setBodyHtml(createFlexTable(sbWins.toString(), sbDefeats.toString()).getElement().getInnerHTML());
 				pieOpponent.setToolTipConfig(toolTipConfig);
 			}
 		});
@@ -130,6 +141,47 @@ public class OpponentChartPanel extends BaseContainer {
 			}
 		});
 		return pieOpponent;
+	}
+
+	private FlexTable createFlexTable(String wins, String defeats) {
+		final FlexTable ftInfo = new FlexTable();
+		ftInfo.setHeight("300px");
+		ftInfo.setWidth("300px");
+		ftInfo.setBorderWidth(2);
+		ftInfo.setCellSpacing(20);
+		ftInfo.setCellPadding(20);
+
+		ftInfo.setHTML(0, 0, "Siege");
+		ftInfo.setWidget(1, 0, new HTML(createHtml(wins)));
+		// ftInfo.setHTML(0, 1, "Niederlagen");
+		// ftInfo.setHTML(1, 1, createHtml(defeats));
+
+		final FlexCellFormatter formatter = ftInfo.getFlexCellFormatter();
+		formatter.setWidth(0, 0, "120px");
+		formatter.setHeight(0, 0, "40px");
+		formatter.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER);
+		formatter.setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_MIDDLE);
+
+		formatter.setWidth(1, 0, "120px");
+		formatter.setHeight(1, 0, "60px");
+		formatter.setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_CENTER);
+		formatter.setVerticalAlignment(1, 0, HasVerticalAlignment.ALIGN_MIDDLE);
+
+		// formatter.setWidth(0, 1, "120");
+		// formatter.setHeight(0, 1, "40");
+		// formatter.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER);
+		// formatter.setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_MIDDLE);
+		//
+		// formatter.setWidth(1, 1, "120");
+		// formatter.setHeight(1, 1, "60");
+		// formatter.setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_CENTER);
+		// formatter.setVerticalAlignment(1, 0, HasVerticalAlignment.ALIGN_MIDDLE);
+
+		return ftInfo;
+	}
+
+	private String createHtml(String text) {
+		return "<span style='font-size:20px; font-family:Arial; font-weight:bold;'>" + text + "</span>";
 	}
 
 	private Legend<ChartOpponentDto> createLegend() {
@@ -147,6 +199,9 @@ public class OpponentChartPanel extends BaseContainer {
 		} else {
 			pieOpponent.setShownInLegend(false);
 		}
+		// Workaround für die IndexOutOfBoundsException
+		pieOpponent.clear();
+		//
 		addColorsForResult(result);
 		storeOpponent.replaceAll(result);
 		chartOpponent.redrawChart();

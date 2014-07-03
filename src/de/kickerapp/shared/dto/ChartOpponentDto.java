@@ -9,7 +9,11 @@ public class ChartOpponentDto extends BaseDto {
 
 	private String opponentName;
 
-	private Integer playedGames;
+	private String percentageMatches;
+
+	private String percentageWins;
+
+	private String percentageDefeats;
 
 	private Integer wins;
 
@@ -19,9 +23,35 @@ public class ChartOpponentDto extends BaseDto {
 		super();
 
 		opponentName = "";
-		playedGames = 0;
+		percentageMatches = "";
+		percentageWins = "";
+		percentageDefeats = "";
 		wins = 0;
 		defeats = 0;
+	}
+
+	public String getPercentageMatches() {
+		return percentageMatches;
+	}
+
+	public void setPercentageMatches(String percentageMatches) {
+		this.percentageMatches = percentageMatches;
+	}
+
+	public String getPercentageWins() {
+		return percentageWins;
+	}
+
+	public void setPercentageWins(String percentageWins) {
+		this.percentageWins = percentageWins;
+	}
+
+	public String getPercentageDefeats() {
+		return percentageDefeats;
+	}
+
+	public void setPercentageDefeats(String percentageDefeats) {
+		this.percentageDefeats = percentageDefeats;
 	}
 
 	public String getOpponentName() {
@@ -30,14 +60,6 @@ public class ChartOpponentDto extends BaseDto {
 
 	public void setOpponentName(String opponentName) {
 		this.opponentName = opponentName;
-	}
-
-	public Integer getPlayedGames() {
-		return playedGames;
-	}
-
-	public void setPlayedGames(Integer playedGames) {
-		this.playedGames = playedGames;
 	}
 
 	public Integer getWins() {
@@ -65,6 +87,9 @@ public class ChartOpponentDto extends BaseDto {
 		sb.append(" [");
 		sb.append("id=").append(getId()).append(", ");
 		sb.append("opponentName=").append(opponentName).append(", ");
+		sb.append("percentageMatches=").append(percentageMatches).append(", ");
+		sb.append("percentageWins=").append(percentageWins).append(", ");
+		sb.append("percentageDefeats=").append(percentageDefeats).append(", ");
 		sb.append("wins=").append(wins).append(", ");
 		sb.append("defeats=").append(defeats);
 		sb.append("]");
