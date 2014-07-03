@@ -195,3 +195,45 @@ body {
 	display: block;
 	clear: none;
 }
+
+/* PieChart Tooltip */
+/*-----------------------------------------------------------------------------------------*/
+.templateOpponentChart {
+	border-collapse: separate;
+	border-spacing: 0px;
+}
+
+.templateOpponentChart .header {
+	width: 100px;
+	height: 30px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.templateOpponentChart .header span {
+	font-family: Arial;
+	font-size: 11px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.templateOpponentChart .info {
+	width: 100px;
+	height: 60px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.templateOpponentChart .info .matches {
+	font-family: Arial;
+	font-size: 28px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.templateOpponentChart .info .percentage {
+	font-family: Arial;
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
+}
