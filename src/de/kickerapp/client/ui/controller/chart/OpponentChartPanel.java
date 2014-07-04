@@ -73,9 +73,16 @@ public class OpponentChartPanel extends BaseContainer {
 		pieOpponent.setHighlighter(new AreaHighlighter());
 		pieOpponent.setHighlighting(true);
 		pieOpponent.setPopOutMargin(0);
-		pieOpponent.addColor(new RGB((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)));
-		pieOpponent.addColor(new RGB((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)));
 
+		pieOpponent.setLabelConfig(createLabelConfig());
+		pieOpponent.setLegendValueProvider(KickerProperties.CHART_OPPONENT_PROPERTY.opponentName(), new StringLabelProvider<String>());
+		pieOpponent.setRenderer(createRenderer());
+		createToolTipConfig();
+
+		return pieOpponent;
+	}
+
+	private SeriesLabelConfig<ChartOpponentDto> createLabelConfig() {
 		final TextSprite textConfig = new TextSprite();
 		textConfig.setFont("Arial");
 		textConfig.setFontSize(15);
@@ -92,19 +99,31 @@ public class OpponentChartPanel extends BaseContainer {
 				final int matches = item.getWins() + item.getDefeats();
 
 				final StringBuilder sb = new StringBuilder();
-
-				sb.append(item.getOpponentName());
-				sb.append("\n");
-				sb.append(matches);
-				sb.append(matches == 1 ? " Spiel" : " Spiele");
+				sb.append(item.getOpponentName()).append("\n");
+				sb.append(matches).append(matches == 1 ? " Spiel" : " Spiele");
 				sb.append(" (").append(item.getPercentageMatches()).append("%)");
 
 				return sb.toString();
 			}
 		});
 		labelConfig.setSpriteConfig(textConfig);
-		pieOpponent.setLabelConfig(labelConfig);
 
+		return labelConfig;
+	}
+
+	private SeriesRenderer<ChartOpponentDto> createRenderer() {
+		final SeriesRenderer<ChartOpponentDto> renderer = new SeriesRenderer<ChartOpponentDto>() {
+			@Override
+			public void spriteRenderer(Sprite sprite, int index, ListStore<ChartOpponentDto> store) {
+				sprite.setStroke(RGB.WHITE);
+				sprite.setStrokeWidth(2);
+				sprite.redraw();
+			}
+		};
+		return renderer;
+	}
+
+	private void createToolTipConfig() {
 		final SeriesToolTipConfig<ChartOpponentDto> toolTipConfig = new SeriesToolTipConfig<ChartOpponentDto>();
 		toolTipConfig.setLabelProvider(null);
 		toolTipConfig.setTrackMouse(true);
@@ -120,16 +139,6 @@ public class OpponentChartPanel extends BaseContainer {
 				pieOpponent.setToolTipConfig(toolTipConfig);
 			}
 		});
-		pieOpponent.setLegendValueProvider(KickerProperties.CHART_OPPONENT_PROPERTY.opponentName(), new StringLabelProvider<String>());
-		pieOpponent.setRenderer(new SeriesRenderer<ChartOpponentDto>() {
-			@Override
-			public void spriteRenderer(Sprite sprite, int index, ListStore<ChartOpponentDto> store) {
-				sprite.setStroke(RGB.WHITE);
-				sprite.setStrokeWidth(2);
-				sprite.redraw();
-			}
-		});
-		return pieOpponent;
 	}
 
 	private Legend<ChartOpponentDto> createLegend() {
