@@ -17,6 +17,7 @@ import com.sencha.gxt.chart.client.chart.series.SeriesRenderer;
 import com.sencha.gxt.chart.client.chart.series.SeriesToolTipConfig;
 import com.sencha.gxt.chart.client.draw.Color;
 import com.sencha.gxt.chart.client.draw.RGB;
+import com.sencha.gxt.chart.client.draw.sprite.RectangleSprite;
 import com.sencha.gxt.chart.client.draw.sprite.Sprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite.TextAnchor;
@@ -32,6 +33,8 @@ import de.kickerapp.client.ui.resources.templates.KickerTemplates;
 import de.kickerapp.shared.dto.ChartOpponentDto;
 
 public class OpponentChartPanel extends BaseContainer {
+
+	private final Color[] colors = { new RGB("#115FA6"), new RGB("#94AE0A"), new RGB("#A61120"), new RGB("#FF9909"), new RGB("#6911AC"), new RGB("#CB9900") };
 
 	private ListStore<ChartOpponentDto> storeOpponent;
 
@@ -88,7 +91,7 @@ public class OpponentChartPanel extends BaseContainer {
 		textConfig.setFontSize(15);
 		textConfig.setTextBaseline(TextBaseline.MIDDLE);
 		textConfig.setTextAnchor(TextAnchor.MIDDLE);
-		textConfig.setFill(new RGB("#333"));
+		textConfig.setFill(new RGB("#333333"));
 
 		final SeriesLabelConfig<ChartOpponentDto> labelConfig = new SeriesLabelConfig<ChartOpponentDto>();
 		labelConfig.setLabelPosition(LabelPosition.START);
@@ -147,6 +150,13 @@ public class OpponentChartPanel extends BaseContainer {
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(true);
 
+		final RectangleSprite borderConfig = new RectangleSprite();
+		borderConfig.setStroke(RGB.GRAY);
+		borderConfig.setFill(Color.NONE);
+		borderConfig.setStrokeWidth(1);
+
+		legend.setBorderConfig(borderConfig);
+
 		return legend;
 	}
 
@@ -165,12 +175,14 @@ public class OpponentChartPanel extends BaseContainer {
 	}
 
 	private void addColorsForResult(ArrayList<ChartOpponentDto> result) {
-		for (int i = 0; i < result.size(); i++) {
-			final Color color = new RGB((int) (Math.random() * 255), 255, (int) (Math.random() * 255));
-			if (pieOpponent.getColors().size() <= result.size()) {
-				pieOpponent.addColor(color);
-			} else {
-				break;
+		pieOpponent.getColors().clear();
+		outer: for (int i = 0; i < result.size(); i++) {
+			for (Color color : colors) {
+				if (pieOpponent.getColors().size() <= result.size()) {
+					pieOpponent.addColor(color);
+				} else {
+					break outer;
+				}
 			}
 		}
 	}

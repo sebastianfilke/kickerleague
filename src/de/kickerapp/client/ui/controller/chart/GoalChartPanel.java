@@ -12,9 +12,11 @@ import com.sencha.gxt.chart.client.chart.series.SeriesHighlighter;
 import com.sencha.gxt.chart.client.chart.series.SeriesLabelConfig;
 import com.sencha.gxt.chart.client.chart.series.SeriesLabelProvider;
 import com.sencha.gxt.chart.client.chart.series.SeriesToolTipConfig;
+import com.sencha.gxt.chart.client.draw.Color;
 import com.sencha.gxt.chart.client.draw.DrawFx;
 import com.sencha.gxt.chart.client.draw.RGB;
 import com.sencha.gxt.chart.client.draw.path.PathSprite;
+import com.sencha.gxt.chart.client.draw.sprite.RectangleSprite;
 import com.sencha.gxt.chart.client.draw.sprite.Sprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite.TextAnchor;
@@ -77,7 +79,7 @@ public class GoalChartPanel extends BaseContainer {
 
 		final PathSprite gridConfig = new PathSprite();
 		gridConfig.setStroke(new RGB("#dfdfdf"));
-		gridConfig.setFill(new RGB("#e3e3e3"));
+		gridConfig.setFill(new RGB("#E3E3E3"));
 		gridConfig.setZIndex(1);
 		gridConfig.setStrokeWidth(1);
 		numAxis.setGridOddConfig(gridConfig);
@@ -109,9 +111,9 @@ public class GoalChartPanel extends BaseContainer {
 		barGoal.addYField(ChartGoalProperty.goalDifference);
 		barGoal.addYField(KickerProperties.CHART_GOAL_PROPERTY.shotGoals());
 		barGoal.addYField(KickerProperties.CHART_GOAL_PROPERTY.getGoals());
-		barGoal.addColor(new RGB(17, 95, 166));
-		barGoal.addColor(new RGB(148, 174, 10));
-		barGoal.addColor(new RGB(166, 17, 32));
+		barGoal.addColor(new RGB("#115FA6"));
+		barGoal.addColor(new RGB("#94AE0A"));
+		barGoal.addColor(new RGB("#A61120"));
 		barGoal.setShownInLegend(false);
 		barGoal.setHighlighting(true);
 		barGoal.setColumn(true);
@@ -199,6 +201,13 @@ public class GoalChartPanel extends BaseContainer {
 		legend.setPosition(Position.TOP);
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(true);
+
+		final RectangleSprite borderConfig = new RectangleSprite();
+		borderConfig.setStroke(RGB.GRAY);
+		borderConfig.setFill(Color.NONE);
+		borderConfig.setStrokeWidth(1);
+
+		legend.setBorderConfig(borderConfig);
 
 		return legend;
 	}

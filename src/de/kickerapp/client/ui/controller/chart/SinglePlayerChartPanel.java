@@ -137,9 +137,10 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 		toolBar.add(createBtnUpdate());
 		toolBar.add(new SeparatorToolItem());
-		toolBar.add(createPlayerComboBox());
 		toolBar.add(new LabelToolItem("Statistik für:"));
 		toolBar.add(createYearComboBox());
+		toolBar.add(new LabelToolItem("von:"));
+		toolBar.add(createPlayerComboBox());
 
 		return toolBar;
 	}
@@ -193,9 +194,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		cbYear = new SimpleComboBox<Date>(new LabelProvider<Date>() {
 			@Override
 			public String getLabel(Date item) {
-				final DateWrapper currentDate = new DateWrapper(item);
-
-				return Integer.toString(currentDate.getFullYear());
+				return Integer.toString(new DateWrapper(item).getFullYear());
 			}
 		});
 		cbYear.setTriggerAction(TriggerAction.ALL);

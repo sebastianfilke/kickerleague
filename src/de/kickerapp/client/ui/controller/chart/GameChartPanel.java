@@ -12,9 +12,11 @@ import com.sencha.gxt.chart.client.chart.series.SeriesHighlighter;
 import com.sencha.gxt.chart.client.chart.series.SeriesLabelConfig;
 import com.sencha.gxt.chart.client.chart.series.SeriesLabelProvider;
 import com.sencha.gxt.chart.client.chart.series.SeriesToolTipConfig;
+import com.sencha.gxt.chart.client.draw.Color;
 import com.sencha.gxt.chart.client.draw.DrawFx;
 import com.sencha.gxt.chart.client.draw.RGB;
 import com.sencha.gxt.chart.client.draw.path.PathSprite;
+import com.sencha.gxt.chart.client.draw.sprite.RectangleSprite;
 import com.sencha.gxt.chart.client.draw.sprite.Sprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite.TextAnchor;
@@ -109,9 +111,9 @@ public class GameChartPanel extends BaseContainer {
 		barGame.addYField(ChartGameProperty.winDifference);
 		barGame.addYField(KickerProperties.CHART_GAME_PROPERTY.wins());
 		barGame.addYField(KickerProperties.CHART_GAME_PROPERTY.defeats());
-		barGame.addColor(new RGB(17, 95, 166));
-		barGame.addColor(new RGB(148, 174, 10));
-		barGame.addColor(new RGB(166, 17, 32));
+		barGame.addColor(new RGB("#115FA6"));
+		barGame.addColor(new RGB("#94AE0A"));
+		barGame.addColor(new RGB("#A61120"));
 		barGame.setShownInLegend(false);
 		barGame.setHighlighting(true);
 		barGame.setColumn(true);
@@ -198,6 +200,13 @@ public class GameChartPanel extends BaseContainer {
 		legend.setPosition(Position.TOP);
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(true);
+
+		final RectangleSprite borderConfig = new RectangleSprite();
+		borderConfig.setStroke(RGB.GRAY);
+		borderConfig.setFill(Color.NONE);
+		borderConfig.setStrokeWidth(1);
+
+		legend.setBorderConfig(borderConfig);
 
 		return legend;
 	}

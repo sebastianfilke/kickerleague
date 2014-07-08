@@ -13,8 +13,10 @@ import com.sencha.gxt.chart.client.chart.series.Primitives;
 import com.sencha.gxt.chart.client.chart.series.Series;
 import com.sencha.gxt.chart.client.chart.series.SeriesLabelProvider;
 import com.sencha.gxt.chart.client.chart.series.SeriesToolTipConfig;
+import com.sencha.gxt.chart.client.draw.Color;
 import com.sencha.gxt.chart.client.draw.RGB;
 import com.sencha.gxt.chart.client.draw.path.PathSprite;
+import com.sencha.gxt.chart.client.draw.sprite.RectangleSprite;
 import com.sencha.gxt.chart.client.draw.sprite.Sprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -107,7 +109,7 @@ public class PointChartPanel extends BaseContainer {
 		linePoint.setShowMarkers(true);
 		linePoint.setSmooth(true);
 
-		final Sprite marker = Primitives.diamond(0, 0, 6);
+		final Sprite marker = Primitives.diamond(0, 0, 4);
 		marker.setFill(new RGB(32, 68, 186));
 		linePoint.setMarkerConfig(marker);
 		linePoint.setHighlighting(true);
@@ -142,6 +144,13 @@ public class PointChartPanel extends BaseContainer {
 		legend.setPosition(Position.TOP);
 		legend.setItemHighlighting(true);
 		legend.setItemHiding(false);
+
+		final RectangleSprite borderConfig = new RectangleSprite();
+		borderConfig.setStroke(RGB.GRAY);
+		borderConfig.setFill(Color.NONE);
+		borderConfig.setStrokeWidth(1);
+
+		legend.setBorderConfig(borderConfig);
 
 		return legend;
 	}

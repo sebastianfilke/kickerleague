@@ -327,11 +327,10 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 */
 	@Override
 	public ArrayList<MatchDto> getAllMatchesFrom(Date date) throws IllegalArgumentException {
-		final ArrayList<MatchDto> matchDtos = new ArrayList<MatchDto>();
-
 		final List<SingleMatch> dbSingleMatches = MatchBean.getSingleMatchesFrom(date);
 		final List<DoubleMatch> dbDoubleMatches = MatchBean.getDoubleMatchesFrom(date);
 
+		final ArrayList<MatchDto> matchDtos = new ArrayList<MatchDto>();
 		for (SingleMatch dbMatch : dbSingleMatches) {
 			final MatchDto matchDto = MatchServiceHelper.createSingleMatchDto(dbMatch);
 

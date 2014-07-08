@@ -12,6 +12,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 
 import de.kickerapp.server.dao.DoubleMatch;
 import de.kickerapp.server.dao.Match;
+import de.kickerapp.server.dao.MatchHistory;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.PlayerDoubleStats;
 import de.kickerapp.server.dao.PlayerSingleStats;
@@ -84,17 +85,17 @@ public class MatchServiceHelper {
 	}
 
 	/**
-	 * Comparator zur aufsteigenden Sortierung der Spiele.
+	 * Comparator zur aufsteigenden Sortierung der Verläufe von Spielen.
 	 * 
 	 * @author Sebastian Filke
 	 */
-	protected static class MatchAscendingComparator implements Comparator<Match> {
+	public static class MatchHistoryAscendingComparator implements Comparator<MatchHistory> {
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public int compare(Match m1, Match m2) {
+		public int compare(MatchHistory m1, MatchHistory m2) {
 			return m1.getMatchNumber().compareTo(m2.getMatchNumber());
 		}
 	}
