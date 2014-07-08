@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<!-- Servlets -->
+	<servlet>
+		<servlet-name>chartServlet</servlet-name>
+		<servlet-class>de.kickerapp.server.services.ChartServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>chartServlet</servlet-name>
+		<url-pattern>/kicker_application/chartService</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>matchServlet</servlet-name>
+		<servlet-class>de.kickerapp.server.services.MatchServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>matchServlet</servlet-name>
+		<url-pattern>/kicker_application/matchService</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>pagingServlet</servlet-name>
+		<servlet-class>de.kickerapp.server.services.PagingServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>pagingServlet</servlet-name>
+		<url-pattern>/kicker_application/pagingService</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>playerServlet</servlet-name>
+		<servlet-class>de.kickerapp.server.services.PlayerServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>playerServlet</servlet-name>
+		<url-pattern>/kicker_application/playerService</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>remoteLogging</servlet-name>
+		<servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>remoteLogging</servlet-name>
+		<url-pattern>/kicker_application/remote_logging</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>teamServlet</servlet-name>
+		<servlet-class>de.kickerapp.server.services.TeamServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>teamServlet</servlet-name>
+		<url-pattern>/kicker_application/teamService</url-pattern>
+	</servlet-mapping>
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>Kicker_Application.html</welcome-file>
+	</welcome-file-list>
+
+	<servlet>
+		<servlet-name>SystemServiceServlet</servlet-name>
+		<servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
+		<init-param>
+			<param-name>services</param-name>
+			<param-value />
+		</init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>SystemServiceServlet</servlet-name>
+		<url-pattern>/_ah/spi/*</url-pattern>
+	</servlet-mapping>
+
+</web-app>
