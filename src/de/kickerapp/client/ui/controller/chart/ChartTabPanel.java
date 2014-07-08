@@ -98,6 +98,7 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler {
 	private void getChartForActiveTab() {
 		if (activeTab == 0) {
 			singlePlayerChartPanel.getPlayerList();
+			singlePlayerChartPanel.updateSinglePlayer();
 		} else if (activeTab == 1) {
 			doublePlayerChartPanel.getPlayerList();
 		}

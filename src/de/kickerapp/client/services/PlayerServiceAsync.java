@@ -41,4 +41,12 @@ public interface PlayerServiceAsync {
 	 */
 	public void getAllPlayers(MatchType matchType, AsyncCallback<ArrayList<PlayerDto>> callback) throws IllegalArgumentException;
 
+	/**
+	 * Liefert alle Spieler mit mindestens einem Spiel.
+	 * 
+	 * @param callback Der Callback-Handler.
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 */
+	public void getPlayersWithAtLeastOneMatch(AsyncCallback<ArrayList<PlayerDto>> callback) throws IllegalArgumentException;
+
 }

@@ -1,15 +1,12 @@
 package de.kickerapp.shared.common;
 
-import java.io.Serializable;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Aufzählung für die unterschiedlichen Typen von Spielen.
  * 
  * @author Sebastian Filke
  */
-public enum MatchType implements Serializable, IsSerializable {
+public enum MatchType implements BaseSerializable {
 
 	/**
 	 * Einzelspiel.
@@ -33,11 +30,11 @@ public enum MatchType implements Serializable, IsSerializable {
 
 	/** Der Spieltyp. */
 	private String matchType;
-	
+
 	/**
 	 * Erzeugt einen neuen Spieltyp.
 	 */
-	private MatchType(){
+	private MatchType() {
 		this.matchType = "";
 	}
 

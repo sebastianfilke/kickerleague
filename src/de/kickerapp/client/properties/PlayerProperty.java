@@ -225,10 +225,10 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 			ImageResource image = null;
 
 			switch (object.getPlayerSingleStatsDto().getTendency()) {
-			case Upward:
+			case UPWARD:
 				image = KickerIcons.ICON.arrow_up10();
 				break;
-			case Downward:
+			case DOWNWARD:
 				image = KickerIcons.ICON.arrow_down10();
 				break;
 			default:
@@ -415,10 +415,10 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 			ImageResource image = null;
 
 			switch (object.getPlayerDoubleStatsDto().getTendency()) {
-			case Upward:
+			case UPWARD:
 				image = KickerIcons.ICON.arrow_up10();
 				break;
-			case Downward:
+			case DOWNWARD:
 				image = KickerIcons.ICON.arrow_down10();
 				break;
 			default:

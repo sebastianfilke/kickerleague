@@ -1,6 +1,7 @@
 package de.kickerapp.client.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -34,11 +35,12 @@ public interface MatchService extends RemoteService {
 	public MatchDto createDoubleMatch(MatchDto matchDto) throws IllegalArgumentException;
 
 	/**
-	 * Liefert alle Spiele.
+	 * Liefert alle Spiele ab dem übergebenem Datum.
 	 * 
 	 * @return Alle Spiel.
+	 * @param date Das Datum ab wann die Spiele geliefert werden sollen.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public ArrayList<MatchDto> getAllMatches() throws IllegalArgumentException;
+	public ArrayList<MatchDto> getAllMatchesFrom(Date date) throws IllegalArgumentException;
 
 }

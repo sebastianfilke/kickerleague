@@ -9,6 +9,8 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.TimeZone;
 import com.google.gwt.i18n.client.constants.TimeZoneConstants;
@@ -20,6 +22,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.core.client.util.DateWrapper;
+import com.sencha.gxt.core.client.util.DateWrapper.Unit;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.Store;
@@ -27,6 +31,8 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.DateField;
+import com.sencha.gxt.widget.core.client.form.DateTimePropertyEditor;
 import com.sencha.gxt.widget.core.client.form.StoreFilterField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
@@ -39,6 +45,7 @@ import com.sencha.gxt.widget.core.client.grid.filters.DateFilter;
 import com.sencha.gxt.widget.core.client.grid.filters.GridFilters;
 import com.sencha.gxt.widget.core.client.grid.filters.ListFilter;
 import com.sencha.gxt.widget.core.client.tips.QuickTip;
+import com.sencha.gxt.widget.core.client.toolbar.LabelToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.SeparatorToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
@@ -68,6 +75,8 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 
 	/** Der Store für die Spielergebnisse. */
 	private ListStore<MatchDto> storeMatches;
+	/** Das Datum für die Spielergebnisse. */
+	private DateField dfFrom;
 	/** Der Angabe, ob die Spielergebnisse aktualisiert werden sollen. */
 	private boolean doUpdateMatches;
 
@@ -207,9 +216,37 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 
 		toolBar.add(createBtnUpdate());
 		toolBar.add(new SeparatorToolItem());
+		toolBar.add(new LabelToolItem("Spiele ab:"));
+		toolBar.add(createDateField());
+		toolBar.add(new SeparatorToolItem());
 		toolBar.add(sffGrid);
 
 		return toolBar;
+	}
+
+	/**
+	 * Erzeugt das Datumsfeld zum Auswählen des Datums für die Spielergebnisse.
+	 * 
+	 * @return Das erzeugte Datumsfeld.
+	 */
+	private DateField createDateField() {
+		dfFrom = new DateField();
+		dfFrom.getDatePicker().setMaxDate(new Date());
+
+		final DateTimePropertyEditor propertyEditor = new DateTimePropertyEditor(DateTimeFormat.getFormat("dd.MM.yyyy"));
+		dfFrom.setPropertyEditor(propertyEditor);
+
+		DateWrapper matchDate = new DateWrapper(new Date());
+		matchDate = matchDate.add(Unit.MONTH, -1);
+		dfFrom.setValue(matchDate.asDate());
+		dfFrom.getDatePicker().addValueChangeHandler(new ValueChangeHandler<Date>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Date> event) {
+				doUpdateMatches = true;
+				getMatches();
+			}
+		});
+		return dfFrom;
 	}
 
 	/**
@@ -421,7 +458,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 	private void getMatches() {
 		if (doUpdateMatches) {
 			mask("Aktualisiere...");
-			KickerServices.MATCH_SERVICE.getAllMatches(new AsyncCallback<ArrayList<MatchDto>>() {
+			KickerServices.MATCH_SERVICE.getAllMatchesFrom(dfFrom.getCurrentValue(), new AsyncCallback<ArrayList<MatchDto>>() {
 				@Override
 				public void onSuccess(ArrayList<MatchDto> result) {
 					storeMatches.replaceAll(result);

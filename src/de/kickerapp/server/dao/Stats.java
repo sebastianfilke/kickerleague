@@ -66,7 +66,7 @@ public class Stats extends BaseDao {
 		curTablePlace = 0;
 		lastMatchPoints = 0;
 		points = 1000;
-		tendency = Tendency.Constant;
+		tendency = Tendency.CONSTANT;
 	}
 
 	/**

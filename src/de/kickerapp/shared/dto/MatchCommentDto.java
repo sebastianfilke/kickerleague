@@ -1,6 +1,5 @@
 package de.kickerapp.shared.dto;
 
-import de.kickerapp.shared.common.BaseDto;
 
 /**
  * Client-Datenklasse zum Halten der Kommentare für ein Spiel.

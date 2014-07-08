@@ -346,14 +346,14 @@ public class MatchServiceHelper {
 		final int curTablePlace = dbStats.getCurTablePlace();
 
 		if (preTablePlace == 0) {
-			dbStats.setTendency(Tendency.Upward);
+			dbStats.setTendency(Tendency.UPWARD);
 		} else {
 			if (curTablePlace == preTablePlace) {
-				dbStats.setTendency(Tendency.Constant);
+				dbStats.setTendency(Tendency.CONSTANT);
 			} else if (curTablePlace > preTablePlace) {
-				dbStats.setTendency(Tendency.Downward);
+				dbStats.setTendency(Tendency.DOWNWARD);
 			} else if (curTablePlace < preTablePlace) {
-				dbStats.setTendency(Tendency.Upward);
+				dbStats.setTendency(Tendency.UPWARD);
 			}
 		}
 	}

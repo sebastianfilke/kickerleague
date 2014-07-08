@@ -210,10 +210,10 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 			ImageResource image = null;
 
 			switch (object.getTeamStatsDto().getTendency()) {
-			case Upward:
+			case UPWARD:
 				image = KickerIcons.ICON.arrow_up10();
 				break;
-			case Downward:
+			case DOWNWARD:
 				image = KickerIcons.ICON.arrow_down10();
 				break;
 			default:

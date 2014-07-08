@@ -14,6 +14,7 @@ import de.kickerapp.server.dao.PlayerDoubleStats;
 import de.kickerapp.server.dao.PlayerSingleStats;
 import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 import de.kickerapp.server.persistence.PMFactory;
+import de.kickerapp.server.persistence.queries.PlayerBean;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerNameComparator;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerTableComparator;
 import de.kickerapp.shared.common.MatchType;
@@ -66,6 +67,23 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 * {@inheritDoc}
 	 */
 	@Override
+	public PlayerDto updatePlayer(PlayerDto playerDto) throws IllegalArgumentException {
+		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId());
+
+		dbPlayer.setLastName(playerDto.getLastName());
+		dbPlayer.setFirstName(playerDto.getFirstName());
+		dbPlayer.setNickName(playerDto.getNickName());
+		dbPlayer.setEMail(playerDto.getEMail());
+
+		PMFactory.persistObject(dbPlayer);
+
+		return playerDto;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public ArrayList<PlayerDto> getAllPlayers(MatchType matchType) throws IllegalArgumentException {
 		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
 
@@ -106,17 +124,15 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PlayerDto updatePlayer(PlayerDto playerDto) throws IllegalArgumentException {
-		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId());
+	public ArrayList<PlayerDto> getPlayersWithAtLeastOneMatch() throws IllegalArgumentException {
+		final List<Player> dbPlayers = PlayerBean.getPlayerWithAtLeastOneMatch();
 
-		dbPlayer.setLastName(playerDto.getLastName());
-		dbPlayer.setFirstName(playerDto.getFirstName());
-		dbPlayer.setNickName(playerDto.getNickName());
-		dbPlayer.setEMail(playerDto.getEMail());
+		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
+		for (Player dbPlayer : dbPlayers) {
+			playerDtos.add(PlayerServiceHelper.createPlayerDto(dbPlayer));
+		}
 
-		PMFactory.persistObject(dbPlayer);
-
-		return playerDto;
+		return playerDtos;
 	}
 
 }
