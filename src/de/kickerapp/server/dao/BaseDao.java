@@ -10,7 +10,7 @@ import javax.jdo.annotations.PrimaryKey;
 import com.google.appengine.api.datastore.Key;
 
 /**
- * Die Basisdatenklasse zum Halten der Informationen für Objektklassen.
+ * Die Basisdatenklasse zum Halten der Informationen für Entitäten.
  * 
  * @author Sebastian Filke
  */

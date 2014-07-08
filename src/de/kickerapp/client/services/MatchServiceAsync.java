@@ -1,6 +1,7 @@
 package de.kickerapp.client.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -34,9 +35,10 @@ public interface MatchServiceAsync {
 	/**
 	 * Liefert alle Spiele.
 	 * 
+	 * @param date Das Datum ab wann die Spiele geliefert werden sollen.
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getAllMatches(AsyncCallback<ArrayList<MatchDto>> callback) throws IllegalArgumentException;
+	public void getAllMatchesFrom(Date date, AsyncCallback<ArrayList<MatchDto>> callback) throws IllegalArgumentException;
 
 }

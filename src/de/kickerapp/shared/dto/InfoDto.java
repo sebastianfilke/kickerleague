@@ -1,6 +1,5 @@
 package de.kickerapp.shared.dto;
 
-import de.kickerapp.shared.common.BaseDto;
 
 /**
  * Client-Datenklasse zum Halten des Spielverlaufs für ein Team bzw. Spieler.

@@ -43,4 +43,12 @@ public interface PlayerService extends RemoteService {
 	 */
 	public ArrayList<PlayerDto> getAllPlayers(MatchType matchType) throws IllegalArgumentException;
 
+	/**
+	 * Liefert alle Spieler mit mindestens einem Spiel.
+	 * 
+	 * @return Alle Spieler mit mindestens einem Spiel.
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 */
+	public ArrayList<PlayerDto> getPlayersWithAtLeastOneMatch() throws IllegalArgumentException;
+
 }

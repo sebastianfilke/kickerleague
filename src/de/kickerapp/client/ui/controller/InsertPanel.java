@@ -49,6 +49,7 @@ import com.sencha.gxt.widget.core.client.form.FormPanel.LabelAlign;
 import com.sencha.gxt.widget.core.client.form.Radio;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TimeField;
+import com.sencha.gxt.widget.core.client.form.validator.MaxLengthValidator;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 import de.kickerapp.client.event.AppEventBus;
@@ -634,6 +635,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		fsComment.setHeadingText("Kommentar (optional)");
 
 		taComment = new TextArea();
+		taComment.addValidator(new MaxLengthValidator(500));
 		taComment.setEmptyText("Kommentar zum Spiel");
 		taComment.setHeight(60);
 

@@ -5,21 +5,21 @@ package de.kickerapp.shared.common;
  * 
  * @author Sebastian Filke
  */
-public enum Tendency {
+public enum Tendency implements BaseSerializable {
 
 	/**
 	 * Aufwärtstrend.
 	 */
-	Upward,
+	UPWARD,
 
 	/**
 	 * Abwärtstrend.
 	 */
-	Downward,
+	DOWNWARD,
 
 	/**
 	 * Konstanter-Trend.
 	 */
-	Constant;
+	CONSTANT;
 
 }

@@ -1,6 +1,7 @@
 package de.kickerapp.client.ui.controller.chart;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -10,7 +11,9 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.core.client.util.DateWrapper;
 import com.sencha.gxt.core.client.util.ToggleGroup;
+import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
@@ -18,6 +21,8 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.SimpleComboBox;
+import com.sencha.gxt.widget.core.client.toolbar.LabelToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.SeparatorToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
@@ -31,7 +36,6 @@ import de.kickerapp.client.ui.base.BaseContainer;
 import de.kickerapp.client.ui.resources.icons.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
-import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.container.ChartContainer;
 import de.kickerapp.shared.dto.InfoDto;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -44,6 +48,8 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 	private CardLayoutContainer clcSingleChart;
 
+	private InfoPanel infoPanel;
+
 	private GameChartPanel gameChartPanel;
 
 	private GoalChartPanel goalChartPanel;
@@ -52,7 +58,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 	private PointChartPanel pointChartPanel;
 
-	private InfoPanel infoPanel;
+	private ChartContainer chartContainer;
 
 	private ToggleGroup tgChart;
 
@@ -60,9 +66,9 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 	private boolean doUpdatePlayerList, doUpdatePlayerInfo, doUpdateSinglePlayerChart;
 
-	private ChartContainer chartContainer;
-
 	private AppButton btnUpdate;
+
+	private SimpleComboBox<Date> cbYear;
 
 	public SinglePlayerChartPanel() {
 		super();
@@ -132,6 +138,8 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		toolBar.add(createBtnUpdate());
 		toolBar.add(new SeparatorToolItem());
 		toolBar.add(createPlayerComboBox());
+		toolBar.add(new LabelToolItem("Statistik für:"));
+		toolBar.add(createYearComboBox());
 
 		return toolBar;
 	}
@@ -179,6 +187,40 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 			}
 		});
 		return cbPlayer;
+	}
+
+	private SimpleComboBox<Date> createYearComboBox() {
+		cbYear = new SimpleComboBox<Date>(new LabelProvider<Date>() {
+			@Override
+			public String getLabel(Date item) {
+				final DateWrapper currentDate = new DateWrapper(item);
+
+				return Integer.toString(currentDate.getFullYear());
+			}
+		});
+		cbYear.setTriggerAction(TriggerAction.ALL);
+		cbYear.setEditable(false);
+
+		final Date date = new Date();
+		cbYear.add(date);
+		cbYear.setValue(date);
+		cbYear.addSelectionHandler(new SelectionHandler<Date>() {
+			@Override
+			public void onSelection(SelectionEvent<Date> event) {
+				final PlayerDto selectedPlayer = cbPlayer.getValue();
+				if (selectedPlayer != null) {
+					setDoUpdate();
+					loadSinglePlayerChart(selectedPlayer);
+					loadSingleInfo(selectedPlayer);
+				}
+			}
+
+			private void setDoUpdate() {
+				doUpdatePlayerInfo = true;
+				doUpdateSinglePlayerChart = true;
+			}
+		});
+		return cbYear;
 	}
 
 	private ToolBar createToolBarCharts() {
@@ -299,10 +341,18 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		return btnUpdate;
 	}
 
+	public void updateSinglePlayer() {
+		final PlayerDto selectedPlayer = cbPlayer.getValue();
+		if (selectedPlayer != null && doUpdatePlayerInfo && doUpdateSinglePlayerChart) {
+			loadSingleInfo(selectedPlayer);
+			loadSinglePlayerChart(selectedPlayer);
+		}
+	}
+
 	public void getPlayerList() {
 		if (doUpdatePlayerList) {
 			mask("Aktualisiere...");
-			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.NONE, new AsyncCallback<ArrayList<PlayerDto>>() {
+			KickerServices.PLAYER_SERVICE.getPlayersWithAtLeastOneMatch(new AsyncCallback<ArrayList<PlayerDto>>() {
 				@Override
 				public void onSuccess(ArrayList<PlayerDto> result) {
 					storePlayer.replaceAll(result);
@@ -322,11 +372,13 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 	protected void loadSingleInfo(PlayerDto selectedPlayer) {
 		if (doUpdatePlayerInfo) {
-			KickerServices.CHART_SERVICE.getSinglePlayerInfo(selectedPlayer, new AsyncCallback<InfoDto>() {
+			mask("Statistik wird geladen...");
+			KickerServices.CHART_SERVICE.getSinglePlayerInfo(selectedPlayer, cbYear.getValue(), new AsyncCallback<InfoDto>() {
 				@Override
 				public void onSuccess(InfoDto result) {
-					doUpdatePlayerInfo = false;
 					infoPanel.setInfos(result);
+					doUpdatePlayerInfo = false;
+					unmaskLoading();
 				}
 
 				@Override
@@ -342,7 +394,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	protected void loadSinglePlayerChart(PlayerDto selectedPlayer) {
 		if (doUpdateSinglePlayerChart) {
 			mask("Statistik wird geladen...");
-			KickerServices.CHART_SERVICE.getSinglePlayerChart(selectedPlayer, new AsyncCallback<ChartContainer>() {
+			KickerServices.CHART_SERVICE.getSinglePlayerChart(selectedPlayer, cbYear.getValue(), new AsyncCallback<ChartContainer>() {
 				@Override
 				public void onSuccess(ChartContainer result) {
 					chartContainer = result;
@@ -353,17 +405,17 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 					} else if (tgChart.getValue() == tbtnOpponentChart) {
 						opponentChartPanel.loadOpponentChart(result.getChartOpponentDtos());
 					} else if (tgChart.getValue() == tbtnPointChart) {
-						if (chartContainer.getChartPointDtos().size() > 1) {
-							pointChartPanel.loadPointChart(chartContainer.getChartPointDtos());
+						if (result.getChartPointDtos().size() > 1) {
+							pointChartPanel.loadPointChart(result.getChartPointDtos());
 						} else {
 							tgChart.setValue(tbtnOpponentChart);
 							clcSingleChart.setActiveWidget(opponentChartPanel);
-							opponentChartPanel.loadOpponentChart(chartContainer.getChartOpponentDtos());
+							opponentChartPanel.loadOpponentChart(result.getChartOpponentDtos());
 						}
 					}
 					setEnabledButtons();
 					doUpdateSinglePlayerChart = false;
-					unmask();
+					unmaskLoading();
 				}
 
 				@Override
@@ -376,15 +428,21 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		}
 	}
 
+	public void unmaskLoading() {
+		if (!doUpdateSinglePlayerChart && !doUpdatePlayerInfo) {
+			unmask();
+		}
+	}
+
 	protected void setEnabledButtons() {
 		btnUpdate.setEnabled(true);
 		tbtnGoalChart.setEnabled(true);
 		tbtnGameChart.setEnabled(true);
 		tbtnOpponentChart.setEnabled(true);
-		if (chartContainer.getChartPointDtos().size() <= 1) {
-			tbtnPointChart.setEnabled(false);
-		} else {
+		if (chartContainer.getChartPointDtos().size() > 1) {
 			tbtnPointChart.setEnabled(true);
+		} else {
+			tbtnPointChart.setEnabled(false);
 		}
 	}
 

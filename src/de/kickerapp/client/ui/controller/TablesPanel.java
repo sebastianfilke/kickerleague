@@ -51,8 +51,8 @@ import de.kickerapp.client.ui.base.BasePanel;
 import de.kickerapp.client.ui.resources.icons.KickerIcons;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.StoreFilterToggleButton;
-import de.kickerapp.shared.common.BaseDto;
 import de.kickerapp.shared.common.MatchType;
+import de.kickerapp.shared.dto.BaseDto;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
 

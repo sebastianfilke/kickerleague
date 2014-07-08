@@ -2,8 +2,6 @@ package de.kickerapp.shared.dto;
 
 import java.util.ArrayList;
 
-import de.kickerapp.shared.common.BaseDto;
-
 /**
  * Client-Datenklasse zum Halten der Informationen für die Spielsätze eines Spiels.
  * 

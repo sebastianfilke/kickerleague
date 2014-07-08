@@ -2,6 +2,7 @@ package de.kickerapp.server.services;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import com.google.appengine.api.datastore.Key;
@@ -19,9 +20,7 @@ import de.kickerapp.server.dao.PlayerSingleStats;
 import de.kickerapp.server.dao.SingleMatch;
 import de.kickerapp.server.dao.Team;
 import de.kickerapp.server.dao.TeamStats;
-import de.kickerapp.server.dao.fetchplans.MatchPlan;
 import de.kickerapp.server.dao.fetchplans.PlayerPlan;
-import de.kickerapp.server.dao.fetchplans.TeamPlan;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.persistence.queries.MatchBean;
 import de.kickerapp.server.services.MatchServiceHelper.MatchDescendingComparator;
@@ -327,11 +326,11 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ArrayList<MatchDto> getAllMatches() throws IllegalArgumentException {
+	public ArrayList<MatchDto> getAllMatchesFrom(Date date) throws IllegalArgumentException {
 		final ArrayList<MatchDto> matchDtos = new ArrayList<MatchDto>();
 
-		final List<SingleMatch> dbSingleMatches = PMFactory.getList(SingleMatch.class, MatchPlan.COMMENT, MatchPlan.BOTHPLAYERS);
-		final List<DoubleMatch> dbDoubleMatches = PMFactory.getList(DoubleMatch.class, MatchPlan.COMMENT, MatchPlan.BOTHTEAMS, TeamPlan.BOTHPLAYERS);
+		final List<SingleMatch> dbSingleMatches = MatchBean.getSingleMatchesFrom(date);
+		final List<DoubleMatch> dbDoubleMatches = MatchBean.getDoubleMatchesFrom(date);
 
 		for (SingleMatch dbMatch : dbSingleMatches) {
 			final MatchDto matchDto = MatchServiceHelper.createSingleMatchDto(dbMatch);

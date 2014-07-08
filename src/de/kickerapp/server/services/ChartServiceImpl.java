@@ -1,6 +1,7 @@
 package de.kickerapp.server.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,8 +39,8 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public InfoDto getSinglePlayerInfo(PlayerDto playerDto) throws IllegalArgumentException {
-		final List<SingleMatchHistory> dbSingleMatches = MatchBean.getSingleMatchesForPlayer(playerDto);
+	public InfoDto getSinglePlayerInfo(PlayerDto playerDto, Date date) throws IllegalArgumentException {
+		final List<SingleMatchHistory> dbSingleMatches = MatchBean.getSingleMatchesForPlayer(playerDto, date);
 
 		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId(), PlayerPlan.PLAYERSINGLESTATS);
 
@@ -61,8 +62,8 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ChartContainer getSinglePlayerChart(PlayerDto playerDto) throws IllegalArgumentException {
-		final List<SingleMatchHistory> dbSingleMatches = MatchBean.getSingleMatchesForPlayer(playerDto);
+	public ChartContainer getSinglePlayerChart(PlayerDto playerDto, Date date) throws IllegalArgumentException {
+		final List<SingleMatchHistory> dbSingleMatches = MatchBean.getSingleMatchesForPlayer(playerDto, date);
 
 		final HashMap<Integer, ChartGameDto> chartGameDtos = new HashMap<Integer, ChartGameDto>();
 		final HashMap<Integer, ChartGoalDto> chartGoalDtos = new HashMap<Integer, ChartGoalDto>();

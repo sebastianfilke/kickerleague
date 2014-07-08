@@ -10,6 +10,7 @@ import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
 import de.kickerapp.server.dao.BaseDao;
+import de.kickerapp.server.dao.Sequence;
 import de.kickerapp.server.persistence.queries.QueryContainer;
 
 /**
@@ -82,11 +83,17 @@ public final class PMFactory {
 
 		final Query query = pm.newQuery(clazz);
 		query.setFilter(container.getQuery());
-		query.setOrdering(container.getOrdering());
+		if (!container.getOrdering().isEmpty()) {
+			query.setOrdering(container.getOrdering());
+		}
 
 		List<T> list = new ArrayList<T>();
 		try {
-			list = (List<T>) query.execute(container.getParameter());
+			if (container.getParameter() != null) {
+				list = (List<T>) query.executeWithArray(container.getParameter());
+			} else {
+				list = (List<T>) query.execute();
+			}
 			list = (List<T>) pm.detachCopyAll(list);
 		} finally {
 			query.closeAll();
@@ -99,7 +106,7 @@ public final class PMFactory {
 	 * Liefert die Instanz für die übergebene Klasse.
 	 * 
 	 * @param clazz Die Klasse für welche die Instanz gesucht werden sollen.
-	 * @param id Die DB-Id der Instanz.
+	 * @param id Die DB-ID der Instanz.
 	 * @param plans Die zusätzlichen Attribute welche gezogen werden sollen.
 	 * @param <T> Der Typ der Klasse.
 	 * @return Die Instanz.
@@ -123,9 +130,9 @@ public final class PMFactory {
 	/**
 	 * Speichert die Instanz.
 	 * 
-	 * @param object Das Db-Objekt zum Speichern.
+	 * @param object Das DB-Objekt zum Speichern.
 	 * @param <T> Der Typ der Klasse.
-	 * @return Das gespeicherte Db-Objekt.
+	 * @return Das gespeicherte DB-Objekt.
 	 */
 	public static <T extends BaseDao> T persistObject(final T object) {
 		final PersistenceManager pm = get().getPersistenceManager();
@@ -143,9 +150,9 @@ public final class PMFactory {
 	/**
 	 * Speichert alle Instanzen.
 	 * 
-	 * @param objects Die Db-Objekte zum Speichern.
+	 * @param objects Die DB-Objekte zum Speichern.
 	 * @param <T> Die Typen der Klassen.
-	 * @return Die gespeicherten Db-Objekte.
+	 * @return Die gespeicherten DB-Objekte.
 	 */
 	@SafeVarargs
 	public static <T extends BaseDao> Object[] persistAllObjects(final T... objects) {
@@ -182,47 +189,59 @@ public final class PMFactory {
 	}
 
 	/**
-	 * Liefert die Anzahl der Instanzen für die übergebene Klasse.
+	 * Liefert die aktuelle DB-ID für die übergebene Klasse.
 	 * 
-	 * @param clazzName Der Name der Klasse für welche die Anzahl der Instanzen geliefert werden soll.
+	 * @param clazzName Der Name der Klasse für welche die aktuelle DB-ID geliefert werden soll.
 	 * @param <T> Der Typ der Klasse.
-	 * @return Die Anzahl der Instanzen.
+	 * @return Die aktuelle DB-ID.
 	 */
-	@SuppressWarnings("unchecked")
-	public static <T extends BaseDao> int getEntitySize(final String clazzName) {
+	public static <T extends BaseDao> int getCurrentId(final String clazzName) {
 		final PersistenceManager pm = get().getPersistenceManager();
 
-		final Query query = pm.newQuery("select key from " + clazzName);
+		final Query query = pm.newQuery(Sequence.class);
+		query.setFilter("sequenceName == :clazzName");
+		query.setUnique(true);
 
-		int size = 0;
+		int id = 0;
 		try {
-			final List<T> list = (List<T>) query.execute();
-			size = list.size();
+			final Sequence sequence = (Sequence) query.execute(clazzName);
+			if (sequence == null) {
+				id = 0;
+			} else {
+				id = sequence.getSequenceID();
+			}
 		} finally {
 			query.closeAll();
 			pm.close();
 		}
-		return size;
+		return id;
 	}
 
 	/**
-	 * Liefert die nächste DB-Id für die übergebene Klasse.
+	 * Liefert die nächste DB-ID für die übergebene Klasse.
 	 * 
-	 * @param clazzName Der Name der Klasse für welche die nächste Db-Id geliefert werden soll.
+	 * @param clazzName Der Name der Klasse für welche die nächste DB-ID geliefert werden soll.
 	 * @param <T> Der Typ der Klasse.
-	 * @return Die nächste DB-Id.
+	 * @return Die nächste DB-ID.
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T extends BaseDao> int getNextId(final String clazzName) {
 		final PersistenceManager pm = get().getPersistenceManager();
 
-		final Query query = pm.newQuery("select key from " + clazzName);
+		final Query query = pm.newQuery(Sequence.class);
+		query.setFilter("sequenceName == :clazzName");
+		query.setUnique(true);
 
 		int id = 0;
 		try {
-			final List<T> list = (List<T>) query.execute();
-			id = list.size();
-			id++;
+			Sequence sequence = (Sequence) query.execute(clazzName);
+			if (sequence == null) {
+				sequence = new Sequence();
+				sequence.setSequenceName(clazzName);
+			}
+			id = sequence.getSequenceID() + 1;
+			sequence.setSequenceID(id);
+
+			pm.makePersistent(sequence);
 		} finally {
 			query.closeAll();
 			pm.close();

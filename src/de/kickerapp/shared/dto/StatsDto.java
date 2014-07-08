@@ -1,6 +1,5 @@
 package de.kickerapp.shared.dto;
 
-import de.kickerapp.shared.common.BaseDto;
 import de.kickerapp.shared.common.Tendency;
 
 /**
@@ -52,7 +51,7 @@ public class StatsDto extends BaseDto {
 		curTablePlace = 0;
 		lastMatchPoints = 0;
 		points = 1000;
-		tendency = Tendency.Constant;
+		tendency = Tendency.CONSTANT;
 	}
 
 	/**

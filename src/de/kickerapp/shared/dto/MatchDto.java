@@ -2,7 +2,6 @@ package de.kickerapp.shared.dto;
 
 import java.util.Date;
 
-import de.kickerapp.shared.common.BaseDto;
 import de.kickerapp.shared.common.MatchType;
 
 /**
