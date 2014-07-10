@@ -30,7 +30,7 @@ import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BaseContainer;
-import de.kickerapp.client.ui.resources.icons.KickerIcons;
+import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
 import de.kickerapp.client.widgets.AppContentPanel;
@@ -139,7 +139,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 	}
 
 	private AppButton createBtnUpdate() {
-		final AppButton btnListUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.update());
+		final AppButton btnListUpdate = new AppButton("Aktualisieren", IconProvider.get().update());
 		btnListUpdate.setToolTip("Aktualisiert die Liste der eingetragenen Spieler in der Datenbank");
 		btnListUpdate.addSelectHandler(new SelectHandler() {
 			@Override
@@ -228,7 +228,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 	}
 
 	private AppButton createBtnUpdateChart() {
-		btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.update());
+		btnUpdate = new AppButton("Aktualisieren", IconProvider.get().update());
 		btnUpdate.setToolTip("Aktualisiert die momentan gewählte Statistik");
 		btnUpdate.setEnabled(false);
 		btnUpdate.addSelectHandler(new SelectHandler() {
@@ -251,7 +251,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private ToggleButton createTbtnGoalChart() {
 		tbtnGoalChart = new ToggleButton("Torstatistik");
 		tbtnGoalChart.setToolTip("Zeigt die Torstatistik für den aktuell gewählten Spieler");
-		tbtnGoalChart.setIcon(KickerIcons.ICON.chart_bar());
+		tbtnGoalChart.setIcon(IconProvider.get().chart_bar());
 		tbtnGoalChart.setId("singleGoalsChart");
 		tbtnGoalChart.setAllowDepress(false);
 		tbtnGoalChart.setEnabled(false);
@@ -262,7 +262,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private ToggleButton createTbtnWinChart() {
 		tbtnWinChart = new ToggleButton("Spielstatistik");
 		tbtnWinChart.setToolTip("Zeigt die Spielstatistik für den aktuell gewählten Spieler");
-		tbtnWinChart.setIcon(KickerIcons.ICON.chart_bar());
+		tbtnWinChart.setIcon(IconProvider.get().chart_bar());
 		tbtnWinChart.setId("singleWinsChart");
 		tbtnWinChart.setAllowDepress(false);
 		tbtnWinChart.setEnabled(false);

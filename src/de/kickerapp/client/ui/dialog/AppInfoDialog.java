@@ -8,7 +8,7 @@ import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 
 import de.kickerapp.client.ui.base.BaseDialog;
-import de.kickerapp.client.ui.resources.icons.KickerIcons;
+import de.kickerapp.client.ui.resources.IconProvider;
 
 /**
  * Dialog für Infomeldungen.
@@ -32,9 +32,9 @@ public final class AppInfoDialog extends BaseDialog {
 	}
 
 	/**
-	 * Liefert die einzige Instanz der Klasse {@link AppInfoDialog}.
+	 * Statische Methode <code>getInstance()</code> liefert die einzige Instanz der {@link AppInfoDialog}-Klasse.
 	 * 
-	 * @return Die einzige Instanz der Klasse {@link AppInfoDialog}.
+	 * @return Die einzige Instanz der {@link AppInfoDialog}-Klasse.
 	 */
 	public static AppInfoDialog getInstance() {
 		return LazyHolder.INSTANCE;
@@ -62,7 +62,7 @@ public final class AppInfoDialog extends BaseDialog {
 		setModal(true);
 
 		final HorizontalLayoutContainer hlcInfo = new HorizontalLayoutContainer();
-		hlcInfo.add(new Image(KickerIcons.ICON.info()), new HorizontalLayoutData(-1, -1, new Margins(10, 5, 5, 5)));
+		hlcInfo.add(new Image(IconProvider.get().info()), new HorizontalLayoutData(-1, -1, new Margins(10, 5, 5, 5)));
 
 		infoMessage = new Label();
 		hlcInfo.add(infoMessage, new HorizontalLayoutData(1, 1, new Margins(10, 10, 10, 5)));

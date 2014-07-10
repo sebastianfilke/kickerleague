@@ -7,7 +7,7 @@ import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
-import de.kickerapp.client.ui.resources.icons.KickerIcons;
+import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.shared.dto.PlayerDoubleStatsDto;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.PlayerSingleStatsDto;
@@ -226,13 +226,13 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 
 			switch (object.getPlayerSingleStatsDto().getTendency()) {
 			case UPWARD:
-				image = KickerIcons.ICON.arrow_up10();
+				image = IconProvider.get().arrow_up10();
 				break;
 			case DOWNWARD:
-				image = KickerIcons.ICON.arrow_down10();
+				image = IconProvider.get().arrow_down10();
 				break;
 			default:
-				image = KickerIcons.ICON.arrow_right10();
+				image = IconProvider.get().arrow_right10();
 				break;
 			}
 			return image;
@@ -416,13 +416,13 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 
 			switch (object.getPlayerDoubleStatsDto().getTendency()) {
 			case UPWARD:
-				image = KickerIcons.ICON.arrow_up10();
+				image = IconProvider.get().arrow_up10();
 				break;
 			case DOWNWARD:
-				image = KickerIcons.ICON.arrow_down10();
+				image = IconProvider.get().arrow_down10();
 				break;
 			default:
-				image = KickerIcons.ICON.arrow_right10();
+				image = IconProvider.get().arrow_right10();
 				break;
 			}
 			return image;

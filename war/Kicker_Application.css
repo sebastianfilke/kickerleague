@@ -8,10 +8,7 @@ body {
 @font-face {
 	font-family: 'ChunkFiveRegular';
 	src: url('../fonts/Chunkfive-webfont.eot');
-	src: url('./fonts/Chunkfive-webfont.eot?#iefix')
-		format('embedded-opentype'), url('./fonts/Chunkfive-webfont.woff')
-		format('woff'), url('./fonts/Chunkfive-webfont.ttf')
-		format('truetype'),
+	src: url('./fonts/Chunkfive-webfont.eot?#iefix') format('embedded-opentype'), url('./fonts/Chunkfive-webfont.woff') format('woff'), url('./fonts/Chunkfive-webfont.ttf') format('truetype'),
 		url('./fonts/Chunkfive-webfont.svg#ChunkFiveRegular') format('svg');
 	font-weight: normal;
 	font-style: normal;
@@ -40,8 +37,7 @@ body {
 }
 
 #headerBackground {
-	background: url("../images/header_bg.png") repeat-x scroll #606060
-		!important;
+	background: url("../images/header_bg.png") repeat-x scroll #606060 !important;
 }
 
 /* Content */
@@ -52,8 +48,7 @@ body {
 }
 
 #contentBackground {
-	background: url("../images/content_bg.png") repeat-x scroll #fff
-		!important;
+	background: url("../images/content_bg.png") repeat-x scroll #fff !important;
 }
 
 /* Footer */
@@ -164,76 +159,5 @@ body {
 #tabs26 ul li div.label:hover,#tabs26 ul li div.current {
 	cursor: pointer;
 	color: #fff;
-	background: transparent url(../images/menu_bg_hover.gif) no-repeat top
-		center;
-}
-
-/* Paging ComboBox */
-/*-----------------------------------------------------------------------------------------*/
-.templatePagingComboBox {
-	padding: 3px 10px 3px 10px;
-	white-space: normal;
-}
-
-.templatePagingComboBox span {
-	font-weight: normal;
-	font-size: 11px;
-}
-
-.templatePagingComboBox h3 {
-	font-size: 14px;
-	display: block;
-	font: inherit;
-	font-weight: bold;
-	color: #222;
-}
-
-.templatePagingComboBox h3 span {
-	float: right;
-	margin: 0 0 5px 5px;
-	width: 100px;
-	display: block;
-	clear: none;
-}
-
-/* PieChart Tooltip */
-/*-----------------------------------------------------------------------------------------*/
-.templateOpponentChart {
-	border-collapse: separate;
-	border-spacing: 0px;
-}
-
-.templateOpponentChart .header {
-	width: 100px;
-	height: 30px;
-	text-align: center;
-	vertical-align: middle;
-}
-
-.templateOpponentChart .header span {
-	font-family: Arial;
-	font-size: 11px;
-	font-weight: bold;
-	text-align: center;
-}
-
-.templateOpponentChart .info {
-	width: 100px;
-	height: 60px;
-	text-align: center;
-	vertical-align: middle;
-}
-
-.templateOpponentChart .info .matches {
-	font-family: Arial;
-	font-size: 28px;
-	font-weight: bold;
-	text-align: center;
-}
-
-.templateOpponentChart .info .percentage {
-	font-family: Arial;
-	font-size: 18px;
-	font-weight: bold;
-	text-align: center;
+	background: transparent url(../images/menu_bg_hover.gif) no-repeat top center;
 }
