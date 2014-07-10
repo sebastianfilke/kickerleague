@@ -9,7 +9,7 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
-import de.kickerapp.client.ui.resources.icons.KickerIcons;
+import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -268,7 +268,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 	public ValueProvider<MatchDto, ImageResource> matchComment = new ValueProvider<MatchDto, ImageResource>() {
 		@Override
 		public ImageResource getValue(MatchDto object) {
-			return KickerIcons.ICON.comments10();
+			return IconProvider.get().comments10();
 		}
 
 		@Override

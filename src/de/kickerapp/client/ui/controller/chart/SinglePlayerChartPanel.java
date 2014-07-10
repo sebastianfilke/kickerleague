@@ -33,7 +33,7 @@ import de.kickerapp.client.exception.AppExceptionHandler;
 import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BaseContainer;
-import de.kickerapp.client.ui.resources.icons.KickerIcons;
+import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
 import de.kickerapp.shared.container.ChartContainer;
@@ -146,7 +146,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	}
 
 	private AppButton createBtnUpdate() {
-		final AppButton btnListUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.update());
+		final AppButton btnListUpdate = new AppButton("Aktualisieren", IconProvider.get().update());
 		btnListUpdate.setToolTip("Aktualisiert die Liste der eingetragenen Spieler in der Datenbank");
 		btnListUpdate.addSelectHandler(new SelectHandler() {
 			@Override
@@ -260,7 +260,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private ToggleButton createTbtnGameChart() {
 		tbtnGameChart = new ToggleButton("Spielstatistik");
 		tbtnGameChart.setToolTip("Zeigt die Spielstatistik für den aktuell gewählten Spieler");
-		tbtnGameChart.setIcon(KickerIcons.ICON.chart_bar());
+		tbtnGameChart.setIcon(IconProvider.get().chart_bar());
 		tbtnGameChart.setId("singleWinsChart");
 		tbtnGameChart.setAllowDepress(false);
 		tbtnGameChart.setEnabled(false);
@@ -271,7 +271,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private ToggleButton createTbtnGoalChart() {
 		tbtnGoalChart = new ToggleButton("Torstatistik");
 		tbtnGoalChart.setToolTip("Zeigt die Torstatistik für den aktuell gewählten Spieler");
-		tbtnGoalChart.setIcon(KickerIcons.ICON.chart_bar());
+		tbtnGoalChart.setIcon(IconProvider.get().chart_bar());
 		tbtnGoalChart.setId("singleGoalsChart");
 		tbtnGoalChart.setAllowDepress(false);
 		tbtnGoalChart.setEnabled(false);
@@ -282,7 +282,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private ToggleButton createTbtnOpponentChart() {
 		tbtnOpponentChart = new ToggleButton("Gegnerstatistik");
 		tbtnOpponentChart.setToolTip("Zeigt die Gegnerstatistik für den aktuell gewählten Spieler");
-		tbtnOpponentChart.setIcon(KickerIcons.ICON.chart_pie());
+		tbtnOpponentChart.setIcon(IconProvider.get().chart_pie());
 		tbtnOpponentChart.setId("singleOpponentChart");
 		tbtnOpponentChart.setAllowDepress(false);
 		tbtnOpponentChart.setEnabled(false);
@@ -293,7 +293,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	private ToggleButton createTbtnPointChart() {
 		tbtnPointChart = new ToggleButton("Punktestatistik");
 		tbtnPointChart.setToolTip("Zeigt die Punktestatistik für den aktuell gewählten Spieler");
-		tbtnPointChart.setIcon(KickerIcons.ICON.chart_line());
+		tbtnPointChart.setIcon(IconProvider.get().chart_line());
 		tbtnPointChart.setId("singlePointChart");
 		tbtnPointChart.setAllowDepress(false);
 		tbtnPointChart.setEnabled(false);
@@ -318,7 +318,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	}
 
 	private AppButton createBtnUpdateChart() {
-		btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.update());
+		btnUpdate = new AppButton("Aktualisieren", IconProvider.get().update());
 		btnUpdate.setToolTip("Aktualisiert die momentan gewählte Statistik");
 		btnUpdate.setEnabled(false);
 		btnUpdate.addSelectHandler(new SelectHandler() {

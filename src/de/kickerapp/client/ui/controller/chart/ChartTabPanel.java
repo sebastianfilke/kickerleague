@@ -12,7 +12,7 @@ import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.event.ShowDataEventHandler;
 import de.kickerapp.client.ui.base.BasePanel;
-import de.kickerapp.client.ui.resources.icons.KickerIcons;
+import de.kickerapp.client.ui.resources.IconProvider;
 
 /**
  * Controller-Klasse zum Anzeigen der Team- bzw. Spielerstatistiken.
@@ -82,10 +82,10 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler {
 		tabPanel.setTabWidth(200);
 
 		final TabItemConfig ticSinglePlayerChart = new TabItemConfig("Einzelspielerstatistik");
-		ticSinglePlayerChart.setIcon(KickerIcons.ICON.chart_bar());
+		ticSinglePlayerChart.setIcon(IconProvider.get().chart_bar());
 
 		final TabItemConfig ticDoublePlayerChart = new TabItemConfig("Doppelspielerstatistik");
-		ticDoublePlayerChart.setIcon(KickerIcons.ICON.chart_bar());
+		ticDoublePlayerChart.setIcon(IconProvider.get().chart_bar());
 
 		tabPanel.add(singlePlayerChartPanel, ticSinglePlayerChart);
 		tabPanel.add(doublePlayerChartPanel, ticDoublePlayerChart);

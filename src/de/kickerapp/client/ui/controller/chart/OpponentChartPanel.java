@@ -2,6 +2,7 @@ package de.kickerapp.client.ui.controller.chart;
 
 import java.util.ArrayList;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.sencha.gxt.chart.client.chart.Chart;
 import com.sencha.gxt.chart.client.chart.Chart.Position;
 import com.sencha.gxt.chart.client.chart.Legend;
@@ -25,11 +26,13 @@ import com.sencha.gxt.chart.client.draw.sprite.TextSprite.TextBaseline;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.StringLabelProvider;
+import com.sencha.gxt.widget.core.client.tips.ToolTipConfig.ToolTipRenderer;
 
 import de.kickerapp.client.properties.ChartOpponentProperty;
 import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.ui.base.BaseContainer;
-import de.kickerapp.client.ui.resources.templates.KickerTemplates;
+import de.kickerapp.client.ui.resources.CssResourceProvider;
+import de.kickerapp.client.ui.resources.TemplateProvider;
 import de.kickerapp.shared.dto.ChartOpponentDto;
 
 public class OpponentChartPanel extends BaseContainer {
@@ -138,7 +141,12 @@ public class OpponentChartPanel extends BaseContainer {
 				final ChartOpponentDto chartOpponentDto = event.getItem();
 				toolTipConfig.setTitleHtml("Spielbilanz gegen " + chartOpponentDto.getOpponentName());
 				toolTipConfig.setData(chartOpponentDto);
-				toolTipConfig.setRenderer(KickerTemplates.TEMPLATE);
+				toolTipConfig.setRenderer(new ToolTipRenderer<ChartOpponentDto>() {
+					@Override
+					public SafeHtml renderToolTip(ChartOpponentDto data) {
+						return TemplateProvider.get().renderOpponentToolTip(data, CssResourceProvider.get().opponentStyle());
+					}
+				});
 				pieOpponent.setToolTipConfig(toolTipConfig);
 			}
 		});
