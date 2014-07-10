@@ -59,7 +59,7 @@ import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.properties.MatchProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BasePanel;
-import de.kickerapp.client.ui.resources.icons.KickerIcons;
+import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchDto;
@@ -369,7 +369,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 
 		// Kommentar
 		final SummaryColumnConfig<MatchDto, ImageResource> ccComment = new SummaryColumnConfig<MatchDto, ImageResource>(MatchProperty.matchComment, 25);
-		ccComment.setHeader(AbstractImagePrototype.create(KickerIcons.ICON.comments10()).getSafeHtml());
+		ccComment.setHeader(AbstractImagePrototype.create(IconProvider.get().comments10()).getSafeHtml());
 		ccComment.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		ccComment.setMenuDisabled(true);
 		ccComment.setGroupable(false);
@@ -482,7 +482,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 	 * @return Der erzeugte Button.
 	 */
 	private AppButton createBtnUpdate() {
-		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.update());
+		final AppButton btnUpdate = new AppButton("Aktualisieren", IconProvider.get().update());
 		btnUpdate.setToolTip("Aktualisiert die Ergebnisse der zuletzt gespielten Spiele");
 		btnUpdate.addSelectHandler(new SelectHandler() {
 			@Override

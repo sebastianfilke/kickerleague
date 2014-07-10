@@ -37,7 +37,7 @@ import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BaseContainer;
 import de.kickerapp.client.ui.dialog.AppInfoDialog;
-import de.kickerapp.client.ui.resources.icons.KickerIcons;
+import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.client.ui.util.AppInfo;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppFieldLabel;
@@ -161,7 +161,7 @@ public class PlayerAdminPanel extends BaseContainer {
 	}
 
 	private AppButton createBtnInsert() {
-		final AppButton btnReport = new AppButton("Spieler speichern", KickerIcons.ICON.save());
+		final AppButton btnReport = new AppButton("Spieler speichern", IconProvider.get().save());
 		btnReport.setToolTip("Speichert oder Aktualisiert den Spieler mit den einegegeben Daten in der Datebank");
 		btnReport.addSelectHandler(new SelectHandler() {
 			@Override
@@ -177,7 +177,7 @@ public class PlayerAdminPanel extends BaseContainer {
 	}
 
 	private AppButton createBtnReset() {
-		final AppButton btnReset = new AppButton("Eingaben zurücksetzen", KickerIcons.ICON.reset());
+		final AppButton btnReset = new AppButton("Eingaben zurücksetzen", IconProvider.get().reset());
 		btnReset.setToolTip("Setzt alle eingegebenen Daten zurück und beendet, falls aktiv, das Bearbeiten eines Spielers");
 		btnReset.addSelectHandler(new SelectHandler() {
 			@Override
@@ -227,7 +227,7 @@ public class PlayerAdminPanel extends BaseContainer {
 	}
 
 	private AppButton createBtnUpdate() {
-		btnListUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.update());
+		btnListUpdate = new AppButton("Aktualisieren", IconProvider.get().update());
 		btnListUpdate.setToolTip("Aktualisiert die Liste der eingetragenen Spieler in der Datenbank");
 		btnListUpdate.addSelectHandler(new SelectHandler() {
 			@Override
@@ -245,7 +245,7 @@ public class PlayerAdminPanel extends BaseContainer {
 
 	private ToggleButton createBtnEdit() {
 		btnPlayerUpdate = new ToggleButton("Spieler bearbeiten");
-		btnPlayerUpdate.setIcon(KickerIcons.ICON.player_edit());
+		btnPlayerUpdate.setIcon(IconProvider.get().player_edit());
 		btnPlayerUpdate.setToolTip("Wählt den aktuell selektierten Spieler zum Bearbeiten");
 		btnPlayerUpdate.addBeforeSelectHandler(new BeforeSelectHandler() {
 			@Override

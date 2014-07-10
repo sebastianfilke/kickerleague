@@ -48,7 +48,7 @@ import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.properties.TeamProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BasePanel;
-import de.kickerapp.client.ui.resources.icons.KickerIcons;
+import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.StoreFilterToggleButton;
 import de.kickerapp.shared.common.MatchType;
@@ -145,21 +145,21 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		vlcSingleTable.add(createSingleTableGrid(), new VerticalLayoutData(1, 1));
 
 		final TabItemConfig ticSingleTable = new TabItemConfig("Einzeltabelle");
-		ticSingleTable.setIcon(KickerIcons.ICON.player_single());
+		ticSingleTable.setIcon(IconProvider.get().player_single());
 
 		final VerticalLayoutContainer vlcDoubleTable = new VerticalLayoutContainer();
 		vlcDoubleTable.add(createDoubleTableToolBar(), new VerticalLayoutData(1, -1));
 		vlcDoubleTable.add(createDoubleTableGrid(), new VerticalLayoutData(1, 1));
 
 		final TabItemConfig ticDoubleTable = new TabItemConfig("Doppeltabelle");
-		ticDoubleTable.setIcon(KickerIcons.ICON.player_double());
+		ticDoubleTable.setIcon(IconProvider.get().player_double());
 
 		final VerticalLayoutContainer vlcTeamTable = new VerticalLayoutContainer();
 		vlcTeamTable.add(createTeamTableToolBar(), new VerticalLayoutData(1, -1));
 		vlcTeamTable.add(createTeamTableGrid(), new VerticalLayoutData(1, 1));
 
 		final TabItemConfig ticTeamTable = new TabItemConfig("Teamtabelle");
-		ticTeamTable.setIcon(KickerIcons.ICON.player_team());
+		ticTeamTable.setIcon(IconProvider.get().player_team());
 
 		tabPanel.add(vlcSingleTable, ticSingleTable);
 		tabPanel.add(vlcDoubleTable, ticDoubleTable);
@@ -190,7 +190,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		};
 		sfcNoMatchPlayer.setToolTip("Aktivieren um auch Spieler anzuzeigen, welche noch kein Spiel und damit keinen Tabellenplatz haben");
 		sfcNoMatchPlayer.setText("Alle Spieler anzeigen");
-		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.player_filter());
+		sfcNoMatchPlayer.setIcon(IconProvider.get().player_filter());
 		sfcNoMatchPlayer.bind(storeSingleTable);
 
 		final StoreFilterField<PlayerDto> sffSingleTable = new StoreFilterField<PlayerDto>() {
@@ -363,7 +363,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		};
 		sfcNoMatchPlayer.setToolTip("Aktivieren um auch Spieler anzuzeigen, welche noch kein Spiel und damit keinen Tabellenplatz haben");
 		sfcNoMatchPlayer.setText("Alle Spieler anzeigen");
-		sfcNoMatchPlayer.setIcon(KickerIcons.ICON.player_filter());
+		sfcNoMatchPlayer.setIcon(IconProvider.get().player_filter());
 		sfcNoMatchPlayer.bind(storeDoubleTable);
 
 		final StoreFilterField<PlayerDto> sffDoubleTable = new StoreFilterField<PlayerDto>() {
@@ -928,7 +928,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 * @return Der erzeugte Button.
 	 */
 	private AppButton createBtnUpdate() {
-		final AppButton btnUpdate = new AppButton("Aktualisieren", KickerIcons.ICON.update());
+		final AppButton btnUpdate = new AppButton("Aktualisieren", IconProvider.get().update());
 		btnUpdate.setToolTip("Aktualisiert die Tabelle");
 		btnUpdate.addSelectHandler(new SelectHandler() {
 			@Override

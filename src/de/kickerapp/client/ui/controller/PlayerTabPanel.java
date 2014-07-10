@@ -12,7 +12,7 @@ import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.event.ShowDataEventHandler;
 import de.kickerapp.client.ui.base.BasePanel;
-import de.kickerapp.client.ui.resources.icons.KickerIcons;
+import de.kickerapp.client.ui.resources.IconProvider;
 
 /**
  * Controller-Klasse zum Eintragen neuer Spieler für die Applikation.
@@ -79,7 +79,7 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 		tabPanel.setTabWidth(200);
 
 		final TabItemConfig ticAdminPanel = new TabItemConfig("Spieler eintragen/bearbeiten");
-		ticAdminPanel.setIcon(KickerIcons.ICON.player_edit());
+		ticAdminPanel.setIcon(IconProvider.get().player_edit());
 
 		tabPanel.add(playerAdminPanel, ticAdminPanel);
 		tabPanel.setBodyBorder(false);

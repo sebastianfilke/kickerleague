@@ -29,9 +29,9 @@ public final class AppErrorDialog extends BaseDialog {
 	}
 
 	/**
-	 * Liefert die einzige Instanz der Klasse {@link AppErrorDialog}.
+	 * Statische Methode <code>getInstance()</code> liefert die einzige Instanz der {@link AppErrorDialog}-Klasse.
 	 * 
-	 * @return Die einzige Instanz der Klasse {@link AppErrorDialog}.
+	 * @return Die einzige Instanz der {@link AppErrorDialog}-Klasse.
 	 */
 	public static AppErrorDialog getInstance() {
 		return LazyHolder.INSTANCE;

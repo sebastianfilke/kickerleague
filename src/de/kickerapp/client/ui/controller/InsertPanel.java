@@ -62,8 +62,9 @@ import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BasePanel;
 import de.kickerapp.client.ui.dialog.AppInfoDialog;
-import de.kickerapp.client.ui.resources.icons.KickerIcons;
-import de.kickerapp.client.ui.resources.templates.KickerTemplates;
+import de.kickerapp.client.ui.resources.CssResourceProvider;
+import de.kickerapp.client.ui.resources.IconProvider;
+import de.kickerapp.client.ui.resources.TemplateProvider;
 import de.kickerapp.client.ui.util.AppInfo;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
@@ -600,7 +601,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		view.setCell(new AbstractCell<PlayerDto>() {
 			@Override
 			public void render(Context context, PlayerDto value, SafeHtmlBuilder sb) {
-				sb.append(KickerTemplates.TEMPLATE.renderPlayerPagingComboBox(value));
+				sb.append(TemplateProvider.get().renderPlayerPagingComboBox(value, CssResourceProvider.get().pagingStyle()));
 			}
 		});
 
@@ -645,7 +646,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private AppButton createBtnInsert() {
-		final AppButton bReport = new AppButton("Ergebnis eintragen", KickerIcons.ICON.save());
+		final AppButton bReport = new AppButton("Ergebnis eintragen", IconProvider.get().save());
 		bReport.setToolTip("Speichert das Ergebnis und trägt es in die Liste ein");
 		bReport.addSelectHandler(new SelectHandler() {
 			@Override
@@ -657,7 +658,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	}
 
 	private AppButton createBtnReset() {
-		final AppButton bReset = new AppButton("Eingaben zurücksetzen", KickerIcons.ICON.reset());
+		final AppButton bReset = new AppButton("Eingaben zurücksetzen", IconProvider.get().reset());
 		bReset.setToolTip("Setzt alle eingegebenen Daten zurück");
 		bReset.addSelectHandler(new SelectHandler() {
 			@Override
