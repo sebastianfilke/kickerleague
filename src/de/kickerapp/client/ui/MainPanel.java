@@ -20,8 +20,8 @@ import de.kickerapp.client.ui.controller.MatchesPanel;
 import de.kickerapp.client.ui.controller.PlayerTabPanel;
 import de.kickerapp.client.ui.controller.TablesPanel;
 import de.kickerapp.client.ui.controller.chart.ChartTabPanel;
-import de.kickerapp.client.ui.resources.icons.KickerIcons;
-import de.kickerapp.client.ui.resources.messages.KickerMessages;
+import de.kickerapp.client.ui.resources.IconProvider;
+import de.kickerapp.client.ui.resources.MessageProvider;
 
 /**
  * Basis-Layout zur Darstellung und Verarbeitung der Applikation.
@@ -92,10 +92,10 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		final SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
 		sb.appendHtmlConstant("<div id='header'><div id='headerIcon'>");
-		sb.append(AbstractImagePrototype.create(KickerIcons.ICON.soccer_ball()).getSafeHtml());
+		sb.append(AbstractImagePrototype.create(IconProvider.get().soccer_ball()).getSafeHtml());
 		sb.appendHtmlConstant("</div>");
 		sb.appendHtmlConstant("<div id='headerText'>");
-		sb.appendHtmlConstant(KickerMessages.MESSAGE.applicationTitle());
+		sb.appendHtmlConstant(MessageProvider.get().applicationTitle());
 		sb.appendHtmlConstant("</div><div>");
 
 		final HtmlLayoutContainer htmlLcHeader = new HtmlLayoutContainer(sb.toSafeHtml());

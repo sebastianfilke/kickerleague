@@ -1,6 +1,5 @@
 package de.kickerapp.client.ui.resources.icons;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
@@ -10,9 +9,6 @@ import com.google.gwt.resources.client.ImageResource;
  * @author Sebastian Filke
  */
 public interface KickerIcons extends ClientBundle {
-
-	/** Die Icons. */
-	public final KickerIcons ICON = GWT.create(KickerIcons.class);
 
 	// CHECKSTYLE:OFF
 

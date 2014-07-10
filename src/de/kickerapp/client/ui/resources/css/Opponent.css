@@ -1,0 +1,30 @@
+.table {
+	border-collapse: separate;
+	border-spacing: 0px;
+	text-align: center;
+	vertical-align: middle;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+.table .header {
+	width: 100px;
+	height: 30px;
+}
+
+.table .header span {
+	font-size: 11px;
+}
+
+.table .info {
+	width: 100px;
+	height: 60px;
+}
+
+.table .info .matches {
+	font-size: 28px;
+}
+
+.table .info .percentage {
+	font-size: 18px;
+}

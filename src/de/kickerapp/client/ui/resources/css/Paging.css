@@ -1,0 +1,25 @@
+.comboBox {
+	padding: 3px 10px 3px 10px;
+	white-space: normal;
+}
+
+.comboBox span {
+	font-weight: normal;
+	font-size: 11px;
+}
+
+.comboBox h3 {
+	font-size: 14px;
+	display: block;
+	font: inherit;
+	font-weight: bold;
+	color: #222;
+}
+
+.comboBox h3 span {
+	float: right;
+	margin: 0 0 5px 5px;
+	width: 100px;
+	display: block;
+	clear: none;
+}
