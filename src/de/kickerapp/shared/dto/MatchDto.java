@@ -20,6 +20,8 @@ public class MatchDto extends BaseDto {
 	private Date matchDate;
 	/** Das Spieldatum zum Gruppieren der Spiele. */
 	private String groupDate;
+	/** Der Kommentar zum Spiel. */
+	private String matchComment;
 	/** Der Spieltyp. */
 	private MatchType matchType;
 	/** Das erste Team bzw. Spieler. */
@@ -30,8 +32,6 @@ public class MatchDto extends BaseDto {
 	private MatchPointsDto matchPointsDto;
 	/** Die Spielsätze der Teams bzw. Spieler. */
 	private MatchSetDto matchSetsDto;
-	/** Der Kommentar zum Spiel. */
-	private MatchCommentDto matchCommentDto;
 
 	/**
 	 * Erzeugt ein neues Spiel ohne Angaben.
@@ -42,12 +42,12 @@ public class MatchDto extends BaseDto {
 		matchNumber = 0;
 		matchDate = null;
 		groupDate = "";
+		matchComment = "";
 		matchType = MatchType.NONE;
 		team1Dto = null;
 		team2Dto = null;
 		matchPointsDto = null;
 		matchSetsDto = null;
-		matchCommentDto = null;
 	}
 
 	/**
@@ -102,6 +102,24 @@ public class MatchDto extends BaseDto {
 	 */
 	public void setGroupDate(String groupDate) {
 		this.groupDate = groupDate;
+	}
+
+	/**
+	 * Liefert den Kommentar zum Spiel.
+	 * 
+	 * @return Der Kommentar zum Spiel als {@link String}.
+	 */
+	public String getMatchComment() {
+		return matchComment;
+	}
+
+	/**
+	 * Setzt den Kommentar zum Spiel.
+	 * 
+	 * @param matchComment Der Kommentar zum Spiel als {@link String}.
+	 */
+	public void setMatchComment(String matchComment) {
+		this.matchComment = matchComment;
 	}
 
 	/**
@@ -195,24 +213,6 @@ public class MatchDto extends BaseDto {
 	}
 
 	/**
-	 * Liefert den Kommentar zum Spiel.
-	 * 
-	 * @return Der Kommentar zum Spiel als {@link MatchCommentDto}.
-	 */
-	public MatchCommentDto getMatchCommentDto() {
-		return matchCommentDto;
-	}
-
-	/**
-	 * Setzt den Kommentar zum Spiel.
-	 * 
-	 * @param matchCommentDto Der Kommentar zum Spiel als {@link MatchCommentDto}.
-	 */
-	public void setMatchCommentDto(MatchCommentDto matchCommentDto) {
-		this.matchCommentDto = matchCommentDto;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -223,6 +223,7 @@ public class MatchDto extends BaseDto {
 		sb.append("matchNumber=").append(matchNumber).append(", ");
 		sb.append("matchDate=").append(matchDate).append(", ");
 		sb.append("groupDate=").append(groupDate).append(", ");
+		sb.append("matchComment=").append(matchComment).append(", ");
 		sb.append("matchType=").append(matchType);
 		sb.append("]");
 

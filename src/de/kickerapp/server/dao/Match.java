@@ -3,7 +3,6 @@ package de.kickerapp.server.dao;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.jdo.annotations.Element;
 import javax.jdo.annotations.Embedded;
 import javax.jdo.annotations.FetchGroup;
 import javax.jdo.annotations.Inheritance;
@@ -30,9 +29,8 @@ public class Match extends BaseDao {
 	@Persistent
 	private Date matchDate;
 	/** Der Kommentar zum Spiel. */
-	@Element(dependent = "true")
-	@Persistent(defaultFetchGroup = "false")
-	private MatchComment matchComment;
+	@Persistent
+	private String matchComment;
 	/** Die Spielpunkte der Teams bzw. Spieler. */
 	@Embedded
 	@Persistent(defaultFetchGroup = "true")
@@ -50,7 +48,7 @@ public class Match extends BaseDao {
 
 		matchNumber = 0;
 		matchDate = null;
-		matchComment = null;
+		matchComment = "";
 		matchPoints = new MatchPoints();
 		matchSets = new MatchSets();
 	}
@@ -94,18 +92,18 @@ public class Match extends BaseDao {
 	/**
 	 * Liefert den Kommentar zum Spiel.
 	 * 
-	 * @return Der Kommentar zum Spiel als {@link MatchComment}.
+	 * @return Der Kommentar zum Spiel als {@link String}.
 	 */
-	public MatchComment getMatchComment() {
+	public String getMatchComment() {
 		return matchComment;
 	}
 
 	/**
 	 * Setzt den Kommentar zum Spiel.
 	 * 
-	 * @param matchComment Der Kommentar zum Spiel als {@link MatchComment}.
+	 * @param matchComment Der Kommentar zum Spiel als {@link String}.
 	 */
-	public void setMatchComment(MatchComment matchComment) {
+	public void setMatchComment(String matchComment) {
 		this.matchComment = matchComment;
 	}
 
@@ -354,7 +352,8 @@ public class Match extends BaseDao {
 		sb.append(" [");
 		sb.append("id=").append(getKey().getId()).append(", ");
 		sb.append("matchNumber=").append(matchNumber).append(", ");
-		sb.append("matchDate=").append(matchDate);
+		sb.append("matchDate=").append(matchDate).append(", ");
+		sb.append("matchComment=").append(matchComment);
 		sb.append("]");
 
 		return sb.toString();

@@ -70,7 +70,6 @@ import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppComboBox;
 import de.kickerapp.client.widgets.AppFieldLabel;
 import de.kickerapp.shared.common.MatchType;
-import de.kickerapp.shared.dto.MatchCommentDto;
 import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.MatchSetDto;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -834,7 +833,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		newMatch.setMatchSetsDto(getMatchSetsDto());
 
 		if (taComment.getValue() != null && !taComment.getValue().isEmpty()) {
-			newMatch.setMatchCommentDto(new MatchCommentDto(taComment.getValue()));
+			newMatch.setMatchComment(taComment.getValue());
 		}
 		return newMatch;
 	}

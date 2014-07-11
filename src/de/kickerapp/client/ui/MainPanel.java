@@ -17,9 +17,9 @@ import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.ui.base.BaseContainer;
 import de.kickerapp.client.ui.controller.InsertPanel;
 import de.kickerapp.client.ui.controller.MatchesPanel;
-import de.kickerapp.client.ui.controller.PlayerTabPanel;
 import de.kickerapp.client.ui.controller.TablesPanel;
-import de.kickerapp.client.ui.controller.chart.ChartTabPanel;
+import de.kickerapp.client.ui.controller.tab.ChartTabPanel;
+import de.kickerapp.client.ui.controller.tab.PlayerTabPanel;
 import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.client.ui.resources.MessageProvider;
 

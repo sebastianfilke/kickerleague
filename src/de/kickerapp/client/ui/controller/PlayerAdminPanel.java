@@ -305,7 +305,7 @@ public class PlayerAdminPanel extends BaseContainer {
 		return lvPlayer;
 	}
 
-	protected void getPlayerList() {
+	public void getPlayerList() {
 		if (doUpdatePlayerList) {
 			mask("Aktualisiere...");
 			KickerServices.PLAYER_SERVICE.getAllPlayers(MatchType.NONE, new AsyncCallback<ArrayList<PlayerDto>>() {

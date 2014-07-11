@@ -30,7 +30,7 @@ public class SingleMatchHistory extends MatchHistory {
 	private Player player2;
 
 	/**
-	 * Erzeugt ein neues Einzelspiel ohne Angaben.
+	 * Erzeugt einen neuen Verlauf für ein Einzelspiel ohne Angaben.
 	 */
 	public SingleMatchHistory() {
 		super();
