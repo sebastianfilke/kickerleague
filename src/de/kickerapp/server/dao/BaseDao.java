@@ -28,6 +28,8 @@ public class BaseDao {
 	 */
 	public BaseDao() {
 		super();
+
+		key = null;
 	}
 
 	/**

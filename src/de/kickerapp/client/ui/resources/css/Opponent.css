@@ -7,24 +7,24 @@
 	font-weight: bold;
 }
 
-.table .header {
+.table tr:first-child td {
 	width: 100px;
 	height: 30px;
 }
 
-.table .header span {
+.table tr:first-child span {
 	font-size: 11px;
 }
 
-.table .info {
+.table tr:last-child td {
 	width: 100px;
 	height: 60px;
 }
 
-.table .info .matches {
+.table tr:last-child span:first-child {
 	font-size: 28px;
 }
 
-.table .info .percentage {
+.table tr:last-child span:last-child {
 	font-size: 18px;
 }

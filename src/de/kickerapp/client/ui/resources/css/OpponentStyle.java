@@ -13,12 +13,4 @@ public interface OpponentStyle extends CssResource {
 
 	String table();
 
-	String header();
-
-	String info();
-
-	String matches();
-
-	String percentage();
-
 }

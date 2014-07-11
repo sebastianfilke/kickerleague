@@ -11,9 +11,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.MatchService;
 import de.kickerapp.server.dao.DoubleMatch;
-import de.kickerapp.server.dao.Match;
 import de.kickerapp.server.dao.Match.MatchSets;
-import de.kickerapp.server.dao.MatchComment;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.PlayerDoubleStats;
 import de.kickerapp.server.dao.PlayerSingleStats;
@@ -47,6 +45,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		final Key matchKey = KeyFactory.createKey(SingleMatch.class.getSimpleName(), matchId);
 		dbMatch.setKey(matchKey);
 		dbMatch.setMatchDate(matchDto.getMatchDate());
+		dbMatch.setMatchComment(matchDto.getMatchComment());
 		dbMatch.setMatchNumber(MatchBean.getNextMatchNumber());
 
 		final MatchSets sets = new MatchSets(matchDto.getMatchSetsDto().getMatchSetsTeam1(), matchDto.getMatchSetsDto().getMatchSetsTeam2());
@@ -61,10 +60,6 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		final boolean team1Winner = MatchServiceHelper.isTeam1Winner(dbMatch);
 		updatePlayerSingleStats(dbTeam1Player1, dbMatch, team1Winner);
 		updatePlayerSingleStats(dbTeam2Player1, dbMatch, !team1Winner);
-
-		if (matchDto.getMatchCommentDto() != null) {
-			createMatchComment(matchDto, dbMatch);
-		}
 
 		PMFactory.persistObject(dbMatch);
 		MatchServiceHelper.updateTable(matchDto);
@@ -115,12 +110,10 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		updateTeamStats(dbTeam1, dbMatch, team1Winner);
 		updateTeamStats(dbTeam2, dbMatch, !team1Winner);
 
-		if (matchDto.getMatchCommentDto() != null) {
-			createMatchComment(matchDto, dbMatch);
-		}
-
 		PMFactory.persistObject(dbMatch);
 		MatchServiceHelper.updateTable(matchDto);
+		MatchServiceHelper.createDoubleMatchHistory(dbMatch, team1Winner);
+		MatchServiceHelper.createTeamMatchHistory(dbMatch, team1Winner);
 
 		matchDto.setId(dbMatch.getKey().getId());
 
@@ -305,21 +298,6 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		if (dbTeam.getLastMatchDate() == null || dbMatch.getMatchDate().after(dbTeam.getLastMatchDate())) {
 			dbTeam.setLastMatchDate(dbMatch.getMatchDate());
 		}
-	}
-
-	/**
-	 * Erzeugt und Speichert ein Kommentar zum Spiel.
-	 * 
-	 * @param matchDto Die Client-Datenklasse.
-	 * @param dbMatch Die Objekt-Datenklasse.
-	 */
-	private void createMatchComment(final MatchDto matchDto, final Match dbMatch) {
-		final MatchComment dbComment = new MatchComment(matchDto.getMatchCommentDto().getComment());
-		final int commentId = PMFactory.getNextId(MatchComment.class.getName());
-		final Key commentKey = KeyFactory.createKey(dbMatch.getKey(), MatchComment.class.getSimpleName(), commentId);
-		dbComment.setKey(commentKey);
-
-		dbMatch.setMatchComment(dbComment);
 	}
 
 	/**

@@ -31,6 +31,9 @@ public class DoubleMatch extends Match {
 	 */
 	public DoubleMatch() {
 		super();
+
+		team1 = null;
+		team2 = null;
 	}
 
 	/**

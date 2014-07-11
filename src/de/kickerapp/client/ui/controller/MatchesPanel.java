@@ -378,8 +378,8 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final MatchDto selectedMatch = storeMatches.findModelWithKey(context.getKey().toString());
-				if (selectedMatch.getMatchCommentDto() != null) {
-					sb.appendHtmlConstant("<div qtitle='Kommentar' qtip='" + selectedMatch.getMatchCommentDto().getComment() + "'>");
+				if (!selectedMatch.getMatchComment().isEmpty()) {
+					sb.appendHtmlConstant("<div qtitle='Kommentar' qtip='" + selectedMatch.getMatchComment() + "'>");
 					sb.append(AbstractImagePrototype.create(value).getSafeHtml());
 					sb.appendHtmlConstant("</div>");
 				}
