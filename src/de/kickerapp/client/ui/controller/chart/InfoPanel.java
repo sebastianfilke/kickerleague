@@ -87,7 +87,7 @@ public class InfoPanel extends BaseContainer {
 
 	private FlexTable createFlexTable(String text, HTML html) {
 		final FlexTable ftInfo = new FlexTable();
-		ftInfo.getElement().setId("stats");
+		ftInfo.setStyleName("infoStats", true);
 		ftInfo.setCellSpacing(0);
 		ftInfo.setCellPadding(0);
 

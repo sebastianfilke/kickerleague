@@ -115,7 +115,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		super.initHandlers();
 
 		AppEventBus.addHandler(ShowDataEvent.TABLES, this);
-		AppEventBus.addHandler(TabPanelEvent.TYPE, this);
+		AppEventBus.addHandler(TabPanelEvent.TABLES, this);
 		AppEventBus.addHandler(UpdatePanelEvent.ALL, this);
 		AppEventBus.addHandler(UpdatePanelEvent.TABLES, this);
 	}

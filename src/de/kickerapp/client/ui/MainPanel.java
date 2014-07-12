@@ -33,7 +33,7 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 	/** Der CardLayoutContainer für die Hauptansicht. */
 	private CardLayoutContainer clcContent;
 	/** Controller-Klasse für die Ansicht der Team- bzw. Spielertabellen. */
-	private TablesPanel tablePanel;
+	private TablesPanel tablesPanel;
 	/** Controller-Klasse für die Ansicht der Spielergebnisse. */
 	private MatchesPanel matchesPanel;
 	/** Controller-Klasse zum Eintragen der Ergebnisse und Spieler eines Spiels. */
@@ -57,7 +57,7 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 	 */
 	@Override
 	public void initLayout() {
-		tablePanel = new TablesPanel();
+		tablesPanel = new TablesPanel();
 		matchesPanel = new MatchesPanel();
 		resultPanel = new InsertPanel();
 		chartTabPanel = new ChartTabPanel();
@@ -65,7 +65,7 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 
 		final VerticalLayoutContainer vlcMain = new VerticalLayoutContainer();
 		vlcMain.add(createHeader(), new VerticalLayoutData(1, 92));
-		vlcMain.add(new NavigationPanel(), new VerticalLayoutData(1, 42));
+		vlcMain.add(new NavigationPanel(), new VerticalLayoutData(1, 54));
 		vlcMain.add(createContent(), new VerticalLayoutData(1, 1));
 
 		add(vlcMain);
@@ -79,7 +79,7 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		AppEventBus.addHandler(NavigationEvent.TABLES, this);
 		AppEventBus.addHandler(NavigationEvent.MATCHES, this);
 		AppEventBus.addHandler(NavigationEvent.INSERT, this);
-		AppEventBus.addHandler(NavigationEvent.CHART, this);
+		AppEventBus.addHandler(NavigationEvent.CHARTS, this);
 		AppEventBus.addHandler(NavigationEvent.PLAYER, this);
 	}
 
@@ -118,7 +118,7 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		blcContent.setId("content");
 
 		clcContent = new CardLayoutContainer();
-		clcContent.add(tablePanel);
+		clcContent.add(tablesPanel);
 		clcContent.add(matchesPanel);
 		clcContent.add(resultPanel);
 		clcContent.add(chartTabPanel);
@@ -141,8 +141,8 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		final SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
 		sb.appendHtmlConstant("<div id='footer'>");
-		sb.appendHtmlConstant("<div id='footerLinks'>Impressum | Kontakt</div>");
-		sb.appendHtmlConstant("<div id='footerText'>Design und Idee &#064; Sebastian Filke, 2014 | Version: 0.9.2</div>");
+		sb.appendHtmlConstant("<div id='footerLeft'>Impressum | Kontakt</div>");
+		sb.appendHtmlConstant("<div id='footerText'>Design und Idee &#064; Sebastian Filke, 2013-14 | Version: 0.9.5</div>");
 		sb.appendHtmlConstant("</div>");
 
 		final HtmlLayoutContainer htmlLcTitle = new HtmlLayoutContainer(sb.toSafeHtml());
@@ -157,7 +157,7 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 	@Override
 	public void navigationPressed(final NavigationEvent navEvent) {
 		if (navEvent.getAssociatedType() == NavigationEvent.TABLES) {
-			clcContent.setActiveWidget(tablePanel);
+			clcContent.setActiveWidget(tablesPanel);
 			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.TABLES));
 		} else if (navEvent.getAssociatedType() == NavigationEvent.MATCHES) {
 			clcContent.setActiveWidget(matchesPanel);
@@ -165,9 +165,9 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 		} else if (navEvent.getAssociatedType() == NavigationEvent.INSERT) {
 			clcContent.setActiveWidget(resultPanel);
 			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.INSERT));
-		} else if (navEvent.getAssociatedType() == NavigationEvent.CHART) {
+		} else if (navEvent.getAssociatedType() == NavigationEvent.CHARTS) {
 			clcContent.setActiveWidget(chartTabPanel);
-			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.CHART));
+			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.CHARTS));
 		} else if (navEvent.getAssociatedType() == NavigationEvent.PLAYER) {
 			clcContent.setActiveWidget(playerPanel);
 			AppEventBus.fireEvent(new ShowDataEvent(ShowDataEvent.PLAYER));

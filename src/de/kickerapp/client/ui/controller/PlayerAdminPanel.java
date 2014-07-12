@@ -408,9 +408,7 @@ public class PlayerAdminPanel extends BaseContainer {
 	}
 
 	private void fireEvents() {
-		final TabPanelEvent tabPanelEvent = new TabPanelEvent();
-		tabPanelEvent.setActiveWidget(0);
-		AppEventBus.fireEvent(tabPanelEvent);
+		AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 0));
 		AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.TABLES));
 	}
 

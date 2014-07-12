@@ -11,6 +11,9 @@ import com.sencha.gxt.widget.core.client.container.MarginData;
 import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.event.ShowDataEventHandler;
+import de.kickerapp.client.event.TabPanelEvent;
+import de.kickerapp.client.event.TabPanelEventHandler;
+import de.kickerapp.client.ui.base.BaseContainer;
 import de.kickerapp.client.ui.base.BasePanel;
 import de.kickerapp.client.ui.controller.DoublePlayerChartPanel;
 import de.kickerapp.client.ui.controller.SinglePlayerChartPanel;
@@ -21,7 +24,7 @@ import de.kickerapp.client.ui.resources.IconProvider;
  * 
  * @author Sebastian Filke
  */
-public class ChartTabPanel extends BasePanel implements ShowDataEventHandler {
+public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, TabPanelEventHandler {
 
 	private SinglePlayerChartPanel singlePlayerChartPanel;
 
@@ -65,7 +68,8 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler {
 	protected void initHandlers() {
 		super.initHandlers();
 
-		AppEventBus.addHandler(ShowDataEvent.CHART, this);
+		AppEventBus.addHandler(ShowDataEvent.CHARTS, this);
+		AppEventBus.addHandler(TabPanelEvent.CHARTS, this);
 	}
 
 	private TabPanel createTabPanel() {
@@ -83,14 +87,18 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler {
 		tabPanel.setResizeTabs(true);
 		tabPanel.setTabWidth(200);
 
-		final TabItemConfig ticSinglePlayerChart = new TabItemConfig("Einzelspielerstatistik");
+		final TabItemConfig ticSinglePlayerChart = new TabItemConfig("Einzelstatistik");
 		ticSinglePlayerChart.setIcon(IconProvider.get().chart_bar());
 
-		final TabItemConfig ticDoublePlayerChart = new TabItemConfig("Doppelspielerstatistik");
+		final TabItemConfig ticDoublePlayerChart = new TabItemConfig("Doppelstatistik");
 		ticDoublePlayerChart.setIcon(IconProvider.get().chart_bar());
+
+		final TabItemConfig ticTeamPlayerChart = new TabItemConfig("Teamstatistik");
+		ticTeamPlayerChart.setIcon(IconProvider.get().chart_bar());
 
 		tabPanel.add(singlePlayerChartPanel, ticSinglePlayerChart);
 		tabPanel.add(doublePlayerChartPanel, ticDoublePlayerChart);
+		tabPanel.add(new BaseContainer(), ticTeamPlayerChart);
 		tabPanel.setBodyBorder(false);
 		tabPanel.setBorders(false);
 
@@ -112,6 +120,17 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler {
 	@Override
 	public void showData(ShowDataEvent event) {
 		getChartForActiveTab();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setActiveWidget(TabPanelEvent event) {
+		if (activeTab != event.getActiveTab()) {
+			activeTab = event.getActiveTab();
+			tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
+		}
 	}
 
 }

@@ -16,12 +16,15 @@
 <!--                                           -->
 <title>Kicker League</title>
 
+<script type='text/javascript' src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type='text/javascript' src='menu/navScript.js'></script>
+
 <!--                                                               -->
 <!-- Consider inlining CSS to reduce the number of requested files -->
 <!--                                                               -->
-<link type="text/css" rel="stylesheet"
-	href="kicker_application/reset.css" />
+<link type="text/css" rel="stylesheet" href="kicker_application/reset.css" />
 <link type="text/css" rel="stylesheet" href="Kicker_Application.css">
+<link type="text/css" rel="stylesheet" href="menu/navStyles.css">
 
 <style type="text/css">
 #loading {
@@ -65,14 +68,12 @@
 <!--                                           -->
 <body>
 	<!-- OPTIONAL: include this if you want history support -->
-	<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
-		style="position: absolute; width: 0; height: 0; border: 0"></iframe>
+	<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position: absolute; width: 0; height: 0; border: 0"></iframe>
 
 	<!-- OPTIONAL: add loading indicator while the app is being loaded -->
 	<div id="loading">
 		<div class="loading-indicator">
-			<img src="images/indicator.gif" />Kicker League<br /> <span
-				id="loading-msg">Initalisierung...</span>
+			<img src="images/indicator.gif" />Kicker League<br /> <span id="loading-msg">Initalisierung...</span>
 		</div>
 	</div>
 
@@ -81,15 +82,12 @@
 	<!-- If you add any GWT meta tags, they must   -->
 	<!-- be added before this line.                -->
 	<!--                                           -->
-	<script type="text/javascript" language="javascript"
-		src="kicker_application/kicker_application.nocache.js"></script>
+	<script type="text/javascript" language="javascript" src="kicker_application/kicker_application.nocache.js"></script>
 
 	<!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
 	<noscript>
-		<div
-			style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
-			Your web browser must have JavaScript enabled in order for this
-			application to display correctly.</div>
+		<div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">Your web browser
+			must have JavaScript enabled in order for this application to display correctly.</div>
 	</noscript>
 
 </body>

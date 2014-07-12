@@ -1,17 +1,20 @@
 package de.kickerapp.client.ui;
 
+import com.google.gwt.dom.client.AnchorElement;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.Label;
-import com.sencha.gxt.widget.core.client.container.AbstractHtmlLayoutContainer.HtmlData;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 
 import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.NavigationEvent;
-import de.kickerapp.client.event.NavigationEventHandler;
+import de.kickerapp.client.event.TabPanelEvent;
 import de.kickerapp.client.ui.base.BaseContainer;
+import de.kickerapp.client.ui.resources.TemplateProvider;
 
 /**
  * Controller-Klasse für die Navigationsleiste der Applikation.
@@ -20,18 +23,10 @@ import de.kickerapp.client.ui.base.BaseContainer;
  */
 public class NavigationPanel extends BaseContainer {
 
-	/** Der Navigationspunkt für die Tabellen. */
-	private Label lTables;
-	/** Der Navigationspunkt für die Ergebnisse. */
-	private Label lResults;
-	/** Der Navigationspunkt für das Eintragen von Spielen. */
-	private Label lInsert;
-	/** Der Navigationspunkt für die Team- und Spielerstatistiken. */
-	private Label lChart;
-	/** Der Navigationspunkt für die Spielerverwaltung. */
-	private Label lPlayer;
-	/** Der momentan selektierte Navigationspunkt. */
-	private Label lSelected;
+	/** Der aktuell ausgewählte Navigationspunkt für das Hauptmenü. */
+	private Element selectedElement;
+	/** Der aktuell ausgewählte Navigationspunkt für ein Untermenü. */
+	private Element selectedSubElement;
 
 	/**
 	 * Erzeugt einen neuen Controller für die Navigationsleiste der Applikation.
@@ -55,57 +50,150 @@ public class NavigationPanel extends BaseContainer {
 	 * @return Die erstellt Navigationsleiste.
 	 */
 	private HtmlLayoutContainer createHlcNavigation() {
-		final SafeHtmlBuilder sb = new SafeHtmlBuilder();
-
-		sb.appendHtmlConstant("<div id='tabs26'><ul>");
-		sb.appendHtmlConstant("<li><div class='lTables'></div></li>");
-		sb.appendHtmlConstant("<li><div class='lResults'></div></li>");
-		sb.appendHtmlConstant("<li><div class='lInsert'></div></li>");
-		sb.appendHtmlConstant("<li><div class='lChart'></div></li>");
-		sb.appendHtmlConstant("<li><div class='lPlayer'></div></li>");
-		sb.appendHtmlConstant("</ul></div>");
-
-		final HtmlLayoutContainer htmlLcNavigation = new HtmlLayoutContainer(sb.toSafeHtml());
-		htmlLcNavigation.setStateful(false);
-
-		lTables = createNavigationLabel("Tabellen", NavigationEvent.TABLES);
-		lSelected = lTables;
-		lSelected.setStyleName("current", true);
-
-		lResults = createNavigationLabel("Ergebnisse", NavigationEvent.MATCHES);
-		lInsert = createNavigationLabel("Spiel eintragen", NavigationEvent.INSERT);
-		lChart = createNavigationLabel("Statistiken", NavigationEvent.CHART);
-		lPlayer = createNavigationLabel("Spieler", NavigationEvent.PLAYER);
-
-		htmlLcNavigation.add(lTables, new HtmlData(".lTables"));
-		htmlLcNavigation.add(lResults, new HtmlData(".lResults"));
-		htmlLcNavigation.add(lInsert, new HtmlData(".lInsert"));
-		htmlLcNavigation.add(lChart, new HtmlData(".lChart"));
-		htmlLcNavigation.add(lPlayer, new HtmlData(".lPlayer"));
+		final HtmlLayoutContainer htmlLcNavigation = new HtmlLayoutContainer(TemplateProvider.get().renderNavigation());
+		htmlLcNavigation.setId("navigationBorder");
+		htmlLcNavigation.addAttachHandler(new Handler() {
+			@Override
+			public void onAttachOrDetach(AttachEvent event) {
+				selectedElement = DOM.getElementById("tables");
+			}
+		});
+		htmlLcNavigation.addDomHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				final Element clickedElement = DOM.eventGetTarget(Event.as(event.getNativeEvent()));
+				if (clickedElement != null) {
+					handleClickEvent(clickedElement);
+					fireNavigationEvent(clickedElement);
+				}
+			}
+		}, ClickEvent.getType());
 
 		return htmlLcNavigation;
 	}
 
 	/**
-	 * Erstellt einen Navigationspunkt für die Navigationsleiste.
+	 * Führt das entsprechende NavigationsEvent aus.
 	 * 
-	 * @param text Der Text des Navigationspunktes als <code>String</code>.
-	 * @param navEvent Der Typ des NavigationsEvents welches ausgelöst werden soll.
-	 * @return Der erstellte Navigationspunkt.
+	 * @param clickedElement Das selektierte Element in der Navigationsleiste.
 	 */
-	private Label createNavigationLabel(final String text, final Type<NavigationEventHandler> navEvent) {
-		final Label lNavigation = new Label(text);
-		lNavigation.setStyleName("label", true);
-		lNavigation.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				AppEventBus.fireEvent(new NavigationEvent(navEvent));
-				lSelected.setStyleName("current", false);
-				lSelected = lNavigation;
-				lSelected.setStyleName("current", true);
+	private void fireNavigationEvent(final Element clickedElement) {
+		final Element element = getElement(clickedElement);
+		final Element subElement = getSubElement(clickedElement);
+
+		String elementId = element.getAttribute("id");
+		if (subElement != null) {
+			elementId = subElement.getAttribute("id");
+		}
+
+		if (elementId.equals("tables")) {
+			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
+		} else if (elementId.equals("singleTables")) {
+			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 0));
+			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
+		} else if (elementId.equals("doubleTables")) {
+			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 1));
+			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
+		} else if (elementId.equals("teamTables")) {
+			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 2));
+			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
+		} else if (elementId.equals("results")) {
+			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.MATCHES));
+		} else if (elementId.equals("insert")) {
+			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.INSERT));
+		} else if (elementId.equals("charts")) {
+			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.CHARTS));
+		} else if (elementId.equals("singleChart")) {
+			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.CHARTS, 0));
+			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.CHARTS));
+		} else if (elementId.equals("doubleChart")) {
+			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.CHARTS, 1));
+			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.CHARTS));
+		} else if (elementId.equals("teamChart")) {
+			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.CHARTS, 2));
+			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.CHARTS));
+		} else if (elementId.equals("player")) {
+			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.PLAYER));
+		}
+	}
+
+	/**
+	 * Methode zum Verarbeiten des ClickEvents.
+	 * 
+	 * @param clickedElement Das selektierte Element in der Navigationsleiste.
+	 */
+	private void handleClickEvent(final Element clickedElement) {
+		final Element element = getElement(clickedElement);
+		final Element subElement = getSubElement(clickedElement);
+		final String elementId = element.getAttribute("id");
+
+		if (!elementId.equals("cssmenu") && !elementId.equals("navigationBorder")) {
+			selectedElement.removeClassName("active");
+			if (selectedSubElement != null) {
+				selectedSubElement.removeClassName("active");
 			}
-		});
-		return lNavigation;
+
+			selectedElement = element;
+			selectedElement.addClassName("active");
+			if (subElement != null) {
+				selectedSubElement = subElement;
+				selectedSubElement.addClassName("active");
+			}
+		}
+	}
+
+	/**
+	 * Liefert das Element aus dem Hauptmenü.
+	 * 
+	 * @param clickedElement Das selektierte Element in der Navigationsleiste.
+	 * @return Das Element aus dem Hauptmenü.
+	 */
+	private Element getElement(final Element clickedElement) {
+		if (clickedElement.hasClassName("sub")) {
+			if (clickedElement.hasTagName(AnchorElement.TAG)) {
+				return getParent(clickedElement, 3);
+			} else {
+				return getParent(clickedElement, 4);
+			}
+		} else {
+			if (clickedElement.hasTagName(AnchorElement.TAG)) {
+				return getParent(clickedElement, 1);
+			} else {
+				return getParent(clickedElement, 2);
+			}
+		}
+	}
+
+	/**
+	 * Liefert das Element aus dem Untermenü.
+	 * 
+	 * @param clickedElement Das selektierte Element in der Navigationsleiste.
+	 * @return Das Element aus dem Untermenü oder <code>null</code>.
+	 */
+	private Element getSubElement(final Element clickedElement) {
+		if (clickedElement.hasClassName("sub")) {
+			if (clickedElement.hasTagName(AnchorElement.TAG)) {
+				return getParent(clickedElement, 1);
+			} else {
+				return getParent(clickedElement, 2);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Liefert das Vaterlement des selektierten Elements.
+	 * 
+	 * @param clickedElement Das selektierte Element in der Navigationsleiste.
+	 * @param number Nach welchem Vater gesucht werden soll.
+	 * @return Das Vaterlement.
+	 */
+	private Element getParent(Element clickedElement, int number) {
+		Element parentElement = clickedElement;
+		for (int i = 0; i < number; i++) {
+			parentElement = parentElement.getParentElement();
+		}
+		return parentElement;
 	}
 
 }
