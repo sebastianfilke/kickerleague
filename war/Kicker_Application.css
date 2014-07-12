@@ -7,11 +7,9 @@ body {
 
 @font-face {
 	font-family: 'ChunkFiveRegular';
-	src: url('../fonts/Chunkfive-webfont.eot');
-	src: url('./fonts/Chunkfive-webfont.eot?#iefix') format('embedded-opentype'), url('./fonts/Chunkfive-webfont.woff') format('woff'), url('./fonts/Chunkfive-webfont.ttf') format('truetype'),
-		url('./fonts/Chunkfive-webfont.svg#ChunkFiveRegular') format('svg');
-	font-weight: normal;
 	font-style: normal;
+	font-weight: normal;
+	src: url('./fonts/Chunkfive-webfont.woff') format('woff');
 }
 
 /* Header */
@@ -37,7 +35,19 @@ body {
 }
 
 #headerBackground {
-	background: url("../images/header_bg.png") repeat-x scroll #606060 !important;
+	background: url("../images/header_bg.png") repeat-x scroll #606060
+		!important;
+}
+
+/* Navigation */
+/*-----------------------------------------------------------------------------------------*/
+#navigationBorder {
+	border-top-width: 1px;
+	border-right-width: 0px;
+	border-left-width: 0px;
+	border-bottom-width: 1px;
+	border-color: #FFFFFF;
+	border-style: solid;
 }
 
 /* Content */
@@ -48,7 +58,8 @@ body {
 }
 
 #contentBackground {
-	background: url("../images/content_bg.png") repeat-x scroll #fff !important;
+	background: url("../images/content_bg.png") repeat-x scroll #fff
+		!important;
 }
 
 /* Footer */
@@ -59,7 +70,7 @@ body {
 	font-size: 11px;
 }
 
-#footerLinks {
+#footerLeft {
 	position: absolute;
 	left: 0px;
 }
@@ -104,60 +115,6 @@ body {
 	border-style: solid;
 }
 
-#stats {
+.infoStats {
 	background: transparent url(../images/stats_bg.png) repeat-x top left;
-}
-
-/* Navigation */
-/*-----------------------------------------------------------------------------------------*/
-#tabs26 {
-	position: relative;
-	display: block;
-	height: 42px;
-	font-size: 12px;
-	font-weight: bold;
-	background: transparent url(../images/menu_bg.gif) repeat-x top left;
-	font-family: Arial, Verdana, Helvitica, sans-serif;
-	text-transform: uppercase;
-	width: 100%;
-	overflow: hidden;
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
-
-#tabs26 ul {
-	position: relative;
-	margin: 0px auto;
-	padding: 0;
-	list-style-type: none;
-	left: 50%;
-	float: left;
-}
-
-#tabs26 ul li {
-	position: relative;
-	display: block;
-	float: left;
-	margin: 0 1px 0 0;
-	right: 50%;
-}
-
-#tabs26 ul li .label {
-	position: relative;
-	display: block;
-	color: #EEFFDF;
-	text-decoration: none;
-	padding: 14px 22px 0 22px;
-	height: 28px;
-	text-shadow: 1px 1px 4px #000;
-}
-
-#tabs26 ul li div.label:hover,#tabs26 ul li div.current {
-	cursor: pointer;
-	color: #fff;
-	background: transparent url(../images/menu_bg_hover.gif) no-repeat top center;
 }

@@ -17,6 +17,9 @@ public interface KickerTemplates extends XTemplates {
 
 	// CHECKSTYLE:OFF
 
+	@XTemplate(source = "navigation.html")
+	SafeHtml renderNavigation();
+
 	@XTemplate(source = "pagingComboBox.html")
 	SafeHtml renderPlayerPagingComboBox(PlayerDto playerDto, PagingStyle style);
 

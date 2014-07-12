@@ -687,9 +687,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 			public void onSuccess(MatchDto result) {
 				AppInfo.showInfo("Hinweis", "Spiel wurde erfolgreich eingetragen");
 
-				final TabPanelEvent tabPanelEvent = new TabPanelEvent();
-				tabPanelEvent.setActiveWidget(0);
-				AppEventBus.fireEvent(tabPanelEvent);
+				AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 0));
 				AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL));
 				clearInput();
 				unmask();
@@ -709,9 +707,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 			public void onSuccess(MatchDto result) {
 				AppInfo.showInfo("Hinweis", "Spiel wurde erfolgreich eingetragen");
 
-				final TabPanelEvent tabPanelEvent = new TabPanelEvent();
-				tabPanelEvent.setActiveWidget(1);
-				AppEventBus.fireEvent(tabPanelEvent);
+				AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 1));
 				AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL));
 				clearInput();
 				unmask();
