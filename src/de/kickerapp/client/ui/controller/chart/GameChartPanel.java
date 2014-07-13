@@ -46,7 +46,7 @@ public class GameChartPanel extends BaseContainer {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		storeGame = new ListStore<ChartGameDto>(KickerProperties.CHART_GAME_PROPERTY.id());
 
 		add(createGroupBarChart());

@@ -122,7 +122,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		super.initLayout();
 		setHeadingHtml("<span id='panelHeading'>Spiel eintragen</span>");
 

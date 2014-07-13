@@ -48,14 +48,13 @@ public class OpponentChartPanel extends BaseContainer {
 	public OpponentChartPanel() {
 		super();
 		initLayout();
-		initHandlers();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		storeOpponent = new ListStore<ChartOpponentDto>(KickerProperties.CHART_OPPONENT_PROPERTY.id());
 
 		add(createPieChart());

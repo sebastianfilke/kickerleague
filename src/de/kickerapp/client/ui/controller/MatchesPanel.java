@@ -93,7 +93,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		super.initLayout();
 		setHeadingHtml("<span id='panelHeading'>Zuletzt Gespielt</span>");
 

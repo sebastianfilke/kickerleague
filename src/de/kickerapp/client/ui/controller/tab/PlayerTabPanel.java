@@ -41,7 +41,7 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		super.initLayout();
 		setHeadingHtml("<span id='panelHeading'>Spielerverwaltung</span>");
 

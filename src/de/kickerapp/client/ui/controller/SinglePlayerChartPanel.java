@@ -85,7 +85,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		clcSingleChart = new CardLayoutContainer();
 
 		infoPanel = new InfoPanel();
@@ -106,6 +106,18 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		add(createVlcSingleStats());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initHandlers() {
+		super.initHandlers();
+
+		AppEventBus.addHandler(UpdatePanelEvent.ALL, this);
+		AppEventBus.addHandler(UpdatePanelEvent.TABLES, this);
+		AppEventBus.addHandler(UpdatePanelEvent.CHARTS, this);
+	}
+
 	private VerticalLayoutContainer createVlcSingleStats() {
 		final VerticalLayoutContainer vlcSingleStats = new VerticalLayoutContainer();
 
@@ -122,18 +134,6 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		vlcSingleStats.add(vlcCharts, new VerticalLayoutData(1, 0.82));
 
 		return vlcSingleStats;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initHandlers() {
-		super.initHandlers();
-
-		AppEventBus.addHandler(UpdatePanelEvent.ALL, this);
-		AppEventBus.addHandler(UpdatePanelEvent.TABLES, this);
-		AppEventBus.addHandler(UpdatePanelEvent.CHARTS, this);
 	}
 
 	private ToolBar createToolBarPlayerInfo() {

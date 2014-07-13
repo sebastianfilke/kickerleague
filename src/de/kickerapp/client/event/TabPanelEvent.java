@@ -11,8 +11,12 @@ public class TabPanelEvent extends GwtEvent<TabPanelEventHandler> {
 
 	/** Das Ereignis zum Ändern des TabPanels bei den Tabellen. */
 	public static final GwtEvent.Type<TabPanelEventHandler> TABLES = new GwtEvent.Type<TabPanelEventHandler>();
+	/** Das Ereignis zum Ändern des selektierten Elements in der Navigationsleiste. */
+	public static final GwtEvent.Type<TabPanelEventHandler> TABLES_NAV = new GwtEvent.Type<TabPanelEventHandler>();
 	/** Das Ereignis zum Ändern des TabPanels bei den Statistiken. */
 	public static final GwtEvent.Type<TabPanelEventHandler> CHARTS = new GwtEvent.Type<TabPanelEventHandler>();
+	/** Das Ereignis zum Ändern des selektierten Elements in der Navigationsleiste. */
+	public static final GwtEvent.Type<TabPanelEventHandler> CHARTS_NAV = new GwtEvent.Type<TabPanelEventHandler>();
 
 	/** Der Typ des Ereignisses. */
 	private Type<TabPanelEventHandler> eventType;
@@ -46,8 +50,12 @@ public class TabPanelEvent extends GwtEvent<TabPanelEventHandler> {
 		Type<TabPanelEventHandler> associatedType = null;
 		if (eventType == TABLES) {
 			associatedType = TABLES;
+		} else if (eventType == TABLES_NAV) {
+			associatedType = TABLES_NAV;
 		} else if (eventType == CHARTS) {
 			associatedType = CHARTS;
+		} else if (eventType == CHARTS_NAV) {
+			associatedType = CHARTS_NAV;
 		}
 		return associatedType;
 	}

@@ -56,7 +56,7 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		tablesPanel = new TablesPanel();
 		matchesPanel = new MatchesPanel();
 		resultPanel = new InsertPanel();
@@ -75,7 +75,9 @@ public class MainPanel extends BaseContainer implements NavigationEventHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initHandlers() {
+	protected void initHandlers() {
+		super.initHandlers();
+
 		AppEventBus.addHandler(NavigationEvent.TABLES, this);
 		AppEventBus.addHandler(NavigationEvent.MATCHES, this);
 		AppEventBus.addHandler(NavigationEvent.INSERT, this);

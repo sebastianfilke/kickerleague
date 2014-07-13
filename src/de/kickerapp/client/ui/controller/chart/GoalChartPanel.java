@@ -46,7 +46,7 @@ public class GoalChartPanel extends BaseContainer {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		storeGoal = new ListStore<ChartGoalDto>(KickerProperties.CHART_GOAL_PROPERTY.id());
 
 		add(createGroupBarChart());
