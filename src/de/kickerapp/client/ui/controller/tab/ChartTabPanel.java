@@ -1,5 +1,7 @@
 package de.kickerapp.client.ui.controller.tab;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,7 +49,7 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		super.initLayout();
 		setHeadingHtml("<span id='panelHeading'>Team-/Spielerstatistiken</span>");
 
@@ -112,6 +114,7 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 		} else if (activeTab == 1) {
 			doublePlayerChartPanel.getPlayerList();
 		}
+		AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.CHARTS_NAV, activeTab));
 	}
 
 	/**
@@ -129,7 +132,12 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 	public void setActiveWidget(TabPanelEvent event) {
 		if (activeTab != event.getActiveTab()) {
 			activeTab = event.getActiveTab();
-			tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
+			Scheduler.get().scheduleFinally(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
+				}
+			});
 		}
 	}
 

@@ -13,6 +13,7 @@ import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.NavigationEvent;
 import de.kickerapp.client.event.TabPanelEvent;
+import de.kickerapp.client.event.TabPanelEventHandler;
 import de.kickerapp.client.ui.base.BaseContainer;
 import de.kickerapp.client.ui.resources.TemplateProvider;
 
@@ -21,7 +22,7 @@ import de.kickerapp.client.ui.resources.TemplateProvider;
  * 
  * @author Sebastian Filke
  */
-public class NavigationPanel extends BaseContainer {
+public class NavigationPanel extends BaseContainer implements TabPanelEventHandler {
 
 	/** Der aktuell ausgewählte Navigationspunkt für das Hauptmenü. */
 	private Element selectedElement;
@@ -34,14 +35,26 @@ public class NavigationPanel extends BaseContainer {
 	public NavigationPanel() {
 		super();
 		initLayout();
+		initHandlers();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		add(createHlcNavigation());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initHandlers() {
+		super.initHandlers();
+
+		AppEventBus.addHandler(TabPanelEvent.TABLES_NAV, this);
+		AppEventBus.addHandler(TabPanelEvent.CHARTS_NAV, this);
 	}
 
 	/**
@@ -56,6 +69,7 @@ public class NavigationPanel extends BaseContainer {
 			@Override
 			public void onAttachOrDetach(AttachEvent event) {
 				selectedElement = DOM.getElementById("tables");
+				selectedSubElement = DOM.getElementById("singleTable");
 			}
 		});
 		htmlLcNavigation.addDomHandler(new ClickHandler() {
@@ -88,13 +102,13 @@ public class NavigationPanel extends BaseContainer {
 
 		if (elementId.equals("tables")) {
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
-		} else if (elementId.equals("singleTables")) {
+		} else if (elementId.equals("singleTable")) {
 			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 0));
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
-		} else if (elementId.equals("doubleTables")) {
+		} else if (elementId.equals("doubleTable")) {
 			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 1));
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
-		} else if (elementId.equals("teamTables")) {
+		} else if (elementId.equals("teamTable")) {
 			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 2));
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
 		} else if (elementId.equals("results")) {
@@ -194,6 +208,34 @@ public class NavigationPanel extends BaseContainer {
 			parentElement = parentElement.getParentElement();
 		}
 		return parentElement;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setActiveWidget(TabPanelEvent event) {
+		if (selectedSubElement != null) {
+			selectedSubElement.removeClassName("active");
+		}
+		if (event.getAssociatedType() == TabPanelEvent.TABLES_NAV) {
+			if (event.getActiveTab() == 0) {
+				selectedSubElement = DOM.getElementById("singleTable");
+			} else if (event.getActiveTab() == 1) {
+				selectedSubElement = DOM.getElementById("doubleTable");
+			} else if (event.getActiveTab() == 2) {
+				selectedSubElement = DOM.getElementById("teamTable");
+			}
+		} else if (event.getAssociatedType() == TabPanelEvent.CHARTS_NAV) {
+			if (event.getActiveTab() == 0) {
+				selectedSubElement = DOM.getElementById("singleChart");
+			} else if (event.getActiveTab() == 1) {
+				selectedSubElement = DOM.getElementById("doubleChart");
+			} else if (event.getActiveTab() == 2) {
+				selectedSubElement = DOM.getElementById("teamChart");
+			}
+		}
+		selectedSubElement.addClassName("active");
 	}
 
 }

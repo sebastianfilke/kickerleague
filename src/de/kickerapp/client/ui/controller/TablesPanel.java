@@ -5,6 +5,8 @@ import java.util.Comparator;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ImageResourceCell;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -61,7 +63,7 @@ import de.kickerapp.shared.dto.TeamDto;
  * 
  * @author Sebastian Filke
  */
-public class TablesPanel extends BasePanel implements ShowDataEventHandler, UpdatePanelEventHandler, TabPanelEventHandler {
+public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabPanelEventHandler, UpdatePanelEventHandler {
 
 	/** Der Store für die Einzelspielertabelle. */
 	private ListStore<PlayerDto> storeSingleTable;
@@ -89,7 +91,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		super.initLayout();
 		setHeadingHtml("<span id='panelHeading'>Aktuelle Tabellen</span>");
 
@@ -848,6 +850,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 		} else {
 			getDoubleTableTeamView();
 		}
+		AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES_NAV, activeTab));
 	}
 
 	/**
@@ -965,7 +968,12 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, Upda
 	public void setActiveWidget(TabPanelEvent event) {
 		if (activeTab != event.getActiveTab()) {
 			activeTab = event.getActiveTab();
-			tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
+			Scheduler.get().scheduleFinally(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
+				}
+			});
 		}
 	}
 

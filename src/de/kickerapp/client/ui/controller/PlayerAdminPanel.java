@@ -86,7 +86,7 @@ public class PlayerAdminPanel extends BaseContainer {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		setBorders(false);
 
 		doUpdatePlayerList = true;

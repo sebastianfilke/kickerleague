@@ -75,7 +75,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		clcDoubleChart = new CardLayoutContainer();
 
 		infoPanel = new InfoPanel();
@@ -89,6 +89,18 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 		doUpdateSinglePlayerChart = true;
 
 		add(createBlcSingleStats());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initHandlers() {
+		super.initHandlers();
+
+		AppEventBus.addHandler(UpdatePanelEvent.ALL, this);
+		AppEventBus.addHandler(UpdatePanelEvent.TABLES, this);
+		AppEventBus.addHandler(UpdatePanelEvent.CHARTS, this);
 	}
 
 	private BorderLayoutContainer createBlcSingleStats() {
@@ -116,18 +128,6 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 		blcSinglePlayer.setCenterWidget(vlcCharts);
 
 		return blcSinglePlayer;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void initHandlers() {
-		super.initHandlers();
-
-		AppEventBus.addHandler(UpdatePanelEvent.ALL, this);
-		AppEventBus.addHandler(UpdatePanelEvent.TABLES, this);
-		AppEventBus.addHandler(UpdatePanelEvent.CHARTS, this);
 	}
 
 	private ToolBar createToolBarPlayerInfo() {

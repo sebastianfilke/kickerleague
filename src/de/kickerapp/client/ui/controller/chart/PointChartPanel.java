@@ -37,14 +37,13 @@ public class PointChartPanel extends BaseContainer {
 	public PointChartPanel() {
 		super();
 		initLayout();
-		initHandlers();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		storePoint = new ListStore<ChartPointDto>(KickerProperties.CHART_POINT_PROPERTY.id());
 
 		add(createLineChart());

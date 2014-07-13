@@ -42,7 +42,7 @@ public class InfoPanel extends BaseContainer {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initLayout() {
+	protected void initLayout() {
 		super.initLayout();
 
 		initHtml();
