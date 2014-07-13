@@ -4,14 +4,21 @@ import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
+import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
+import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 import de.kickerapp.client.event.AppEventBus;
 import de.kickerapp.client.event.NavigationEvent;
+import de.kickerapp.client.event.NavigationEventHandler;
 import de.kickerapp.client.event.TabPanelEvent;
 import de.kickerapp.client.event.TabPanelEventHandler;
 import de.kickerapp.client.ui.base.BaseContainer;
@@ -43,6 +50,7 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 	 */
 	@Override
 	protected void initLayout() {
+		addKeyDownHandler();
 		add(createHlcNavigation());
 	}
 
@@ -55,6 +63,44 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 
 		AppEventBus.addHandler(TabPanelEvent.TABLES_NAV, this);
 		AppEventBus.addHandler(TabPanelEvent.CHARTS_NAV, this);
+	}
+
+	/**
+	 * Fügt einen KeyDownListener hinzu.
+	 */
+	private void addKeyDownHandler() {
+		RootPanel.get().addDomHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if (event.getNativeEvent().getShiftKey()) {
+					final int keyCode = event.getNativeKeyCode();
+					if (keyCode == KeyCodes.KEY_T) {
+						handleKeyCode("tables", NavigationEvent.TABLES);
+					} else if (keyCode == KeyCodes.KEY_R) {
+						handleKeyCode("results", NavigationEvent.MATCHES);
+					} else if (keyCode == KeyCodes.KEY_I) {
+						handleKeyCode("insert", NavigationEvent.INSERT);
+					} else if (keyCode == KeyCodes.KEY_S) {
+						handleKeyCode("charts", NavigationEvent.CHARTS);
+					} else if (keyCode == KeyCodes.KEY_P) {
+						handleKeyCode("player", NavigationEvent.PLAYER);
+					}
+				}
+			}
+		}, KeyDownEvent.getType());
+	}
+
+	/**
+	 * Führt die Methode aus falls Shift und eine entsprechende Taste gedrückt wurde.
+	 * 
+	 * @param elementId Die Element-ID des anzuzeigenden Elements.
+	 * @param navEvent Das Navigations-Ereignis.
+	 */
+	private void handleKeyCode(String elementId, Type<NavigationEventHandler> navEvent) {
+		selectedElement.removeClassName("active");
+		selectedElement = DOM.getElementById(elementId);
+		selectedElement.addClassName("active");
+		AppEventBus.fireEvent(new NavigationEvent(navEvent));
 	}
 
 	/**
@@ -82,6 +128,7 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 				}
 			}
 		}, ClickEvent.getType());
+		new QuickTip(htmlLcNavigation);
 
 		return htmlLcNavigation;
 	}
@@ -196,11 +243,11 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 	}
 
 	/**
-	 * Liefert das Vaterlement des selektierten Elements.
+	 * Liefert das Vaterelement des selektierten Elements.
 	 * 
 	 * @param clickedElement Das selektierte Element in der Navigationsleiste.
 	 * @param number Nach welchem Vater gesucht werden soll.
-	 * @return Das Vaterlement.
+	 * @return Das Vaterelement.
 	 */
 	private Element getParent(Element clickedElement, int number) {
 		Element parentElement = clickedElement;
