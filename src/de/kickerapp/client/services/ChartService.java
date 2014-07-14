@@ -37,4 +37,24 @@ public interface ChartService extends RemoteService {
 	 */
 	public ChartContainer getSinglePlayerChart(PlayerDto playerDto, Date date) throws IllegalArgumentException;
 
+	/**
+	 * Liefert die Doppelspieler-Informationen für den gewählten Spieler.
+	 * 
+	 * @param playerDto Der Spieler für welchen die Informationen angezeigt werden sollen.
+	 * @param date Das Jahr für welches die Informationen angezeigt werden sollen.
+	 * @return Die Informationen.
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 */
+	public InfoDto getDoublePlayerInfo(PlayerDto playerDto, Date date) throws IllegalArgumentException;
+
+	/**
+	 * Liefert die Doppelspieler-Statistiken für den gewählten Spieler.
+	 * 
+	 * @param playerDto Der Spieler für welchen die Doppelspieler-Statistiken angezeigt werden sollen.
+	 * @param date Das Jahr für welches die Doppelspieler-Statistiken angezeigt werden sollen.
+	 * @return Die Einzelspieler-Statistiken.
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 */
+	public ChartContainer getDoublePlayerChart(PlayerDto playerDto, Date date) throws IllegalArgumentException;
+
 }

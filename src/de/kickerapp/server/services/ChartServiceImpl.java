@@ -8,6 +8,7 @@ import java.util.List;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.ChartService;
+import de.kickerapp.server.dao.DoubleMatchHistory;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.SingleMatchHistory;
 import de.kickerapp.server.dao.fetchplans.PlayerPlan;
@@ -45,15 +46,15 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId(), PlayerPlan.PLAYERSINGLESTATS);
 
 		final InfoDto infoDto = new InfoDto();
-		infoDto.setWinSeries(ChartServiceHelper.getSingleMatchWinSeries(dbSingleMatches));
-		infoDto.setDefeatSeries(ChartServiceHelper.getSingleMatchDefeatSeries(dbSingleMatches));
-		infoDto.setMaxWinPoints(ChartServiceHelper.getSingleMatchMaxWinPoints(dbSingleMatches));
-		infoDto.setMaxLostPoints(ChartServiceHelper.getSingleMatchMaxLostPoints(dbSingleMatches));
-		infoDto.setMaxPoints(ChartServiceHelper.getSingleMatchMaxPoints(dbSingleMatches));
-		infoDto.setMinPoints(ChartServiceHelper.getSingleMatchMinPoints(dbSingleMatches));
-		infoDto.setPercentageWins(ChartServiceHelper.getSinglePercentageWins(dbSingleMatches, dbPlayer));
-		infoDto.setAveragePoints(ChartServiceHelper.getSingleAveragePoints(dbSingleMatches, dbPlayer));
-		infoDto.setAverageTablePlace(ChartServiceHelper.getSingleAverageTablePlace(dbSingleMatches, dbPlayer));
+		infoDto.setWinSeries(ChartServiceHelper.getMatchWinSeries(dbSingleMatches));
+		infoDto.setDefeatSeries(ChartServiceHelper.getMatchDefeatSeries(dbSingleMatches));
+		infoDto.setMaxWinPoints(ChartServiceHelper.getMatchMaxWinPoints(dbSingleMatches));
+		infoDto.setMaxLostPoints(ChartServiceHelper.getMatchMaxLostPoints(dbSingleMatches));
+		infoDto.setMaxPoints(ChartServiceHelper.getMatchMaxPoints(dbSingleMatches));
+		infoDto.setMinPoints(ChartServiceHelper.getMatchMinPoints(dbSingleMatches));
+		infoDto.setPercentageWins(ChartServiceHelper.getPercentageWins(dbPlayer));
+		infoDto.setAveragePoints(ChartServiceHelper.getAveragePoints(dbSingleMatches, dbPlayer));
+		infoDto.setAverageTablePlace(ChartServiceHelper.getAverageTablePlace(dbSingleMatches, dbPlayer));
 
 		return infoDto;
 	}
@@ -88,6 +89,38 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		container.getChartPointDtos().addAll(chartPointDtos);
 
 		return container;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public InfoDto getDoublePlayerInfo(PlayerDto playerDto, Date date) throws IllegalArgumentException {
+		final List<DoubleMatchHistory> dbDoubleMatches = MatchBean.getDoubleMatchesForPlayer(playerDto, date);
+
+		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId(), PlayerPlan.PLAYERSINGLESTATS);
+
+		final InfoDto infoDto = new InfoDto();
+		infoDto.setWinSeries(ChartServiceHelper.getMatchWinSeries(dbDoubleMatches));
+		infoDto.setDefeatSeries(ChartServiceHelper.getMatchDefeatSeries(dbDoubleMatches));
+		infoDto.setMaxWinPoints(ChartServiceHelper.getMatchMaxWinPoints(dbDoubleMatches));
+		infoDto.setMaxLostPoints(ChartServiceHelper.getMatchMaxLostPoints(dbDoubleMatches));
+		infoDto.setMaxPoints(ChartServiceHelper.getMatchMaxPoints(dbDoubleMatches));
+		infoDto.setMinPoints(ChartServiceHelper.getMatchMinPoints(dbDoubleMatches));
+		infoDto.setPercentageWins(ChartServiceHelper.getPercentageWins(dbPlayer));
+		infoDto.setAveragePoints(ChartServiceHelper.getAveragePoints(dbDoubleMatches, dbPlayer));
+		infoDto.setAverageTablePlace(ChartServiceHelper.getAverageTablePlace(dbDoubleMatches, dbPlayer));
+
+		return infoDto;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ChartContainer getDoublePlayerChart(PlayerDto playerDto, Date date) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

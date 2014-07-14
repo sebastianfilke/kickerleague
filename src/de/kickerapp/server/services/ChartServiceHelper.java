@@ -36,11 +36,11 @@ public class ChartServiceHelper {
 		return calendar.get(Calendar.MONTH) + 1;
 	}
 
-	public static Integer getSingleMatchWinSeries(List<SingleMatchHistory> dbSingleMatches) {
+	public static Integer getMatchWinSeries(List<? extends MatchHistory> dbMatchHistories) {
 		Integer winSeries = 0;
 		Integer tempWinSeries = 0;
 
-		for (SingleMatchHistory dbHistory : dbSingleMatches) {
+		for (MatchHistory dbHistory : dbMatchHistories) {
 			if (dbHistory.isWinner()) {
 				tempWinSeries++;
 			} else {
@@ -53,11 +53,11 @@ public class ChartServiceHelper {
 		return winSeries;
 	}
 
-	public static Integer getSingleMatchDefeatSeries(List<SingleMatchHistory> dbSingleMatches) {
+	public static Integer getMatchDefeatSeries(List<? extends MatchHistory> dbMatchHistories) {
 		Integer defeatSeries = 0;
 		Integer tempDefeatSeries = 0;
 
-		for (SingleMatchHistory dbHistory : dbSingleMatches) {
+		for (MatchHistory dbHistory : dbMatchHistories) {
 			if (dbHistory.isWinner()) {
 				tempDefeatSeries = 0;
 			} else {
@@ -70,10 +70,10 @@ public class ChartServiceHelper {
 		return defeatSeries;
 	}
 
-	public static Integer getSingleMatchMaxWinPoints(List<SingleMatchHistory> dbSingleMatches) {
+	public static Integer getMatchMaxWinPoints(List<? extends MatchHistory> dbMatchHistories) {
 		Integer maxWinPoints = 0;
 
-		for (SingleMatchHistory dbHistory : dbSingleMatches) {
+		for (MatchHistory dbHistory : dbMatchHistories) {
 			if (maxWinPoints < dbHistory.getMatchPoints()) {
 				maxWinPoints = dbHistory.getMatchPoints();
 			}
@@ -81,10 +81,10 @@ public class ChartServiceHelper {
 		return maxWinPoints;
 	}
 
-	public static Integer getSingleMatchMaxLostPoints(List<SingleMatchHistory> dbSingleMatches) {
+	public static Integer getMatchMaxLostPoints(List<? extends MatchHistory> dbMatchHistories) {
 		Integer maxLostPoints = 0;
 
-		for (SingleMatchHistory dbHistory : dbSingleMatches) {
+		for (MatchHistory dbHistory : dbMatchHistories) {
 			if (maxLostPoints > dbHistory.getMatchPoints()) {
 				maxLostPoints = dbHistory.getMatchPoints();
 			}
@@ -92,10 +92,10 @@ public class ChartServiceHelper {
 		return maxLostPoints;
 	}
 
-	public static Integer getSingleMatchMaxPoints(List<SingleMatchHistory> dbSingleMatches) {
+	public static Integer getMatchMaxPoints(List<? extends MatchHistory> dbMatchHistories) {
 		Integer maxPoints = 1000;
 
-		for (SingleMatchHistory dbHistory : dbSingleMatches) {
+		for (MatchHistory dbHistory : dbMatchHistories) {
 			if (maxPoints < dbHistory.getTotalPoints()) {
 				maxPoints = dbHistory.getTotalPoints();
 			}
@@ -103,10 +103,10 @@ public class ChartServiceHelper {
 		return maxPoints;
 	}
 
-	public static Integer getSingleMatchMinPoints(List<SingleMatchHistory> dbSingleMatches) {
+	public static Integer getMatchMinPoints(List<? extends MatchHistory> dbMatchHistories) {
 		Integer minPoints = 1000;
 
-		for (SingleMatchHistory dbHistory : dbSingleMatches) {
+		for (MatchHistory dbHistory : dbMatchHistories) {
 			if (minPoints > dbHistory.getTotalPoints()) {
 				minPoints = dbHistory.getTotalPoints();
 			}
@@ -114,7 +114,7 @@ public class ChartServiceHelper {
 		return minPoints;
 	}
 
-	public static String getSinglePercentageWins(List<SingleMatchHistory> dbSingleMatches, Player dbPlayer) {
+	public static String getPercentageWins(Player dbPlayer) {
 		final NumberFormat numberFormat = new DecimalFormat("0.0");
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
@@ -124,13 +124,13 @@ public class ChartServiceHelper {
 		return numberFormat.format(percentageWins);
 	}
 
-	public static String getSingleAveragePoints(List<SingleMatchHistory> dbSingleMatches, Player dbPlayer) {
+	public static String getAveragePoints(List<? extends MatchHistory> dbMatchHistories, Player dbPlayer) {
 		final NumberFormat numberFormat = new DecimalFormat("0.0");
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
 		Integer sumPoints = 0;
 
-		for (SingleMatchHistory dbHistory : dbSingleMatches) {
+		for (MatchHistory dbHistory : dbMatchHistories) {
 			sumPoints = sumPoints + dbHistory.getTotalPoints();
 		}
 		final Integer sumMatches = dbPlayer.getPlayerSingleStats().getWins() + dbPlayer.getPlayerSingleStats().getDefeats();
@@ -139,13 +139,13 @@ public class ChartServiceHelper {
 		return numberFormat.format(averagePoints);
 	}
 
-	public static String getSingleAverageTablePlace(List<SingleMatchHistory> dbSingleMatches, Player dbPlayer) {
+	public static String getAverageTablePlace(List<? extends MatchHistory> dbMatchHistories, Player dbPlayer) {
 		final NumberFormat numberFormat = new DecimalFormat("0.0");
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
 		Integer sumTablePlace = 0;
 
-		for (SingleMatchHistory dbHistory : dbSingleMatches) {
+		for (MatchHistory dbHistory : dbMatchHistories) {
 			sumTablePlace = sumTablePlace + dbHistory.getTablePlace();
 		}
 

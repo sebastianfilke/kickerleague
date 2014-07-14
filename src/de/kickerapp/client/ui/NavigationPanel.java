@@ -1,6 +1,5 @@
 package de.kickerapp.client.ui;
 
-import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -211,17 +210,9 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 	 */
 	private Element getElement(final Element clickedElement) {
 		if (clickedElement.hasClassName("sub")) {
-			if (clickedElement.hasTagName(AnchorElement.TAG)) {
-				return getParent(clickedElement, 3);
-			} else {
-				return getParent(clickedElement, 4);
-			}
+			return getParent(clickedElement, 3);
 		} else {
-			if (clickedElement.hasTagName(AnchorElement.TAG)) {
-				return getParent(clickedElement, 1);
-			} else {
-				return getParent(clickedElement, 2);
-			}
+			return getParent(clickedElement, 1);
 		}
 	}
 
@@ -233,11 +224,7 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 	 */
 	private Element getSubElement(final Element clickedElement) {
 		if (clickedElement.hasClassName("sub")) {
-			if (clickedElement.hasTagName(AnchorElement.TAG)) {
-				return getParent(clickedElement, 1);
-			} else {
-				return getParent(clickedElement, 2);
-			}
+			return getParent(clickedElement, 1);
 		}
 		return null;
 	}
