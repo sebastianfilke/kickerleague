@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.kickerapp.server.dao.DoubleMatch;
+import de.kickerapp.server.dao.DoubleMatchHistory;
 import de.kickerapp.server.dao.SingleMatch;
 import de.kickerapp.server.dao.SingleMatchHistory;
 import de.kickerapp.server.dao.fetchplans.MatchHistoryPlan;
@@ -75,6 +76,25 @@ public final class MatchBean {
 		Collections.sort(singleMatchesPlayer, new MatchHistoryAscendingComparator());
 
 		return singleMatchesPlayer;
+	}
+
+	/**
+	 * Liefert sämtliche Doppelspiele für den übergebenen Spieler.
+	 * 
+	 * @param playerDto Der Spieler.
+	 * @return Die Doppelspiele.
+	 */
+	public static List<DoubleMatchHistory> getDoubleMatchesForPlayer(final PlayerDto playerDto, final Date date) {
+		final QueryContainer conPlayer = new QueryContainer();
+		conPlayer.setPlans(MatchHistoryPlan.ALLPLAYERS);
+		conPlayer.setQuery("player1 == :id && matchDate >= :startDate && matchDate <= :lastDate");
+		conPlayer.setParameter(new Object[] { playerDto.getId(), getFirstDate(date), getLastDate(date) });
+
+		final List<DoubleMatchHistory> doubleMatchesPlayer = PMFactory.getList(DoubleMatchHistory.class, conPlayer);
+
+		Collections.sort(doubleMatchesPlayer, new MatchHistoryAscendingComparator());
+
+		return doubleMatchesPlayer;
 	}
 
 	private static Date clearTimeForDate(Date date) {

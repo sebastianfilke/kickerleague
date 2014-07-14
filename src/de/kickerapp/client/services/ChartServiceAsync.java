@@ -35,4 +35,24 @@ public interface ChartServiceAsync {
 	 */
 	public void getSinglePlayerChart(PlayerDto playerDto, Date date, AsyncCallback<ChartContainer> callback) throws IllegalArgumentException;
 
+	/**
+	 * Liefert die Doppelspieler-Informationen für den gewählten Spieler.
+	 * 
+	 * @param playerDto Der Spieler für welchen die Informationen angezeigt werden sollen.
+	 * @param date Das Jahr für welches die Informationen angezeigt werden sollen.
+	 * @param callback Der Callback-Handler.
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 */
+	public void getDoublePlayerInfo(PlayerDto playerDto, Date date, AsyncCallback<InfoDto> callback) throws IllegalArgumentException;
+
+	/**
+	 * Liefert die Doppelspieler-Statistiken für den gewählten Spieler.
+	 * 
+	 * @param playerDto Der Spieler für welchen die Doppelspieler-Statistiken angezeigt werden sollen.
+	 * @param date Das Jahr für welches die Doppelspieler-Statistiken angezeigt werden sollen.
+	 * @param callback Der Callback-Handler.
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 */
+	public void getDoublePlayerChart(PlayerDto playerDto, Date date, AsyncCallback<ChartContainer> callback) throws IllegalArgumentException;
+
 }
