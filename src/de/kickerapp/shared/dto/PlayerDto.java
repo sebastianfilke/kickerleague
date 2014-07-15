@@ -22,6 +22,8 @@ public class PlayerDto extends BaseDto {
 	private String eMail;
 	/** Das Datum des letzten Spiels des Spielers. */
 	private Date lastMatchDate;
+	/** Die Angabe, ob der Spieler gesperrt ist. */
+	private boolean locked;
 	/** Die Einzelspiel-Statistik des Spielers. */
 	private PlayerSingleStatsDto playerSingleStatsDto;
 	/** Die Doppelspiel-Statistik des Spielers. */
@@ -38,6 +40,7 @@ public class PlayerDto extends BaseDto {
 		nickName = "";
 		eMail = "";
 		lastMatchDate = null;
+		locked = false;
 		playerSingleStatsDto = null;
 		playerDoubleStatsDto = null;
 	}
@@ -127,6 +130,15 @@ public class PlayerDto extends BaseDto {
 	}
 
 	/**
+	 * Liefert das Datum des letzten Spiels des Spielers.
+	 * 
+	 * @return Das Datum des letzten Spiels des Spielers als {@link Date}.
+	 */
+	public Date getLastMatchDate() {
+		return lastMatchDate;
+	}
+
+	/**
 	 * Setzt das Datum des letzten Spiels des Spielers.
 	 * 
 	 * @param lastMatchDate Das Datum des letzten Spiels des Spielers als {@link Date}.
@@ -136,12 +148,21 @@ public class PlayerDto extends BaseDto {
 	}
 
 	/**
-	 * Liefert das Datum des letzten Spiels des Spielers.
+	 * Liefert die Angabe, ob der Spieler gesperrt ist.
 	 * 
-	 * @return Das Datum des letzten Spiels des Spielers als {@link Date}.
+	 * @return <code>true</code> falls der Spieler gesperrt ist, andernfalls <code>false</code>.
 	 */
-	public Date getLastMatchDate() {
-		return lastMatchDate;
+	public boolean isLocked() {
+		return locked;
+	}
+
+	/**
+	 * Setzt die Angabe, ob der Spieler gesperrt ist.
+	 * 
+	 * @param locked <code>true</code> falls der Spieler gesperrt ist, andernfalls <code>false</code>.
+	 */
+	public void setLocked(boolean locked) {
+		this.locked = locked;
 	}
 
 	/**
@@ -192,7 +213,8 @@ public class PlayerDto extends BaseDto {
 		sb.append("firstName=").append(firstName).append(", ");
 		sb.append("nickName=").append(nickName).append(", ");
 		sb.append("eMail=").append(eMail).append(", ");
-		sb.append("lastMatchDate=").append(lastMatchDate);
+		sb.append("lastMatchDate=").append(lastMatchDate).append(", ");
+		sb.append("locked=").append(locked);
 		sb.append("]");
 
 		return sb.toString();

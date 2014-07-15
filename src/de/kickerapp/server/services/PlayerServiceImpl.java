@@ -44,6 +44,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 		dbPlayer.setFirstName(playerDto.getFirstName());
 		dbPlayer.setNickName(playerDto.getNickName());
 		dbPlayer.setEMail(playerDto.getEMail());
+		dbPlayer.setLocked(playerDto.isLocked());
 
 		final PlayerSingleStats dbPlayerSingleStats = new PlayerSingleStats();
 		final int playerSingleStatsId = PMFactory.getNextId(PlayerSingleStats.class.getName());
@@ -74,6 +75,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 		dbPlayer.setFirstName(playerDto.getFirstName());
 		dbPlayer.setNickName(playerDto.getNickName());
 		dbPlayer.setEMail(playerDto.getEMail());
+		dbPlayer.setLocked(playerDto.isLocked());
 
 		PMFactory.persistObject(dbPlayer);
 
@@ -125,7 +127,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 */
 	@Override
 	public ArrayList<PlayerDto> getPlayersWithAtLeastOneMatch() throws IllegalArgumentException {
-		final List<Player> dbPlayers = PlayerBean.getPlayerWithAtLeastOneMatch();
+		final List<Player> dbPlayers = PlayerBean.getAllPlayersWithAtLeastOneMatch();
 
 		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
 		for (Player dbPlayer : dbPlayers) {
