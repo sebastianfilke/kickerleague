@@ -23,6 +23,7 @@ import com.sencha.gxt.widget.core.client.event.BeforeSelectEvent;
 import com.sencha.gxt.widget.core.client.event.BeforeSelectEvent.BeforeSelectHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.form.StoreFilterField;
 import com.sencha.gxt.widget.core.client.toolbar.SeparatorToolItem;
@@ -65,6 +66,8 @@ public class PlayerAdminPanel extends BaseContainer {
 	private AppTextField tfLastname;
 
 	private AppTextField tfEMail;
+
+	private CheckBox cbLocked;
 
 	private AppButton btnListUpdate;
 
@@ -142,18 +145,25 @@ public class PlayerAdminPanel extends BaseContainer {
 
 		final CssFloatLayoutContainer cflcPlayer = new CssFloatLayoutContainer();
 
-		tfNickname = createTextField("Spitznamen eintragen (notwendig)");
+		tfNickname = new AppTextField("Spitznamen eintragen (notwendig)");
+		tfNickname.setAllowBlank(false);
 		cflcPlayer.add(new AppFieldLabel(tfNickname, "Spitzname", true), new CssFloatData(1, new Margins(0, 0, 8, 0)));
 
-		tfFirstname = createTextField("Vornamen eintragen (notwendig)");
+		tfFirstname = new AppTextField("Vornamen eintragen (notwendig)");
+		tfFirstname.setAllowBlank(false);
 		cflcPlayer.add(new AppFieldLabel(tfFirstname, "Vorname", true), new CssFloatData(1, new Margins(0, 0, 8, 0)));
 
-		tfLastname = createTextField("Nachnamen eintragen (notwendig)");
+		tfLastname = new AppTextField("Nachnamen eintragen (notwendig)");
+		tfLastname.setAllowBlank(false);
 		cflcPlayer.add(new AppFieldLabel(tfLastname, "Nachname", true), new CssFloatData(1, new Margins(0, 0, 8, 0)));
 
-		tfEMail = createTextField("E-Mail Adresse eintragen");
-		tfEMail.setAllowBlank(true);
-		cflcPlayer.add(new AppFieldLabel(tfEMail, "E-Mail", false), new CssFloatData(1));
+		tfEMail = new AppTextField("E-Mail Adresse eintragen");
+		cflcPlayer.add(new AppFieldLabel(tfEMail, "E-Mail", false), new CssFloatData(1, new Margins(0, 0, 8, 0)));
+
+		cbLocked = new CheckBox();
+		cbLocked.setBoxLabel("");
+		cbLocked.setToolTip("Falls selektiert, kann mit dem Spieler kein neues Spiel mehr eingetragen werden");
+		cflcPlayer.add(new AppFieldLabel(cbLocked, "Gesperrt", false), new CssFloatData(1));
 
 		fsPlayer.add(cflcPlayer);
 
@@ -193,6 +203,7 @@ public class PlayerAdminPanel extends BaseContainer {
 		tfFirstname.reset();
 		tfLastname.reset();
 		tfEMail.reset();
+		cbLocked.setValue(false, true);
 		btnPlayerUpdate.setValue(false);
 		lvPlayer.getSelectionModel().deselectAll();
 		fsPlayer.setHeadingText("Neuen Spieler eintragen");
@@ -266,6 +277,7 @@ public class PlayerAdminPanel extends BaseContainer {
 						tfFirstname.setValue(selectedPlayer.getFirstName());
 						tfLastname.setValue(selectedPlayer.getLastName());
 						tfEMail.setValue(selectedPlayer.getEMail());
+						cbLocked.setValue(selectedPlayer.isLocked(), true);
 						fsPlayer.setHeadingText("Spieler bearbeiten");
 						sffPlayer.setEnabled(false);
 						btnListUpdate.setEnabled(false);
@@ -276,17 +288,6 @@ public class PlayerAdminPanel extends BaseContainer {
 			}
 		});
 		return btnPlayerUpdate;
-	}
-
-	/**
-	 * @param emptyText
-	 * @return
-	 */
-	private AppTextField createTextField(String emptyText) {
-		final AppTextField tf = new AppTextField(emptyText);
-		tf.setAllowBlank(false);
-
-		return tf;
 	}
 
 	private ListView<PlayerDto, String> createPlayerListListView() {
@@ -363,6 +364,8 @@ public class PlayerAdminPanel extends BaseContainer {
 		if (tfEMail.getValue() != null) {
 			newPlayer.setEMail(tfEMail.getValue().toLowerCase());
 		}
+		newPlayer.setLocked(cbLocked.getValue());
+
 		return newPlayer;
 	}
 
@@ -403,6 +406,7 @@ public class PlayerAdminPanel extends BaseContainer {
 			if (tfEMail.getValue() != null) {
 				selectedPlayer.setEMail(tfEMail.getValue().toLowerCase());
 			}
+			selectedPlayer.setLocked(cbLocked.getValue());
 		}
 		return selectedPlayer;
 	}

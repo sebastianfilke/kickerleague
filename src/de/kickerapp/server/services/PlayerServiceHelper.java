@@ -78,6 +78,7 @@ public class PlayerServiceHelper {
 		playerDto.setNickName(dbPlayer.getNickName());
 		playerDto.setEMail(dbPlayer.getEMail());
 		playerDto.setLastMatchDate(dbPlayer.getLastMatchDate());
+		playerDto.setLocked(dbPlayer.isLocked());
 
 		return playerDto;
 	}
