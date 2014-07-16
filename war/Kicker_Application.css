@@ -35,8 +35,7 @@ body {
 }
 
 #headerBackground {
-	background: url("../images/header_bg.png") repeat-x scroll #606060
-		!important;
+	background: url("../images/header_bg.png") repeat-x scroll #606060 !important;
 }
 
 /* Navigation */
@@ -58,8 +57,7 @@ body {
 }
 
 #contentBackground {
-	background: url("../images/content_bg.png") repeat-x scroll #fff
-		!important;
+	background: url("../images/content_bg.png") repeat-x scroll #fff !important;
 }
 
 /* Footer */
@@ -98,23 +96,27 @@ body {
 }
 
 .playerAdminInfo {
-	border-top-width: 0px;
-	border-right-width: 1px;
-	border-left-width: 0px;
-	border-bottom-width: 0px;
 	border-color: #D0D0D0;
 	border-style: solid;
+	border-width: 0px 1px 0px 0px;
 }
 
 .playerAdminPlayerList {
-	border-top-width: 0px;
-	border-right-width: 0px;
-	border-left-width: 1px;
-	border-bottom-width: 0px;
 	border-color: #D0D0D0;
 	border-style: solid;
+	border-width: 0px 0px 0px 1px;
 }
 
 .infoStats {
 	background: transparent url(../images/stats_bg.png) repeat-x top left;
+}
+
+.checkBoxCon {
+	margin-top: 2px;
+}
+
+.checkBox {
+	position: relative;
+	left: 0px;
+	top: 2px;
 }

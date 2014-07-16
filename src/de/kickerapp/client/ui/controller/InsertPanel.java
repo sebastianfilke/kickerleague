@@ -67,6 +67,7 @@ import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.client.ui.resources.TemplateProvider;
 import de.kickerapp.client.ui.util.AppInfo;
 import de.kickerapp.client.widgets.AppButton;
+import de.kickerapp.client.widgets.AppCheckBox;
 import de.kickerapp.client.widgets.AppComboBox;
 import de.kickerapp.client.widgets.AppFieldLabel;
 import de.kickerapp.shared.common.MatchType;
@@ -85,7 +86,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	/** Der Timer zum Aktualisieren der Zeit. */
 	private Timer currentTimeTimer;
 	/** Die CheckBox für die Angabe, ob die Zeit manuell oder automatisch bestimmt werden soll. */
-	private CheckBox cbCurrentTime;
+	private AppCheckBox cbCurrentTime;
 	/** Die Datumsangabe für das Spiel. */
 	private DateField dfMatchDate;
 	/** Die Zeitangabe für das Spiel. */
@@ -199,7 +200,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	 * @return Die erzeugte CheckBox.
 	 */
 	private CheckBox createCheckBoxCurrentTime() {
-		cbCurrentTime = new CheckBox();
+		cbCurrentTime = new AppCheckBox();
 		cbCurrentTime.setBoxLabel("Aktuelle Uhrzeit");
 		cbCurrentTime.setToolTip("Deaktivieren um die Zeit manuell einstellen");
 		cbCurrentTime.setValue(true);
