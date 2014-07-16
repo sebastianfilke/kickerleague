@@ -47,7 +47,6 @@ import com.sencha.gxt.widget.core.client.form.DateField;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.form.FormPanel.LabelAlign;
 import com.sencha.gxt.widget.core.client.form.Radio;
-import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TimeField;
 import com.sencha.gxt.widget.core.client.form.validator.MaxLengthValidator;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
@@ -70,6 +69,7 @@ import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppCheckBox;
 import de.kickerapp.client.widgets.AppComboBox;
 import de.kickerapp.client.widgets.AppFieldLabel;
+import de.kickerapp.client.widgets.AppTextArea;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.MatchSetDto;
@@ -108,7 +108,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	/** Das Label zur Angabe der gewonnen Sätze von Team2. */
 	private Label resultLabelTeam2;
 	/** Die TextArea zur Angabe eines Kommentars. */
-	private TextArea taComment;
+	private AppTextArea taComment;
 
 	/**
 	 * Erzeugt einen neuen Controller zum Eintragen der Ergebnisse und Spieler eines Spiels.
@@ -635,7 +635,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		final FieldSet fsComment = new FieldSet();
 		fsComment.setHeadingText("Kommentar (optional)");
 
-		taComment = new TextArea();
+		taComment = new AppTextArea();
 		taComment.addValidator(new MaxLengthValidator(500));
 		taComment.setEmptyText("Kommentar zum Spiel");
 		taComment.setHeight(60);
