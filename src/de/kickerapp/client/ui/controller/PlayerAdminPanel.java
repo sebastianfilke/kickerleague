@@ -23,7 +23,6 @@ import com.sencha.gxt.widget.core.client.event.BeforeSelectEvent;
 import com.sencha.gxt.widget.core.client.event.BeforeSelectEvent.BeforeSelectHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.form.StoreFilterField;
 import com.sencha.gxt.widget.core.client.toolbar.SeparatorToolItem;
@@ -41,6 +40,7 @@ import de.kickerapp.client.ui.dialog.AppInfoDialog;
 import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.client.ui.util.AppInfo;
 import de.kickerapp.client.widgets.AppButton;
+import de.kickerapp.client.widgets.AppCheckBox;
 import de.kickerapp.client.widgets.AppFieldLabel;
 import de.kickerapp.client.widgets.AppTextField;
 import de.kickerapp.shared.common.MatchType;
@@ -67,7 +67,7 @@ public class PlayerAdminPanel extends BaseContainer {
 
 	private AppTextField tfEMail;
 
-	private CheckBox cbLocked;
+	private AppCheckBox cbLocked;
 
 	private AppButton btnListUpdate;
 
@@ -160,7 +160,7 @@ public class PlayerAdminPanel extends BaseContainer {
 		tfEMail = new AppTextField("E-Mail Adresse eintragen");
 		cflcPlayer.add(new AppFieldLabel(tfEMail, "E-Mail", false), new CssFloatData(1, new Margins(0, 0, 8, 0)));
 
-		cbLocked = new CheckBox();
+		cbLocked = new AppCheckBox();
 		cbLocked.setBoxLabel("");
 		cbLocked.setToolTip("Falls selektiert, kann mit dem Spieler kein neues Spiel mehr eingetragen werden");
 		cflcPlayer.add(new AppFieldLabel(cbLocked, "Gesperrt", false), new CssFloatData(1));
