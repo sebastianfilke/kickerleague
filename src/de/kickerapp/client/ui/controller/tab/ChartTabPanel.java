@@ -86,7 +86,10 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 				getChartForActiveTab();
 			}
 		});
+		tabPanel.setBodyBorder(false);
+		tabPanel.setAutoSelect(false);
 		tabPanel.setResizeTabs(true);
+		tabPanel.setBorders(false);
 		tabPanel.setTabWidth(200);
 
 		final TabItemConfig ticSinglePlayerChart = new TabItemConfig("Einzelstatistik");
@@ -101,8 +104,7 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 		tabPanel.add(singlePlayerChartPanel, ticSinglePlayerChart);
 		tabPanel.add(doublePlayerChartPanel, ticDoublePlayerChart);
 		tabPanel.add(new BaseContainer(), ticTeamPlayerChart);
-		tabPanel.setBodyBorder(false);
-		tabPanel.setBorders(false);
+		tabPanel.setActiveWidget(singlePlayerChartPanel, false);
 
 		return tabPanel;
 	}
