@@ -76,15 +76,17 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 				getData();
 			}
 		});
+		tabPanel.setBodyBorder(false);
+		tabPanel.setAutoSelect(false);
 		tabPanel.setResizeTabs(true);
+		tabPanel.setBorders(false);
 		tabPanel.setTabWidth(200);
 
 		final TabItemConfig ticAdminPanel = new TabItemConfig("Spieler eintragen/bearbeiten");
 		ticAdminPanel.setIcon(IconProvider.get().player_edit());
 
 		tabPanel.add(playerAdminPanel, ticAdminPanel);
-		tabPanel.setBodyBorder(false);
-		tabPanel.setBorders(false);
+		tabPanel.setActiveWidget(playerAdminPanel, false);
 
 		return tabPanel;
 	}
@@ -92,7 +94,7 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 	private void getData() {
 		if (activeTab == 0) {
 			playerAdminPanel.getPlayerList();
-		} else if (activeTab == 1) {}
+		}
 	}
 
 	/**
