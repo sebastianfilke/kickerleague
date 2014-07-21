@@ -5,8 +5,7 @@
 	src: url('../fonts/Roboto-webfont.woff') format('woff');
 }
 
-#cssmenu,#cssmenu ul,#cssmenu ul li,#cssmenu ul li a,#cssmenu #menu-button
-	{
+#cssmenu,#cssmenu ul,#cssmenu ul li,#cssmenu ul li a,#cssmenu #menu-button {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -36,11 +35,10 @@
 #cssmenu {
 	width: auto;
 	text-shadow: 1px 1px 4px #000;
-	font-family: 'Roboto', Helvetica, sans-serif;
+	font-family: Roboto, Helvetica, sans-serif;
 	background: #bbf209;
 	background: -moz-linear-gradient(top, #c5f723 0%, #9dcb08 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #c5f723),
-		color-stop(100%, #9dcb08));
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #c5f723), color-stop(100%, #9dcb08));
 	background: -webkit-linear-gradient(top, #c5f723 0%, #9dcb08 100%);
 	background: -o-linear-gradient(top, #c5f723 0%, #9dcb08 100%);
 	background: -ms-linear-gradient(top, #c5f723 0%, #9dcb08 100%);
@@ -210,8 +208,7 @@
 	width: 180px;
 	color: #777777;
 	background: #ffffff;
-	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1), 1px 1px 1px rgba(0, 0, 0, 0.1),
-		-1px 1px 1px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1), 1px 1px 1px rgba(0, 0, 0, 0.1), -1px 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 #cssmenu ul ul li:hover>a,#cssmenu ul ul li.active>a {
@@ -251,25 +248,18 @@
 	left: 17px;
 }
 
-#cssmenu ul ul li.has-sub.active>a::after,#cssmenu ul ul li.has-sub:hover>a::after
-	{
+#cssmenu ul ul li.has-sub.active>a::after,#cssmenu ul ul li.has-sub:hover>a::after {
 	border-left-color: #333333;
 }
 
-#cssmenu.align-right ul ul li.has-sub.active>a::after,#cssmenu.align-right ul ul li.has-sub:hover>a::after
-	{
+#cssmenu.align-right ul ul li.has-sub.active>a::after,#cssmenu.align-right ul ul li.has-sub:hover>a::after {
 	border-right-color: #333333;
 	border-left-color: transparent;
 }
 
-@media all and (max-width: 800px) , only screen and
-		(-webkit-min-device-pixel-ratio: 2) and (max-width: 1024px) , only
-		screen and (min--moz-device-pixel-ratio: 2) and (max-width: 1024px) ,
-		only screen and (-o-min-device-pixel-ratio: 2/1) and (max-width:
-		1024px) , only screen and (min-device-pixel-ratio: 2) and (max-width:
-		1024px) , only screen and (min-resolution: 192dpi) and (max-width:
-		1024px) , only screen and (min-resolution: 2dppx) and (max-width:
-	1024px) {
+@media all and (max-width: 800px) , only screen and (-webkit-min-device-pixel-ratio: 2) and (max-width: 1024px) , only screen and (min--moz-device-pixel-ratio: 2) and (max-width: 1024px) , only screen and
+		(-o-min-device-pixel-ratio: 2/1) and (max-width: 1024px) , only screen and (min-device-pixel-ratio: 2) and (max-width: 1024px) , only screen and (min-resolution: 192dpi) and (max-width: 1024px) ,
+		only screen and (min-resolution: 2dppx) and (max-width: 1024px) {
 	#cssmenu {
 		background: #bbf209;
 	}

@@ -5,10 +5,15 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+
 import de.kickerapp.server.dao.DoubleMatch;
 import de.kickerapp.server.dao.DoubleMatchHistory;
+import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.SingleMatch;
 import de.kickerapp.server.dao.SingleMatchHistory;
+import de.kickerapp.server.dao.SingleMatchYearAggregation;
 import de.kickerapp.server.dao.fetchplans.MatchHistoryPlan;
 import de.kickerapp.server.dao.fetchplans.MatchPlan;
 import de.kickerapp.server.dao.fetchplans.TeamPlan;
@@ -95,6 +100,23 @@ public final class MatchBean {
 		Collections.sort(doubleMatchesPlayer, new MatchHistoryAscendingComparator());
 
 		return doubleMatchesPlayer;
+	}
+
+	public static SingleMatchYearAggregation getSingleMatchYearAggregationForPlayer(final Player player, final int year) {
+		final QueryContainer conMatch = new QueryContainer();
+		conMatch.setQuery("player == :id && year == :year");
+		conMatch.setParameter(new Object[] { player.getKey().getId(), year });
+
+		SingleMatchYearAggregation dbSingleMatchYearAggregation = PMFactory.getObject(SingleMatchYearAggregation.class, conMatch);
+		if (dbSingleMatchYearAggregation == null) {
+			dbSingleMatchYearAggregation = new SingleMatchYearAggregation();
+			final int matchYearAggregationId = PMFactory.getNextId(SingleMatchYearAggregation.class.getName());
+			final Key matchYearAggregationKey = KeyFactory.createKey(SingleMatchYearAggregation.class.getSimpleName(), matchYearAggregationId);
+			dbSingleMatchYearAggregation.setKey(matchYearAggregationKey);
+			dbSingleMatchYearAggregation.setPlayer(player);
+			dbSingleMatchYearAggregation.setYear(year);
+		}
+		return dbSingleMatchYearAggregation;
 	}
 
 	private static Date clearTimeForDate(Date date) {

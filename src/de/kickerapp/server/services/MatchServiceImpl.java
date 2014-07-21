@@ -63,6 +63,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 
 		PMFactory.persistObject(dbMatch);
 		MatchServiceHelper.updateTable(matchDto);
+		MatchServiceHelper.createSingleMatchYearAggregation(dbMatch);
 		MatchServiceHelper.createSingleMatchHistory(dbMatch, team1Winner);
 
 		matchDto.setId(dbMatch.getKey().getId());

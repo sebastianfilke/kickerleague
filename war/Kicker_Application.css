@@ -9,7 +9,7 @@ body {
 	font-family: 'ChunkFiveRegular';
 	font-style: normal;
 	font-weight: normal;
-	src: url('./fonts/Chunkfive-webfont.woff') format('woff');
+	src: url('fonts/Chunkfive-webfont.woff') format('woff');
 }
 
 /* Header */
@@ -35,7 +35,7 @@ body {
 }
 
 #headerBackground {
-	background: url("../images/header_bg.png") repeat-x scroll #606060 !important;
+	background: url("images/header_bg.png") repeat-x scroll #606060 !important;
 }
 
 /* Navigation */
@@ -57,7 +57,7 @@ body {
 }
 
 #contentBackground {
-	background: url("../images/content_bg.png") repeat-x scroll #fff !important;
+	background: url("images/content_bg.png") repeat-x scroll #fff !important;
 }
 
 /* Footer */
@@ -108,7 +108,7 @@ body {
 }
 
 .infoStats {
-	background: transparent url(../images/stats_bg.png) repeat-x top left;
+	background: transparent url(images/stats_bg.png) repeat-x top left;
 }
 
 .checkBoxCon {
@@ -122,5 +122,5 @@ body {
 }
 
 .textArea {
-	background: transparent url(../images/textBackground.gif) repeat-x top left;
+	background: transparent url(images/textBackground.gif) repeat-x top left;
 }

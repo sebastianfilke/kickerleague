@@ -2,6 +2,7 @@ package de.kickerapp.server.services;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -19,6 +20,7 @@ import de.kickerapp.server.dao.PlayerDoubleStats;
 import de.kickerapp.server.dao.PlayerSingleStats;
 import de.kickerapp.server.dao.SingleMatch;
 import de.kickerapp.server.dao.SingleMatchHistory;
+import de.kickerapp.server.dao.SingleMatchYearAggregation;
 import de.kickerapp.server.dao.Stats;
 import de.kickerapp.server.dao.Team;
 import de.kickerapp.server.dao.TeamMatchHistory;
@@ -26,6 +28,7 @@ import de.kickerapp.server.dao.TeamStats;
 import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 import de.kickerapp.server.dao.fetchplans.TeamPlan;
 import de.kickerapp.server.persistence.PMFactory;
+import de.kickerapp.server.persistence.queries.MatchBean;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.common.Tendency;
 import de.kickerapp.shared.dto.MatchDto;
@@ -531,6 +534,20 @@ public class MatchServiceHelper {
 		return singleMatchHistory;
 	}
 
+	public static void createSingleMatchYearAggregation(SingleMatch dbMatch) {
+		final int year = getYearForMatch(dbMatch);
+
+		final SingleMatchYearAggregation singleMatchYearAggregationPlayer1 = MatchBean.getSingleMatchYearAggregationForPlayer(dbMatch.getPlayer1(), year);
+		final int sumMatchesPlayer1 = singleMatchYearAggregationPlayer1.getSumMatches() + 1;
+		singleMatchYearAggregationPlayer1.setSumMatches(sumMatchesPlayer1);
+
+		final SingleMatchYearAggregation singleMatchYearAggregationPlayer2 = MatchBean.getSingleMatchYearAggregationForPlayer(dbMatch.getPlayer2(), year);
+		final int sumMatchesPlayer2 = singleMatchYearAggregationPlayer2.getSumMatches() + 1;
+		singleMatchYearAggregationPlayer2.setSumMatches(sumMatchesPlayer2);
+
+		PMFactory.persistAllObjects(singleMatchYearAggregationPlayer1, singleMatchYearAggregationPlayer2);
+	}
+
 	public static void createDoubleMatchHistory(DoubleMatch dbMatch, boolean team1Winner) {
 		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, dbMatch.getTeam1().getPlayer1().getKey().getId(), PlayerPlan.PLAYERDOUBLESTATS);
 		final Player dbPlayer2 = PMFactory.getObjectById(Player.class, dbMatch.getTeam1().getPlayer2().getKey().getId(), PlayerPlan.PLAYERDOUBLESTATS);
@@ -610,6 +627,19 @@ public class MatchServiceHelper {
 		teamMatchHistory.setTeam2(dbTeam2);
 
 		return teamMatchHistory;
+	}
+
+	/**
+	 * Liefert das Jahr des Spieles.
+	 * 
+	 * @param dbMatch Das Spiel.
+	 * @return Das Jahr des Spieles.
+	 */
+	private static int getYearForMatch(Match dbMatch) {
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(dbMatch.getMatchDate());
+
+		return calendar.get(Calendar.YEAR);
 	}
 
 }
