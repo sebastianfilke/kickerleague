@@ -128,6 +128,43 @@ public final class PMFactory {
 	}
 
 	/**
+	 * Liefert die Instanz für die übergebene Klasse.
+	 * 
+	 * @param clazz Die Klasse für welche die Instanz gesucht werden soll.
+	 * @param container Der Container zum Abfragen der Instanz.
+	 * @param <T> Der Typ der Klasse.
+	 * @return Die Instanz.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends BaseDao> T getObject(final Class<T> clazz, final QueryContainer container) {
+		final PersistenceManager pm = PMFactory.get().getPersistenceManager();
+		for (String plan : container.getPlans()) {
+			pm.getFetchPlan().addGroup(plan);
+		}
+
+		final Query query = pm.newQuery(clazz);
+		query.setFilter(container.getQuery());
+		if (!container.getOrdering().isEmpty()) {
+			query.setOrdering(container.getOrdering());
+		}
+		query.setUnique(true);
+
+		T object = null;
+		try {
+			if (container.getParameter() != null) {
+				object = (T) query.executeWithArray(container.getParameter());
+			} else {
+				object = (T) query.execute();
+			}
+			object = (T) pm.detachCopy(object);
+		} finally {
+			query.closeAll();
+			pm.close();
+		}
+		return object;
+	}
+
+	/**
 	 * Speichert die Instanz.
 	 * 
 	 * @param object Das DB-Objekt zum Speichern.
