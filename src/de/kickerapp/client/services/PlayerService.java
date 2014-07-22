@@ -1,6 +1,7 @@
 package de.kickerapp.client.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -49,6 +50,6 @@ public interface PlayerService extends RemoteService {
 	 * @return Alle Spieler mit mindestens einem Spiel.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public ArrayList<PlayerDto> getPlayersWithAtLeastOneMatch() throws IllegalArgumentException;
+	public HashMap<Integer, ArrayList<PlayerDto>> getPlayerYearAggregation() throws IllegalArgumentException;
 
 }

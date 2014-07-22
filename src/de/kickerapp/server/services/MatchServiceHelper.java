@@ -535,13 +535,15 @@ public class MatchServiceHelper {
 	}
 
 	public static void createSingleMatchYearAggregation(SingleMatch dbMatch) {
+		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, dbMatch.getPlayer1().getKey().getId(), PlayerPlan.PLAYERSINGLESTATS);
+		final Player dbPlayer2 = PMFactory.getObjectById(Player.class, dbMatch.getPlayer2().getKey().getId(), PlayerPlan.PLAYERSINGLESTATS);
 		final int year = getYearForMatch(dbMatch);
 
-		final SingleMatchYearAggregation singleMatchYearAggregationPlayer1 = MatchBean.getSingleMatchYearAggregationForPlayer(dbMatch.getPlayer1(), year);
+		final SingleMatchYearAggregation singleMatchYearAggregationPlayer1 = MatchBean.getSingleMatchYearAggregationForPlayer(dbPlayer1, year);
 		final int sumMatchesPlayer1 = singleMatchYearAggregationPlayer1.getSumMatches() + 1;
 		singleMatchYearAggregationPlayer1.setSumMatches(sumMatchesPlayer1);
 
-		final SingleMatchYearAggregation singleMatchYearAggregationPlayer2 = MatchBean.getSingleMatchYearAggregationForPlayer(dbMatch.getPlayer2(), year);
+		final SingleMatchYearAggregation singleMatchYearAggregationPlayer2 = MatchBean.getSingleMatchYearAggregationForPlayer(dbPlayer2, year);
 		final int sumMatchesPlayer2 = singleMatchYearAggregationPlayer2.getSumMatches() + 1;
 		singleMatchYearAggregationPlayer2.setSumMatches(sumMatchesPlayer2);
 

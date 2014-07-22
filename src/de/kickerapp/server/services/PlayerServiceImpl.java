@@ -2,6 +2,7 @@ package de.kickerapp.server.services;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.appengine.api.datastore.Key;
@@ -12,9 +13,10 @@ import de.kickerapp.client.services.PlayerService;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.PlayerDoubleStats;
 import de.kickerapp.server.dao.PlayerSingleStats;
+import de.kickerapp.server.dao.SingleMatchYearAggregation;
+import de.kickerapp.server.dao.fetchplans.MatchAggregationPlan;
 import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 import de.kickerapp.server.persistence.PMFactory;
-import de.kickerapp.server.persistence.queries.PlayerBean;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerNameComparator;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerTableComparator;
 import de.kickerapp.shared.common.MatchType;
@@ -126,15 +128,29 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ArrayList<PlayerDto> getPlayersWithAtLeastOneMatch() throws IllegalArgumentException {
-		final List<Player> dbPlayers = PlayerBean.getAllPlayersWithAtLeastOneMatch();
+	public HashMap<Integer, ArrayList<PlayerDto>> getPlayerYearAggregation() throws IllegalArgumentException {
+		final List<SingleMatchYearAggregation> dbYearAggregations = PMFactory.getList(SingleMatchYearAggregation.class, MatchAggregationPlan.PLAYER);
 
-		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
-		for (Player dbPlayer : dbPlayers) {
-			playerDtos.add(PlayerServiceHelper.createPlayerDto(dbPlayer));
+		final HashMap<Integer, ArrayList<PlayerDto>> yearAggregations = new HashMap<Integer, ArrayList<PlayerDto>>();
+		for (SingleMatchYearAggregation dbYearAggregation : dbYearAggregations) {
+			final ArrayList<PlayerDto> playerDtos = yearAggregations.get(dbYearAggregation.getYear());
+			if (playerDtos == null) {
+				final ArrayList<PlayerDto> newPlayerDtos = new ArrayList<PlayerDto>();
+				newPlayerDtos.add(PlayerServiceHelper.createPlayerDto(dbYearAggregation.getPlayer()));
+				yearAggregations.put(dbYearAggregation.getYear(), newPlayerDtos);
+			} else {
+				boolean contains = false;
+				for (PlayerDto playerDto : playerDtos) {
+					if (playerDto.getId() == dbYearAggregation.getPlayer().getKey().getId()) {
+						contains = true;
+						break;
+					}
+				}
+				if (!contains) {
+					playerDtos.add(PlayerServiceHelper.createPlayerDto(dbYearAggregation.getPlayer()));
+				}
+			}
 		}
-
-		return playerDtos;
+		return yearAggregations;
 	}
-
 }

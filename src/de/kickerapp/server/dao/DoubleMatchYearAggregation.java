@@ -9,13 +9,13 @@ import com.google.appengine.datanucleus.annotations.Unowned;
 import de.kickerapp.server.dao.fetchplans.MatchAggregationPlan;
 
 /**
- * Datenklasse zum Halten der Informationen für die Anzahl der Spiele eines Spielers für Einzelspiele.
+ * Datenklasse zum Halten der Informationen für die Anzahl der Spiele eines Spielers für Doppelspiele.
  * 
  * @author Sebastian Filke
  */
 @PersistenceCapable(detachable = "true")
 @FetchGroup(name = MatchAggregationPlan.PLAYER, members = { @Persistent(name = "player") })
-public class SingleMatchYearAggregation extends MatchYearAggregation {
+public class DoubleMatchYearAggregation extends MatchYearAggregation {
 
 	/** Der Spieler. */
 	@Unowned
@@ -25,7 +25,7 @@ public class SingleMatchYearAggregation extends MatchYearAggregation {
 	/**
 	 * Erzeugt eine neue Anzahl von Spielen ohne Angaben.
 	 */
-	public SingleMatchYearAggregation() {
+	public DoubleMatchYearAggregation() {
 		super();
 
 		player = null;

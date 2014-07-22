@@ -70,11 +70,11 @@ public final class MatchBean {
 	 * @param playerDto Der Spieler.
 	 * @return Die Einzelspiele.
 	 */
-	public static List<SingleMatchHistory> getSingleMatchesForPlayer(final PlayerDto playerDto, final Date date) {
+	public static List<SingleMatchHistory> getSingleMatchesForPlayer(final PlayerDto playerDto, final Integer year) {
 		final QueryContainer conPlayer = new QueryContainer();
 		conPlayer.setPlans(MatchHistoryPlan.BOTHPLAYERS);
 		conPlayer.setQuery("player1 == :id && matchDate >= :startDate && matchDate <= :lastDate");
-		conPlayer.setParameter(new Object[] { playerDto.getId(), getFirstDate(date), getLastDate(date) });
+		conPlayer.setParameter(new Object[] { playerDto.getId(), getFirstDate(year), getLastDate(year) });
 
 		final List<SingleMatchHistory> singleMatchesPlayer = PMFactory.getList(SingleMatchHistory.class, conPlayer);
 
@@ -89,11 +89,11 @@ public final class MatchBean {
 	 * @param playerDto Der Spieler.
 	 * @return Die Doppelspiele.
 	 */
-	public static List<DoubleMatchHistory> getDoubleMatchesForPlayer(final PlayerDto playerDto, final Date date) {
+	public static List<DoubleMatchHistory> getDoubleMatchesForPlayer(final PlayerDto playerDto, final Integer year) {
 		final QueryContainer conPlayer = new QueryContainer();
 		conPlayer.setPlans(MatchHistoryPlan.ALLPLAYERS);
 		conPlayer.setQuery("player1 == :id && matchDate >= :startDate && matchDate <= :lastDate");
-		conPlayer.setParameter(new Object[] { playerDto.getId(), getFirstDate(date), getLastDate(date) });
+		conPlayer.setParameter(new Object[] { playerDto.getId(), getFirstDate(year), getLastDate(year) });
 
 		final List<DoubleMatchHistory> doubleMatchesPlayer = PMFactory.getList(DoubleMatchHistory.class, conPlayer);
 
@@ -129,9 +129,9 @@ public final class MatchBean {
 		return clearedDate.getTime();
 	}
 
-	private static Date getFirstDate(Date date) {
+	private static Date getFirstDate(Integer year) {
 		final Calendar firstDate = Calendar.getInstance();
-		firstDate.setTime(date);
+		firstDate.set(Calendar.YEAR, year);
 		firstDate.set(Calendar.DAY_OF_YEAR, 1);
 		firstDate.set(Calendar.AM_PM, Calendar.AM);
 		firstDate.set(Calendar.MINUTE, 0);
@@ -141,9 +141,9 @@ public final class MatchBean {
 		return firstDate.getTime();
 	}
 
-	private static Date getLastDate(Date date) {
+	private static Date getLastDate(Integer year) {
 		final Calendar lastDate = Calendar.getInstance();
-		lastDate.setTime(date);
+		lastDate.set(Calendar.YEAR, year);
 		lastDate.set(Calendar.DAY_OF_YEAR, 365);
 		lastDate.set(Calendar.AM_PM, Calendar.PM);
 		lastDate.set(Calendar.MINUTE, 59);

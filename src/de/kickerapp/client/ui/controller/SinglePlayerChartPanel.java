@@ -2,6 +2,7 @@ package de.kickerapp.client.ui.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -47,6 +48,8 @@ import de.kickerapp.shared.dto.PlayerDto;
 
 public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanelEventHandler {
 
+	private SimpleComboBox<Integer> cbYear;
+
 	private AppComboBox<PlayerDto> cbPlayer;
 
 	private ListStore<PlayerDto> storePlayer;
@@ -73,7 +76,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 	private AppButton btnUpdate;
 
-	private SimpleComboBox<Date> cbYear;
+	private HashMap<Integer, ArrayList<PlayerDto>> playerAggregation;
 
 	public SinglePlayerChartPanel() {
 		super();
@@ -195,33 +198,26 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		return cbPlayer;
 	}
 
-	private SimpleComboBox<Date> createYearComboBox() {
-		cbYear = new SimpleComboBox<Date>(new LabelProvider<Date>() {
+	private SimpleComboBox<Integer> createYearComboBox() {
+		cbYear = new SimpleComboBox<Integer>(new LabelProvider<Integer>() {
 			@Override
-			public String getLabel(Date item) {
-				return Integer.toString(new DateWrapper(item).getFullYear());
+			public String getLabel(Integer item) {
+				return Integer.toString(item);
 			}
 		});
 		cbYear.setTriggerAction(TriggerAction.ALL);
+		cbYear.setEmptyText("Jahr wählen...");
 		cbYear.setEditable(false);
-
-		final Date date = new Date();
-		cbYear.add(date);
-		cbYear.setValue(date);
-		cbYear.addSelectionHandler(new SelectionHandler<Date>() {
+		cbYear.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
-			public void onSelection(SelectionEvent<Date> event) {
-				final PlayerDto selectedPlayer = cbPlayer.getValue();
-				if (selectedPlayer != null) {
-					setDoUpdate();
-					loadSinglePlayerChart(selectedPlayer);
-					loadSingleInfo(selectedPlayer);
-				}
-			}
+			public void onSelection(SelectionEvent<Integer> event) {
+				cbPlayer.reset();
+				storePlayer.clear();
 
-			private void setDoUpdate() {
-				doUpdatePlayerInfo = true;
-				doUpdateSinglePlayerChart = true;
+				final ArrayList<PlayerDto> playersDto = playerAggregation.get(event.getSelectedItem());
+				if (playersDto != null) {
+					storePlayer.replaceAll(playersDto);
+				}
 			}
 		});
 		return cbYear;
@@ -356,10 +352,21 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 	public void getPlayerList() {
 		if (doUpdatePlayerList) {
 			mask("Aktualisiere...");
-			KickerServices.PLAYER_SERVICE.getPlayersWithAtLeastOneMatch(new AsyncCallback<ArrayList<PlayerDto>>() {
+			KickerServices.PLAYER_SERVICE.getPlayerYearAggregation(new AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>>() {
 				@Override
-				public void onSuccess(ArrayList<PlayerDto> result) {
-					storePlayer.replaceAll(result);
+				public void onSuccess(HashMap<Integer, ArrayList<PlayerDto>> result) {
+					playerAggregation = result;
+
+					cbYear.getStore().replaceAll(new ArrayList<>(result.keySet()));
+					if (!result.isEmpty()) {
+						cbYear.setValue(getCurrentYear());
+					}
+
+					final ArrayList<PlayerDto> playersDto = result.get(getCurrentYear());
+					if (cbYear.getValue() != null && playersDto != null) {
+						storePlayer.replaceAll(playersDto);
+					}
+
 					doUpdatePlayerList = false;
 					unmask();
 				}
@@ -372,6 +379,17 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 				}
 			});
 		}
+	}
+
+	/**
+	 * Liefert das aktuelle Jahr.
+	 * 
+	 * @return Das aktuelle Jahr.
+	 */
+	private static int getCurrentYear() {
+		final DateWrapper matchDate = new DateWrapper(new Date());
+
+		return matchDate.getFullYear();
 	}
 
 	protected void loadSingleInfo(PlayerDto selectedPlayer) {

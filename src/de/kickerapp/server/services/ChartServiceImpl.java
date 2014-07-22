@@ -40,8 +40,8 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public InfoDto getSinglePlayerInfo(PlayerDto playerDto, Date date) throws IllegalArgumentException {
-		final List<SingleMatchHistory> dbSingleMatches = MatchBean.getSingleMatchesForPlayer(playerDto, date);
+	public InfoDto getSinglePlayerInfo(PlayerDto playerDto, Integer year) throws IllegalArgumentException {
+		final List<SingleMatchHistory> dbSingleMatches = MatchBean.getSingleMatchesForPlayer(playerDto, year);
 
 		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId(), PlayerPlan.PLAYERSINGLESTATS);
 
@@ -63,8 +63,8 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ChartContainer getSinglePlayerChart(PlayerDto playerDto, Date date) throws IllegalArgumentException {
-		final List<SingleMatchHistory> dbSingleMatches = MatchBean.getSingleMatchesForPlayer(playerDto, date);
+	public ChartContainer getSinglePlayerChart(PlayerDto playerDto, Integer year) throws IllegalArgumentException {
+		final List<SingleMatchHistory> dbSingleMatches = MatchBean.getSingleMatchesForPlayer(playerDto, year);
 
 		final HashMap<Integer, ChartGameDto> chartGameDtos = new HashMap<Integer, ChartGameDto>();
 		final HashMap<Integer, ChartGoalDto> chartGoalDtos = new HashMap<Integer, ChartGoalDto>();
@@ -95,8 +95,8 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public InfoDto getDoublePlayerInfo(PlayerDto playerDto, Date date) throws IllegalArgumentException {
-		final List<DoubleMatchHistory> dbDoubleMatches = MatchBean.getDoubleMatchesForPlayer(playerDto, date);
+	public InfoDto getDoublePlayerInfo(PlayerDto playerDto, Integer year) throws IllegalArgumentException {
+		final List<DoubleMatchHistory> dbDoubleMatches = MatchBean.getDoubleMatchesForPlayer(playerDto, year);
 
 		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId(), PlayerPlan.PLAYERSINGLESTATS);
 
