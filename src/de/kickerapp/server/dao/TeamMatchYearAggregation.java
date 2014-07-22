@@ -9,44 +9,44 @@ import com.google.appengine.datanucleus.annotations.Unowned;
 import de.kickerapp.server.dao.fetchplans.MatchAggregationPlan;
 
 /**
- * Datenklasse zum Halten der Informationen für die Anzahl der Spiele eines Spielers für Einzelspiele.
+ * Datenklasse zum Halten der Informationen für die Anzahl der Spiele eines Teams für Doppelspiele.
  * 
  * @author Sebastian Filke
  */
 @PersistenceCapable(detachable = "true")
-@FetchGroup(name = MatchAggregationPlan.PLAYER, members = { @Persistent(name = "player") })
-public class SingleMatchYearAggregation extends MatchYearAggregation {
+@FetchGroup(name = MatchAggregationPlan.TEAM, members = { @Persistent(name = "team") })
+public class TeamMatchYearAggregation extends MatchYearAggregation {
 
-	/** Der Spieler. */
+	/** Das Team. */
 	@Unowned
 	@Persistent(defaultFetchGroup = "false")
-	private Player player;
+	private Team team;
 
 	/**
 	 * Erzeugt eine neue Anzahl von Spielen ohne Angaben.
 	 */
-	public SingleMatchYearAggregation() {
+	public TeamMatchYearAggregation() {
 		super();
 
-		player = null;
+		team = null;
 	}
 
 	/**
-	 * Liefert den Spieler.
+	 * Liefert das Team.
 	 * 
-	 * @return Der Spieler als {@link Player}.
+	 * @return Das Team als {@link Player}.
 	 */
-	public Player getPlayer() {
-		return player;
+	public Team getTeam() {
+		return team;
 	}
 
 	/**
-	 * Setzt den Spieler.
+	 * Setzt das Team.
 	 * 
-	 * @param player Der Spieler als {@link Player}.
+	 * @param team Das Team als {@link Player}.
 	 */
-	public void setPlayer(Player player) {
-		this.player = player;
+	public void setTeam(Team team) {
+		this.team = team;
 	}
 
 	/**

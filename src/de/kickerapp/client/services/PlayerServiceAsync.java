@@ -1,6 +1,7 @@
 package de.kickerapp.client.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -47,6 +48,6 @@ public interface PlayerServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getPlayersWithAtLeastOneMatch(AsyncCallback<ArrayList<PlayerDto>> callback) throws IllegalArgumentException;
+	public void getPlayerYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>> callback) throws IllegalArgumentException;
 
 }
