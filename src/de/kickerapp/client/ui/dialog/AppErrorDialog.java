@@ -56,6 +56,7 @@ public final class AppErrorDialog extends BaseDialog {
 		setHideOnButtonClick(true);
 		setPixelSize(400, 150);
 		setBlinkModal(true);
+		setClosable(false);
 		setModal(true);
 
 		final AppContentPanel contentPanel = new AppContentPanel();

@@ -71,7 +71,11 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 		RootPanel.get().addDomHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				if (event.getNativeEvent().getShiftKey()) {
+				if (event.getNativeKeyCode() != KeyCodes.KEY_F5) {
+					event.preventDefault();
+				}
+
+				if (event.getNativeEvent().getCtrlKey()) {
 					final int keyCode = event.getNativeKeyCode();
 					if (keyCode == KeyCodes.KEY_T) {
 						handleKeyCode("tables", NavigationEvent.TABLES);
