@@ -59,6 +59,7 @@ public final class AppInfoDialog extends BaseDialog {
 		setHideOnButtonClick(true);
 		setPixelSize(300, 120);
 		setBlinkModal(true);
+		setClosable(false);
 		setModal(true);
 
 		final HorizontalLayoutContainer hlcInfo = new HorizontalLayoutContainer();

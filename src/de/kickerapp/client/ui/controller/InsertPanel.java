@@ -619,9 +619,11 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		loader.addLoadHandler(new LoadResultListStoreBinding<PagingLoadConfig, PlayerDto, PagingLoadResult<PlayerDto>>(store));
 
 		cbPlayer.setTriggerAction(TriggerAction.ALL);
+		cbPlayer.setUseQueryCache(false);
+		cbPlayer.setQueryDelay(200);
 		cbPlayer.setLoader(loader);
 		cbPlayer.setPageSize(5);
-		cbPlayer.setMinChars(1);
+		cbPlayer.setMinChars(2);
 
 		return cbPlayer;
 	}
