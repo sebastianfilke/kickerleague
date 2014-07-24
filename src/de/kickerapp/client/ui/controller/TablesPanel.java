@@ -5,8 +5,6 @@ import java.util.Comparator;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ImageResourceCell;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -71,10 +69,10 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 	private ListStore<PlayerDto> storeDoubleTable;
 	/** Der Store für die Teamtabelle. */
 	private ListStore<TeamDto> storeTeamTable;
-	/** Der aktuelle oder anzuzeigende Tab. */
-	private int activeTab;
 	/** Der TabPanel zum Anzeigen der verschiedenen Tabellen. */
 	private TabPanel tabPanel;
+	/** Der aktuelle oder anzuzeigende Tab. */
+	private int activeTab;
 	/** Der Angabe, ob die Einzelspielertabelle, Doppelspielertabelle sowie die Teamtabelle aktualisiert werden sollen. */
 	private boolean doUpdateSingleTable, doUpdateDoubleTable, doUpdateTeamTable;
 
@@ -850,7 +848,6 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 		} else {
 			getDoubleTableTeamView();
 		}
-		AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES_NAV, activeTab));
 	}
 
 	/**
@@ -958,6 +955,8 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 	 */
 	@Override
 	public void showData(ShowDataEvent event) {
+		tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
+		AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES_NAV, activeTab));
 		getTableForActiveTab();
 	}
 
@@ -966,15 +965,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 	 */
 	@Override
 	public void setActiveWidget(TabPanelEvent event) {
-		if (activeTab != event.getActiveTab()) {
-			activeTab = event.getActiveTab();
-			Scheduler.get().scheduleFinally(new ScheduledCommand() {
-				@Override
-				public void execute() {
-					tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
-				}
-			});
-		}
+		activeTab = event.getActiveTab();
 	}
 
 	/**

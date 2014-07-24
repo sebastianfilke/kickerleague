@@ -1,7 +1,5 @@
 package de.kickerapp.client.ui.controller.tab;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -15,10 +13,10 @@ import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.event.ShowDataEventHandler;
 import de.kickerapp.client.event.TabPanelEvent;
 import de.kickerapp.client.event.TabPanelEventHandler;
-import de.kickerapp.client.ui.base.BaseContainer;
 import de.kickerapp.client.ui.base.BasePanel;
 import de.kickerapp.client.ui.controller.DoublePlayerChartPanel;
 import de.kickerapp.client.ui.controller.SinglePlayerChartPanel;
+import de.kickerapp.client.ui.controller.TeamChartPanel;
 import de.kickerapp.client.ui.resources.IconProvider;
 
 /**
@@ -32,8 +30,10 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 
 	private DoublePlayerChartPanel doublePlayerChartPanel;
 
+	private TeamChartPanel teamChartPanel;
+	/** Der TabPanel zum Anzeigen der verschiedenen Statistiken. */
 	private TabPanel tabPanel;
-
+	/** Der aktuelle oder anzuzeigende Tab. */
 	private int activeTab;
 
 	/**
@@ -57,6 +57,7 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 
 		singlePlayerChartPanel = new SinglePlayerChartPanel();
 		doublePlayerChartPanel = new DoublePlayerChartPanel();
+		teamChartPanel = new TeamChartPanel();
 
 		tabPanel = createTabPanel();
 
@@ -74,6 +75,11 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 		AppEventBus.addHandler(TabPanelEvent.CHARTS, this);
 	}
 
+	/**
+	 * Erzeugt den TabPanel zum Anzeigen der verschiedenen Statistiken.
+	 * 
+	 * @return Der erzeugte TabPanel.
+	 */
 	private TabPanel createTabPanel() {
 		final PlainTabPanel tabPanel = new PlainTabPanel();
 		tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
@@ -103,12 +109,15 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 
 		tabPanel.add(singlePlayerChartPanel, ticSinglePlayerChart);
 		tabPanel.add(doublePlayerChartPanel, ticDoublePlayerChart);
-		tabPanel.add(new BaseContainer(), ticTeamPlayerChart);
+		tabPanel.add(teamChartPanel, ticTeamPlayerChart);
 		tabPanel.setActiveWidget(singlePlayerChartPanel, false);
 
 		return tabPanel;
 	}
 
+	/**
+	 * Liefert die Team- bzw. Spielerstatistik für das aktuell aktive Tab.
+	 */
 	private void getChartForActiveTab() {
 		if (activeTab == 0) {
 			singlePlayerChartPanel.getPlayerList();
@@ -116,7 +125,6 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 		} else if (activeTab == 1) {
 			doublePlayerChartPanel.getPlayerList();
 		}
-		AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.CHARTS_NAV, activeTab));
 	}
 
 	/**
@@ -124,6 +132,8 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 	 */
 	@Override
 	public void showData(ShowDataEvent event) {
+		tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
+		AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.CHARTS_NAV, activeTab));
 		getChartForActiveTab();
 	}
 
@@ -132,15 +142,7 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 	 */
 	@Override
 	public void setActiveWidget(TabPanelEvent event) {
-		if (activeTab != event.getActiveTab()) {
-			activeTab = event.getActiveTab();
-			Scheduler.get().scheduleFinally(new ScheduledCommand() {
-				@Override
-				public void execute() {
-					tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
-				}
-			});
-		}
+		activeTab = event.getActiveTab();
 	}
 
 }
