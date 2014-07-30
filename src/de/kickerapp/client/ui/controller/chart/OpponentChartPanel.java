@@ -64,6 +64,7 @@ public class OpponentChartPanel extends BaseContainer {
 		chartOpponent = new Chart<ChartOpponentDto>();
 		chartOpponent.setStore(storeOpponent);
 		chartOpponent.setDefaultInsets(50);
+		chartOpponent.setShadowChart(true);
 		chartOpponent.setAnimated(true);
 
 		chartOpponent.addSeries(createPieSeries());

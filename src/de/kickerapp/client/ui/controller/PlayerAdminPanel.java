@@ -147,18 +147,18 @@ public class PlayerAdminPanel extends BaseContainer {
 
 		tfNickname = new AppTextField("Spitznamen eintragen (notwendig)");
 		tfNickname.setAllowBlank(false);
-		cflcPlayer.add(new AppFieldLabel(tfNickname, "Spitzname", true), new CssFloatData(1, new Margins(0, 0, 8, 0)));
+		cflcPlayer.add(new AppFieldLabel(tfNickname, "Spitzname", true), new CssFloatData(1, new Margins(0, 0, 3, 0)));
 
 		tfFirstname = new AppTextField("Vornamen eintragen (notwendig)");
 		tfFirstname.setAllowBlank(false);
-		cflcPlayer.add(new AppFieldLabel(tfFirstname, "Vorname", true), new CssFloatData(1, new Margins(0, 0, 8, 0)));
+		cflcPlayer.add(new AppFieldLabel(tfFirstname, "Vorname", true), new CssFloatData(1, new Margins(0, 0, 3, 0)));
 
 		tfLastname = new AppTextField("Nachnamen eintragen (notwendig)");
 		tfLastname.setAllowBlank(false);
-		cflcPlayer.add(new AppFieldLabel(tfLastname, "Nachname", true), new CssFloatData(1, new Margins(0, 0, 8, 0)));
+		cflcPlayer.add(new AppFieldLabel(tfLastname, "Nachname", true), new CssFloatData(1, new Margins(0, 0, 3, 0)));
 
 		tfEMail = new AppTextField("E-Mail Adresse eintragen");
-		cflcPlayer.add(new AppFieldLabel(tfEMail, "E-Mail", false), new CssFloatData(1, new Margins(0, 0, 8, 0)));
+		cflcPlayer.add(new AppFieldLabel(tfEMail, "E-Mail", false), new CssFloatData(1, new Margins(0, 0, 3, 0)));
 
 		cbLocked = new AppCheckBox();
 		cbLocked.setBoxLabel("");

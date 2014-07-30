@@ -72,19 +72,17 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 				if (event.getNativeEvent().getCtrlKey()) {
-					event.preventDefault();
-
 					final int keyCode = event.getNativeKeyCode();
 					if (keyCode == KeyCodes.KEY_T) {
-						handleKeyCode("tables", NavigationEvent.TABLES);
+						handleKeyCode("tables", event, NavigationEvent.TABLES);
 					} else if (keyCode == KeyCodes.KEY_R) {
-						handleKeyCode("results", NavigationEvent.MATCHES);
+						handleKeyCode("results", event, NavigationEvent.MATCHES);
 					} else if (keyCode == KeyCodes.KEY_I) {
-						handleKeyCode("insert", NavigationEvent.INSERT);
+						handleKeyCode("insert", event, NavigationEvent.INSERT);
 					} else if (keyCode == KeyCodes.KEY_S) {
-						handleKeyCode("charts", NavigationEvent.CHARTS);
+						handleKeyCode("charts", event, NavigationEvent.CHARTS);
 					} else if (keyCode == KeyCodes.KEY_P) {
-						handleKeyCode("player", NavigationEvent.PLAYER);
+						handleKeyCode("player", event, NavigationEvent.PLAYER);
 					}
 				}
 			}
@@ -95,9 +93,13 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 	 * Führt die Methode aus falls Shift und eine entsprechende Taste gedrückt wurde.
 	 * 
 	 * @param elementId Die Element-ID des anzuzeigenden Elements.
+	 * @param event Das {@link KeyDownEvent}.
 	 * @param navEvent Das Navigations-Ereignis.
 	 */
-	private void handleKeyCode(String elementId, Type<NavigationEventHandler> navEvent) {
+	private void handleKeyCode(String elementId, KeyDownEvent event, Type<NavigationEventHandler> navEvent) {
+		event.stopPropagation();
+		event.preventDefault();
+
 		selectedElement.removeClassName("active");
 		selectedElement = DOM.getElementById(elementId);
 		selectedElement.addClassName("active");
