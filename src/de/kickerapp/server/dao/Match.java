@@ -1,5 +1,6 @@
 package de.kickerapp.server.dao;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -21,6 +22,9 @@ import de.kickerapp.server.dao.fetchplans.MatchPlan;
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
 @FetchGroup(name = MatchPlan.COMMENT, members = { @Persistent(name = "matchComment") })
 public class Match extends BaseDao {
+
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = -6823545529799168114L;
 
 	/** Die Spielnummer. */
 	@Persistent
@@ -149,7 +153,10 @@ public class Match extends BaseDao {
 	 * @author Sebastian Filke
 	 */
 	@PersistenceCapable(detachable = "true")
-	public static class MatchPoints {
+	public static class MatchPoints implements Serializable {
+
+		/** Konstante für die SerialVersionUID. */
+		private static final long serialVersionUID = -208221150774513707L;
 
 		/** Die Punkte des ersten Teams bzw. Spielers. */
 		@Persistent
@@ -249,7 +256,10 @@ public class Match extends BaseDao {
 	 * @author Sebastian Filke
 	 */
 	@PersistenceCapable(detachable = "true")
-	public static class MatchSets {
+	public static class MatchSets implements Serializable {
+
+		/** Konstante für die SerialVersionUID. */
+		private static final long serialVersionUID = -3185555094167101391L;
 
 		/** Die Sätze des ersten Teams bzw. Spielers. */
 		@Persistent

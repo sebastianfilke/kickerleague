@@ -16,6 +16,9 @@ import javax.jdo.annotations.Persistent;
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
 public class MatchHistory extends BaseDao {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = 2265186956159719422L;
+
 	/** Die Spielnummer. */
 	@Persistent
 	private Integer matchNumber;

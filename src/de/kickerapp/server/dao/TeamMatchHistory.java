@@ -20,6 +20,9 @@ import de.kickerapp.server.dao.fetchplans.MatchHistoryPlan;
 		@FetchGroup(name = MatchHistoryPlan.BOTHTEAMS, members = { @Persistent(name = "team1"), @Persistent(name = "team2") }) })
 public class TeamMatchHistory extends MatchHistory {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = -8556791683913172990L;
+
 	/** Das erste Team. */
 	@Unowned
 	@Persistent(defaultFetchGroup = "false")

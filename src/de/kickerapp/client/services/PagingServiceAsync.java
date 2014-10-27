@@ -1,5 +1,7 @@
 package de.kickerapp.client.services;
 
+import java.util.ArrayList;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
@@ -21,6 +23,7 @@ public interface PagingServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getPagedPlayers(String query, PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<PlayerDto>> callback) throws IllegalArgumentException;
+	public void getPagedPlayers(String query, ArrayList<PlayerDto> selectedPlayers, PagingLoadConfig loadConfig,
+			AsyncCallback<PagingLoadResult<PlayerDto>> callback) throws IllegalArgumentException;
 
 }

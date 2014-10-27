@@ -8,7 +8,9 @@ import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
+import javax.jdo.Transaction;
 
+import net.sf.jsr107cache.Cache;
 import de.kickerapp.server.dao.BaseDao;
 import de.kickerapp.server.dao.Sequence;
 import de.kickerapp.server.persistence.queries.QueryContainer;
@@ -117,7 +119,7 @@ public final class PMFactory {
 			pm.getFetchPlan().addGroup(plan);
 		}
 
-		T object = null;
+		T object;
 		try {
 			object = (T) pm.getObjectById(clazz, id);
 			object = (T) pm.detachCopy(object);
@@ -149,7 +151,7 @@ public final class PMFactory {
 		}
 		query.setUnique(true);
 
-		T object = null;
+		T object;
 		try {
 			if (container.getParameter() != null) {
 				object = (T) query.executeWithArray(container.getParameter());
@@ -234,6 +236,8 @@ public final class PMFactory {
 	 */
 	public static <T extends BaseDao> int getCurrentId(final String clazzName) {
 		final PersistenceManager pm = get().getPersistenceManager();
+		final Cache cache = JCacheFactory.get();
+		final Transaction txn = pm.currentTransaction();
 
 		final Query query = pm.newQuery(Sequence.class);
 		query.setFilter("sequenceName == :clazzName");
@@ -241,13 +245,20 @@ public final class PMFactory {
 
 		int id = 0;
 		try {
-			final Sequence sequence = (Sequence) query.execute(clazzName);
+			txn.begin();
+			Sequence sequence = (Sequence) cache.get(clazzName);
 			if (sequence == null) {
-				id = 0;
-			} else {
+				sequence = (Sequence) query.execute(clazzName);
+				cache.put(clazzName, sequence);
+			}
+			if (sequence != null) {
 				id = sequence.getSequenceID();
 			}
+			txn.commit();
 		} finally {
+			if (txn.isActive()) {
+				txn.rollback();
+			}
 			query.closeAll();
 			pm.close();
 		}
@@ -263,6 +274,8 @@ public final class PMFactory {
 	 */
 	public static <T extends BaseDao> int getNextId(final String clazzName) {
 		final PersistenceManager pm = get().getPersistenceManager();
+		final Cache cache = JCacheFactory.get();
+		final Transaction txn = pm.currentTransaction();
 
 		final Query query = pm.newQuery(Sequence.class);
 		query.setFilter("sequenceName == :clazzName");
@@ -270,16 +283,26 @@ public final class PMFactory {
 
 		int id = 0;
 		try {
-			Sequence sequence = (Sequence) query.execute(clazzName);
+			txn.begin();
+			Sequence sequence = (Sequence) cache.get(clazzName);
 			if (sequence == null) {
-				sequence = new Sequence();
-				sequence.setSequenceName(clazzName);
+				sequence = (Sequence) query.execute(clazzName);
+				if (sequence == null) {
+					sequence = new Sequence();
+					sequence.setSequenceName(clazzName);
+				}
 			}
 			id = sequence.getSequenceID() + 1;
 			sequence.setSequenceID(id);
 
-			pm.makePersistent(sequence);
+			sequence = pm.makePersistent(sequence);
+			sequence = pm.detachCopy(sequence);
+			cache.put(clazzName, sequence);
+			txn.commit();
 		} finally {
+			if (txn.isActive()) {
+				txn.rollback();
+			}
 			query.closeAll();
 			pm.close();
 		}

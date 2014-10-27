@@ -14,6 +14,9 @@ import javax.jdo.annotations.Persistent;
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
 public class MatchYearAggregation extends BaseDao {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = 2255546933965500040L;
+
 	/** Das Jahr. */
 	@Persistent
 	private Integer year;

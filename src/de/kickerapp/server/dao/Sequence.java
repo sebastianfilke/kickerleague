@@ -1,5 +1,6 @@
 package de.kickerapp.server.dao;
 
+import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
@@ -11,11 +12,15 @@ import javax.jdo.annotations.Persistent;
 @PersistenceCapable(detachable = "true")
 public class Sequence extends BaseDao {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = 6411369057468387297L;
+
 	/** Der Name der Sequenz. */
 	@Persistent
 	private String sequenceName;
 	/** Die aktuelle ID für die Sequenz. */
 	@Persistent
+	@Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
 	private Integer sequenceID;
 
 	/**
