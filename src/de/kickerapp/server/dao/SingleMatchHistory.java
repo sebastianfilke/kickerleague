@@ -20,6 +20,9 @@ import de.kickerapp.server.dao.fetchplans.MatchHistoryPlan;
 		@FetchGroup(name = MatchHistoryPlan.BOTHPLAYERS, members = { @Persistent(name = "player1"), @Persistent(name = "player2") }) })
 public class SingleMatchHistory extends MatchHistory {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = 8253222652984663833L;
+
 	/** Der erste Spieler. */
 	@Unowned
 	@Persistent(defaultFetchGroup = "false")

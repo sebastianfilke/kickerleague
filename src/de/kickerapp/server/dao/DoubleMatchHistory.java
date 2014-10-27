@@ -23,6 +23,9 @@ import de.kickerapp.server.dao.fetchplans.MatchHistoryPlan;
 				@Persistent(name = "player3"), @Persistent(name = "player4") }) })
 public class DoubleMatchHistory extends MatchHistory {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = -6258767206276174324L;
+
 	/** Der erste Spieler. */
 	@Unowned
 	@Persistent(defaultFetchGroup = "false")

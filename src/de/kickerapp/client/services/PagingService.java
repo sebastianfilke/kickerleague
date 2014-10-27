@@ -1,5 +1,7 @@
 package de.kickerapp.client.services;
 
+import java.util.ArrayList;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
@@ -23,6 +25,7 @@ public interface PagingService extends RemoteService {
 	 * @return Die paginierte Spielerliste.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public PagingLoadResult<PlayerDto> getPagedPlayers(String query, PagingLoadConfig loadConfig) throws IllegalArgumentException;
+	public PagingLoadResult<PlayerDto> getPagedPlayers(String query, ArrayList<PlayerDto> selectedPlayers, PagingLoadConfig loadConfig)
+			throws IllegalArgumentException;
 
 }

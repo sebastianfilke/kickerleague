@@ -17,6 +17,9 @@ import de.kickerapp.server.dao.fetchplans.MatchPlan;
 @FetchGroup(name = MatchPlan.BOTHPLAYERS, members = { @Persistent(name = "player1"), @Persistent(name = "player2") })
 public class SingleMatch extends Match {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = 2702523103373490352L;
+
 	/** Der erste Spieler. */
 	@Unowned
 	@Persistent(defaultFetchGroup = "false")

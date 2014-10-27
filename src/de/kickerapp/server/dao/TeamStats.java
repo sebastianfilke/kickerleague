@@ -10,6 +10,9 @@ import javax.jdo.annotations.PersistenceCapable;
 @PersistenceCapable(detachable = "true")
 public class TeamStats extends Stats {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = 6309264206809108292L;
+
 	/**
 	 * Erzeugt eine leere Teamspiel-Statistik für ein Team.
 	 */

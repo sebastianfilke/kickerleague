@@ -41,12 +41,13 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	public MatchDto createSingleMatch(MatchDto matchDto) throws IllegalArgumentException {
 		final SingleMatch dbMatch = new SingleMatch();
 
+		final int nextMatchNumber = MatchBean.getNextMatchNumber();
 		final int matchId = PMFactory.getNextId(SingleMatch.class.getName());
 		final Key matchKey = KeyFactory.createKey(SingleMatch.class.getSimpleName(), matchId);
 		dbMatch.setKey(matchKey);
 		dbMatch.setMatchDate(matchDto.getMatchDate());
 		dbMatch.setMatchComment(matchDto.getMatchComment());
-		dbMatch.setMatchNumber(MatchBean.getNextMatchNumber());
+		dbMatch.setMatchNumber(nextMatchNumber);
 
 		final MatchSets sets = new MatchSets(matchDto.getMatchSetsDto().getMatchSetsTeam1(), matchDto.getMatchSetsDto().getMatchSetsTeam2());
 		dbMatch.setMatchSets(sets);
@@ -78,11 +79,12 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	public MatchDto createDoubleMatch(MatchDto matchDto) throws IllegalArgumentException {
 		final DoubleMatch dbMatch = new DoubleMatch();
 
+		final int nextMatchNumber = MatchBean.getNextMatchNumber();
 		final int matchId = PMFactory.getNextId(DoubleMatch.class.getName());
 		final Key matchKey = KeyFactory.createKey(DoubleMatch.class.getSimpleName(), matchId);
 		dbMatch.setKey(matchKey);
 		dbMatch.setMatchDate(matchDto.getMatchDate());
-		dbMatch.setMatchNumber(MatchBean.getNextMatchNumber());
+		dbMatch.setMatchNumber(nextMatchNumber);
 
 		final MatchSets sets = new MatchSets(matchDto.getMatchSetsDto().getMatchSetsTeam1(), matchDto.getMatchSetsDto().getMatchSetsTeam2());
 		dbMatch.setMatchSets(sets);

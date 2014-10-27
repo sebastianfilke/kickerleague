@@ -10,6 +10,9 @@ import javax.jdo.annotations.PersistenceCapable;
 @PersistenceCapable(detachable = "true")
 public class PlayerDoubleStats extends Stats {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = -6975235515966207987L;
+
 	/**
 	 * Erzeugt eine leere Doppelspiel-Statistik für einen Spieler.
 	 */

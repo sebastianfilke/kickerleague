@@ -17,6 +17,9 @@ import de.kickerapp.server.dao.fetchplans.MatchAggregationPlan;
 @FetchGroup(name = MatchAggregationPlan.PLAYER, members = { @Persistent(name = "player") })
 public class SingleMatchYearAggregation extends MatchYearAggregation {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = -4364679443905495201L;
+
 	/** Der Spieler. */
 	@Unowned
 	@Persistent(defaultFetchGroup = "false")

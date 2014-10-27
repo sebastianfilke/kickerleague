@@ -25,6 +25,9 @@ import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 		@FetchGroup(name = PlayerPlan.TEAMS, members = { @Persistent(name = "teams") }) })
 public class Player extends BaseDao {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = -2869752143409930919L;
+
 	/** Der Nachname des Spielers. */
 	@Persistent
 	private String lastName;

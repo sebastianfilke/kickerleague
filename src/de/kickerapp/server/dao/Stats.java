@@ -16,6 +16,9 @@ import de.kickerapp.shared.common.Tendency;
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
 public class Stats extends BaseDao {
 
+	/** Konstante für die SerialVersionUID. */
+	private static final long serialVersionUID = -2845433145883248609L;
+
 	/** Die gewonnen Spiele des Teams bzw. Spielers. */
 	@Persistent
 	private Integer wins;

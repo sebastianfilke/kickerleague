@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.sf.jsr107cache.Cache;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
@@ -11,6 +13,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 
 import de.kickerapp.client.services.PagingService;
 import de.kickerapp.server.dao.Player;
+import de.kickerapp.server.persistence.JCacheFactory;
 import de.kickerapp.server.persistence.queries.PlayerBean;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerNameComparator;
 import de.kickerapp.shared.dto.PlayerDto;
@@ -26,8 +29,9 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 	private static final long serialVersionUID = 1711104572514007282L;
 
 	@Override
-	public PagingLoadResult<PlayerDto> getPagedPlayers(String query, PagingLoadConfig config) throws IllegalArgumentException {
-		final ArrayList<PlayerDto> result = getAllPlayers();
+	public PagingLoadResult<PlayerDto> getPagedPlayers(String query, ArrayList<PlayerDto> selectedPlayers, PagingLoadConfig config)
+			throws IllegalArgumentException {
+		final ArrayList<PlayerDto> result = getAllUnselectedPlayers(selectedPlayers);
 		final ArrayList<PlayerDto> filteredResult = createFilteredResult(query, result);
 		final ArrayList<PlayerDto> sublistResult = createSubListResult(config, filteredResult);
 
@@ -84,19 +88,40 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 	 * 
 	 * @return Die Liste aller Spieler der Datenbank.
 	 */
-	public ArrayList<PlayerDto> getAllPlayers() {
+	@SuppressWarnings("unchecked")
+	public ArrayList<PlayerDto> getAllUnselectedPlayers(ArrayList<PlayerDto> selectedPlayers) {
 		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
+		final Cache cache = JCacheFactory.get();
 
-		final List<Player> dbPlayers = PlayerBean.getAllUnlockedPlayers();
+		List<Player> dbPlayers = (List<Player>) cache.get(PagingServiceImpl.class.getName());
+		if (dbPlayers == null) {
+			dbPlayers = PlayerBean.getAllUnlockedPlayers();
+			cache.put(PagingServiceImpl.class.getName(), dbPlayers);
+		}
 
 		for (Player dbPlayer : dbPlayers) {
 			final PlayerDto player = PlayerServiceHelper.createPlayerDtoWithAllStats(dbPlayer);
 
 			playerDtos.add(player);
 		}
+		removeSelectedPlayers(playerDtos, selectedPlayers);
 		Collections.sort(playerDtos, new PlayerNameComparator());
 
 		return playerDtos;
+	}
+
+	private void removeSelectedPlayers(ArrayList<PlayerDto> playerDtos, ArrayList<PlayerDto> selectedPlayers) {
+		final ArrayList<PlayerDto> playerDtosToRemove = new ArrayList<PlayerDto>();
+
+		for (PlayerDto selectedPlayer : selectedPlayers) {
+			for (PlayerDto playerDto : playerDtos) {
+				if (selectedPlayer.getId() == playerDto.getId()) {
+					playerDtosToRemove.add(playerDto);
+					break;
+				}
+			}
+		}
+		playerDtos.removeAll(playerDtosToRemove);
 	}
 
 }
