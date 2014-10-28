@@ -1,7 +1,5 @@
 package de.kickerapp.client.services;
 
-import java.util.Date;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import de.kickerapp.shared.container.ChartContainer;
@@ -49,10 +47,10 @@ public interface ChartServiceAsync {
 	 * Liefert die Doppelspieler-Statistiken für den gewählten Spieler.
 	 * 
 	 * @param playerDto Der Spieler für welchen die Doppelspieler-Statistiken angezeigt werden sollen.
-	 * @param date Das Jahr für welches die Doppelspieler-Statistiken angezeigt werden sollen.
+	 * @param year Das Jahr für welches die Doppelspieler-Statistiken angezeigt werden sollen.
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getDoublePlayerChart(PlayerDto playerDto, Date date, AsyncCallback<ChartContainer> callback) throws IllegalArgumentException;
+	public void getDoublePlayerChart(PlayerDto playerDto, Integer year, AsyncCallback<ChartContainer> callback) throws IllegalArgumentException;
 
 }

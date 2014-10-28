@@ -21,11 +21,13 @@ public interface PagingService extends RemoteService {
 	 * Liefert eine paginierte Spielerliste.
 	 * 
 	 * @param query Die Anfrage.
+	 * @param triggerClick Die Angabe, ob der Trigger geklickt wurde.
+	 * @param selectedPlayers Die Liste der bereits gewählten Spieler.
 	 * @param loadConfig Die Ladekonfiguration der paginierten Spielerliste.
 	 * @return Die paginierte Spielerliste.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public PagingLoadResult<PlayerDto> getPagedPlayers(String query, ArrayList<PlayerDto> selectedPlayers, PagingLoadConfig loadConfig)
+	public PagingLoadResult<PlayerDto> getPagedPlayers(String query, boolean triggerClick, ArrayList<PlayerDto> selectedPlayers, PagingLoadConfig loadConfig)
 			throws IllegalArgumentException;
 
 }

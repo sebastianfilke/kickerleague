@@ -2,6 +2,8 @@ package de.kickerapp.client.ui.controller;
 
 import java.util.ArrayList;
 
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -209,6 +211,7 @@ public class PlayerAdminPanel extends BaseContainer {
 		fsPlayer.setHeadingText("Neuen Spieler eintragen");
 		sffPlayer.setEnabled(true);
 		btnListUpdate.setEnabled(true);
+		btnPlayerUpdate.setValue(false);
 	}
 
 	private ToolBar createToolBarPlayerList() {
@@ -270,24 +273,28 @@ public class PlayerAdminPanel extends BaseContainer {
 		btnPlayerUpdate.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if (event.getValue()) {
-					final PlayerDto selectedPlayer = lvPlayer.getSelectionModel().getSelectedItem();
-					if (selectedPlayer != null) {
-						tfNickname.setValue(selectedPlayer.getNickName());
-						tfFirstname.setValue(selectedPlayer.getFirstName());
-						tfLastname.setValue(selectedPlayer.getLastName());
-						tfEMail.setValue(selectedPlayer.getEMail());
-						cbLocked.setValue(selectedPlayer.isLocked(), true);
-						fsPlayer.setHeadingText("Spieler bearbeiten");
-						sffPlayer.setEnabled(false);
-						btnListUpdate.setEnabled(false);
-					}
-				} else {
-					clearInput();
-				}
+				editPlayer(event.getValue());
 			}
 		});
 		return btnPlayerUpdate;
+	}
+
+	private void editPlayer(boolean startEdit) {
+		if (startEdit) {
+			final PlayerDto selectedPlayer = lvPlayer.getSelectionModel().getSelectedItem();
+			if (selectedPlayer != null) {
+				tfNickname.setValue(selectedPlayer.getNickName());
+				tfFirstname.setValue(selectedPlayer.getFirstName());
+				tfLastname.setValue(selectedPlayer.getLastName());
+				tfEMail.setValue(selectedPlayer.getEMail());
+				cbLocked.setValue(selectedPlayer.isLocked(), true);
+				fsPlayer.setHeadingText("Spieler bearbeiten");
+				sffPlayer.setEnabled(false);
+				btnListUpdate.setEnabled(false);
+			}
+		} else {
+			clearInput();
+		}
 	}
 
 	private ListView<PlayerDto, String> createPlayerListListView() {
@@ -300,6 +307,17 @@ public class PlayerAdminPanel extends BaseContainer {
 				}
 			}
 		});
+		lvPlayer.addDomHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+				if (btnPlayerUpdate.getValue()) {
+					editPlayer(false);
+				} else {
+					editPlayer(true);
+					btnPlayerUpdate.setValue(true);
+				}
+			}
+		}, DoubleClickEvent.getType());
 		lvPlayer.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		lvPlayer.setBorders(false);
 

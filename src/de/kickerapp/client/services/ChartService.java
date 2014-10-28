@@ -1,7 +1,5 @@
 package de.kickerapp.client.services;
 
-import java.util.Date;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -51,10 +49,10 @@ public interface ChartService extends RemoteService {
 	 * Liefert die Doppelspieler-Statistiken für den gewählten Spieler.
 	 * 
 	 * @param playerDto Der Spieler für welchen die Doppelspieler-Statistiken angezeigt werden sollen.
-	 * @param date Das Jahr für welches die Doppelspieler-Statistiken angezeigt werden sollen.
+	 * @param year Das Jahr für welches die Doppelspieler-Statistiken angezeigt werden sollen.
 	 * @return Die Einzelspieler-Statistiken.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public ChartContainer getDoublePlayerChart(PlayerDto playerDto, Date date) throws IllegalArgumentException;
+	public ChartContainer getDoublePlayerChart(PlayerDto playerDto, Integer year) throws IllegalArgumentException;
 
 }

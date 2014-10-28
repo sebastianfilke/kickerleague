@@ -155,7 +155,7 @@ public class ChartServiceHelper {
 		return numberFormat.format(averageTablePlace);
 	}
 
-	public static void updateGameForMatch(SingleMatchHistory dbHistory, HashMap<Integer, ChartGameDto> chartGameDtos) {
+	public static void updateGameForMatch(MatchHistory dbHistory, HashMap<Integer, ChartGameDto> chartGameDtos) {
 		final int month = ChartServiceHelper.getMonthForMatch(dbHistory);
 
 		final ChartGameDto chartDataDto = chartGameDtos.get(month);
@@ -172,7 +172,7 @@ public class ChartServiceHelper {
 		chartDataDto.setDefeats(defeats);
 	}
 
-	public static void updateGoalForMatch(SingleMatchHistory dbHistory, HashMap<Integer, ChartGoalDto> chartGoalDtos) {
+	public static void updateGoalForMatch(MatchHistory dbHistory, HashMap<Integer, ChartGoalDto> chartGoalDtos) {
 		final int month = ChartServiceHelper.getMonthForMatch(dbHistory);
 
 		final ChartGoalDto chartDataDto = chartGoalDtos.get(month);
@@ -238,7 +238,7 @@ public class ChartServiceHelper {
 		return sumMatches;
 	}
 
-	public static void updatePointForMatch(SingleMatchHistory dbHistory, ArrayList<ChartPointDto> chartPointDtos) {
+	public static void updatePointForMatch(MatchHistory dbHistory, ArrayList<ChartPointDto> chartPointDtos) {
 		final ChartPointDto chartPointDto = new ChartPointDto();
 		chartPointDto.setId(chartPointDtos.size() + 1);
 		chartPointDto.setMatchNumber(dbHistory.getMatchNumber());

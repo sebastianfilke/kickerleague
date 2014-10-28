@@ -1,7 +1,6 @@
 package de.kickerapp.server.services;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -98,7 +97,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	public InfoDto getDoublePlayerInfo(PlayerDto playerDto, Integer year) throws IllegalArgumentException {
 		final List<DoubleMatchHistory> dbDoubleMatches = MatchBean.getDoubleMatchesForPlayer(playerDto, year);
 
-		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId(), PlayerPlan.PLAYERSINGLESTATS);
+		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId(), PlayerPlan.PLAYERDOUBLESTATS);
 
 		final InfoDto infoDto = new InfoDto();
 		infoDto.setWinSeries(ChartServiceHelper.getMatchWinSeries(dbDoubleMatches));
@@ -118,9 +117,32 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ChartContainer getDoublePlayerChart(PlayerDto playerDto, Date date) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+	public ChartContainer getDoublePlayerChart(PlayerDto playerDto, Integer year) throws IllegalArgumentException {
+		final List<DoubleMatchHistory> dbDoubleMatches = MatchBean.getDoubleMatchesForPlayer(playerDto, year);
+
+		final HashMap<Integer, ChartGameDto> chartGameDtos = new HashMap<Integer, ChartGameDto>();
+		final HashMap<Integer, ChartGoalDto> chartGoalDtos = new HashMap<Integer, ChartGoalDto>();
+		for (int i = 1; i <= 12; i++) {
+			chartGameDtos.put(i, new ChartGameDto((long) i, MONTHS[i - 1]));
+			chartGoalDtos.put(i, new ChartGoalDto((long) i, MONTHS[i - 1]));
+		}
+		final HashMap<Long, ChartOpponentDto> chartOpponentDtos = new HashMap<Long, ChartOpponentDto>();
+		final ArrayList<ChartPointDto> chartPointDtos = new ArrayList<ChartPointDto>();
+
+		for (DoubleMatchHistory dbHistory : dbDoubleMatches) {
+			ChartServiceHelper.updateGameForMatch(dbHistory, chartGameDtos);
+			ChartServiceHelper.updateGoalForMatch(dbHistory, chartGoalDtos);
+			// ChartServiceHelper.updateOpponentForMatch(dbHistory, chartOpponentDtos);
+			ChartServiceHelper.updatePointForMatch(dbHistory, chartPointDtos);
+		}
+
+		final ChartContainer container = new ChartContainer();
+		container.getChartGameDtos().addAll(chartGameDtos.values());
+		container.getChartGoalDtos().addAll(chartGoalDtos.values());
+		container.getChartOpponentDtos().addAll(chartOpponentDtos.values());
+		container.getChartPointDtos().addAll(chartPointDtos);
+
+		return container;
 	}
 
 }

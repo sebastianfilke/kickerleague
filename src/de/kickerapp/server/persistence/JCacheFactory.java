@@ -16,6 +16,9 @@ import com.google.appengine.api.memcache.jsr107cache.GCacheFactory;
  */
 public final class JCacheFactory {
 
+	/** Die Liste der paginierten Spieler. */
+	public static final String PAGEDPLAYERS = "de.kickerapp.server.services.PagingServiceImpl";
+
 	/** Die einzige Instanz des {@link Cache}. */
 	private Cache instance;
 
@@ -35,7 +38,7 @@ public final class JCacheFactory {
 	 * 
 	 * @return Die einzige Instanz der {@link JCacheFactory}-Klasse.
 	 */
-	public static JCacheFactory getInstance() {
+	private static JCacheFactory getInstance() {
 		return LazyHolder.INSTANCE;
 	}
 

@@ -48,6 +48,6 @@ public interface PlayerServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getPlayerYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>> callback) throws IllegalArgumentException;
+	public void getSingleMatchYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>> callback) throws IllegalArgumentException;
 
 }

@@ -28,11 +28,14 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = 1711104572514007282L;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public PagingLoadResult<PlayerDto> getPagedPlayers(String query, ArrayList<PlayerDto> selectedPlayers, PagingLoadConfig config)
+	public PagingLoadResult<PlayerDto> getPagedPlayers(String query, boolean triggerClick, ArrayList<PlayerDto> selectedPlayers, PagingLoadConfig config)
 			throws IllegalArgumentException {
 		final ArrayList<PlayerDto> result = getAllUnselectedPlayers(selectedPlayers);
-		final ArrayList<PlayerDto> filteredResult = createFilteredResult(query, result);
+		final ArrayList<PlayerDto> filteredResult = createFilteredResult(query, triggerClick, result);
 		final ArrayList<PlayerDto> sublistResult = createSubListResult(config, filteredResult);
 
 		return new PagingLoadResultBean<PlayerDto>(sublistResult, result.size(), config.getOffset());
@@ -42,32 +45,38 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 	 * Erzeugt das gefilterte Ergebnis anhand der eingegebenen Abfrage.
 	 * 
 	 * @param query Die eingegebene Abfrage.
-	 * @param result Die Liste der Spieler.
+	 * @param triggerClick Die Angabe, ob der Trigger geklickt wurde.
+	 * @param result Die Liste der noch nicht selektierten Spieler.
 	 * @return Das gefilterte Ergebnis anhand der eingegebenen Abfrage.
 	 */
-	private ArrayList<PlayerDto> createFilteredResult(String query, ArrayList<PlayerDto> result) {
+	private ArrayList<PlayerDto> createFilteredResult(String query, boolean triggerClick, ArrayList<PlayerDto> result) {
 		final ArrayList<PlayerDto> filteredResult = new ArrayList<PlayerDto>();
 
-		final String[] queries = query.split(" ");
-		for (PlayerDto player : result) {
-			for (String curQuery : queries) {
-				if (player.getLastName().toLowerCase().contains(curQuery.toLowerCase()) || player.getFirstName().toLowerCase().contains(curQuery.toLowerCase())
-						|| player.getNickName().toLowerCase().contains(curQuery.toLowerCase())) {
-					if (!filteredResult.contains(player)) {
-						filteredResult.add(player);
+		if (!triggerClick) {
+			final String[] queries = query.split(" ");
+			for (PlayerDto player : result) {
+				for (String curQuery : queries) {
+					if (player.getLastName().toLowerCase().contains(curQuery.toLowerCase())
+							|| player.getFirstName().toLowerCase().contains(curQuery.toLowerCase())
+							|| player.getNickName().toLowerCase().contains(curQuery.toLowerCase())) {
+						if (!filteredResult.contains(player)) {
+							filteredResult.add(player);
+						}
 					}
 				}
 			}
+		} else {
+			filteredResult.addAll(result);
 		}
 		return filteredResult;
 	}
 
 	/**
-	 * Erzeugt das gepagde Ergebnis.
+	 * Erzeugt das paginierte Ergebnis.
 	 * 
 	 * @param config Die PagingLoadConfig.
 	 * @param filteredResult Die gefilterte Liste der Spieler.
-	 * @return Das gepagde Ergebnis.
+	 * @return Das paginierte Ergebnis.
 	 */
 	private ArrayList<PlayerDto> createSubListResult(PagingLoadConfig config, ArrayList<PlayerDto> filteredResult) {
 		final ArrayList<PlayerDto> sublist = new ArrayList<PlayerDto>();
@@ -84,9 +93,10 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 	}
 
 	/**
-	 * Liefert die Liste aller Spieler der Datenbank.
+	 * Liefert die Liste aller noch nicht selektieren Spieler der Datenbank.
 	 * 
-	 * @return Die Liste aller Spieler der Datenbank.
+	 * @param selectedPlayers Die Liste der bereits gewählten Spieler.
+	 * @return Die Liste aller noch nicht selektierten Spieler aus der Datenbank.
 	 */
 	@SuppressWarnings("unchecked")
 	public ArrayList<PlayerDto> getAllUnselectedPlayers(ArrayList<PlayerDto> selectedPlayers) {
@@ -110,6 +120,12 @@ public class PagingServiceImpl extends RemoteServiceServlet implements PagingSer
 		return playerDtos;
 	}
 
+	/**
+	 * Entfernt die bereits gewählten Spieler aus der Liste.
+	 * 
+	 * @param playerDtos Die Liste aller nicht gespeerten Spieler aus der Datenbank.
+	 * @param selectedPlayers Die Liste der bereits gewählten Spieler.
+	 */
 	private void removeSelectedPlayers(ArrayList<PlayerDto> playerDtos, ArrayList<PlayerDto> selectedPlayers) {
 		final ArrayList<PlayerDto> playerDtosToRemove = new ArrayList<PlayerDto>();
 
