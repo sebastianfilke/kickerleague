@@ -216,7 +216,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 
 		toolBar.add(createBtnUpdate());
 		toolBar.add(new SeparatorToolItem());
-		toolBar.add(new LabelToolItem("Spiele ab:"));
+		toolBar.add(new LabelToolItem("Spiele anzeigen ab:"));
 		toolBar.add(createDateField());
 		toolBar.add(new SeparatorToolItem());
 		toolBar.add(sffGrid);

@@ -16,6 +16,7 @@ import de.kickerapp.server.dao.PlayerSingleStats;
 import de.kickerapp.server.dao.SingleMatchYearAggregation;
 import de.kickerapp.server.dao.fetchplans.MatchAggregationPlan;
 import de.kickerapp.server.dao.fetchplans.PlayerPlan;
+import de.kickerapp.server.persistence.JCacheFactory;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerNameComparator;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerTableComparator;
@@ -63,6 +64,9 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 
 		PMFactory.persistObject(dbPlayer);
 
+		// Lösche paginierte Spieler aus dem Cache
+		JCacheFactory.get().remove(JCacheFactory.PAGEDPLAYERS);
+
 		return playerDto;
 	}
 
@@ -80,6 +84,9 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 		dbPlayer.setLocked(playerDto.isLocked());
 
 		PMFactory.persistObject(dbPlayer);
+
+		// Lösche paginierte Spieler aus dem Cache
+		JCacheFactory.get().remove(JCacheFactory.PAGEDPLAYERS);
 
 		return playerDto;
 	}
@@ -128,7 +135,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HashMap<Integer, ArrayList<PlayerDto>> getPlayerYearAggregation() throws IllegalArgumentException {
+	public HashMap<Integer, ArrayList<PlayerDto>> getSingleMatchYearAggregation() throws IllegalArgumentException {
 		final List<SingleMatchYearAggregation> dbYearAggregations = PMFactory.getList(SingleMatchYearAggregation.class, MatchAggregationPlan.PLAYER);
 
 		final HashMap<Integer, ArrayList<PlayerDto>> yearAggregations = new HashMap<Integer, ArrayList<PlayerDto>>();
@@ -153,4 +160,5 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 		}
 		return yearAggregations;
 	}
+
 }

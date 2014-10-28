@@ -611,8 +611,8 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		final RpcProxy<PagingLoadConfig, PagingLoadResult<PlayerDto>> proxy = new RpcProxy<PagingLoadConfig, PagingLoadResult<PlayerDto>>() {
 			@Override
 			public void load(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<PlayerDto>> callback) {
-				cbTeam1Player1.getValue();
-				KickerServices.PAGING_SERVICE.getPagedPlayers(cbPlayer.getText(), getSelectedPlayers(), loadConfig, callback);
+				KickerServices.PAGING_SERVICE.getPagedPlayers(cbPlayer.getText(), cbPlayer.isTriggerClick(), getSelectedPlayers(), loadConfig, callback);
+				cbPlayer.setTriggerClick(false);
 			}
 		};
 
@@ -632,21 +632,21 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 	private ArrayList<PlayerDto> getSelectedPlayers() {
 		final ArrayList<PlayerDto> selectedPlayers = new ArrayList<PlayerDto>();
 
-		final PlayerDto teamp1player1 = cbTeam1Player1.getValue();
-		if (teamp1player1 != null) {
-			selectedPlayers.add(teamp1player1);
+		final PlayerDto team1player1 = cbTeam1Player1.getCurrentValue();
+		if (team1player1 != null) {
+			selectedPlayers.add(team1player1);
 		}
-		final PlayerDto teamp1player2 = cbTeam1Player2.getValue();
-		if (teamp1player2 != null) {
-			selectedPlayers.add(teamp1player2);
+		final PlayerDto team1player2 = cbTeam1Player2.getCurrentValue();
+		if (team1player2 != null) {
+			selectedPlayers.add(team1player2);
 		}
-		final PlayerDto teamp2player1 = cbTeam2Player1.getValue();
-		if (teamp2player1 != null) {
-			selectedPlayers.add(teamp2player1);
+		final PlayerDto team2player1 = cbTeam2Player1.getCurrentValue();
+		if (team2player1 != null) {
+			selectedPlayers.add(team2player1);
 		}
-		final PlayerDto teamp2player2 = cbTeam2Player2.getValue();
-		if (teamp2player2 != null) {
-			selectedPlayers.add(teamp2player2);
+		final PlayerDto team2player2 = cbTeam2Player2.getCurrentValue();
+		if (team2player2 != null) {
+			selectedPlayers.add(team2player2);
 		}
 		return selectedPlayers;
 	}

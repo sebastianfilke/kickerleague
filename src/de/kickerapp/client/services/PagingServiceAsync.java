@@ -19,11 +19,13 @@ public interface PagingServiceAsync {
 	 * Liefert eine paginierte Spielerliste.
 	 * 
 	 * @param query Die Anfrage.
+	 * @param triggerClick Die Angabe, ob der Trigger geklickt wurde.
+	 * @param selectedPlayers Die Liste der bereits gewählten Spieler.
 	 * @param loadConfig Die Ladekonfiguration der paginierten Spielerliste.
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getPagedPlayers(String query, ArrayList<PlayerDto> selectedPlayers, PagingLoadConfig loadConfig,
+	public void getPagedPlayers(String query, boolean triggerClick, ArrayList<PlayerDto> selectedPlayers, PagingLoadConfig loadConfig,
 			AsyncCallback<PagingLoadResult<PlayerDto>> callback) throws IllegalArgumentException;
 
 }

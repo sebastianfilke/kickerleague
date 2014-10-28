@@ -19,6 +19,7 @@ import de.kickerapp.server.dao.SingleMatch;
 import de.kickerapp.server.dao.Team;
 import de.kickerapp.server.dao.TeamStats;
 import de.kickerapp.server.dao.fetchplans.PlayerPlan;
+import de.kickerapp.server.persistence.JCacheFactory;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.persistence.queries.MatchBean;
 import de.kickerapp.server.services.MatchServiceHelper.MatchDescendingComparator;
@@ -68,6 +69,9 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		MatchServiceHelper.createSingleMatchHistory(dbMatch, team1Winner);
 
 		matchDto.setId(dbMatch.getKey().getId());
+
+		// Lösche paginierte Spieler aus dem Cache
+		JCacheFactory.get().remove(JCacheFactory.PAGEDPLAYERS);
 
 		return matchDto;
 	}
@@ -119,6 +123,9 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		MatchServiceHelper.createTeamMatchHistory(dbMatch, team1Winner);
 
 		matchDto.setId(dbMatch.getKey().getId());
+
+		// Lösche paginierte Spieler aus dem Cache
+		JCacheFactory.get().remove(JCacheFactory.PAGEDPLAYERS);
 
 		return matchDto;
 	}
