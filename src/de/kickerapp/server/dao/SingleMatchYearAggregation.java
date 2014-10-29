@@ -9,7 +9,7 @@ import com.google.appengine.datanucleus.annotations.Unowned;
 import de.kickerapp.server.dao.fetchplans.MatchAggregationPlan;
 
 /**
- * Datenklasse zum Halten der Informationen für die Anzahl der Spiele eines Spielers für Einzelspiele.
+ * Datenklasse zum Halten der Informationen für die Anzahl der Einzelspiele eines Spielers.
  * 
  * @author Sebastian Filke
  */

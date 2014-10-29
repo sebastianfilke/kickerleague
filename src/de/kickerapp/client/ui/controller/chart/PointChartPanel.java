@@ -127,13 +127,14 @@ public class PointChartPanel extends BaseContainer {
 				final int value = valueProvider.getValue(item).intValue();
 
 				final StringBuilder sb = new StringBuilder(Integer.toString(value));
-				sb.append(" Punkte nach Spiel ").append(item.getMatchNumber());
+				sb.append(" Punkte nach Spiel Nummer ").append(item.getMatchNumber());
 
 				return sb.toString();
 			}
 		});
 		toolTipConfig.setTrackMouse(true);
 		toolTipConfig.setHideDelay(200);
+		toolTipConfig.setMinWidth(180);
 
 		return toolTipConfig;
 	}

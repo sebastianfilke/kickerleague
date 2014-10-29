@@ -100,4 +100,15 @@ public class QueryContainer {
 		this.parameter = parameter;
 	}
 
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+		sb.append(" [");
+		sb.append("query=").append(query).append(", ");
+		sb.append("ordering=").append(ordering).append(", ");
+		sb.append("]");
+
+		return sb.toString();
+	}
+
 }

@@ -66,7 +66,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		PMFactory.persistObject(dbMatch);
 		MatchServiceHelper.updateTable(matchDto);
 		MatchServiceHelper.createSingleMatchYearAggregation(dbMatch);
-		MatchServiceHelper.createSingleMatchHistory(dbMatch, team1Winner);
+		MatchServiceHelper.createSingleMatchHistories(dbMatch, team1Winner);
 
 		matchDto.setId(dbMatch.getKey().getId());
 
@@ -88,6 +88,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 		final Key matchKey = KeyFactory.createKey(DoubleMatch.class.getSimpleName(), matchId);
 		dbMatch.setKey(matchKey);
 		dbMatch.setMatchDate(matchDto.getMatchDate());
+		dbMatch.setMatchComment(matchDto.getMatchComment());
 		dbMatch.setMatchNumber(nextMatchNumber);
 
 		final MatchSets sets = new MatchSets(matchDto.getMatchSetsDto().getMatchSetsTeam1(), matchDto.getMatchSetsDto().getMatchSetsTeam2());
@@ -119,8 +120,10 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 
 		PMFactory.persistObject(dbMatch);
 		MatchServiceHelper.updateTable(matchDto);
-		MatchServiceHelper.createDoubleMatchHistory(dbMatch, team1Winner);
-		MatchServiceHelper.createTeamMatchHistory(dbMatch, team1Winner);
+		MatchServiceHelper.createDoubleMatchYearAggregation(dbMatch);
+		MatchServiceHelper.createDoubleMatchHistories(dbMatch, team1Winner);
+		MatchServiceHelper.createTeamMatchYearAggregation(dbMatch);
+		MatchServiceHelper.createTeamMatchHistories(dbMatch, team1Winner);
 
 		matchDto.setId(dbMatch.getKey().getId());
 

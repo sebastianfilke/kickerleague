@@ -5,5 +5,10 @@
 		<property name="player1_key_OID" direction="asc" />
 		<property name="matchDate" direction="asc" />
 	</datastore-index>
+	
+	<datastore-index kind="DoubleMatchHistory" ancestor="false" source="manual">
+		<property name="player1_key_OID" direction="asc" />
+		<property name="matchDate" direction="asc" />
+	</datastore-index>
 
 </datastore-indexes>

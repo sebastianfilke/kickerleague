@@ -352,7 +352,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 	public void getPlayerList() {
 		if (doUpdatePlayerList) {
 			mask("Aktualisiere...");
-			KickerServices.PLAYER_SERVICE.getSingleMatchYearAggregation(new AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>>() {
+			KickerServices.PLAYER_SERVICE.getDoubleMatchYearAggregation(new AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>>() {
 				@Override
 				public void onSuccess(HashMap<Integer, ArrayList<PlayerDto>> result) {
 					playerAggregation = result;

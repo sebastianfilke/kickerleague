@@ -13,6 +13,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 
 import de.kickerapp.server.dao.DoubleMatch;
 import de.kickerapp.server.dao.DoubleMatchHistory;
+import de.kickerapp.server.dao.DoubleMatchYearAggregation;
 import de.kickerapp.server.dao.Match;
 import de.kickerapp.server.dao.MatchHistory;
 import de.kickerapp.server.dao.Player;
@@ -24,6 +25,7 @@ import de.kickerapp.server.dao.SingleMatchYearAggregation;
 import de.kickerapp.server.dao.Stats;
 import de.kickerapp.server.dao.Team;
 import de.kickerapp.server.dao.TeamMatchHistory;
+import de.kickerapp.server.dao.TeamMatchYearAggregation;
 import de.kickerapp.server.dao.TeamStats;
 import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 import de.kickerapp.server.dao.fetchplans.TeamPlan;
@@ -498,7 +500,13 @@ public class MatchServiceHelper {
 		return weightedFactor * FACTOR;
 	}
 
-	public static void createSingleMatchHistory(SingleMatch dbMatch, boolean team1Winner) {
+	/**
+	 * Erstellt die Informationen für den Verlauf des Einzelspiels.
+	 * 
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 * @param team1Winner <code>true</code> falls der erste Spieler gewonnen hat, andernfalls <code>false</code>.
+	 */
+	public static void createSingleMatchHistories(SingleMatch dbMatch, boolean team1Winner) {
 		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, dbMatch.getPlayer1().getKey().getId(), PlayerPlan.PLAYERSINGLESTATS);
 		final Player dbPlayer2 = PMFactory.getObjectById(Player.class, dbMatch.getPlayer2().getKey().getId(), PlayerPlan.PLAYERSINGLESTATS);
 
@@ -508,7 +516,16 @@ public class MatchServiceHelper {
 		PMFactory.persistAllObjects(singleMatchHistoryPlayer1, singleMatchHistoryPlayer2);
 	}
 
-	private static SingleMatchHistory createSingleMatchHistory(SingleMatch dbMatch, boolean team1Winner, final Player dbPlayer1, final Player dbPlayer2) {
+	/**
+	 * Erstellt die Information für den Verlauf eines Einzelspiels.
+	 * 
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 * @param winner <code>true</code> falls der Spieler gewonnen hat, andernfalls <code>false</code>.
+	 * @param dbPlayer1 Der erste Spieler des Einzelspiels.
+	 * @param dbPlayer2 Der zweite Spieler des Einzelspiels.
+	 * @return Die erzeugte Information für den Verlauf eines Einzelspiels.
+	 */
+	private static SingleMatchHistory createSingleMatchHistory(SingleMatch dbMatch, boolean winner, final Player dbPlayer1, final Player dbPlayer2) {
 		final SingleMatchHistory singleMatchHistory = new SingleMatchHistory();
 		final int matchHistoryId = PMFactory.getNextId(SingleMatchHistory.class.getName());
 		final Key matchHistoryKey = KeyFactory.createKey(SingleMatchHistory.class.getSimpleName(), matchHistoryId);
@@ -527,13 +544,18 @@ public class MatchServiceHelper {
 			singleMatchHistory.setGetGoals(getGoalsTeam1(dbMatch));
 		}
 		singleMatchHistory.setTablePlace(dbPlayer1.getPlayerSingleStats().getCurTablePlace());
-		singleMatchHistory.setWinner(team1Winner);
+		singleMatchHistory.setWinner(winner);
 		singleMatchHistory.setPlayer1(dbPlayer1);
 		singleMatchHistory.setPlayer2(dbPlayer2);
 
 		return singleMatchHistory;
 	}
 
+	/**
+	 * Erstellt die Informationen für die Anzahl der Einzelspiele eines Spielers.
+	 * 
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 */
 	public static void createSingleMatchYearAggregation(SingleMatch dbMatch) {
 		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, dbMatch.getPlayer1().getKey().getId(), PlayerPlan.PLAYERSINGLESTATS);
 		final Player dbPlayer2 = PMFactory.getObjectById(Player.class, dbMatch.getPlayer2().getKey().getId(), PlayerPlan.PLAYERSINGLESTATS);
@@ -550,7 +572,13 @@ public class MatchServiceHelper {
 		PMFactory.persistAllObjects(singleMatchYearAggregationPlayer1, singleMatchYearAggregationPlayer2);
 	}
 
-	public static void createDoubleMatchHistory(DoubleMatch dbMatch, boolean team1Winner) {
+	/**
+	 * Erstellt die Informationen für den Verlauf des Doppelspiels.
+	 * 
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 * @param team1Winner <code>true</code> falls das erste Team gewonnen hat, andernfalls <code>false</code>.
+	 */
+	public static void createDoubleMatchHistories(DoubleMatch dbMatch, boolean team1Winner) {
 		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, dbMatch.getTeam1().getPlayer1().getKey().getId(), PlayerPlan.PLAYERDOUBLESTATS);
 		final Player dbPlayer2 = PMFactory.getObjectById(Player.class, dbMatch.getTeam1().getPlayer2().getKey().getId(), PlayerPlan.PLAYERDOUBLESTATS);
 		final Player dbPlayer3 = PMFactory.getObjectById(Player.class, dbMatch.getTeam2().getPlayer1().getKey().getId(), PlayerPlan.PLAYERDOUBLESTATS);
@@ -564,7 +592,18 @@ public class MatchServiceHelper {
 		PMFactory.persistAllObjects(doubleMatchHistoryPlayer1, doubleMatchHistoryPlayer2, doubleMatchHistoryPlayer3, doubleMatchHistoryPlayer4);
 	}
 
-	private static DoubleMatchHistory createDoubleMatchHistory(DoubleMatch dbMatch, boolean team1Winner, final Player dbPlayer1, final Player dbPlayer2,
+	/**
+	 * Erstellt die Information für den Verlauf eines Doppelspiels.
+	 * 
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 * @param winner <code>true</code> falls der Spieler gewonnen hat, andernfalls <code>false</code>.
+	 * @param dbPlayer1 Der erste Spieler des Doppelspiels.
+	 * @param dbPlayer2 Der zweite Spieler des Doppelspiels.
+	 * @param dbPlayer3 Der dritte Spieler des Doppelspiels.
+	 * @param dbPlayer4 Der vierte Spieler des Doppelspiels.
+	 * @return Die erzeugte Information für den Verlauf eines Doppelspiels.
+	 */
+	private static DoubleMatchHistory createDoubleMatchHistory(DoubleMatch dbMatch, boolean winner, final Player dbPlayer1, final Player dbPlayer2,
 			final Player dbPlayer3, final Player dbPlayer4) {
 		final DoubleMatchHistory doubleMatchHistory = new DoubleMatchHistory();
 		final int matchHistoryId = PMFactory.getNextId(DoubleMatchHistory.class.getName());
@@ -586,7 +625,7 @@ public class MatchServiceHelper {
 			doubleMatchHistory.setGetGoals(getGoalsTeam1(dbMatch));
 		}
 		doubleMatchHistory.setTablePlace(dbPlayer1.getPlayerDoubleStats().getCurTablePlace());
-		doubleMatchHistory.setWinner(team1Winner);
+		doubleMatchHistory.setWinner(winner);
 		doubleMatchHistory.setPlayer1(dbPlayer1);
 		doubleMatchHistory.setPlayer2(dbPlayer2);
 		doubleMatchHistory.setPlayer3(dbPlayer3);
@@ -595,17 +634,62 @@ public class MatchServiceHelper {
 		return doubleMatchHistory;
 	}
 
-	public static void createTeamMatchHistory(DoubleMatch dbMatch, boolean team1Winner) {
+	/**
+	 * Erstellt die Informationen für die Anzahl der Einzelspiele eines Spielers.
+	 * 
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 */
+	public static void createDoubleMatchYearAggregation(DoubleMatch dbMatch) {
+		final Team dbTeam1 = PMFactory.getObjectById(Team.class, dbMatch.getTeam1().getKey().getId(), TeamPlan.BOTHPLAYERS);
+		final Team dbTeam2 = PMFactory.getObjectById(Team.class, dbMatch.getTeam2().getKey().getId(), TeamPlan.BOTHPLAYERS);
+		final int year = getYearForMatch(dbMatch);
+
+		final DoubleMatchYearAggregation doubleMatchYearAggregationTeam1Player1 = MatchBean.getDoubleMatchYearAggregationForPlayer(dbTeam1.getPlayer1(), year);
+		final int sumMatchesTeam1Player1 = doubleMatchYearAggregationTeam1Player1.getSumMatches() + 1;
+		doubleMatchYearAggregationTeam1Player1.setSumMatches(sumMatchesTeam1Player1);
+
+		final DoubleMatchYearAggregation doubleMatchYearAggregationTeam1Player2 = MatchBean.getDoubleMatchYearAggregationForPlayer(dbTeam1.getPlayer2(), year);
+		final int sumMatchesTeam1Player2 = doubleMatchYearAggregationTeam1Player2.getSumMatches() + 1;
+		doubleMatchYearAggregationTeam1Player2.setSumMatches(sumMatchesTeam1Player2);
+
+		final DoubleMatchYearAggregation doubleMatchYearAggregationTeam2Player1 = MatchBean.getDoubleMatchYearAggregationForPlayer(dbTeam2.getPlayer1(), year);
+		final int sumMatchesTeam2Player1 = doubleMatchYearAggregationTeam2Player1.getSumMatches() + 1;
+		doubleMatchYearAggregationTeam2Player1.setSumMatches(sumMatchesTeam2Player1);
+
+		final DoubleMatchYearAggregation doubleMatchYearAggregationTeam2Player2 = MatchBean.getDoubleMatchYearAggregationForPlayer(dbTeam2.getPlayer2(), year);
+		final int sumMatchesTeam2Player2 = doubleMatchYearAggregationTeam2Player2.getSumMatches() + 1;
+		doubleMatchYearAggregationTeam2Player2.setSumMatches(sumMatchesTeam2Player2);
+
+		PMFactory.persistAllObjects(doubleMatchYearAggregationTeam1Player1, doubleMatchYearAggregationTeam1Player2, doubleMatchYearAggregationTeam2Player1,
+				doubleMatchYearAggregationTeam2Player2);
+	}
+
+	/**
+	 * Erstellt die Informationen für den Verlauf des Teamspiels.
+	 * 
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 * @param team1Winner <code>true</code> falls das erste Team gewonnen hat, andernfalls <code>false</code>.
+	 */
+	public static void createTeamMatchHistories(DoubleMatch dbMatch, boolean team1Winner) {
 		final Team dbTeam1 = PMFactory.getObjectById(Team.class, dbMatch.getTeam1().getKey().getId(), TeamPlan.TEAMSTATS, TeamPlan.BOTHPLAYERS);
 		final Team dbTeam2 = PMFactory.getObjectById(Team.class, dbMatch.getTeam1().getKey().getId(), TeamPlan.TEAMSTATS, TeamPlan.BOTHPLAYERS);
 
-		final TeamMatchHistory teamMatchHistoryTeam1 = createDoubleMatchHistory(dbMatch, team1Winner, dbTeam1, dbTeam2);
-		final TeamMatchHistory teamMatchHistoryTeam2 = createDoubleMatchHistory(dbMatch, !team1Winner, dbTeam2, dbTeam1);
+		final TeamMatchHistory teamMatchHistoryTeam1 = createTeamMatchHistory(dbMatch, team1Winner, dbTeam1, dbTeam2);
+		final TeamMatchHistory teamMatchHistoryTeam2 = createTeamMatchHistory(dbMatch, !team1Winner, dbTeam2, dbTeam1);
 
 		PMFactory.persistAllObjects(teamMatchHistoryTeam1, teamMatchHistoryTeam2);
 	}
 
-	private static TeamMatchHistory createDoubleMatchHistory(DoubleMatch dbMatch, boolean team1Winner, final Team dbTeam1, final Team dbTeam2) {
+	/**
+	 * Erstellt die Information für den Verlauf eines Teamspiels.
+	 * 
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 * @param team1Winner <code>true</code> falls das erste Team gewonnen hat, andernfalls <code>false</code>.
+	 * @param dbTeam1 Das erste Team des Doppelspiels.
+	 * @param dbTeam2 Das zweite Team des Doppelspiels.
+	 * @return Die erzeugte Information für den Verlauf eines Teamspiels.
+	 */
+	private static TeamMatchHistory createTeamMatchHistory(DoubleMatch dbMatch, boolean team1Winner, final Team dbTeam1, final Team dbTeam2) {
 		final TeamMatchHistory teamMatchHistory = new TeamMatchHistory();
 		final int matchHistoryId = PMFactory.getNextId(TeamMatchHistory.class.getName());
 		final Key matchHistoryKey = KeyFactory.createKey(TeamMatchHistory.class.getSimpleName(), matchHistoryId);
@@ -629,6 +713,27 @@ public class MatchServiceHelper {
 		teamMatchHistory.setTeam2(dbTeam2);
 
 		return teamMatchHistory;
+	}
+
+	/**
+	 * Erstellt die Informationen für die Anzahl der Einzelspiele eines Spielers.
+	 * 
+	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 */
+	public static void createTeamMatchYearAggregation(DoubleMatch dbMatch) {
+		final Team dbTeam1 = PMFactory.getObjectById(Team.class, dbMatch.getTeam1().getKey().getId(), TeamPlan.BOTHPLAYERS);
+		final Team dbTeam2 = PMFactory.getObjectById(Team.class, dbMatch.getTeam2().getKey().getId(), TeamPlan.BOTHPLAYERS);
+		final int year = getYearForMatch(dbMatch);
+
+		final TeamMatchYearAggregation teamMatchYearAggregationTeam1 = MatchBean.getTeamMatchYearAggregationForTeam(dbTeam1, year);
+		final int sumMatchesTeam1 = teamMatchYearAggregationTeam1.getSumMatches() + 1;
+		teamMatchYearAggregationTeam1.setSumMatches(sumMatchesTeam1);
+
+		final TeamMatchYearAggregation teamMatchYearAggregationPlayer2 = MatchBean.getTeamMatchYearAggregationForTeam(dbTeam2, year);
+		final int sumMatchesTeam2 = teamMatchYearAggregationPlayer2.getSumMatches() + 1;
+		teamMatchYearAggregationPlayer2.setSumMatches(sumMatchesTeam2);
+
+		PMFactory.persistAllObjects(teamMatchYearAggregationTeam1, teamMatchYearAggregationPlayer2);
 	}
 
 	/**

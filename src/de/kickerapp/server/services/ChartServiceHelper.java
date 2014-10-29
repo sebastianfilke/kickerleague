@@ -114,17 +114,17 @@ public class ChartServiceHelper {
 		return minPoints;
 	}
 
-	public static String getPercentageWins(Player dbPlayer) {
+	public static String getPercentageWins(Player dbPlayer, int wins, int defeats) {
 		final NumberFormat numberFormat = new DecimalFormat("0.0");
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
-		final Integer sumMatches = dbPlayer.getPlayerSingleStats().getWins() + dbPlayer.getPlayerSingleStats().getDefeats();
-		final double percentageWins = ((double) (dbPlayer.getPlayerSingleStats().getWins() * 100)) / sumMatches;
+		final Integer sumMatches = wins + defeats;
+		final double percentageWins = ((double) (wins * 100)) / sumMatches;
 
 		return numberFormat.format(percentageWins);
 	}
 
-	public static String getAveragePoints(List<? extends MatchHistory> dbMatchHistories, Player dbPlayer) {
+	public static String getAveragePoints(List<? extends MatchHistory> dbMatchHistories, Player dbPlayer, int wins, int defeats) {
 		final NumberFormat numberFormat = new DecimalFormat("0.0");
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
@@ -133,13 +133,13 @@ public class ChartServiceHelper {
 		for (MatchHistory dbHistory : dbMatchHistories) {
 			sumPoints = sumPoints + dbHistory.getTotalPoints();
 		}
-		final Integer sumMatches = dbPlayer.getPlayerSingleStats().getWins() + dbPlayer.getPlayerSingleStats().getDefeats();
+		final Integer sumMatches = wins + defeats;
 		final double averagePoints = ((double) sumPoints / sumMatches);
 
 		return numberFormat.format(averagePoints);
 	}
 
-	public static String getAverageTablePlace(List<? extends MatchHistory> dbMatchHistories, Player dbPlayer) {
+	public static String getAverageTablePlace(List<? extends MatchHistory> dbMatchHistories, Player dbPlayer, int wins, int defeats) {
 		final NumberFormat numberFormat = new DecimalFormat("0.0");
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
@@ -149,7 +149,7 @@ public class ChartServiceHelper {
 			sumTablePlace = sumTablePlace + dbHistory.getTablePlace();
 		}
 
-		final Integer sumMatches = dbPlayer.getPlayerSingleStats().getWins() + dbPlayer.getPlayerSingleStats().getDefeats();
+		final Integer sumMatches = wins + defeats;
 		final double averageTablePlace = ((double) sumTablePlace / sumMatches);
 
 		return numberFormat.format(averageTablePlace);
@@ -245,6 +245,28 @@ public class ChartServiceHelper {
 		chartPointDto.setPoints(dbHistory.getTotalPoints());
 
 		chartPointDtos.add(chartPointDto);
+	}
+
+	public static int getWinsForHistory(List<? extends MatchHistory> dbHistories) {
+		int sumWins = 0;
+
+		for (MatchHistory dbHistory : dbHistories) {
+			if (dbHistory.isWinner()) {
+				sumWins++;
+			}
+		}
+		return sumWins;
+	}
+
+	public static int getDefeatsForHistory(List<? extends MatchHistory> dbHistories) {
+		int sumDefeats = 0;
+
+		for (MatchHistory dbHistory : dbHistories) {
+			if (!dbHistory.isWinner()) {
+				sumDefeats++;
+			}
+		}
+		return sumDefeats;
 	}
 
 }

@@ -45,11 +45,19 @@ public interface PlayerService extends RemoteService {
 	public ArrayList<PlayerDto> getAllPlayers(MatchType matchType) throws IllegalArgumentException;
 
 	/**
-	 * Liefert alle Spieler mit mindestens einem Spiel.
+	 * Liefert Aggregation von Jahr und Spielern mit mindestens einem Spiel für Einzelspiele.
 	 * 
-	 * @return Alle Spieler mit mindestens einem Spiel.
+	 * @return Die Aggregation von Jahr und Spielern mit mindestens einem Spiel.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
 	public HashMap<Integer, ArrayList<PlayerDto>> getSingleMatchYearAggregation() throws IllegalArgumentException;
+
+	/**
+	 * Liefert Aggregation von Jahr und Spielern mit mindestens einem Spiel für Doppelspiele.
+	 * 
+	 * @return Die Aggregation von Jahr und Spielern mit mindestens einem Spiel.
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 */
+	public HashMap<Integer, ArrayList<PlayerDto>> getDoubleMatchYearAggregation() throws IllegalArgumentException;
 
 }
