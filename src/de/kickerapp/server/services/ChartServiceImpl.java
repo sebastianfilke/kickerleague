@@ -41,6 +41,8 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	@Override
 	public InfoDto getSinglePlayerInfo(PlayerDto playerDto, Integer year) throws IllegalArgumentException {
 		final List<SingleMatchHistory> dbSingleMatches = MatchBean.getSingleMatchesForPlayer(playerDto, year);
+		final int wins = ChartServiceHelper.getWinsForHistory(dbSingleMatches);
+		final int defeats = ChartServiceHelper.getDefeatsForHistory(dbSingleMatches);
 
 		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId(), PlayerPlan.PLAYERSINGLESTATS);
 
@@ -51,9 +53,9 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		infoDto.setMaxLostPoints(ChartServiceHelper.getMatchMaxLostPoints(dbSingleMatches));
 		infoDto.setMaxPoints(ChartServiceHelper.getMatchMaxPoints(dbSingleMatches));
 		infoDto.setMinPoints(ChartServiceHelper.getMatchMinPoints(dbSingleMatches));
-		infoDto.setPercentageWins(ChartServiceHelper.getPercentageWins(dbPlayer));
-		infoDto.setAveragePoints(ChartServiceHelper.getAveragePoints(dbSingleMatches, dbPlayer));
-		infoDto.setAverageTablePlace(ChartServiceHelper.getAverageTablePlace(dbSingleMatches, dbPlayer));
+		infoDto.setPercentageWins(ChartServiceHelper.getPercentageWins(dbPlayer, wins, defeats));
+		infoDto.setAveragePoints(ChartServiceHelper.getAveragePoints(dbSingleMatches, dbPlayer, wins, defeats));
+		infoDto.setAverageTablePlace(ChartServiceHelper.getAverageTablePlace(dbSingleMatches, dbPlayer, wins, defeats));
 
 		return infoDto;
 	}
@@ -96,6 +98,8 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	@Override
 	public InfoDto getDoublePlayerInfo(PlayerDto playerDto, Integer year) throws IllegalArgumentException {
 		final List<DoubleMatchHistory> dbDoubleMatches = MatchBean.getDoubleMatchesForPlayer(playerDto, year);
+		final int wins = ChartServiceHelper.getWinsForHistory(dbDoubleMatches);
+		final int defeats = ChartServiceHelper.getDefeatsForHistory(dbDoubleMatches);
 
 		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId(), PlayerPlan.PLAYERDOUBLESTATS);
 
@@ -106,9 +110,9 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		infoDto.setMaxLostPoints(ChartServiceHelper.getMatchMaxLostPoints(dbDoubleMatches));
 		infoDto.setMaxPoints(ChartServiceHelper.getMatchMaxPoints(dbDoubleMatches));
 		infoDto.setMinPoints(ChartServiceHelper.getMatchMinPoints(dbDoubleMatches));
-		infoDto.setPercentageWins(ChartServiceHelper.getPercentageWins(dbPlayer));
-		infoDto.setAveragePoints(ChartServiceHelper.getAveragePoints(dbDoubleMatches, dbPlayer));
-		infoDto.setAverageTablePlace(ChartServiceHelper.getAverageTablePlace(dbDoubleMatches, dbPlayer));
+		infoDto.setPercentageWins(ChartServiceHelper.getPercentageWins(dbPlayer, wins, defeats));
+		infoDto.setAveragePoints(ChartServiceHelper.getAveragePoints(dbDoubleMatches, dbPlayer, wins, defeats));
+		infoDto.setAverageTablePlace(ChartServiceHelper.getAverageTablePlace(dbDoubleMatches, dbPlayer, wins, defeats));
 
 		return infoDto;
 	}

@@ -10,6 +10,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.PlayerService;
+import de.kickerapp.server.dao.DoubleMatchYearAggregation;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.PlayerDoubleStats;
 import de.kickerapp.server.dao.PlayerSingleStats;
@@ -140,6 +141,36 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 
 		final HashMap<Integer, ArrayList<PlayerDto>> yearAggregations = new HashMap<Integer, ArrayList<PlayerDto>>();
 		for (SingleMatchYearAggregation dbYearAggregation : dbYearAggregations) {
+			final ArrayList<PlayerDto> playerDtos = yearAggregations.get(dbYearAggregation.getYear());
+			if (playerDtos == null) {
+				final ArrayList<PlayerDto> newPlayerDtos = new ArrayList<PlayerDto>();
+				newPlayerDtos.add(PlayerServiceHelper.createPlayerDto(dbYearAggregation.getPlayer()));
+				yearAggregations.put(dbYearAggregation.getYear(), newPlayerDtos);
+			} else {
+				boolean contains = false;
+				for (PlayerDto playerDto : playerDtos) {
+					if (playerDto.getId() == dbYearAggregation.getPlayer().getKey().getId()) {
+						contains = true;
+						break;
+					}
+				}
+				if (!contains) {
+					playerDtos.add(PlayerServiceHelper.createPlayerDto(dbYearAggregation.getPlayer()));
+				}
+			}
+		}
+		return yearAggregations;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HashMap<Integer, ArrayList<PlayerDto>> getDoubleMatchYearAggregation() throws IllegalArgumentException {
+		final List<DoubleMatchYearAggregation> dbYearAggregations = PMFactory.getList(DoubleMatchYearAggregation.class, MatchAggregationPlan.PLAYER);
+
+		final HashMap<Integer, ArrayList<PlayerDto>> yearAggregations = new HashMap<Integer, ArrayList<PlayerDto>>();
+		for (DoubleMatchYearAggregation dbYearAggregation : dbYearAggregations) {
 			final ArrayList<PlayerDto> playerDtos = yearAggregations.get(dbYearAggregation.getYear());
 			if (playerDtos == null) {
 				final ArrayList<PlayerDto> newPlayerDtos = new ArrayList<PlayerDto>();

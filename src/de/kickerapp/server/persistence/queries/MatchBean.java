@@ -10,10 +10,13 @@ import com.google.appengine.api.datastore.KeyFactory;
 
 import de.kickerapp.server.dao.DoubleMatch;
 import de.kickerapp.server.dao.DoubleMatchHistory;
+import de.kickerapp.server.dao.DoubleMatchYearAggregation;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.SingleMatch;
 import de.kickerapp.server.dao.SingleMatchHistory;
 import de.kickerapp.server.dao.SingleMatchYearAggregation;
+import de.kickerapp.server.dao.Team;
+import de.kickerapp.server.dao.TeamMatchYearAggregation;
 import de.kickerapp.server.dao.fetchplans.MatchHistoryPlan;
 import de.kickerapp.server.dao.fetchplans.MatchPlan;
 import de.kickerapp.server.dao.fetchplans.TeamPlan;
@@ -22,7 +25,7 @@ import de.kickerapp.server.services.MatchServiceHelper.MatchHistoryAscendingComp
 import de.kickerapp.shared.dto.PlayerDto;
 
 /**
- * Klasse für den Zugriff auf Instanzen von Spielen.
+ * Klasse für den Zugriff auf Instanzen und Informationen von Spielen.
  * 
  * @author Sebastian Filke
  */
@@ -42,6 +45,12 @@ public final class MatchBean {
 		return matchNumber;
 	}
 
+	/**
+	 * Liefert die Einzelspiele ab dem übergebenem Datum.
+	 * 
+	 * @param date Das Datum ab dem die Einzelspiele geliefert werden sollen.
+	 * @return Die Liste der Einzelspiele.
+	 */
 	public static List<SingleMatch> getSingleMatchesFrom(Date date) {
 		final QueryContainer conMatch = new QueryContainer();
 		conMatch.setPlans(MatchPlan.COMMENT, MatchPlan.BOTHPLAYERS);
@@ -53,6 +62,12 @@ public final class MatchBean {
 		return dbSingleMatches;
 	}
 
+	/**
+	 * Liefert die Doppelspiele ab dem übergebenem Datum.
+	 * 
+	 * @param date Das Datum ab dem die Doppelspiele geliefert werden sollen.
+	 * @return Die Liste der Doppelspiele.
+	 */
 	public static List<DoubleMatch> getDoubleMatchesFrom(Date date) {
 		final QueryContainer conMatch = new QueryContainer();
 		conMatch.setPlans(MatchPlan.COMMENT, MatchPlan.BOTHTEAMS, TeamPlan.BOTHPLAYERS);
@@ -65,9 +80,10 @@ public final class MatchBean {
 	}
 
 	/**
-	 * Liefert sämtliche Einzelspiele für den übergebenen Spieler.
+	 * Liefert sämtliche Einzelspiele für den übergebenen Spieler und Jahr.
 	 * 
 	 * @param playerDto Der Spieler.
+	 * @param year Das Jahr.
 	 * @return Die Einzelspiele.
 	 */
 	public static List<SingleMatchHistory> getSingleMatchesForPlayer(final PlayerDto playerDto, final Integer year) {
@@ -84,9 +100,10 @@ public final class MatchBean {
 	}
 
 	/**
-	 * Liefert sämtliche Doppelspiele für den übergebenen Spieler.
+	 * Liefert sämtliche Doppelspiele für den übergebenen Spieler und Jahr.
 	 * 
 	 * @param playerDto Der Spieler.
+	 * @param year Das Jahr.
 	 * @return Die Doppelspiele.
 	 */
 	public static List<DoubleMatchHistory> getDoubleMatchesForPlayer(final PlayerDto playerDto, final Integer year) {
@@ -102,6 +119,13 @@ public final class MatchBean {
 		return doubleMatchesPlayer;
 	}
 
+	/**
+	 * Liefert die Informationen für die Anzahl der Einzelspiele eines Spielers.
+	 * 
+	 * @param player Der Spieler.
+	 * @param year Das Jahr.
+	 * @return Die Informationen für die Anzahl der Einzelspiele eines Spielers.
+	 */
 	public static SingleMatchYearAggregation getSingleMatchYearAggregationForPlayer(final Player player, final int year) {
 		final QueryContainer conMatch = new QueryContainer();
 		conMatch.setQuery("player == :id && year == :year");
@@ -119,6 +143,60 @@ public final class MatchBean {
 		return dbSingleMatchYearAggregation;
 	}
 
+	/**
+	 * Liefert die Informationen für die Anzahl der Doppelspiele eines Spielers.
+	 * 
+	 * @param player Der Spieler.
+	 * @param year Das Jahr.
+	 * @return Die Informationen für die Anzahl der Doppelspiele eines Spielers.
+	 */
+	public static DoubleMatchYearAggregation getDoubleMatchYearAggregationForPlayer(final Player player, final int year) {
+		final QueryContainer conMatch = new QueryContainer();
+		conMatch.setQuery("player == :id && year == :year");
+		conMatch.setParameter(new Object[] { player.getKey().getId(), year });
+
+		DoubleMatchYearAggregation dbDoubleMatchYearAggregation = PMFactory.getObject(DoubleMatchYearAggregation.class, conMatch);
+		if (dbDoubleMatchYearAggregation == null) {
+			dbDoubleMatchYearAggregation = new DoubleMatchYearAggregation();
+			final int matchYearAggregationId = PMFactory.getNextId(DoubleMatchYearAggregation.class.getName());
+			final Key matchYearAggregationKey = KeyFactory.createKey(DoubleMatchYearAggregation.class.getSimpleName(), matchYearAggregationId);
+			dbDoubleMatchYearAggregation.setKey(matchYearAggregationKey);
+			dbDoubleMatchYearAggregation.setPlayer(player);
+			dbDoubleMatchYearAggregation.setYear(year);
+		}
+		return dbDoubleMatchYearAggregation;
+	}
+
+	/**
+	 * Liefert die Informationen für die Anzahl der Teamspiele eines Teams.
+	 * 
+	 * @param team Das Team.
+	 * @param year Das Jahr.
+	 * @return Die Informationen für die Anzahl der Teamspiele eines Teams.
+	 */
+	public static TeamMatchYearAggregation getTeamMatchYearAggregationForTeam(final Team team, final int year) {
+		final QueryContainer conMatch = new QueryContainer();
+		conMatch.setQuery("team == :id && year == :year");
+		conMatch.setParameter(new Object[] { team.getKey().getId(), year });
+
+		TeamMatchYearAggregation dbTeamMatchYearAggregation = PMFactory.getObject(TeamMatchYearAggregation.class, conMatch);
+		if (dbTeamMatchYearAggregation == null) {
+			dbTeamMatchYearAggregation = new TeamMatchYearAggregation();
+			final int matchYearAggregationId = PMFactory.getNextId(TeamMatchYearAggregation.class.getName());
+			final Key matchYearAggregationKey = KeyFactory.createKey(TeamMatchYearAggregation.class.getSimpleName(), matchYearAggregationId);
+			dbTeamMatchYearAggregation.setKey(matchYearAggregationKey);
+			dbTeamMatchYearAggregation.setTeam(team);
+			dbTeamMatchYearAggregation.setYear(year);
+		}
+		return dbTeamMatchYearAggregation;
+	}
+
+	/**
+	 * Löscht die Zeit aus dem Datum.
+	 * 
+	 * @param date Das Datum.
+	 * @return Das Datum mit 0 Stunden, 0 Minuten und 0 Sekunden.
+	 */
 	private static Date clearTimeForDate(Date date) {
 		final Calendar clearedDate = Calendar.getInstance();
 		clearedDate.setTime(date);
@@ -129,6 +207,12 @@ public final class MatchBean {
 		return clearedDate.getTime();
 	}
 
+	/**
+	 * Liefert den ersten Tag des Jahres für das übergebene Jahr.
+	 * 
+	 * @param year Das Jahr.
+	 * @return Der erste Tag des Jahres für das übergebene Jahr.
+	 */
 	private static Date getFirstDate(Integer year) {
 		final Calendar firstDate = Calendar.getInstance();
 		firstDate.set(Calendar.YEAR, year);
@@ -141,6 +225,12 @@ public final class MatchBean {
 		return firstDate.getTime();
 	}
 
+	/**
+	 * Liefert den letzten Tag des Jahres für das übergebene Jahr.
+	 * 
+	 * @param year Das Jahr.
+	 * @return Der letzte Tag des Jahres für das übergebene Jahr.
+	 */
 	private static Date getLastDate(Integer year) {
 		final Calendar lastDate = Calendar.getInstance();
 		lastDate.set(Calendar.YEAR, year);

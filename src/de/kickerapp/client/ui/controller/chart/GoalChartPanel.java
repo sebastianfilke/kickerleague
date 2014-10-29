@@ -165,6 +165,7 @@ public class GoalChartPanel extends BaseContainer {
 		});
 		toolTipConfig.setTrackMouse(true);
 		toolTipConfig.setHideDelay(200);
+		toolTipConfig.setMinWidth(180);
 
 		return toolTipConfig;
 	}

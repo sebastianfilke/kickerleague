@@ -43,11 +43,19 @@ public interface PlayerServiceAsync {
 	public void getAllPlayers(MatchType matchType, AsyncCallback<ArrayList<PlayerDto>> callback) throws IllegalArgumentException;
 
 	/**
-	 * Liefert alle Spieler mit mindestens einem Spiel.
+	 * Liefert Aggregation von Jahr und Spielern mit mindestens einem Spiel für Einzelspiele.
 	 * 
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
 	public void getSingleMatchYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>> callback) throws IllegalArgumentException;
+
+	/**
+	 * Liefert Aggregation von Jahr und Spielern mit mindestens einem Spiel für Doppelspiele.
+	 * 
+	 * @param callback Der Callback-Handler.
+	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 */
+	public void getDoubleMatchYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>> callback) throws IllegalArgumentException;
 
 }

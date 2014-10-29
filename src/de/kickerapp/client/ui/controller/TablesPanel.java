@@ -309,7 +309,8 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final PlayerDto player = storeSingleTable.findModelWithKey(context.getKey().toString());
-				sb.appendHtmlConstant("<div qtitle='Vorher' qtip='Platz " + player.getPlayerSingleStatsDto().getPrevTablePlace() + "'>");
+				sb.appendHtmlConstant("<div qtitle='Vorheriger Tabellenplatz' qtip='Platz " + player.getPlayerSingleStatsDto().getPrevTablePlace()
+						+ "' qwidth='160px'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
 				sb.appendHtmlConstant("</div>");
 			}
@@ -482,7 +483,8 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final PlayerDto player = storeDoubleTable.findModelWithKey(context.getKey().toString());
-				sb.appendHtmlConstant("<div qtitle='Vorher' qtip='Platz " + player.getPlayerDoubleStatsDto().getPrevTablePlace() + "'>");
+				sb.appendHtmlConstant("<div qtitle='Vorheriger Tabellenplatz' qtip='Platz " + player.getPlayerDoubleStatsDto().getPrevTablePlace()
+						+ "' qwidth='160px'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
 				sb.appendHtmlConstant("</div>");
 			}
@@ -664,7 +666,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 			@Override
 			public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
 				final TeamDto team = storeTeamTable.findModelWithKey(context.getKey().toString());
-				sb.appendHtmlConstant("<div qtitle='Vorher' qtip='Platz " + team.getTeamStatsDto().getPrevTablePlace() + "'>");
+				sb.appendHtmlConstant("<div qtitle='Vorheriger Tabellenplatz' qtip='Platz " + team.getTeamStatsDto().getPrevTablePlace() + "' qwidth='160px'>");
 				sb.append(AbstractImagePrototype.create(value).getSafeHtml());
 				sb.appendHtmlConstant("</div>");
 			}
