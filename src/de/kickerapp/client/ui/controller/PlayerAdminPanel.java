@@ -339,7 +339,7 @@ public class PlayerAdminPanel extends BaseContainer {
 				public void onFailure(Throwable caught) {
 					doUpdatePlayerList = false;
 					unmask();
-					AppExceptionHandler.getInstance().handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught, false);
 				}
 			});
 		}
@@ -363,7 +363,7 @@ public class PlayerAdminPanel extends BaseContainer {
 				@Override
 				public void onFailure(Throwable caught) {
 					unmask();
-					AppExceptionHandler.getInstance().handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught, false);
 				}
 			});
 		} else {
@@ -406,7 +406,7 @@ public class PlayerAdminPanel extends BaseContainer {
 				@Override
 				public void onFailure(Throwable caught) {
 					unmask();
-					AppExceptionHandler.getInstance().handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught, false);
 				}
 			});
 		} else {

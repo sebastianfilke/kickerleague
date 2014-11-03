@@ -470,7 +470,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 				public void onFailure(Throwable caught) {
 					doUpdateMatches = false;
 					unmask();
-					AppExceptionHandler.getInstance().handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught, false);
 				}
 			});
 		}

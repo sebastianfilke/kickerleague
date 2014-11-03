@@ -136,7 +136,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		for (DoubleMatchHistory dbHistory : dbDoubleMatches) {
 			ChartServiceHelper.updateGameForMatch(dbHistory, chartGameDtos);
 			ChartServiceHelper.updateGoalForMatch(dbHistory, chartGoalDtos);
-			// ChartServiceHelper.updateOpponentForMatch(dbHistory, chartOpponentDtos);
+			ChartServiceHelper.updateOpponentForMatch(dbHistory, chartOpponentDtos);
 			ChartServiceHelper.updatePointForMatch(dbHistory, chartPointDtos);
 		}
 

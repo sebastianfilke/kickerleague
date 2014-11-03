@@ -715,14 +715,14 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 
 				AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 0));
 				AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL));
-				clearInput();
+				// clearInput();
 				unmask();
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				unmask();
-				AppExceptionHandler.getInstance().handleException(caught);
+				AppExceptionHandler.getInstance().handleException(caught, false);
 			}
 		});
 	}
@@ -735,14 +735,14 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 
 				AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 1));
 				AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL));
-				clearInput();
+				// clearInput();
 				unmask();
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
 				unmask();
-				AppExceptionHandler.getInstance().handleException(caught);
+				AppExceptionHandler.getInstance().handleException(caught, false);
 			}
 		});
 	}

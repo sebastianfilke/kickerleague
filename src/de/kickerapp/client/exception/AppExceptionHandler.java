@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.logging.client.SimpleRemoteLogHandler;
 
@@ -51,21 +52,24 @@ public final class AppExceptionHandler implements UncaughtExceptionHandler {
 	 */
 	@Override
 	public void onUncaughtException(Throwable caught) {
-		handleException(caught);
+		handleException(caught, true);
 	}
 
 	/**
 	 * Die eigentliche Fehlerbehandlung.
 	 * 
 	 * @param caught Der Fehler der aufgetreten ist.
+	 * @param remoteLog <code>true</code> falls der Fehler serverseitig geloggt werden soll, andernfalls <code>false</code>.
 	 */
-	public void handleException(final Throwable caught) {
-		// LOGGER.log(Level.SEVERE, caught.getMessage(), caught);
-
-		final SimpleRemoteLogHandler remoteLog = new SimpleRemoteLogHandler();
-		final LogRecord logRecord = new LogRecord(Level.SEVERE, caught.getMessage());
-		logRecord.setThrown(caught);
-		remoteLog.publish(logRecord);
+	public void handleException(final Throwable caught, final boolean remoteLog) {
+		if (remoteLog && GWT.isProdMode()) {
+			final SimpleRemoteLogHandler remoteLogHandler = new SimpleRemoteLogHandler();
+			final LogRecord logRecord = new LogRecord(Level.SEVERE, caught.getMessage());
+			logRecord.setThrown(caught);
+			remoteLogHandler.publish(logRecord);
+		} else {
+			LOGGER.log(Level.SEVERE, caught.getMessage(), caught);
+		}
 
 		String errorMessage = "";
 		if (caught.getMessage() != null) {

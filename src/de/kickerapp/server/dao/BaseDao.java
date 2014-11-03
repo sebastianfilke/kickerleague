@@ -1,7 +1,5 @@
 package de.kickerapp.server.dao;
 
-import java.io.Serializable;
-
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
@@ -11,6 +9,8 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 
+import de.kickerapp.shared.common.BaseSerializable;
+
 /**
  * Die Basisdatenklasse zum Halten der Informationen für Entitäten.
  * 
@@ -18,7 +18,7 @@ import com.google.appengine.api.datastore.Key;
  */
 @PersistenceCapable(detachable = "true")
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public class BaseDao implements Serializable {
+public class BaseDao implements BaseSerializable {
 
 	/** Konstante für die SerialVersionUID. */
 	private static final long serialVersionUID = 434533353638253743L;

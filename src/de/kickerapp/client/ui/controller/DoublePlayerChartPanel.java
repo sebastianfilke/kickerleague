@@ -62,9 +62,9 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 	private GoalChartPanel goalChartPanel;
 
-	private OpponentChartPanel opponentChartPanel;
-
 	private PointChartPanel pointChartPanel;
+
+	private OpponentChartPanel opponentChartPanel;
 
 	private ChartContainer chartContainer;
 
@@ -99,8 +99,8 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 		clcDoubleChart.add(gameChartPanel);
 		clcDoubleChart.add(goalChartPanel);
-		clcDoubleChart.add(opponentChartPanel);
 		clcDoubleChart.add(pointChartPanel);
+		clcDoubleChart.add(opponentChartPanel);
 
 		doUpdatePlayerList = true;
 		doUpdatePlayerInfo = true;
@@ -244,16 +244,16 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 		});
 		tgChart.add(btnGameChart);
 		tgChart.add(btnGoalChart);
-		tgChart.add(btnOpponentChart);
 		tgChart.add(btnPointChart);
+		tgChart.add(btnOpponentChart);
 		tgChart.setValue(btnGameChart);
 
 		toolBar.add(createBtnUpdateChart());
 		toolBar.add(new SeparatorToolItem());
 		toolBar.add(btnGameChart);
 		toolBar.add(btnGoalChart);
-		toolBar.add(btnOpponentChart);
 		toolBar.add(btnPointChart);
+		toolBar.add(btnOpponentChart);
 
 		return toolBar;
 	}
@@ -280,17 +280,6 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 		return tbtnGoalChart;
 	}
 
-	private ToggleButton createTbtnOpponentChart() {
-		tbtnOpponentChart = new ToggleButton("Gegnerstatistik");
-		tbtnOpponentChart.setToolTip("Zeigt die Gegnerstatistik für den aktuell gewählten Spieler");
-		tbtnOpponentChart.setIcon(IconProvider.get().chart_pie());
-		tbtnOpponentChart.setId("doubleOpponentChart");
-		tbtnOpponentChart.setAllowDepress(false);
-		tbtnOpponentChart.setEnabled(false);
-
-		return tbtnOpponentChart;
-	}
-
 	private ToggleButton createTbtnPointChart() {
 		tbtnPointChart = new ToggleButton("Punktestatistik");
 		tbtnPointChart.setToolTip("Zeigt die Punktestatistik für den aktuell gewählten Spieler");
@@ -302,6 +291,17 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 		return tbtnPointChart;
 	}
 
+	private ToggleButton createTbtnOpponentChart() {
+		tbtnOpponentChart = new ToggleButton("Gegnerstatistik");
+		tbtnOpponentChart.setToolTip("Zeigt die Gegnerstatistik für den aktuell gewählten Spieler");
+		tbtnOpponentChart.setIcon(IconProvider.get().chart_pie());
+		tbtnOpponentChart.setId("doubleOpponentChart");
+		tbtnOpponentChart.setAllowDepress(false);
+		tbtnOpponentChart.setEnabled(false);
+
+		return tbtnOpponentChart;
+	}
+
 	public void buttonPressed(HasValue<Boolean> value, PlayerDto selectedPlayer) {
 		if (value == tbtnGameChart) {
 			clcDoubleChart.setActiveWidget(gameChartPanel);
@@ -309,12 +309,12 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 		} else if (value == tbtnGoalChart) {
 			clcDoubleChart.setActiveWidget(goalChartPanel);
 			goalChartPanel.loadGoalChart(chartContainer.getChartGoalDtos());
-		} else if (value == tbtnOpponentChart) {
-			clcDoubleChart.setActiveWidget(opponentChartPanel);
-			opponentChartPanel.loadOpponentChart(chartContainer.getChartOpponentDtos());
 		} else if (value == tbtnPointChart) {
 			clcDoubleChart.setActiveWidget(pointChartPanel);
 			pointChartPanel.loadPointChart(chartContainer.getChartPointDtos());
+		} else if (value == tbtnOpponentChart) {
+			clcDoubleChart.setActiveWidget(opponentChartPanel);
+			opponentChartPanel.loadOpponentChart(chartContainer.getChartOpponentDtos());
 		}
 	}
 
@@ -375,7 +375,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 				public void onFailure(Throwable caught) {
 					doUpdatePlayerList = false;
 					unmask();
-					AppExceptionHandler.getInstance().handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught, false);
 				}
 			});
 		}
@@ -407,7 +407,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 				public void onFailure(Throwable caught) {
 					unmask();
 					doUpdatePlayerInfo = false;
-					AppExceptionHandler.getInstance().handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught, false);
 				}
 			});
 		}
@@ -424,8 +424,6 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 						gameChartPanel.loadGameChart(result.getChartGameDtos());
 					} else if (tgChart.getValue() == tbtnGoalChart) {
 						goalChartPanel.loadGoalChart(result.getChartGoalDtos());
-					} else if (tgChart.getValue() == tbtnOpponentChart) {
-						opponentChartPanel.loadOpponentChart(result.getChartOpponentDtos());
 					} else if (tgChart.getValue() == tbtnPointChart) {
 						if (result.getChartPointDtos().size() > 1) {
 							pointChartPanel.loadPointChart(result.getChartPointDtos());
@@ -434,6 +432,8 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 							clcDoubleChart.setActiveWidget(opponentChartPanel);
 							opponentChartPanel.loadOpponentChart(result.getChartOpponentDtos());
 						}
+					} else if (tgChart.getValue() == tbtnOpponentChart) {
+						opponentChartPanel.loadOpponentChart(result.getChartOpponentDtos());
 					}
 					setEnabledButtons();
 					doUpdateDoublePlayerChart = false;
@@ -444,7 +444,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 				public void onFailure(Throwable caught) {
 					unmask();
 					doUpdateDoublePlayerChart = false;
-					AppExceptionHandler.getInstance().handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught, false);
 				}
 			});
 		}
@@ -460,12 +460,12 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 		btnUpdate.setEnabled(true);
 		tbtnGoalChart.setEnabled(true);
 		tbtnGameChart.setEnabled(true);
-		tbtnOpponentChart.setEnabled(true);
 		if (chartContainer.getChartPointDtos().size() > 1) {
 			tbtnPointChart.setEnabled(true);
 		} else {
 			tbtnPointChart.setEnabled(false);
 		}
+		tbtnOpponentChart.setEnabled(true);
 	}
 
 	/**

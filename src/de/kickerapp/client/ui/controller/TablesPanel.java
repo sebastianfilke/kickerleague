@@ -870,7 +870,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 				public void onFailure(Throwable caught) {
 					doUpdateSingleTable = false;
 					unmask();
-					AppExceptionHandler.getInstance().handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught, false);
 				}
 			});
 		}
@@ -894,7 +894,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 				public void onFailure(Throwable caught) {
 					doUpdateDoubleTable = false;
 					unmask();
-					AppExceptionHandler.getInstance().handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught, false);
 				}
 			});
 		}
@@ -918,7 +918,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 				public void onFailure(Throwable caught) {
 					doUpdateTeamTable = false;
 					unmask();
-					AppExceptionHandler.getInstance().handleException(caught);
+					AppExceptionHandler.getInstance().handleException(caught, false);
 				}
 			});
 		}

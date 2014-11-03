@@ -72,8 +72,7 @@ public class PointChartPanel extends BaseContainer {
 		numAxis.setDisplayGrid(true);
 
 		final PathSprite gridConfig = new PathSprite();
-		gridConfig.setStroke(new RGB("#dfdfdf"));
-		gridConfig.setFill(new RGB("#e3e3e3"));
+		gridConfig.setFill(new RGB("#f1f1f1"));
 		gridConfig.setZIndex(1);
 		gridConfig.setStrokeWidth(1);
 		numAxis.setGridOddConfig(gridConfig);
