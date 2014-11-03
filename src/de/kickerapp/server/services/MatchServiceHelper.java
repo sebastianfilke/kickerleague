@@ -46,7 +46,7 @@ import de.kickerapp.shared.dto.TeamDto;
 public class MatchServiceHelper {
 
 	/** Der Multiplikator. */
-	private static final int FACTOR = 10;
+	private static final int FACTOR = 20;
 
 	/**
 	 * Comparator zur Sortierung der Team- bzw. Spielerstatistiken.
@@ -389,9 +389,9 @@ public class MatchServiceHelper {
 	/**
 	 * Liefert die gewonnene oder verlorene Punktzahl eines Doppelspielers.
 	 * 
-	 * @param winner <code>true</code> falls der Spieler gewonnen hat, andernfalls <code>false</code>.
 	 * @param dbPlayer Der Spieler.
 	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 * @param winner <code>true</code> falls der Spieler gewonnen hat, andernfalls <code>false</code>.
 	 * @return Die gewonnene oder verlorene Punktzahl eines Doppelspielers.
 	 */
 	protected static int getPointsForDoublePlayer(Player dbPlayer, DoubleMatch dbMatch, boolean winner) {
@@ -424,12 +424,12 @@ public class MatchServiceHelper {
 	/**
 	 * Liefert die gewonnene oder verlorene Punktzahl eines Teams.
 	 * 
-	 * @param winner <code>true</code> falls das Team gewonnen hat, andernfalls <code>false</code>.
 	 * @param dbTeam Das Team.
 	 * @param dbMatch Das Objekt-Datenklassen Spiel.
+	 * @param winner <code>true</code> falls das Team gewonnen hat, andernfalls <code>false</code>.
 	 * @return Die gewonnene oder verlorene Punktzahl eines Teams.
 	 */
-	protected static int getPointsForTeam(boolean winner, Team dbTeam, DoubleMatch dbMatch) {
+	protected static int getPointsForTeam(Team dbTeam, DoubleMatch dbMatch, boolean winner) {
 		int points = 0;
 		int tempPoints = 0;
 
@@ -459,7 +459,7 @@ public class MatchServiceHelper {
 	 * @return Die gewonnene oder verlorene Punktzahl eines Teams bzw Spielers.
 	 */
 	private static int getPoints(Match dbMatch, Stats db1Stats, Stats db2Stats, boolean winner) {
-		final double weightedPoints = calculateWeightedPoints(db1Stats, db2Stats);
+		final double weightedPoints = calculateWeightedPoints(db1Stats, db2Stats, winner);
 		final int matchSets = dbMatch.getMatchSets().getMatchSetsTeam1().size();
 
 		int multiplicatorPoints = (int) weightedPoints;
@@ -479,25 +479,42 @@ public class MatchServiceHelper {
 	 * 
 	 * @param db1Stats Die Teamspiel-, Doppelspiel- oder Einzelspiel-Statistik des ersten Teams bzw. Spielers.
 	 * @param db2Stats Die Teamspiel-, Doppelspiel- oder Einzelspiel-Statistik des zweiten Teams bzw. Spielers.
+	 * @param winner <code>true</code> falls das Team bzw. Spieler gewonnen hat, andernfalls <code>false</code>.
 	 * @return Die gewichtete Punktzahl zwischen den Teams bzw. Spielern.
 	 */
-	private static double calculateWeightedPoints(Stats db1Stats, Stats db2Stats) {
-		final double playedGames1 = db1Stats.getWins() + db1Stats.getDefeats();
-		final double playedGames2 = db2Stats.getWins() + db2Stats.getDefeats();
+	private static double calculateWeightedPoints(Stats db1Stats, Stats db2Stats, boolean winner) {
+		final double winsPlayers1 = db1Stats.getWins();
+		final double defeatsPlayers1 = db1Stats.getDefeats();
 
-		double averageWins1 = 1;
-		if (playedGames1 != 0) {
-			averageWins1 = (double) db1Stats.getWins() / playedGames1;
+		final double winsPlayers2 = db2Stats.getWins();
+		final double defeatsPlayers2 = db2Stats.getDefeats();
+
+		double oddsPlayer1;
+		oddsPlayer1 = (winsPlayers1 * defeatsPlayers2) / (winsPlayers2 * defeatsPlayers1);
+		if (oddsPlayer1 == 0 || Double.isNaN(oddsPlayer1) || Double.isInfinite(oddsPlayer1)) {
+			oddsPlayer1 = 1;
 		}
-		double averageWins2 = 1;
-		if (playedGames2 != 0) {
-			averageWins2 = (double) db2Stats.getWins() / playedGames2;
+
+		double oddsPlayer2 = (winsPlayers2 * defeatsPlayers1) / (winsPlayers1 * defeatsPlayers2);
+		if (oddsPlayer2 == 0 || Double.isNaN(oddsPlayer2) || Double.isInfinite(oddsPlayer2)) {
+			oddsPlayer2 = 1;
 		}
-		double weightedFactor = 1;
-		if (averageWins1 != 0 && averageWins2 != 0) {
-			weightedFactor = averageWins2 / ((averageWins1 + averageWins2) / 2);
+
+		double oddsFactor;
+		if (winner) {
+			if (oddsPlayer1 - oddsPlayer2 <= 0) {
+				oddsFactor = oddsPlayer2 / (oddsPlayer2 + oddsPlayer1);
+			} else {
+				oddsFactor = oddsPlayer1 / (oddsPlayer2 + oddsPlayer1);
+			}
+		} else {
+			if (oddsPlayer1 - oddsPlayer2 <= 0) {
+				oddsFactor = oddsPlayer2 / (oddsPlayer2 + oddsPlayer1);
+			} else {
+				oddsFactor = oddsPlayer1 / (oddsPlayer2 + oddsPlayer1);
+			}
 		}
-		return weightedFactor * FACTOR;
+		return oddsFactor * FACTOR;
 	}
 
 	/**
@@ -506,7 +523,7 @@ public class MatchServiceHelper {
 	 * @param dbMatch Das Objekt-Datenklassen Spiel.
 	 * @param team1Winner <code>true</code> falls der erste Spieler gewonnen hat, andernfalls <code>false</code>.
 	 */
-	public static void createSingleMatchHistories(SingleMatch dbMatch, boolean team1Winner) {
+	protected static void createSingleMatchHistories(SingleMatch dbMatch, boolean team1Winner) {
 		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, dbMatch.getPlayer1().getKey().getId(), PlayerPlan.PLAYERSINGLESTATS);
 		final Player dbPlayer2 = PMFactory.getObjectById(Player.class, dbMatch.getPlayer2().getKey().getId(), PlayerPlan.PLAYERSINGLESTATS);
 
@@ -556,7 +573,7 @@ public class MatchServiceHelper {
 	 * 
 	 * @param dbMatch Das Objekt-Datenklassen Spiel.
 	 */
-	public static void createSingleMatchYearAggregation(SingleMatch dbMatch) {
+	protected static void createSingleMatchYearAggregation(SingleMatch dbMatch) {
 		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, dbMatch.getPlayer1().getKey().getId(), PlayerPlan.PLAYERSINGLESTATS);
 		final Player dbPlayer2 = PMFactory.getObjectById(Player.class, dbMatch.getPlayer2().getKey().getId(), PlayerPlan.PLAYERSINGLESTATS);
 		final int year = getYearForMatch(dbMatch);
@@ -578,7 +595,7 @@ public class MatchServiceHelper {
 	 * @param dbMatch Das Objekt-Datenklassen Spiel.
 	 * @param team1Winner <code>true</code> falls das erste Team gewonnen hat, andernfalls <code>false</code>.
 	 */
-	public static void createDoubleMatchHistories(DoubleMatch dbMatch, boolean team1Winner) {
+	protected static void createDoubleMatchHistories(DoubleMatch dbMatch, boolean team1Winner) {
 		final Player dbPlayer1 = PMFactory.getObjectById(Player.class, dbMatch.getTeam1().getPlayer1().getKey().getId(), PlayerPlan.PLAYERDOUBLESTATS);
 		final Player dbPlayer2 = PMFactory.getObjectById(Player.class, dbMatch.getTeam1().getPlayer2().getKey().getId(), PlayerPlan.PLAYERDOUBLESTATS);
 		final Player dbPlayer3 = PMFactory.getObjectById(Player.class, dbMatch.getTeam2().getPlayer1().getKey().getId(), PlayerPlan.PLAYERDOUBLESTATS);
@@ -639,7 +656,7 @@ public class MatchServiceHelper {
 	 * 
 	 * @param dbMatch Das Objekt-Datenklassen Spiel.
 	 */
-	public static void createDoubleMatchYearAggregation(DoubleMatch dbMatch) {
+	protected static void createDoubleMatchYearAggregation(DoubleMatch dbMatch) {
 		final Team dbTeam1 = PMFactory.getObjectById(Team.class, dbMatch.getTeam1().getKey().getId(), TeamPlan.BOTHPLAYERS);
 		final Team dbTeam2 = PMFactory.getObjectById(Team.class, dbMatch.getTeam2().getKey().getId(), TeamPlan.BOTHPLAYERS);
 		final int year = getYearForMatch(dbMatch);
@@ -670,7 +687,7 @@ public class MatchServiceHelper {
 	 * @param dbMatch Das Objekt-Datenklassen Spiel.
 	 * @param team1Winner <code>true</code> falls das erste Team gewonnen hat, andernfalls <code>false</code>.
 	 */
-	public static void createTeamMatchHistories(DoubleMatch dbMatch, boolean team1Winner) {
+	protected static void createTeamMatchHistories(DoubleMatch dbMatch, boolean team1Winner) {
 		final Team dbTeam1 = PMFactory.getObjectById(Team.class, dbMatch.getTeam1().getKey().getId(), TeamPlan.TEAMSTATS, TeamPlan.BOTHPLAYERS);
 		final Team dbTeam2 = PMFactory.getObjectById(Team.class, dbMatch.getTeam1().getKey().getId(), TeamPlan.TEAMSTATS, TeamPlan.BOTHPLAYERS);
 
@@ -720,7 +737,7 @@ public class MatchServiceHelper {
 	 * 
 	 * @param dbMatch Das Objekt-Datenklassen Spiel.
 	 */
-	public static void createTeamMatchYearAggregation(DoubleMatch dbMatch) {
+	protected static void createTeamMatchYearAggregation(DoubleMatch dbMatch) {
 		final Team dbTeam1 = PMFactory.getObjectById(Team.class, dbMatch.getTeam1().getKey().getId(), TeamPlan.BOTHPLAYERS);
 		final Team dbTeam2 = PMFactory.getObjectById(Team.class, dbMatch.getTeam2().getKey().getId(), TeamPlan.BOTHPLAYERS);
 		final int year = getYearForMatch(dbMatch);

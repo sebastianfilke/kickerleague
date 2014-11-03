@@ -11,9 +11,9 @@ import com.sencha.gxt.chart.client.chart.series.BarSeries;
 import com.sencha.gxt.chart.client.chart.series.SeriesHighlighter;
 import com.sencha.gxt.chart.client.chart.series.SeriesLabelConfig;
 import com.sencha.gxt.chart.client.chart.series.SeriesLabelProvider;
+import com.sencha.gxt.chart.client.chart.series.SeriesRenderer;
 import com.sencha.gxt.chart.client.chart.series.SeriesToolTipConfig;
 import com.sencha.gxt.chart.client.draw.Color;
-import com.sencha.gxt.chart.client.draw.DrawFx;
 import com.sencha.gxt.chart.client.draw.RGB;
 import com.sencha.gxt.chart.client.draw.path.PathSprite;
 import com.sencha.gxt.chart.client.draw.sprite.RectangleSprite;
@@ -28,14 +28,23 @@ import de.kickerapp.client.properties.KickerProperties;
 import de.kickerapp.client.ui.base.BaseContainer;
 import de.kickerapp.shared.dto.ChartGameDto;
 
+/**
+ * Controller-Klasse zum Anzeigen von Spielstatistiken für ein Team bzw. Spieler.
+ * 
+ * @author Sebastian Filke
+ */
 public class GameChartPanel extends BaseContainer {
 
+	/** Die Spielstatistiken für ein Team bzw. Spieler. */
 	private ListStore<ChartGameDto> storeGame;
-
+	/** Das Diagramm. */
 	private Chart<ChartGameDto> chartGame;
-
+	/** Das Balkendiagramm. */
 	private BarSeries<ChartGameDto> barGame;
 
+	/**
+	 * Erzeugt einen neuen Controller Anzeigen von Spielstatistiken.
+	 */
 	public GameChartPanel() {
 		super();
 		initLayout();
@@ -52,6 +61,11 @@ public class GameChartPanel extends BaseContainer {
 		add(createGroupBarChart());
 	}
 
+	/**
+	 * Erzeugt das Diagramm zum Anzeigen der Spielstatistiken.
+	 * 
+	 * @return Das erzeugte Diagramm.
+	 */
 	private Chart<ChartGameDto> createGroupBarChart() {
 		chartGame = new Chart<ChartGameDto>();
 		chartGame.setDefaultInsets(20);
@@ -67,6 +81,11 @@ public class GameChartPanel extends BaseContainer {
 		return chartGame;
 	}
 
+	/**
+	 * Erzeugt die Y-Achse des Diagramms.
+	 * 
+	 * @return Die erzeugte Y-Achse.
+	 */
 	private NumericAxis<ChartGameDto> createNumericAxis() {
 		final NumericAxis<ChartGameDto> numAxis = new NumericAxis<ChartGameDto>();
 		numAxis.setPosition(Position.LEFT);
@@ -78,8 +97,7 @@ public class GameChartPanel extends BaseContainer {
 		numAxis.setDisplayGrid(true);
 
 		final PathSprite gridConfig = new PathSprite();
-		gridConfig.setStroke(new RGB("#dfdfdf"));
-		gridConfig.setFill(new RGB("#e3e3e3"));
+		gridConfig.setFill(new RGB("#f1f1f1"));
 		gridConfig.setZIndex(1);
 		gridConfig.setStrokeWidth(1);
 		numAxis.setGridOddConfig(gridConfig);
@@ -92,6 +110,11 @@ public class GameChartPanel extends BaseContainer {
 		return numAxis;
 	}
 
+	/**
+	 * Erzeugt die X-Achse des Diagramms.
+	 * 
+	 * @return Die erzeugte X-Achse.
+	 */
 	private CategoryAxis<ChartGameDto, String> createCategoryAxis() {
 		final CategoryAxis<ChartGameDto, String> catAxis = new CategoryAxis<ChartGameDto, String>();
 		catAxis.setField(KickerProperties.CHART_GAME_PROPERTY.month());
@@ -105,6 +128,11 @@ public class GameChartPanel extends BaseContainer {
 		return catAxis;
 	}
 
+	/**
+	 * Erzeugt die das Balkendiagramm.
+	 * 
+	 * @return Das erzeugte Balkendiagramm.
+	 */
 	private BarSeries<ChartGameDto> createBarSeries() {
 		barGame = new BarSeries<ChartGameDto>();
 		barGame.setYAxisPosition(Position.LEFT);
@@ -122,6 +150,7 @@ public class GameChartPanel extends BaseContainer {
 		barGame.setToolTipConfig(createToolTipConfig());
 		barGame.setHighlighter(createHighlighter());
 		barGame.setLegendTitles(createLegendTitles());
+		barGame.setRenderer(createSeriesRenderer());
 
 		return barGame;
 	}
@@ -134,6 +163,7 @@ public class GameChartPanel extends BaseContainer {
 
 		final SeriesLabelConfig<ChartGameDto> labelConfig = new SeriesLabelConfig<ChartGameDto>();
 		labelConfig.setSpriteConfig(sprite);
+
 		return labelConfig;
 	}
 
@@ -150,7 +180,7 @@ public class GameChartPanel extends BaseContainer {
 				} else if (valueProvider.getPath().equals("defeats")) {
 					sb.append(value == 1 ? " Spiel verloren" : " Spiele verloren");
 				} else if (valueProvider.getPath().equals("winDifference")) {
-					sb.append(value == 1 ? " Spiel " : " Spiele ");
+					sb.append(value == 1 || value == -1 ? " Spiel " : " Spiele ");
 					if (value <= 0) {
 						sb.append("mehr verloren");
 					} else {
@@ -170,20 +200,19 @@ public class GameChartPanel extends BaseContainer {
 	}
 
 	private SeriesHighlighter createHighlighter() {
-		final SeriesHighlighter highlighter = new SeriesHighlighter() {
+		return new SeriesHighlighter() {
 			@Override
 			public void highlight(Sprite sprite) {
-				final RGB rgb = (RGB) sprite.getFill();
-				sprite.setStroke(rgb.getLighter(0.2));
-				DrawFx.createStrokeWidthAnimator(sprite, 3).run(250);
+				sprite.setFill(new RGB("#333333"));
+				sprite.redraw();
 			}
 
 			@Override
 			public void unHighlight(Sprite sprite) {
-				DrawFx.createStrokeWidthAnimator(sprite, 0).run(250);
+				sprite.setFill(sprite.getStroke());
+				sprite.redraw();
 			}
 		};
-		return highlighter;
 	}
 
 	private ArrayList<String> createLegendTitles() {
@@ -194,6 +223,16 @@ public class GameChartPanel extends BaseContainer {
 		legendTitles.add("Niederlagen");
 
 		return legendTitles;
+	}
+
+	private SeriesRenderer<ChartGameDto> createSeriesRenderer() {
+		return new SeriesRenderer<ChartGameDto>() {
+			@Override
+			public void spriteRenderer(Sprite sprite, int index, ListStore<ChartGameDto> store) {
+				sprite.setStroke(sprite.getFill());
+				sprite.setOpacity(0.7);
+			}
+		};
 	}
 
 	private Legend<ChartGameDto> createLegend() {
@@ -213,7 +252,6 @@ public class GameChartPanel extends BaseContainer {
 	}
 
 	public void loadGameChart(ArrayList<ChartGameDto> result) {
-		barGame.setShownInLegend(true);
 		if (!result.isEmpty()) {
 			barGame.setShownInLegend(true);
 		} else {

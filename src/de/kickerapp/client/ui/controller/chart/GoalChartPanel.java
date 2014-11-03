@@ -11,9 +11,9 @@ import com.sencha.gxt.chart.client.chart.series.BarSeries;
 import com.sencha.gxt.chart.client.chart.series.SeriesHighlighter;
 import com.sencha.gxt.chart.client.chart.series.SeriesLabelConfig;
 import com.sencha.gxt.chart.client.chart.series.SeriesLabelProvider;
+import com.sencha.gxt.chart.client.chart.series.SeriesRenderer;
 import com.sencha.gxt.chart.client.chart.series.SeriesToolTipConfig;
 import com.sencha.gxt.chart.client.draw.Color;
-import com.sencha.gxt.chart.client.draw.DrawFx;
 import com.sencha.gxt.chart.client.draw.RGB;
 import com.sencha.gxt.chart.client.draw.path.PathSprite;
 import com.sencha.gxt.chart.client.draw.sprite.RectangleSprite;
@@ -78,8 +78,7 @@ public class GoalChartPanel extends BaseContainer {
 		numAxis.setDisplayGrid(true);
 
 		final PathSprite gridConfig = new PathSprite();
-		gridConfig.setStroke(new RGB("#dfdfdf"));
-		gridConfig.setFill(new RGB("#E3E3E3"));
+		gridConfig.setFill(new RGB("#f1f1f1"));
 		gridConfig.setZIndex(1);
 		gridConfig.setStrokeWidth(1);
 		numAxis.setGridOddConfig(gridConfig);
@@ -122,6 +121,7 @@ public class GoalChartPanel extends BaseContainer {
 		barGoal.setToolTipConfig(createToolTipConfig());
 		barGoal.setHighlighter(crateHighlighter());
 		barGoal.setLegendTitles(createLegendTitles());
+		barGoal.setRenderer(createSeriesRenderer());
 
 		return barGoal;
 	}
@@ -151,7 +151,7 @@ public class GoalChartPanel extends BaseContainer {
 				} else if (valueProvider.getPath().equals("getGoals")) {
 					sb.append(value == 1 ? " Tor kassiert" : " Tore kassiert");
 				} else if (valueProvider.getPath().equals("goalDifference")) {
-					sb.append(value == 1 ? " Tor " : " Tore ");
+					sb.append(value == 1 || value == -1 ? " Tor " : " Tore ");
 					if (value <= 0) {
 						sb.append("mehr kassiert");
 					} else {
@@ -171,20 +171,19 @@ public class GoalChartPanel extends BaseContainer {
 	}
 
 	private SeriesHighlighter crateHighlighter() {
-		final SeriesHighlighter highlighter = new SeriesHighlighter() {
+		return new SeriesHighlighter() {
 			@Override
 			public void highlight(Sprite sprite) {
-				final RGB rgb = (RGB) sprite.getFill();
-				sprite.setStroke(rgb.getLighter(0.2));
-				DrawFx.createStrokeWidthAnimator(sprite, 3).run(250);
+				sprite.setFill(new RGB("#333333"));
+				sprite.redraw();
 			}
 
 			@Override
 			public void unHighlight(Sprite sprite) {
-				DrawFx.createStrokeWidthAnimator(sprite, 0).run(250);
+				sprite.setFill(sprite.getStroke());
+				sprite.redraw();
 			}
 		};
-		return highlighter;
 	}
 
 	private ArrayList<String> createLegendTitles() {
@@ -211,6 +210,16 @@ public class GoalChartPanel extends BaseContainer {
 		legend.setBorderConfig(borderConfig);
 
 		return legend;
+	}
+
+	private SeriesRenderer<ChartGoalDto> createSeriesRenderer() {
+		return new SeriesRenderer<ChartGoalDto>() {
+			@Override
+			public void spriteRenderer(Sprite sprite, int index, ListStore<ChartGoalDto> store) {
+				sprite.setStroke(sprite.getFill());
+				sprite.setOpacity(0.7);
+			}
+		};
 	}
 
 	public void loadGoalChart(ArrayList<ChartGoalDto> result) {

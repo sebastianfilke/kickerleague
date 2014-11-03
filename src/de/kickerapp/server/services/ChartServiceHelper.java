@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
+import de.kickerapp.server.dao.DoubleMatchHistory;
 import de.kickerapp.server.dao.MatchHistory;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.SingleMatchHistory;
@@ -188,8 +189,20 @@ public class ChartServiceHelper {
 	}
 
 	public static void updateOpponentForMatch(SingleMatchHistory dbHistory, HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
-		final Player opponent = dbHistory.getPlayer2();
+		final Player opponentPlayer2 = dbHistory.getPlayer2();
 
+		updateOpponentForMatch(opponentPlayer2, dbHistory, chartOpponentDtos);
+	}
+
+	public static void updateOpponentForMatch(DoubleMatchHistory dbHistory, HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
+		final Player opponentPlayer3 = dbHistory.getPlayer3();
+		final Player opponentPlayer4 = dbHistory.getPlayer4();
+
+		updateOpponentForMatch(opponentPlayer3, dbHistory, chartOpponentDtos);
+		updateOpponentForMatch(opponentPlayer4, dbHistory, chartOpponentDtos);
+	}
+
+	private static void updateOpponentForMatch(Player opponent, MatchHistory dbHistory, HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
 		ChartOpponentDto chartOpponentDto = chartOpponentDtos.get(opponent.getKey().getId());
 		if (chartOpponentDto == null) {
 			chartOpponentDto = new ChartOpponentDto();

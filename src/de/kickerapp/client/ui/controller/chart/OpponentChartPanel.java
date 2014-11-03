@@ -176,7 +176,7 @@ public class OpponentChartPanel extends BaseContainer {
 		}
 		// Workaround für die IndexOutOfBoundsException
 		pieOpponent.clear();
-		//
+
 		addColorsForResult(result);
 		storeOpponent.replaceAll(result);
 		chartOpponent.redrawChart();
