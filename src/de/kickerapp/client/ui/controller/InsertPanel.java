@@ -715,7 +715,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 
 				AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 0));
 				AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL));
-				// clearInput();
+				clearInput();
 				unmask();
 			}
 
@@ -735,7 +735,7 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 
 				AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 1));
 				AppEventBus.fireEvent(new UpdatePanelEvent(UpdatePanelEvent.ALL));
-				// clearInput();
+				clearInput();
 				unmask();
 			}
 

@@ -82,9 +82,9 @@ public final class AppExceptionHandler implements UncaughtExceptionHandler {
 		// final String errorDetails = getCustomStackTrace(caught);
 		if (errorMessage != null) {
 			AppErrorDialog.getInstance().setErrorMessage(errorMessage);
+			AppErrorDialog.getInstance().show();
 		}
 		// dialog.setErrorContents(errorDetails);
-		AppErrorDialog.getInstance().show();
 	}
 
 	/**

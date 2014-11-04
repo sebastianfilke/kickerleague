@@ -17,17 +17,17 @@ public class ChartContainer implements BaseSerializable {
 
 	private ArrayList<ChartGoalDto> chartGoalDtos;
 
-	private ArrayList<ChartOpponentDto> chartOpponentDtos;
-
 	private ArrayList<ChartPointDto> chartPointDtos;
+
+	private ArrayList<ChartOpponentDto> chartOpponentDtos;
 
 	public ChartContainer() {
 		super();
 
 		chartGameDtos = new ArrayList<ChartGameDto>();
 		chartGoalDtos = new ArrayList<ChartGoalDto>();
-		chartOpponentDtos = new ArrayList<ChartOpponentDto>();
 		chartPointDtos = new ArrayList<ChartPointDto>();
+		chartOpponentDtos = new ArrayList<ChartOpponentDto>();
 	}
 
 	public ArrayList<ChartGameDto> getChartGameDtos() {
@@ -46,20 +46,20 @@ public class ChartContainer implements BaseSerializable {
 		this.chartGoalDtos = chartGoalDtos;
 	}
 
-	public ArrayList<ChartOpponentDto> getChartOpponentDtos() {
-		return chartOpponentDtos;
-	}
-
-	public void setChartOpponentDtos(ArrayList<ChartOpponentDto> chartOpponentDtos) {
-		this.chartOpponentDtos = chartOpponentDtos;
-	}
-
 	public ArrayList<ChartPointDto> getChartPointDtos() {
 		return chartPointDtos;
 	}
 
 	public void setChartPointDtos(ArrayList<ChartPointDto> chartPointDtos) {
 		this.chartPointDtos = chartPointDtos;
+	}
+
+	public ArrayList<ChartOpponentDto> getChartOpponentDtos() {
+		return chartOpponentDtos;
+	}
+
+	public void setChartOpponentDtos(ArrayList<ChartOpponentDto> chartOpponentDtos) {
+		this.chartOpponentDtos = chartOpponentDtos;
 	}
 
 }

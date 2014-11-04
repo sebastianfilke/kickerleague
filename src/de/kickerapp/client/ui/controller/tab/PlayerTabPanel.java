@@ -22,10 +22,11 @@ import de.kickerapp.client.ui.resources.IconProvider;
  */
 public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 
+	/** Die Controller-Klasse zum Eintragen und Bearbeiten der Spieler für die Applikation. */
 	private PlayerAdminPanel playerAdminPanel;
-
+	/** Der TabPanel zum Anzeigen der Administration von Spielern. */
 	private TabPanel tabPanel;
-
+	/** Der aktuelle oder anzuzeigende Tab. */
 	private int activeTab;
 
 	/**
@@ -64,6 +65,11 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 		AppEventBus.addHandler(ShowDataEvent.PLAYER, this);
 	}
 
+	/**
+	 * Erzeugt den TabPanel zur Administration von Spielern.
+	 * 
+	 * @return Der erzeugte TabPanel.
+	 */
 	private TabPanel createTabPanel() {
 		final PlainTabPanel tabPanel = new PlainTabPanel();
 		tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
@@ -91,6 +97,9 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 		return tabPanel;
 	}
 
+	/**
+	 * Liefert die notwendigen Daten für das aktuell aktive Tab.
+	 */
 	private void getData() {
 		if (activeTab == 0) {
 			playerAdminPanel.getPlayerList();
