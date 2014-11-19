@@ -192,16 +192,26 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 		final String elementId = element.getAttribute("id");
 
 		if (!elementId.equals("cssmenu") && !elementId.equals("navigationBorder")) {
-			selectedElement.removeClassName("active");
-			if (selectedSubElement != null) {
-				selectedSubElement.removeClassName("active");
-			}
+			final Element selectedMediaElement = DOM.getElementById("ul-menu-button");
+			if (elementId.equals("menu-button")) {
+				if (selectedMediaElement.hasClassName("open")) {
+					DOM.getElementById("ul-menu-button").removeClassName("open");
+				} else {
+					DOM.getElementById("ul-menu-button").addClassName("open");
+				}
+			} else {
+				selectedMediaElement.removeClassName("open");
+				selectedElement.removeClassName("active");
+				if (selectedSubElement != null) {
+					selectedSubElement.removeClassName("active");
+				}
 
-			selectedElement = element;
-			selectedElement.addClassName("active");
-			if (subElement != null) {
-				selectedSubElement = subElement;
-				selectedSubElement.addClassName("active");
+				selectedElement = element;
+				selectedElement.addClassName("active");
+				if (subElement != null) {
+					selectedSubElement = subElement;
+					selectedSubElement.addClassName("active");
+				}
 			}
 		}
 	}
@@ -216,7 +226,11 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 		if (clickedElement.hasClassName("sub")) {
 			return getParent(clickedElement, 3);
 		} else {
-			return getParent(clickedElement, 1);
+			if (clickedElement.getId().equals("menu-button")) {
+				return clickedElement;
+			} else {
+				return getParent(clickedElement, 1);
+			}
 		}
 	}
 
