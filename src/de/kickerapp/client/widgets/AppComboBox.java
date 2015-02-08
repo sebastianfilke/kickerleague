@@ -6,10 +6,9 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.event.TriggerClickEvent;
 import com.sencha.gxt.widget.core.client.event.TriggerClickEvent.TriggerClickHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
-import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
- * Erweiterung des {@link TextField}s für die Applikation.
+ * Erweiterung des {@link ComboBox}s für die Applikation.
  * 
  * @author Sebastian Filke
  * @param <T> Der Datentyp der ComboBox.
