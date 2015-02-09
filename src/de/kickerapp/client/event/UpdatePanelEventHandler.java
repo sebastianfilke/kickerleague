@@ -14,6 +14,6 @@ public interface UpdatePanelEventHandler extends EventHandler {
 	 * 
 	 * @param event Das Aktualisierungs-Ereignis.
 	 */
-	public void updatePanel(UpdatePanelEvent event);
+	void updatePanel(UpdatePanelEvent event);
 
 }

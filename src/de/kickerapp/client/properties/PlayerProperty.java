@@ -15,9 +15,9 @@ import de.kickerapp.shared.dto.PlayerSingleStatsDto;
 public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 
 	@Path("id")
-	public ModelKeyProvider<PlayerDto> id();
+	ModelKeyProvider<PlayerDto> id();
 
-	public LabelProvider<PlayerDto> label = new LabelProvider<PlayerDto>() {
+	LabelProvider<PlayerDto> label = new LabelProvider<PlayerDto>() {
 		@Override
 		public String getLabel(PlayerDto item) {
 			final StringBuilder sb = new StringBuilder();
@@ -33,7 +33,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, String> playerName = new ValueProvider<PlayerDto, String>() {
+	ValueProvider<PlayerDto, String> playerName = new ValueProvider<PlayerDto, String>() {
 		@Override
 		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -58,7 +58,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, Integer> singleMatches = new ValueProvider<PlayerDto, Integer>() {
+	ValueProvider<PlayerDto, Integer> singleMatches = new ValueProvider<PlayerDto, Integer>() {
 		@Override
 		public Integer getValue(PlayerDto object) {
 			final PlayerSingleStatsDto playerSingleStatsDto = object.getPlayerSingleStatsDto();
@@ -75,7 +75,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, Integer> singleWins = new ValueProvider<PlayerDto, Integer>() {
+	ValueProvider<PlayerDto, Integer> singleWins = new ValueProvider<PlayerDto, Integer>() {
 		@Override
 		public Integer getValue(PlayerDto object) {
 			return object.getPlayerSingleStatsDto().getWins();
@@ -91,7 +91,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, Integer> singleDefeats = new ValueProvider<PlayerDto, Integer>() {
+	ValueProvider<PlayerDto, Integer> singleDefeats = new ValueProvider<PlayerDto, Integer>() {
 		@Override
 		public Integer getValue(PlayerDto object) {
 			return object.getPlayerSingleStatsDto().getDefeats();
@@ -107,7 +107,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, String> singleSets = new ValueProvider<PlayerDto, String>() {
+	ValueProvider<PlayerDto, String> singleSets = new ValueProvider<PlayerDto, String>() {
 		@Override
 		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -130,7 +130,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, String> singleSetDifference = new ValueProvider<PlayerDto, String>() {
+	ValueProvider<PlayerDto, String> singleSetDifference = new ValueProvider<PlayerDto, String>() {
 		@Override
 		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -155,7 +155,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, String> singleGoals = new ValueProvider<PlayerDto, String>() {
+	ValueProvider<PlayerDto, String> singleGoals = new ValueProvider<PlayerDto, String>() {
 		@Override
 		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -178,7 +178,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, String> singleGoalDifference = new ValueProvider<PlayerDto, String>() {
+	ValueProvider<PlayerDto, String> singleGoalDifference = new ValueProvider<PlayerDto, String>() {
 		@Override
 		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -203,7 +203,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, String> singlePoints = new ValueProvider<PlayerDto, String>() {
+	ValueProvider<PlayerDto, String> singlePoints = new ValueProvider<PlayerDto, String>() {
 		@Override
 		public String getValue(PlayerDto object) {
 			return Integer.toString(object.getPlayerSingleStatsDto().getPoints());
@@ -219,7 +219,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, ImageResource> singleTendency = new ValueProvider<PlayerDto, ImageResource>() {
+	ValueProvider<PlayerDto, ImageResource> singleTendency = new ValueProvider<PlayerDto, ImageResource>() {
 		@Override
 		public ImageResource getValue(PlayerDto object) {
 			ImageResource image = null;
@@ -248,7 +248,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, Integer> doubleMatches = new ValueProvider<PlayerDto, Integer>() {
+	ValueProvider<PlayerDto, Integer> doubleMatches = new ValueProvider<PlayerDto, Integer>() {
 		@Override
 		public Integer getValue(PlayerDto object) {
 			final PlayerDoubleStatsDto playerDoubleStatsDto = object.getPlayerDoubleStatsDto();
@@ -265,7 +265,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, Integer> doubleWins = new ValueProvider<PlayerDto, Integer>() {
+	ValueProvider<PlayerDto, Integer> doubleWins = new ValueProvider<PlayerDto, Integer>() {
 		@Override
 		public Integer getValue(PlayerDto object) {
 			return object.getPlayerDoubleStatsDto().getWins();
@@ -281,7 +281,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, Integer> doubleDefeats = new ValueProvider<PlayerDto, Integer>() {
+	ValueProvider<PlayerDto, Integer> doubleDefeats = new ValueProvider<PlayerDto, Integer>() {
 		@Override
 		public Integer getValue(PlayerDto object) {
 			return object.getPlayerDoubleStatsDto().getDefeats();
@@ -297,7 +297,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, String> doubleSets = new ValueProvider<PlayerDto, String>() {
+	ValueProvider<PlayerDto, String> doubleSets = new ValueProvider<PlayerDto, String>() {
 		@Override
 		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -320,7 +320,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, String> doubleSetDifference = new ValueProvider<PlayerDto, String>() {
+	ValueProvider<PlayerDto, String> doubleSetDifference = new ValueProvider<PlayerDto, String>() {
 		@Override
 		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -345,7 +345,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, String> doubleGoals = new ValueProvider<PlayerDto, String>() {
+	ValueProvider<PlayerDto, String> doubleGoals = new ValueProvider<PlayerDto, String>() {
 		@Override
 		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -368,7 +368,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, String> doubleGoalDifference = new ValueProvider<PlayerDto, String>() {
+	ValueProvider<PlayerDto, String> doubleGoalDifference = new ValueProvider<PlayerDto, String>() {
 		@Override
 		public String getValue(PlayerDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -393,7 +393,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, String> doublePoints = new ValueProvider<PlayerDto, String>() {
+	ValueProvider<PlayerDto, String> doublePoints = new ValueProvider<PlayerDto, String>() {
 		@Override
 		public String getValue(PlayerDto object) {
 			return Integer.toString(object.getPlayerDoubleStatsDto().getPoints());
@@ -409,7 +409,7 @@ public interface PlayerProperty extends PropertyAccess<PlayerDto> {
 		}
 	};
 
-	public ValueProvider<PlayerDto, ImageResource> doubleTendency = new ValueProvider<PlayerDto, ImageResource>() {
+	ValueProvider<PlayerDto, ImageResource> doubleTendency = new ValueProvider<PlayerDto, ImageResource>() {
 		@Override
 		public ImageResource getValue(PlayerDto object) {
 			ImageResource image = null;

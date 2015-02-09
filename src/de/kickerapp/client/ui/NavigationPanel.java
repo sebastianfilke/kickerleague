@@ -150,33 +150,33 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 			elementId = subElement.getAttribute("id");
 		}
 
-		if (elementId.equals("tables")) {
+		if ("tables".equals(elementId)) {
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
-		} else if (elementId.equals("singleTable")) {
+		} else if ("singleTable".equals(elementId)) {
 			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 0));
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
-		} else if (elementId.equals("doubleTable")) {
+		} else if ("doubleTable".equals(elementId)) {
 			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 1));
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
-		} else if (elementId.equals("teamTable")) {
+		} else if ("teamTable".equals(elementId)) {
 			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 2));
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
-		} else if (elementId.equals("results")) {
+		} else if ("results".equals(elementId)) {
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.MATCHES));
-		} else if (elementId.equals("insert")) {
+		} else if ("insert".equals(elementId)) {
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.INSERT));
-		} else if (elementId.equals("charts")) {
+		} else if ("charts".equals(elementId)) {
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.CHARTS));
-		} else if (elementId.equals("singleChart")) {
+		} else if ("singleChart".equals(elementId)) {
 			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.CHARTS, 0));
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.CHARTS));
-		} else if (elementId.equals("doubleChart")) {
+		} else if ("doubleChart".equals(elementId)) {
 			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.CHARTS, 1));
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.CHARTS));
-		} else if (elementId.equals("teamChart")) {
+		} else if ("teamChart".equals(elementId)) {
 			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.CHARTS, 2));
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.CHARTS));
-		} else if (elementId.equals("player")) {
+		} else if ("player".equals(elementId)) {
 			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.PLAYER));
 		}
 	}
@@ -191,9 +191,9 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 		final Element subElement = getSubElement(clickedElement);
 		final String elementId = element.getAttribute("id");
 
-		if (!elementId.equals("cssmenu") && !elementId.equals("navigationBorder")) {
+		if (!"cssmenu".equals(elementId) && !"navigationBorder".equals(elementId)) {
 			final Element selectedMediaElement = DOM.getElementById("ul-menu-button");
-			if (elementId.equals("menu-button")) {
+			if ("menu-button".equals(elementId)) {
 				if (selectedMediaElement.hasClassName("open")) {
 					DOM.getElementById("ul-menu-button").removeClassName("open");
 				} else {
@@ -226,7 +226,7 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 		if (clickedElement.hasClassName("sub")) {
 			return getParent(clickedElement, 3);
 		} else {
-			if (clickedElement.getId().equals("menu-button")) {
+			if ("menu-button".equals(clickedElement.getId())) {
 				return clickedElement;
 			} else {
 				return getParent(clickedElement, 1);

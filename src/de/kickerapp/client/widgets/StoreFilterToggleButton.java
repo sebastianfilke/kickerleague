@@ -20,7 +20,7 @@ public abstract class StoreFilterToggleButton<T> extends ToggleButton {
 	/** Die Datenspeicher welche gefiltert werden sollen. */
 	private List<Store<T>> stores = new ArrayList<Store<T>>();
 	/** Der Filter für die Datenspeicher. */
-	private StoreFilter<T> filter;
+	private StoreFilter<T> storeFilter;
 
 	/**
 	 * Erzeugt einen neuen StoreFilterToggleButton.
@@ -28,7 +28,7 @@ public abstract class StoreFilterToggleButton<T> extends ToggleButton {
 	public StoreFilterToggleButton() {
 		super();
 
-		filter = new StoreFilter<T>() {
+		storeFilter = new StoreFilter<T>() {
 			@Override
 			public boolean select(Store<T> store, T parent, T item) {
 				final boolean v = getValue();
@@ -51,7 +51,7 @@ public abstract class StoreFilterToggleButton<T> extends ToggleButton {
 	public void bind(Store<T> store) {
 		stores.add(store);
 		onFilter();
-	};
+	}
 
 	/**
 	 * Wendet den Filter auf den Store an.
@@ -60,10 +60,10 @@ public abstract class StoreFilterToggleButton<T> extends ToggleButton {
 	 */
 	private void applyFilters(Store<T> store) {
 		if (!getValue()) {
-			store.addFilter(filter);
+			store.addFilter(storeFilter);
 			store.setEnableFilters(true);
 		} else {
-			store.removeFilter(filter);
+			store.removeFilter(storeFilter);
 		}
 	}
 

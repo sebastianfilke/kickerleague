@@ -10,15 +10,15 @@ import de.kickerapp.shared.dto.ChartGameDto;
 public interface ChartGameProperty extends PropertyAccess<ChartGameDto> {
 
 	@Path("id")
-	public ModelKeyProvider<ChartGameDto> id();
+	ModelKeyProvider<ChartGameDto> id();
 
-	public ValueProvider<ChartGameDto, String> month();
+	ValueProvider<ChartGameDto, String> month();
 
-	public ValueProvider<ChartGameDto, Integer> wins();
+	ValueProvider<ChartGameDto, Integer> wins();
 
-	public ValueProvider<ChartGameDto, Integer> defeats();
+	ValueProvider<ChartGameDto, Integer> defeats();
 
-	public ValueProvider<ChartGameDto, Integer> winDifference = new ValueProvider<ChartGameDto, Integer>() {
+	ValueProvider<ChartGameDto, Integer> winDifference = new ValueProvider<ChartGameDto, Integer>() {
 		@Override
 		public Integer getValue(ChartGameDto object) {
 			final int winDifference = object.getWins() - object.getDefeats();

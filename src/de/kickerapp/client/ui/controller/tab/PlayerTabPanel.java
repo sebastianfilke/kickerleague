@@ -71,8 +71,8 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 	 * @return Der erzeugte TabPanel.
 	 */
 	private TabPanel createTabPanel() {
-		final PlainTabPanel tabPanel = new PlainTabPanel();
-		tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
+		final PlainTabPanel plainTabPanel = new PlainTabPanel();
+		plainTabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
 			@Override
 			public void onSelection(SelectionEvent<Widget> event) {
 				final TabPanel panel = (TabPanel) event.getSource();
@@ -82,19 +82,19 @@ public class PlayerTabPanel extends BasePanel implements ShowDataEventHandler {
 				getData();
 			}
 		});
-		tabPanel.setBodyBorder(false);
-		tabPanel.setAutoSelect(false);
-		tabPanel.setResizeTabs(true);
-		tabPanel.setBorders(false);
-		tabPanel.setTabWidth(200);
+		plainTabPanel.setBodyBorder(false);
+		plainTabPanel.setAutoSelect(false);
+		plainTabPanel.setResizeTabs(true);
+		plainTabPanel.setBorders(false);
+		plainTabPanel.setTabWidth(200);
 
 		final TabItemConfig ticAdminPanel = new TabItemConfig("Spieler eintragen/bearbeiten");
 		ticAdminPanel.setIcon(IconProvider.get().player_edit());
 
-		tabPanel.add(playerAdminPanel, ticAdminPanel);
-		tabPanel.setActiveWidget(playerAdminPanel, false);
+		plainTabPanel.add(playerAdminPanel, ticAdminPanel);
+		plainTabPanel.setActiveWidget(playerAdminPanel, false);
 
-		return tabPanel;
+		return plainTabPanel;
 	}
 
 	/**

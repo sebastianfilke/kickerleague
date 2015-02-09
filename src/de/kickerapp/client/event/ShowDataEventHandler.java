@@ -14,6 +14,6 @@ public interface ShowDataEventHandler extends EventHandler {
 	 * 
 	 * @param event Das Datenanzeige-Ereignis.
 	 */
-	public void showData(ShowDataEvent event);
+	void showData(ShowDataEvent event);
 
 }

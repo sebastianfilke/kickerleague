@@ -14,9 +14,9 @@ import de.kickerapp.shared.dto.TeamStatsDto;
 public interface TeamProperty extends PropertyAccess<TeamDto> {
 
 	@Path("id")
-	public ModelKeyProvider<TeamDto> id();
+	ModelKeyProvider<TeamDto> id();
 
-	public ValueProvider<TeamDto, String> teamName = new ValueProvider<TeamDto, String>() {
+	ValueProvider<TeamDto, String> teamName = new ValueProvider<TeamDto, String>() {
 		@Override
 		public String getValue(TeamDto object) {
 			final StringBuilder builder = new StringBuilder();
@@ -43,7 +43,7 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 		}
 	};
 
-	public ValueProvider<TeamDto, Integer> teamMatches = new ValueProvider<TeamDto, Integer>() {
+	ValueProvider<TeamDto, Integer> teamMatches = new ValueProvider<TeamDto, Integer>() {
 		@Override
 		public Integer getValue(TeamDto object) {
 			final TeamStatsDto teamStatsDto = object.getTeamStatsDto();
@@ -60,7 +60,7 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 		}
 	};
 
-	public ValueProvider<TeamDto, Integer> teamWins = new ValueProvider<TeamDto, Integer>() {
+	ValueProvider<TeamDto, Integer> teamWins = new ValueProvider<TeamDto, Integer>() {
 		@Override
 		public Integer getValue(TeamDto object) {
 			return object.getTeamStatsDto().getWins();
@@ -76,7 +76,7 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 		}
 	};
 
-	public ValueProvider<TeamDto, Integer> teamDefeats = new ValueProvider<TeamDto, Integer>() {
+	ValueProvider<TeamDto, Integer> teamDefeats = new ValueProvider<TeamDto, Integer>() {
 		@Override
 		public Integer getValue(TeamDto object) {
 			return object.getTeamStatsDto().getDefeats();
@@ -92,7 +92,7 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 		}
 	};
 
-	public ValueProvider<TeamDto, String> teamSets = new ValueProvider<TeamDto, String>() {
+	ValueProvider<TeamDto, String> teamSets = new ValueProvider<TeamDto, String>() {
 		@Override
 		public String getValue(TeamDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -115,7 +115,7 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 		}
 	};
 
-	public ValueProvider<TeamDto, String> teamSetDifference = new ValueProvider<TeamDto, String>() {
+	ValueProvider<TeamDto, String> teamSetDifference = new ValueProvider<TeamDto, String>() {
 		@Override
 		public String getValue(TeamDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -140,7 +140,7 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 		}
 	};
 
-	public ValueProvider<TeamDto, String> teamGoals = new ValueProvider<TeamDto, String>() {
+	ValueProvider<TeamDto, String> teamGoals = new ValueProvider<TeamDto, String>() {
 		@Override
 		public String getValue(TeamDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -163,7 +163,7 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 		}
 	};
 
-	public ValueProvider<TeamDto, String> teamGoalDifference = new ValueProvider<TeamDto, String>() {
+	ValueProvider<TeamDto, String> teamGoalDifference = new ValueProvider<TeamDto, String>() {
 		@Override
 		public String getValue(TeamDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -188,7 +188,7 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 		}
 	};
 
-	public ValueProvider<TeamDto, String> teamPoints = new ValueProvider<TeamDto, String>() {
+	ValueProvider<TeamDto, String> teamPoints = new ValueProvider<TeamDto, String>() {
 		@Override
 		public String getValue(TeamDto object) {
 			return Integer.toString(object.getTeamStatsDto().getPoints());
@@ -204,7 +204,7 @@ public interface TeamProperty extends PropertyAccess<TeamDto> {
 		}
 	};
 
-	public ValueProvider<TeamDto, ImageResource> teamTendency = new ValueProvider<TeamDto, ImageResource>() {
+	ValueProvider<TeamDto, ImageResource> teamTendency = new ValueProvider<TeamDto, ImageResource>() {
 		@Override
 		public ImageResource getValue(TeamDto object) {
 			ImageResource image = null;

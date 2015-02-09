@@ -23,7 +23,7 @@ public interface ChartService extends RemoteService {
 	 * @return Die Informationen.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public InfoDto getSinglePlayerInfo(PlayerDto playerDto, Integer year) throws IllegalArgumentException;
+	InfoDto getSinglePlayerInfo(PlayerDto playerDto, Integer year) throws IllegalArgumentException;
 
 	/**
 	 * Liefert die Einzelspieler-Statistiken für den gewählten Spieler.
@@ -33,7 +33,7 @@ public interface ChartService extends RemoteService {
 	 * @return Die Einzelspieler-Statistiken.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public ChartContainer getSinglePlayerChart(PlayerDto playerDto, Integer year) throws IllegalArgumentException;
+	ChartContainer getSinglePlayerChart(PlayerDto playerDto, Integer year) throws IllegalArgumentException;
 
 	/**
 	 * Liefert die Doppelspieler-Informationen für den gewählten Spieler.
@@ -43,7 +43,7 @@ public interface ChartService extends RemoteService {
 	 * @return Die Informationen.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public InfoDto getDoublePlayerInfo(PlayerDto playerDto, Integer year) throws IllegalArgumentException;
+	InfoDto getDoublePlayerInfo(PlayerDto playerDto, Integer year) throws IllegalArgumentException;
 
 	/**
 	 * Liefert die Doppelspieler-Statistiken für den gewählten Spieler.
@@ -53,6 +53,6 @@ public interface ChartService extends RemoteService {
 	 * @return Die Einzelspieler-Statistiken.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public ChartContainer getDoublePlayerChart(PlayerDto playerDto, Integer year) throws IllegalArgumentException;
+	ChartContainer getDoublePlayerChart(PlayerDto playerDto, Integer year) throws IllegalArgumentException;
 
 }

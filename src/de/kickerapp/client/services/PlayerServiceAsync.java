@@ -22,7 +22,7 @@ public interface PlayerServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void createPlayer(PlayerDto playerDto, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
+	void createPlayer(PlayerDto playerDto, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
 
 	/**
 	 * Aktualisiert den Spieler.
@@ -31,7 +31,7 @@ public interface PlayerServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void updatePlayer(PlayerDto playerDto, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
+	void updatePlayer(PlayerDto playerDto, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
 
 	/**
 	 * Liefert alle Spieler inklusive Statistiken.
@@ -40,7 +40,7 @@ public interface PlayerServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getAllPlayers(MatchType matchType, AsyncCallback<ArrayList<PlayerDto>> callback) throws IllegalArgumentException;
+	void getAllPlayers(MatchType matchType, AsyncCallback<ArrayList<PlayerDto>> callback) throws IllegalArgumentException;
 
 	/**
 	 * Liefert Aggregation von Jahr und Spielern mit mindestens einem Spiel für Einzelspiele.
@@ -48,7 +48,7 @@ public interface PlayerServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getSingleMatchYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>> callback) throws IllegalArgumentException;
+	void getSingleMatchYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>> callback) throws IllegalArgumentException;
 
 	/**
 	 * Liefert Aggregation von Jahr und Spielern mit mindestens einem Spiel für Doppelspiele.
@@ -56,6 +56,6 @@ public interface PlayerServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getDoubleMatchYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>> callback) throws IllegalArgumentException;
+	void getDoubleMatchYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>> callback) throws IllegalArgumentException;
 
 }

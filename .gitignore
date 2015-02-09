@@ -1,5 +1,6 @@
 /gwt-unitCache/
 /test-classes/
 /war/kicker_application/
+/war/WEB-INF/appengine-generated/
 /war/WEB-INF/classes/
 /war/WEB-INF/deploy/

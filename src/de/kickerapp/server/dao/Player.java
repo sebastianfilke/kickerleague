@@ -147,7 +147,7 @@ public class Player extends BaseDao {
 	 * 
 	 * @return Die E-Mail Adresse des Spielers als {@link String}.
 	 */
-	public String getEMail() {
+	public String geteMail() {
 		return eMail;
 	}
 
@@ -156,7 +156,7 @@ public class Player extends BaseDao {
 	 * 
 	 * @param eMail Die E-Mail Adresse des Spielers als {@link String}.
 	 */
-	public void setEMail(String eMail) {
+	public void seteMail(String eMail) {
 		this.eMail = eMail;
 	}
 

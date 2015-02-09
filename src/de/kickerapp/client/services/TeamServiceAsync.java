@@ -19,6 +19,6 @@ public interface TeamServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getAllTeams(AsyncCallback<ArrayList<TeamDto>> callback) throws IllegalArgumentException;
+	void getAllTeams(AsyncCallback<ArrayList<TeamDto>> callback) throws IllegalArgumentException;
 
 }

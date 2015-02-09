@@ -9,11 +9,11 @@ import com.google.gwt.event.shared.EventHandler;
  */
 public interface NavigationEventHandler extends EventHandler {
 
-    /**
-     * Methode zur Verarbeitung von Navigations-Ereignissen.
-     * 
-     * @param event Das Navigations-Ereignis.
-     */
-    public void navigationPressed(NavigationEvent event);
+	/**
+	 * Methode zur Verarbeitung von Navigations-Ereignissen.
+	 * 
+	 * @param event Das Navigations-Ereignis.
+	 */
+	void navigationPressed(NavigationEvent event);
 
 }

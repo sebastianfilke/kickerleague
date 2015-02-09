@@ -135,7 +135,7 @@ public class ChartServiceHelper {
 			sumPoints = sumPoints + dbHistory.getTotalPoints();
 		}
 		final Integer sumMatches = wins + defeats;
-		final double averagePoints = ((double) sumPoints / sumMatches);
+		final double averagePoints = (double) sumPoints / sumMatches;
 
 		return numberFormat.format(averagePoints);
 	}
@@ -151,7 +151,7 @@ public class ChartServiceHelper {
 		}
 
 		final Integer sumMatches = wins + defeats;
-		final double averageTablePlace = ((double) sumTablePlace / sumMatches);
+		final double averageTablePlace = (double) sumTablePlace / sumMatches;
 
 		return numberFormat.format(averageTablePlace);
 	}

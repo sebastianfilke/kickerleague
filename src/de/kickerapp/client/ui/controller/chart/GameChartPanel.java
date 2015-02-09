@@ -175,11 +175,11 @@ public class GameChartPanel extends BaseContainer {
 				final int value = valueProvider.getValue(item).intValue();
 
 				final StringBuilder sb = new StringBuilder(Integer.toString(Math.abs(value)));
-				if (valueProvider.getPath().equals("wins")) {
+				if ("wins".equals(valueProvider.getPath())) {
 					sb.append(value == 1 ? " Spiel gewonnen" : " Spiele gewonnen");
-				} else if (valueProvider.getPath().equals("defeats")) {
+				} else if ("defeats".equals(valueProvider.getPath())) {
 					sb.append(value == 1 ? " Spiel verloren" : " Spiele verloren");
-				} else if (valueProvider.getPath().equals("winDifference")) {
+				} else if ("winDifference".equals(valueProvider.getPath())) {
 					sb.append(value == 1 || value == -1 ? " Spiel " : " Spiele ");
 					if (value <= 0) {
 						sb.append("mehr verloren");

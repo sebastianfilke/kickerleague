@@ -10,9 +10,9 @@ import de.kickerapp.shared.dto.ChartOpponentDto;
 public interface ChartOpponentProperty extends PropertyAccess<ChartOpponentDto> {
 
 	@Path("id")
-	public ModelKeyProvider<ChartOpponentDto> id();
+	ModelKeyProvider<ChartOpponentDto> id();
 
-	public ValueProvider<ChartOpponentDto, Integer> playedMatches = new ValueProvider<ChartOpponentDto, Integer>() {
+	ValueProvider<ChartOpponentDto, Integer> playedMatches = new ValueProvider<ChartOpponentDto, Integer>() {
 		@Override
 		public Integer getValue(ChartOpponentDto object) {
 			return object.getWins() + object.getDefeats();
@@ -28,6 +28,6 @@ public interface ChartOpponentProperty extends PropertyAccess<ChartOpponentDto> 
 		}
 	};
 
-	public ValueProvider<ChartOpponentDto, String> opponentName();
+	ValueProvider<ChartOpponentDto, String> opponentName();
 
 }

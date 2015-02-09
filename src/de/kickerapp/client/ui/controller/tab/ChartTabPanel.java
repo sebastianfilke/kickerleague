@@ -81,8 +81,8 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 	 * @return Der erzeugte TabPanel.
 	 */
 	private TabPanel createTabPanel() {
-		final PlainTabPanel tabPanel = new PlainTabPanel();
-		tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
+		final PlainTabPanel plainTabPanel = new PlainTabPanel();
+		plainTabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
 			@Override
 			public void onSelection(SelectionEvent<Widget> event) {
 				final TabPanel panel = (TabPanel) event.getSource();
@@ -92,11 +92,11 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 				getChartForActiveTab();
 			}
 		});
-		tabPanel.setBodyBorder(false);
-		tabPanel.setAutoSelect(false);
-		tabPanel.setResizeTabs(true);
-		tabPanel.setBorders(false);
-		tabPanel.setTabWidth(200);
+		plainTabPanel.setBodyBorder(false);
+		plainTabPanel.setAutoSelect(false);
+		plainTabPanel.setResizeTabs(true);
+		plainTabPanel.setBorders(false);
+		plainTabPanel.setTabWidth(200);
 
 		final TabItemConfig ticSinglePlayerChart = new TabItemConfig("Einzelstatistik");
 		ticSinglePlayerChart.setIcon(IconProvider.get().chart_bar());
@@ -107,12 +107,12 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 		final TabItemConfig ticTeamPlayerChart = new TabItemConfig("Teamstatistik");
 		ticTeamPlayerChart.setIcon(IconProvider.get().chart_bar());
 
-		tabPanel.add(singlePlayerChartPanel, ticSinglePlayerChart);
-		tabPanel.add(doublePlayerChartPanel, ticDoublePlayerChart);
-		tabPanel.add(teamChartPanel, ticTeamPlayerChart);
-		tabPanel.setActiveWidget(singlePlayerChartPanel, false);
+		plainTabPanel.add(singlePlayerChartPanel, ticSinglePlayerChart);
+		plainTabPanel.add(doublePlayerChartPanel, ticDoublePlayerChart);
+		plainTabPanel.add(teamChartPanel, ticTeamPlayerChart);
+		plainTabPanel.setActiveWidget(singlePlayerChartPanel, false);
 
-		return tabPanel;
+		return plainTabPanel;
 	}
 
 	/**

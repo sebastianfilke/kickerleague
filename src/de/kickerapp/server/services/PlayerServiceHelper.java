@@ -76,7 +76,7 @@ public class PlayerServiceHelper {
 		final PlayerDto playerDto = new PlayerDto(dbPlayer.getLastName(), dbPlayer.getFirstName());
 		playerDto.setId(dbPlayer.getKey().getId());
 		playerDto.setNickName(dbPlayer.getNickName());
-		playerDto.setEMail(dbPlayer.getEMail());
+		playerDto.seteMail(dbPlayer.geteMail());
 		playerDto.setLastMatchDate(dbPlayer.getLastMatchDate());
 		playerDto.setLocked(dbPlayer.isLocked());
 

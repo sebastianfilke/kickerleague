@@ -18,7 +18,14 @@ import de.kickerapp.client.ui.dialog.AppErrorDialog;
 public final class AppExceptionHandler implements UncaughtExceptionHandler {
 
 	/** Der Logger der Klasse. */
-	private static transient final Logger LOGGER = Logger.getLogger(AppExceptionHandler.class.getName());
+	private static final transient Logger LOGGER = Logger.getLogger(AppExceptionHandler.class.getName());
+
+	/**
+	 * Erzeugt eine neue Standard-Fehlerbehandlungsroutine.
+	 */
+	private AppExceptionHandler() {
+		super();
+	}
 
 	/**
 	 * Klasse zum Halten der Instanz von {@link AppExceptionHandler}.
@@ -38,13 +45,6 @@ public final class AppExceptionHandler implements UncaughtExceptionHandler {
 	 */
 	public static AppExceptionHandler getInstance() {
 		return LazyHolder.INSTANCE;
-	}
-
-	/**
-	 * Erzeugt eine neue Standard-Fehlerbehandlungsroutine.
-	 */
-	private AppExceptionHandler() {
-		super();
 	}
 
 	/**

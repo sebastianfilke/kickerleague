@@ -18,15 +18,15 @@ import de.kickerapp.shared.dto.TeamDto;
 public interface MatchProperty extends PropertyAccess<MatchDto> {
 
 	@Path("id")
-	public ModelKeyProvider<MatchDto> id();
+	ModelKeyProvider<MatchDto> id();
 
-	public ValueProvider<MatchDto, Integer> matchNumber();
+	ValueProvider<MatchDto, Integer> matchNumber();
 
-	public ValueProvider<MatchDto, Date> matchDate();
+	ValueProvider<MatchDto, Date> matchDate();
 
-	public ValueProvider<MatchDto, String> groupDate();
+	ValueProvider<MatchDto, String> groupDate();
 
-	public ValueProvider<MatchDto, String> matchType = new ValueProvider<MatchDto, String>() {
+	ValueProvider<MatchDto, String> matchType = new ValueProvider<MatchDto, String>() {
 		@Override
 		public String getValue(MatchDto object) {
 			String matchType = "";
@@ -48,7 +48,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 		}
 	};
 
-	public ValueProvider<MatchDto, String> team1 = new ValueProvider<MatchDto, String>() {
+	ValueProvider<MatchDto, String> team1 = new ValueProvider<MatchDto, String>() {
 		@Override
 		public String getValue(MatchDto object) {
 			return getTeam(object, object.getTeam1Dto());
@@ -81,7 +81,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 		}
 	};
 
-	public ValueProvider<MatchDto, String> team2 = new ValueProvider<MatchDto, String>() {
+	ValueProvider<MatchDto, String> team2 = new ValueProvider<MatchDto, String>() {
 		@Override
 		public String getValue(MatchDto object) {
 			return getTeam(object, object.getTeam2Dto());
@@ -114,7 +114,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 		}
 	};
 
-	public ValueProvider<MatchDto, String> matchResult = new ValueProvider<MatchDto, String>() {
+	ValueProvider<MatchDto, String> matchResult = new ValueProvider<MatchDto, String>() {
 		@Override
 		public String getValue(MatchDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -149,7 +149,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 		}
 	};
 
-	public ValueProvider<MatchDto, String> matchSets = new ValueProvider<MatchDto, String>() {
+	ValueProvider<MatchDto, String> matchSets = new ValueProvider<MatchDto, String>() {
 		@Override
 		public String getValue(MatchDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -185,7 +185,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 		}
 	};
 
-	public ValueProvider<MatchDto, String> matchPointsTeam1 = new ValueProvider<MatchDto, String>() {
+	ValueProvider<MatchDto, String> matchPointsTeam1 = new ValueProvider<MatchDto, String>() {
 		@Override
 		public String getValue(MatchDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -225,7 +225,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 		}
 	};
 
-	public ValueProvider<MatchDto, String> matchPointsTeam2 = new ValueProvider<MatchDto, String>() {
+	ValueProvider<MatchDto, String> matchPointsTeam2 = new ValueProvider<MatchDto, String>() {
 		@Override
 		public String getValue(MatchDto object) {
 			final StringBuilder sb = new StringBuilder();
@@ -265,7 +265,7 @@ public interface MatchProperty extends PropertyAccess<MatchDto> {
 		}
 	};
 
-	public ValueProvider<MatchDto, ImageResource> matchComment = new ValueProvider<MatchDto, ImageResource>() {
+	ValueProvider<MatchDto, ImageResource> matchComment = new ValueProvider<MatchDto, ImageResource>() {
 		@Override
 		public ImageResource getValue(MatchDto object) {
 			return IconProvider.get().comments10();

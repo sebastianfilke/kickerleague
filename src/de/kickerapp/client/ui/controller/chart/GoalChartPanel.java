@@ -146,11 +146,11 @@ public class GoalChartPanel extends BaseContainer {
 				final int value = valueProvider.getValue(item).intValue();
 
 				final StringBuilder sb = new StringBuilder(Integer.toString(Math.abs(value)));
-				if (valueProvider.getPath().equals("shotGoals")) {
+				if ("shotGoals".equals(valueProvider.getPath())) {
 					sb.append(value == 1 ? " Tor geschossen" : " Tore geschossen");
-				} else if (valueProvider.getPath().equals("getGoals")) {
+				} else if ("getGoals".equals(valueProvider.getPath())) {
 					sb.append(value == 1 ? " Tor kassiert" : " Tore kassiert");
-				} else if (valueProvider.getPath().equals("goalDifference")) {
+				} else if ("goalDifference".equals(valueProvider.getPath())) {
 					sb.append(value == 1 || value == -1 ? " Tor " : " Tore ");
 					if (value <= 0) {
 						sb.append("mehr kassiert");

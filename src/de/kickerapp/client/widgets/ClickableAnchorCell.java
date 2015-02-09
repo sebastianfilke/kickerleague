@@ -54,7 +54,7 @@ public class ClickableAnchorCell extends ResizeCell<String> implements HasSelect
 	 */
 	@Override
 	public void render(Context context, String value, SafeHtmlBuilder sb) {
-		if (value != null && !value.equals("0")) {
+		if (value != null && !"0".equals(value)) {
 			sb.appendHtmlConstant("<a class='anchor' style='cursor: pointer; font-weight: bold; text-decoration: underline;'>" + value + "</a>");
 		} else {
 			sb.appendHtmlConstant("<a class='anchor'>" + value + "</a>");

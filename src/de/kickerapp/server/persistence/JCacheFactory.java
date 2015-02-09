@@ -23,6 +23,21 @@ public final class JCacheFactory {
 	private Cache instance;
 
 	/**
+	 * Privater Konstruktor zur Verhinderung externe Instantiierung.
+	 */
+	private JCacheFactory() {
+		final HashMap<String, Integer> props = new HashMap<String, Integer>();
+		props.put(GCacheFactory.EXPIRATION_DELTA, 1800);
+
+		try {
+			final CacheFactory cacheFactory = CacheManager.getInstance().getCacheFactory();
+			instance = cacheFactory.createCache(props);
+		} catch (CacheException ce) {
+			ce.printStackTrace();
+		}
+	}
+
+	/**
 	 * Klasse zum Halten der Instanz von {@link JCacheFactory}.
 	 * 
 	 * @author Sebastian Filke
@@ -40,21 +55,6 @@ public final class JCacheFactory {
 	 */
 	private static JCacheFactory getInstance() {
 		return LazyHolder.INSTANCE;
-	}
-
-	/**
-	 * Privater Konstruktor zur Verhinderung externe Instantiierung.
-	 */
-	private JCacheFactory() {
-		final HashMap<String, Integer> props = new HashMap<String, Integer>();
-		props.put(GCacheFactory.EXPIRATION_DELTA, 1800);
-
-		try {
-			final CacheFactory cacheFactory = CacheManager.getInstance().getCacheFactory();
-			instance = cacheFactory.createCache(props);
-		} catch (CacheException ce) {
-			ce.printStackTrace();
-		}
 	}
 
 	/**

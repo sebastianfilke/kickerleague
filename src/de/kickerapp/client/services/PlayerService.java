@@ -24,7 +24,7 @@ public interface PlayerService extends RemoteService {
 	 * @return Der neu erstellte Spieler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public PlayerDto createPlayer(PlayerDto playerDto) throws IllegalArgumentException;
+	PlayerDto createPlayer(PlayerDto playerDto) throws IllegalArgumentException;
 
 	/**
 	 * Aktualisiert den Spieler.
@@ -33,7 +33,7 @@ public interface PlayerService extends RemoteService {
 	 * @return Der aktualisierte Spieler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public PlayerDto updatePlayer(PlayerDto playerDto) throws IllegalArgumentException;
+	PlayerDto updatePlayer(PlayerDto playerDto) throws IllegalArgumentException;
 
 	/**
 	 * Liefert alle Spieler inklusive Statistiken.
@@ -42,7 +42,7 @@ public interface PlayerService extends RemoteService {
 	 * @return Alle Spieler inklusive Statistiken.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public ArrayList<PlayerDto> getAllPlayers(MatchType matchType) throws IllegalArgumentException;
+	ArrayList<PlayerDto> getAllPlayers(MatchType matchType) throws IllegalArgumentException;
 
 	/**
 	 * Liefert Aggregation von Jahr und Spielern mit mindestens einem Spiel für Einzelspiele.
@@ -50,7 +50,7 @@ public interface PlayerService extends RemoteService {
 	 * @return Die Aggregation von Jahr und Spielern mit mindestens einem Spiel.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public HashMap<Integer, ArrayList<PlayerDto>> getSingleMatchYearAggregation() throws IllegalArgumentException;
+	HashMap<Integer, ArrayList<PlayerDto>> getSingleMatchYearAggregation() throws IllegalArgumentException;
 
 	/**
 	 * Liefert Aggregation von Jahr und Spielern mit mindestens einem Spiel für Doppelspiele.
@@ -58,6 +58,6 @@ public interface PlayerService extends RemoteService {
 	 * @return Die Aggregation von Jahr und Spielern mit mindestens einem Spiel.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public HashMap<Integer, ArrayList<PlayerDto>> getDoubleMatchYearAggregation() throws IllegalArgumentException;
+	HashMap<Integer, ArrayList<PlayerDto>> getDoubleMatchYearAggregation() throws IllegalArgumentException;
 
 }

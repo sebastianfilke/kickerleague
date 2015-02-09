@@ -23,7 +23,7 @@ public interface MatchService extends RemoteService {
 	 * @return Das neu erstellte Spiel.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public MatchDto createSingleMatch(MatchDto matchDto) throws IllegalArgumentException;
+	MatchDto createSingleMatch(MatchDto matchDto) throws IllegalArgumentException;
 
 	/**
 	 * Erzeugt ein neues Doppelspiel.
@@ -32,15 +32,15 @@ public interface MatchService extends RemoteService {
 	 * @return Das neu erstellte Spiel.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public MatchDto createDoubleMatch(MatchDto matchDto) throws IllegalArgumentException;
+	MatchDto createDoubleMatch(MatchDto matchDto) throws IllegalArgumentException;
 
 	/**
 	 * Liefert alle Spiele ab dem übergebenem Datum.
 	 * 
-	 * @return Alle Spiel.
 	 * @param date Das Datum ab wann die Spiele geliefert werden sollen.
+	 * @return Alle Spiel für das übergebene Datum.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public ArrayList<MatchDto> getAllMatchesFrom(Date date) throws IllegalArgumentException;
+	ArrayList<MatchDto> getAllMatchesFrom(Date date) throws IllegalArgumentException;
 
 }

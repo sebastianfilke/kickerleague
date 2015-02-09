@@ -10,15 +10,15 @@ import de.kickerapp.shared.dto.ChartGoalDto;
 public interface ChartGoalProperty extends PropertyAccess<ChartGoalDto> {
 
 	@Path("id")
-	public ModelKeyProvider<ChartGoalDto> id();
+	ModelKeyProvider<ChartGoalDto> id();
 
-	public ValueProvider<ChartGoalDto, String> month();
+	ValueProvider<ChartGoalDto, String> month();
 
-	public ValueProvider<ChartGoalDto, Integer> shotGoals();
+	ValueProvider<ChartGoalDto, Integer> shotGoals();
 
-	public ValueProvider<ChartGoalDto, Integer> getGoals();
+	ValueProvider<ChartGoalDto, Integer> getGoals();
 
-	public ValueProvider<ChartGoalDto, Integer> goalDifference = new ValueProvider<ChartGoalDto, Integer>() {
+	ValueProvider<ChartGoalDto, Integer> goalDifference = new ValueProvider<ChartGoalDto, Integer>() {
 		@Override
 		public Integer getValue(ChartGoalDto object) {
 			final int goalDifference = object.getShotGoals() - object.getGetGoals();

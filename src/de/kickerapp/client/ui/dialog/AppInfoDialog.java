@@ -21,6 +21,14 @@ public final class AppInfoDialog extends BaseDialog {
 	private Label infoMessage;
 
 	/**
+	 * Erzeugt einen neuen Dialog für Fehler.
+	 */
+	private AppInfoDialog() {
+		super();
+		initLayout();
+	}
+
+	/**
 	 * Klasse zum Halten der Instanz von {@link AppInfoDialog}.
 	 * 
 	 * @author Sebastian Filke
@@ -38,14 +46,6 @@ public final class AppInfoDialog extends BaseDialog {
 	 */
 	public static AppInfoDialog getInstance() {
 		return LazyHolder.INSTANCE;
-	}
-
-	/**
-	 * Erzeugt einen neuen Dialog für Fehler.
-	 */
-	private AppInfoDialog() {
-		super();
-		initLayout();
 	}
 
 	/**

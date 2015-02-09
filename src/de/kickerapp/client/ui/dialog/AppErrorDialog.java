@@ -18,6 +18,14 @@ public final class AppErrorDialog extends BaseDialog {
 	private HTML errorMessage;
 
 	/**
+	 * Erzeugt einen neuen Dialog für Fehler.
+	 */
+	private AppErrorDialog() {
+		super();
+		initLayout();
+	}
+
+	/**
 	 * Klasse zum Halten der Instanz von {@link AppErrorDialog}.
 	 * 
 	 * @author Sebastian Filke
@@ -35,14 +43,6 @@ public final class AppErrorDialog extends BaseDialog {
 	 */
 	public static AppErrorDialog getInstance() {
 		return LazyHolder.INSTANCE;
-	}
-
-	/**
-	 * Erzeugt einen neuen Dialog für Fehler.
-	 */
-	private AppErrorDialog() {
-		super();
-		initLayout();
 	}
 
 	/**

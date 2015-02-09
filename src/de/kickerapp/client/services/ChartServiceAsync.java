@@ -21,7 +21,7 @@ public interface ChartServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getSinglePlayerInfo(PlayerDto playerDto, Integer year, AsyncCallback<InfoDto> callback) throws IllegalArgumentException;
+	void getSinglePlayerInfo(PlayerDto playerDto, Integer year, AsyncCallback<InfoDto> callback) throws IllegalArgumentException;
 
 	/**
 	 * Liefert die Einzelspieler-Statistiken für den gewählten Spieler.
@@ -31,7 +31,7 @@ public interface ChartServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getSinglePlayerChart(PlayerDto playerDto, Integer year, AsyncCallback<ChartContainer> callback) throws IllegalArgumentException;
+	void getSinglePlayerChart(PlayerDto playerDto, Integer year, AsyncCallback<ChartContainer> callback) throws IllegalArgumentException;
 
 	/**
 	 * Liefert die Doppelspieler-Informationen für den gewählten Spieler.
@@ -41,7 +41,7 @@ public interface ChartServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getDoublePlayerInfo(PlayerDto playerDto, Integer year, AsyncCallback<InfoDto> callback) throws IllegalArgumentException;
+	void getDoublePlayerInfo(PlayerDto playerDto, Integer year, AsyncCallback<InfoDto> callback) throws IllegalArgumentException;
 
 	/**
 	 * Liefert die Doppelspieler-Statistiken für den gewählten Spieler.
@@ -51,6 +51,6 @@ public interface ChartServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getDoublePlayerChart(PlayerDto playerDto, Integer year, AsyncCallback<ChartContainer> callback) throws IllegalArgumentException;
+	void getDoublePlayerChart(PlayerDto playerDto, Integer year, AsyncCallback<ChartContainer> callback) throws IllegalArgumentException;
 
 }

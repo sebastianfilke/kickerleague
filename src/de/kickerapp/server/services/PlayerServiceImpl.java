@@ -47,7 +47,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 		dbPlayer.setLastName(playerDto.getLastName());
 		dbPlayer.setFirstName(playerDto.getFirstName());
 		dbPlayer.setNickName(playerDto.getNickName());
-		dbPlayer.setEMail(playerDto.getEMail());
+		dbPlayer.seteMail(playerDto.geteMail());
 		dbPlayer.setLocked(playerDto.isLocked());
 
 		final PlayerSingleStats dbPlayerSingleStats = new PlayerSingleStats();
@@ -81,7 +81,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 		dbPlayer.setLastName(playerDto.getLastName());
 		dbPlayer.setFirstName(playerDto.getFirstName());
 		dbPlayer.setNickName(playerDto.getNickName());
-		dbPlayer.setEMail(playerDto.getEMail());
+		dbPlayer.seteMail(playerDto.geteMail());
 		dbPlayer.setLocked(playerDto.isLocked());
 
 		PMFactory.persistObject(dbPlayer);

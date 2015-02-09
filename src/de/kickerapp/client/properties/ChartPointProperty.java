@@ -10,10 +10,10 @@ import de.kickerapp.shared.dto.ChartPointDto;
 public interface ChartPointProperty extends PropertyAccess<ChartPointDto> {
 
 	@Path("id")
-	public ModelKeyProvider<ChartPointDto> id();
+	ModelKeyProvider<ChartPointDto> id();
 
-	public ValueProvider<ChartPointDto, Integer> matchNumber();
+	ValueProvider<ChartPointDto, Integer> matchNumber();
 
-	public ValueProvider<ChartPointDto, Integer> points();
+	ValueProvider<ChartPointDto, Integer> points();
 
 }

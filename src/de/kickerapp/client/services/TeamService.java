@@ -21,6 +21,6 @@ public interface TeamService extends RemoteService {
 	 * @return Die Teams inklusive Statistiken.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public ArrayList<TeamDto> getAllTeams() throws IllegalArgumentException;
+	ArrayList<TeamDto> getAllTeams() throws IllegalArgumentException;
 
 }

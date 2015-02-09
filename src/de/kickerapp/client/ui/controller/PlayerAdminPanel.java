@@ -286,7 +286,7 @@ public class PlayerAdminPanel extends BaseContainer {
 				tfNickname.setValue(selectedPlayer.getNickName());
 				tfFirstname.setValue(selectedPlayer.getFirstName());
 				tfLastname.setValue(selectedPlayer.getLastName());
-				tfEMail.setValue(selectedPlayer.getEMail());
+				tfEMail.setValue(selectedPlayer.geteMail());
 				cbLocked.setValue(selectedPlayer.isLocked(), true);
 				fsPlayer.setHeadingText("Spieler bearbeiten");
 				sffPlayer.setEnabled(false);
@@ -380,7 +380,7 @@ public class PlayerAdminPanel extends BaseContainer {
 		final PlayerDto newPlayer = new PlayerDto(tfLastname.getValue(), tfFirstname.getValue());
 		newPlayer.setNickName(tfNickname.getValue());
 		if (tfEMail.getValue() != null) {
-			newPlayer.setEMail(tfEMail.getValue().toLowerCase());
+			newPlayer.seteMail(tfEMail.getValue().toLowerCase());
 		}
 		newPlayer.setLocked(cbLocked.getValue());
 
@@ -422,7 +422,7 @@ public class PlayerAdminPanel extends BaseContainer {
 			selectedPlayer.setFirstName(tfFirstname.getValue());
 			selectedPlayer.setNickName(tfNickname.getValue());
 			if (tfEMail.getValue() != null) {
-				selectedPlayer.setEMail(tfEMail.getValue().toLowerCase());
+				selectedPlayer.seteMail(tfEMail.getValue().toLowerCase());
 			}
 			selectedPlayer.setLocked(cbLocked.getValue());
 		}

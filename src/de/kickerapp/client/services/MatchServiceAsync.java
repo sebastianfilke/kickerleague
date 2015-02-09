@@ -21,7 +21,7 @@ public interface MatchServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void createSingleMatch(MatchDto matchDto, AsyncCallback<MatchDto> callback) throws IllegalArgumentException;
+	void createSingleMatch(MatchDto matchDto, AsyncCallback<MatchDto> callback) throws IllegalArgumentException;
 
 	/**
 	 * Erzeugt ein neues Doppelspiel.
@@ -30,7 +30,7 @@ public interface MatchServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void createDoubleMatch(MatchDto matchDto, AsyncCallback<MatchDto> callback) throws IllegalArgumentException;
+	void createDoubleMatch(MatchDto matchDto, AsyncCallback<MatchDto> callback) throws IllegalArgumentException;
 
 	/**
 	 * Liefert alle Spiele.
@@ -39,6 +39,6 @@ public interface MatchServiceAsync {
 	 * @param callback Der Callback-Handler.
 	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	public void getAllMatchesFrom(Date date, AsyncCallback<ArrayList<MatchDto>> callback) throws IllegalArgumentException;
+	void getAllMatchesFrom(Date date, AsyncCallback<ArrayList<MatchDto>> callback) throws IllegalArgumentException;
 
 }

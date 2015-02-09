@@ -126,8 +126,8 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 	 * @return Der erzeugte TabPanel.
 	 */
 	private TabPanel createTabPanel() {
-		final PlainTabPanel tabPanel = new PlainTabPanel();
-		tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
+		final PlainTabPanel plaonTabPanel = new PlainTabPanel();
+		plaonTabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
 			@Override
 			public void onSelection(SelectionEvent<Widget> event) {
 				final TabPanel panel = (TabPanel) event.getSource();
@@ -137,8 +137,8 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 				getTableForActiveTab();
 			}
 		});
-		tabPanel.setResizeTabs(true);
-		tabPanel.setTabWidth(200);
+		plaonTabPanel.setResizeTabs(true);
+		plaonTabPanel.setTabWidth(200);
 
 		final VerticalLayoutContainer vlcSingleTable = new VerticalLayoutContainer();
 		vlcSingleTable.add(createSingleTableToolBar(), new VerticalLayoutData(1, -1));
@@ -161,13 +161,13 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 		final TabItemConfig ticTeamTable = new TabItemConfig("Teamtabelle");
 		ticTeamTable.setIcon(IconProvider.get().player_team());
 
-		tabPanel.add(vlcSingleTable, ticSingleTable);
-		tabPanel.add(vlcDoubleTable, ticDoubleTable);
-		tabPanel.add(vlcTeamTable, ticTeamTable);
-		tabPanel.setBodyBorder(false);
-		tabPanel.setBorders(false);
+		plaonTabPanel.add(vlcSingleTable, ticSingleTable);
+		plaonTabPanel.add(vlcDoubleTable, ticDoubleTable);
+		plaonTabPanel.add(vlcTeamTable, ticTeamTable);
+		plaonTabPanel.setBodyBorder(false);
+		plaonTabPanel.setBorders(false);
 
-		return tabPanel;
+		return plaonTabPanel;
 	}
 
 	/**

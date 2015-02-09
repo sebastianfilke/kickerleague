@@ -14,6 +14,6 @@ public interface TabPanelEventHandler extends EventHandler {
 	 * 
 	 * @param event Das Anzeige-Ereignis.
 	 */
-	public void setActiveWidget(TabPanelEvent event);
+	void setActiveWidget(TabPanelEvent event);
 
 }
