@@ -1,3 +1,10 @@
-# Willkommen beim Repository der Kicker Applikation #
+# Kicker League #
 
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+Quick Setup
+-
+
+Cloning the project repositories
+-
+
+Setup Eclipse 
+-
