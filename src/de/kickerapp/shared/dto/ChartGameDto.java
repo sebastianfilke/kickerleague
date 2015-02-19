@@ -8,7 +8,7 @@ package de.kickerapp.shared.dto;
 public class ChartGameDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -1759614740386503908L;
+	private static final long serialVersionUID = 1L;
 
 	/** Der Monat für die Spielstatistik. */
 	private String month;

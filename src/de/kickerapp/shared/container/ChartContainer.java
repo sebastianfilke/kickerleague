@@ -11,7 +11,7 @@ import de.kickerapp.shared.dto.ChartPointDto;
 public class ChartContainer implements BaseSerializable {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -6466711357162157543L;
+	private static final long serialVersionUID = 1L;
 
 	private ArrayList<ChartGameDto> chartGameDtos;
 

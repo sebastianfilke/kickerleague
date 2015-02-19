@@ -23,6 +23,7 @@ import de.kickerapp.server.services.PlayerServiceHelper.PlayerNameComparator;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerTableComparator;
 import de.kickerapp.shared.common.MatchType;
 import de.kickerapp.shared.dto.PlayerDto;
+import de.kickerapp.shared.exception.KickerLeagueException;
 
 /**
  * Dienst zur Verarbeitung von Spielern im Klienten.
@@ -32,13 +33,13 @@ import de.kickerapp.shared.dto.PlayerDto;
 public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerService {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = 3828516373887924192L;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PlayerDto createPlayer(PlayerDto playerDto) throws IllegalArgumentException {
+	public PlayerDto createPlayer(PlayerDto playerDto) throws KickerLeagueException {
 		final Player dbPlayer = new Player();
 		final int playerId = PMFactory.getNextId(Player.class.getName());
 		final Key playerKey = KeyFactory.createKey(Player.class.getSimpleName(), playerId);
@@ -75,7 +76,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PlayerDto updatePlayer(PlayerDto playerDto) throws IllegalArgumentException {
+	public PlayerDto updatePlayer(PlayerDto playerDto) throws KickerLeagueException {
 		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId());
 
 		dbPlayer.setLastName(playerDto.getLastName());
@@ -96,7 +97,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ArrayList<PlayerDto> getAllPlayers(MatchType matchType) throws IllegalArgumentException {
+	public ArrayList<PlayerDto> getAllPlayers(MatchType matchType) throws KickerLeagueException {
 		final ArrayList<PlayerDto> playerDtos = new ArrayList<PlayerDto>();
 
 		List<Player> dbPlayers = null;
@@ -136,7 +137,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HashMap<Integer, ArrayList<PlayerDto>> getSingleMatchYearAggregation() throws IllegalArgumentException {
+	public HashMap<Integer, ArrayList<PlayerDto>> getSingleMatchYearAggregation() throws KickerLeagueException {
 		final List<SingleMatchYearAggregation> dbYearAggregations = PMFactory.getList(SingleMatchYearAggregation.class, MatchAggregationPlan.PLAYER);
 
 		final HashMap<Integer, ArrayList<PlayerDto>> yearAggregations = new HashMap<Integer, ArrayList<PlayerDto>>();
@@ -166,7 +167,7 @@ public class PlayerServiceImpl extends RemoteServiceServlet implements PlayerSer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HashMap<Integer, ArrayList<PlayerDto>> getDoubleMatchYearAggregation() throws IllegalArgumentException {
+	public HashMap<Integer, ArrayList<PlayerDto>> getDoubleMatchYearAggregation() throws KickerLeagueException {
 		final List<DoubleMatchYearAggregation> dbYearAggregations = PMFactory.getList(DoubleMatchYearAggregation.class, MatchAggregationPlan.PLAYER);
 
 		final HashMap<Integer, ArrayList<PlayerDto>> yearAggregations = new HashMap<Integer, ArrayList<PlayerDto>>();

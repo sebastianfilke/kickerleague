@@ -24,6 +24,7 @@ import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.persistence.queries.MatchBean;
 import de.kickerapp.server.services.MatchServiceHelper.MatchDescendingComparator;
 import de.kickerapp.shared.dto.MatchDto;
+import de.kickerapp.shared.exception.KickerLeagueException;
 
 /**
  * Dienst zur Verarbeitung von Spielen im Klienten.
@@ -33,13 +34,13 @@ import de.kickerapp.shared.dto.MatchDto;
 public class MatchServiceImpl extends RemoteServiceServlet implements MatchService {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = 6552395856577483840L;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public MatchDto createSingleMatch(MatchDto matchDto) throws IllegalArgumentException {
+	public MatchDto createSingleMatch(MatchDto matchDto) throws KickerLeagueException {
 		final SingleMatch dbMatch = new SingleMatch();
 
 		final int nextMatchNumber = MatchBean.getNextMatchNumber();
@@ -82,7 +83,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public MatchDto createDoubleMatch(MatchDto matchDto) throws IllegalArgumentException {
+	public MatchDto createDoubleMatch(MatchDto matchDto) throws KickerLeagueException {
 		final DoubleMatch dbMatch = new DoubleMatch();
 
 		final int nextMatchNumber = MatchBean.getNextMatchNumber();
@@ -325,7 +326,7 @@ public class MatchServiceImpl extends RemoteServiceServlet implements MatchServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ArrayList<MatchDto> getAllMatchesFrom(Date date) throws IllegalArgumentException {
+	public ArrayList<MatchDto> getAllMatchesFrom(Date date) throws KickerLeagueException {
 		final List<SingleMatch> dbSingleMatches = MatchBean.getSingleMatchesFrom(date);
 		final List<DoubleMatch> dbDoubleMatches = MatchBean.getDoubleMatchesFrom(date);
 

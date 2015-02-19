@@ -21,7 +21,7 @@ import de.kickerapp.server.dao.fetchplans.MatchHistoryPlan;
 public class TeamMatchHistory extends MatchHistory {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -8556791683913172990L;
+	private static final long serialVersionUID = 1L;
 
 	/** Das erste Team. */
 	@Unowned

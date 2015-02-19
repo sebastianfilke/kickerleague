@@ -15,7 +15,7 @@ import javax.jdo.annotations.Persistent;
 public class MatchYearAggregation extends BaseDao {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = 2255546933965500040L;
+	private static final long serialVersionUID = 1L;
 
 	/** Das Jahr. */
 	@Persistent

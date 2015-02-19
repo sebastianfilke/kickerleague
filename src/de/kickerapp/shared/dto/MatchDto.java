@@ -12,7 +12,7 @@ import de.kickerapp.shared.common.MatchType;
 public class MatchDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = 2656034118993930642L;
+	private static final long serialVersionUID = 1L;
 
 	/** Die Spielnummer. */
 	private Integer matchNumber;

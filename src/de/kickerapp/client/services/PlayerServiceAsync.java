@@ -20,42 +20,37 @@ public interface PlayerServiceAsync {
 	 * 
 	 * @param playerDto Der zu erstellende Spieler.
 	 * @param callback Der Callback-Handler.
-	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	void createPlayer(PlayerDto playerDto, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
+	void createPlayer(PlayerDto playerDto, AsyncCallback<PlayerDto> callback);
 
 	/**
 	 * Aktualisiert den Spieler.
 	 * 
 	 * @param playerDto Der zu aktualisierende Spieler.
 	 * @param callback Der Callback-Handler.
-	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	void updatePlayer(PlayerDto playerDto, AsyncCallback<PlayerDto> callback) throws IllegalArgumentException;
+	void updatePlayer(PlayerDto playerDto, AsyncCallback<PlayerDto> callback);
 
 	/**
 	 * Liefert alle Spieler inklusive Statistiken.
 	 * 
 	 * @param matchType Der Typ des Spiels zum Laden der Statistiken.
 	 * @param callback Der Callback-Handler.
-	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	void getAllPlayers(MatchType matchType, AsyncCallback<ArrayList<PlayerDto>> callback) throws IllegalArgumentException;
+	void getAllPlayers(MatchType matchType, AsyncCallback<ArrayList<PlayerDto>> callback);
 
 	/**
 	 * Liefert Aggregation von Jahr und Spielern mit mindestens einem Spiel für Einzelspiele.
 	 * 
 	 * @param callback Der Callback-Handler.
-	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	void getSingleMatchYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>> callback) throws IllegalArgumentException;
+	void getSingleMatchYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>> callback);
 
 	/**
 	 * Liefert Aggregation von Jahr und Spielern mit mindestens einem Spiel für Doppelspiele.
 	 * 
 	 * @param callback Der Callback-Handler.
-	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	void getDoubleMatchYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>> callback) throws IllegalArgumentException;
+	void getDoubleMatchYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<PlayerDto>>> callback);
 
 }

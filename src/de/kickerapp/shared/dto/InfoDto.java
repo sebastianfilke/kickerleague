@@ -1,6 +1,5 @@
 package de.kickerapp.shared.dto;
 
-
 /**
  * Client-Datenklasse zum Halten des Spielverlaufs für ein Team bzw. Spieler.
  * 
@@ -9,7 +8,7 @@ package de.kickerapp.shared.dto;
 public class InfoDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -4934809671424931355L;
+	private static final long serialVersionUID = 1L;
 
 	/** Die längste Gewinnserie des Team bzw. Spielers. */
 	private Integer winSeries;

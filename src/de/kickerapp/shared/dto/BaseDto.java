@@ -10,7 +10,7 @@ import de.kickerapp.shared.common.BaseSerializable;
 public class BaseDto implements BaseSerializable {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -4326262956527591125L;
+	private static final long serialVersionUID = 1L;
 
 	/** Die DB-ID für das Objekt. */
 	private long id;

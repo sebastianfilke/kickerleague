@@ -10,7 +10,7 @@ import de.kickerapp.shared.common.Tendency;
 public class StatsDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -3916608887988403202L;
+	private static final long serialVersionUID = 1L;
 
 	/** Die gewonnen Spiele des Teams bzw. Spielers. */
 	private Integer wins;

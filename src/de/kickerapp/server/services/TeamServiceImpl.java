@@ -12,6 +12,7 @@ import de.kickerapp.server.dao.fetchplans.TeamPlan;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.services.TeamServiceHelper.TeamTableComparator;
 import de.kickerapp.shared.dto.TeamDto;
+import de.kickerapp.shared.exception.KickerLeagueException;
 
 /**
  * Dienst zur Verarbeitung von Teams im Klienten.
@@ -21,13 +22,13 @@ import de.kickerapp.shared.dto.TeamDto;
 public class TeamServiceImpl extends RemoteServiceServlet implements TeamService {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -5563601523296995378L;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ArrayList<TeamDto> getAllTeams() throws IllegalArgumentException {
+	public ArrayList<TeamDto> getAllTeams() throws KickerLeagueException {
 		final ArrayList<TeamDto> teamDtos = new ArrayList<TeamDto>();
 
 		final List<Team> dbTeams = PMFactory.getList(Team.class, TeamPlan.TEAMSTATS, TeamPlan.BOTHPLAYERS);

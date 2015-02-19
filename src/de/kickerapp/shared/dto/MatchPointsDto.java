@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class MatchPointsDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -8595724509087459312L;
+	private static final long serialVersionUID = 1L;
 
 	/** Die Punkte des ersten Teams bzw. Spielers. */
 	private ArrayList<Integer> matchPointsTeam1;

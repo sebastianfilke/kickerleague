@@ -10,7 +10,7 @@ import java.util.Date;
 public class PlayerDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -8362977112070597348L;
+	private static final long serialVersionUID = 1L;
 
 	/** Der Nachname des Spielers. */
 	private String lastName;

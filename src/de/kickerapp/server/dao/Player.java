@@ -26,7 +26,7 @@ import de.kickerapp.server.dao.fetchplans.PlayerPlan;
 public class Player extends BaseDao {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -2869752143409930919L;
+	private static final long serialVersionUID = 1L;
 
 	/** Der Nachname des Spielers. */
 	@Persistent

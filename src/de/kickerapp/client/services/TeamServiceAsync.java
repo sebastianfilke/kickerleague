@@ -17,8 +17,7 @@ public interface TeamServiceAsync {
 	 * Liefert alle Teams inklusive Statistiken.
 	 * 
 	 * @param callback Der Callback-Handler.
-	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
 	 */
-	void getAllTeams(AsyncCallback<ArrayList<TeamDto>> callback) throws IllegalArgumentException;
+	void getAllTeams(AsyncCallback<ArrayList<TeamDto>> callback);
 
 }

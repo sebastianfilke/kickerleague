@@ -13,7 +13,7 @@ import javax.jdo.annotations.Persistent;
 public class Sequence extends BaseDao {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = 6411369057468387297L;
+	private static final long serialVersionUID = 1L;
 
 	/** Der Name der Sequenz. */
 	@Persistent

@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.logging.client.SimpleRemoteLogHandler;
 
 import de.kickerapp.client.ui.dialog.AppErrorDialog;
@@ -51,32 +52,34 @@ public final class AppExceptionHandler implements UncaughtExceptionHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void onUncaughtException(Throwable caught) {
-		handleException(caught, true);
+	public void onUncaughtException(Throwable cause) {
+		handleException(cause, true);
 	}
 
 	/**
 	 * Die eigentliche Fehlerbehandlung.
 	 * 
-	 * @param caught Der Fehler der aufgetreten ist.
+	 * @param cause Der Fehler der aufgetreten ist.
 	 * @param remoteLog <code>true</code> falls der Fehler serverseitig geloggt werden soll, andernfalls <code>false</code>.
 	 */
-	public void handleException(final Throwable caught, final boolean remoteLog) {
+	public void handleException(final Throwable cause, final boolean remoteLog) {
 		if (remoteLog && GWT.isProdMode()) {
 			final SimpleRemoteLogHandler remoteLogHandler = new SimpleRemoteLogHandler();
-			final LogRecord logRecord = new LogRecord(Level.SEVERE, caught.getMessage());
-			logRecord.setThrown(caught);
+			final LogRecord logRecord = new LogRecord(Level.SEVERE, cause.getMessage());
+			logRecord.setThrown(cause);
 			remoteLogHandler.publish(logRecord);
 		} else {
-			LOGGER.log(Level.SEVERE, caught.getMessage(), caught);
+			LOGGER.log(Level.SEVERE, cause.getMessage(), cause);
 		}
 
+		final Throwable unwrapedCause = unwrap(cause);
+
 		String errorMessage = "";
-		if (caught.getMessage() != null) {
-			errorMessage = caught.getLocalizedMessage();
+		if (unwrapedCause.getMessage() != null) {
+			errorMessage = unwrapedCause.getLocalizedMessage();
 		}
 		if (errorMessage.isEmpty()) {
-			errorMessage = caught.getClass().getName();
+			errorMessage = unwrapedCause.getClass().getName();
 		}
 
 		// final String errorDetails = getCustomStackTrace(caught);
@@ -88,17 +91,33 @@ public final class AppExceptionHandler implements UncaughtExceptionHandler {
 	}
 
 	/**
+	 * Entpackt den Fehler zur besseren Anzeige.
+	 * 
+	 * @param cause Der Fehler der aufgetreten ist.
+	 * @return Der entpackte Fehler.
+	 */
+	private Throwable unwrap(Throwable cause) {
+		if (cause instanceof UmbrellaException) {
+			final UmbrellaException umbrellaException = (UmbrellaException) cause;
+			if (umbrellaException.getCauses().size() == 1) {
+				return unwrap(umbrellaException.getCauses().iterator().next());
+			}
+		}
+		return cause;
+	}
+
+	/**
 	 * Liefert den StackTrace in einem HTML-Format.
 	 * 
-	 * @param caught Der Fehler der aufgetreten ist.
+	 * @param cause Der Fehler der aufgetreten ist.
 	 * @return Der StackTrace in einem HTML-Format.
 	 */
-	private String getCustomStackTrace(Throwable caught) {
+	private String getCustomStackTrace(Throwable cause) {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(caught.toString());
+		sb.append(cause.toString());
 		sb.append("<br>");
 
-		for (StackTraceElement element : caught.getStackTrace()) {
+		for (StackTraceElement element : cause.getStackTrace()) {
 			sb.append(element);
 			sb.append("<br>");
 		}

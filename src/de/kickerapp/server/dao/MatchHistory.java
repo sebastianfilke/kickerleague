@@ -17,7 +17,7 @@ import javax.jdo.annotations.Persistent;
 public class MatchHistory extends BaseDao {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = 2265186956159719422L;
+	private static final long serialVersionUID = 1L;
 
 	/** Die Spielnummer. */
 	@Persistent

@@ -8,7 +8,7 @@ package de.kickerapp.shared.dto;
 public class ChartGoalDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -273481068953187968L;
+	private static final long serialVersionUID = 1L;
 
 	/** Der Monat für die Torstatistik. */
 	private String month;

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class MatchSetDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -2054250321124768378L;
+	private static final long serialVersionUID = 1L;
 
 	/** Die Sätze des ersten Teams bzw. Spielers. */
 	private ArrayList<Integer> matchSetsTeam1;

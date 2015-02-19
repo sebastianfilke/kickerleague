@@ -8,7 +8,7 @@ package de.kickerapp.shared.dto;
 public class PlayerDoubleStatsDto extends StatsDto {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -839062201651956733L;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Erzeugt eine leere Doppelspiel-Statistik für einen Spieler.

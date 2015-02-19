@@ -20,6 +20,8 @@ import de.kickerapp.shared.dto.ChartOpponentDto;
 import de.kickerapp.shared.dto.ChartPointDto;
 import de.kickerapp.shared.dto.InfoDto;
 import de.kickerapp.shared.dto.PlayerDto;
+import de.kickerapp.shared.dto.TeamDto;
+import de.kickerapp.shared.exception.KickerLeagueException;
 
 /**
  * Dienst zur Verarbeitung von Diagrammen im Klienten.
@@ -29,7 +31,7 @@ import de.kickerapp.shared.dto.PlayerDto;
 public class ChartServiceImpl extends RemoteServiceServlet implements ChartService {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = 4344447340775655248L;
+	private static final long serialVersionUID = 1L;
 
 	/** Die Monate. */
 	private static final String[] MONTHS = new String[] { "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober",
@@ -39,7 +41,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public InfoDto getSinglePlayerInfo(PlayerDto playerDto, Integer year) throws IllegalArgumentException {
+	public InfoDto getSinglePlayerInfo(PlayerDto playerDto, Integer year) throws KickerLeagueException {
 		final List<SingleMatchHistory> dbSingleMatches = MatchBean.getSingleMatchesForPlayer(playerDto, year);
 		final int wins = ChartServiceHelper.getWinsForHistory(dbSingleMatches);
 		final int defeats = ChartServiceHelper.getDefeatsForHistory(dbSingleMatches);
@@ -57,14 +59,14 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		infoDto.setAveragePoints(ChartServiceHelper.getAveragePoints(dbSingleMatches, dbPlayer, wins, defeats));
 		infoDto.setAverageTablePlace(ChartServiceHelper.getAverageTablePlace(dbSingleMatches, dbPlayer, wins, defeats));
 
-		return infoDto;
+		throw new KickerLeagueException("Test");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ChartContainer getSinglePlayerChart(PlayerDto playerDto, Integer year) throws IllegalArgumentException {
+	public ChartContainer getSinglePlayerChart(PlayerDto playerDto, Integer year) throws KickerLeagueException {
 		final List<SingleMatchHistory> dbSingleMatches = MatchBean.getSingleMatchesForPlayer(playerDto, year);
 
 		final HashMap<Integer, ChartGameDto> chartGameDtos = new HashMap<Integer, ChartGameDto>();
@@ -96,7 +98,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public InfoDto getDoublePlayerInfo(PlayerDto playerDto, Integer year) throws IllegalArgumentException {
+	public InfoDto getDoublePlayerInfo(PlayerDto playerDto, Integer year) throws KickerLeagueException {
 		final List<DoubleMatchHistory> dbDoubleMatches = MatchBean.getDoubleMatchesForPlayer(playerDto, year);
 		final int wins = ChartServiceHelper.getWinsForHistory(dbDoubleMatches);
 		final int defeats = ChartServiceHelper.getDefeatsForHistory(dbDoubleMatches);
@@ -121,7 +123,7 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ChartContainer getDoublePlayerChart(PlayerDto playerDto, Integer year) throws IllegalArgumentException {
+	public ChartContainer getDoublePlayerChart(PlayerDto playerDto, Integer year) throws KickerLeagueException {
 		final List<DoubleMatchHistory> dbDoubleMatches = MatchBean.getDoubleMatchesForPlayer(playerDto, year);
 
 		final HashMap<Integer, ChartGameDto> chartGameDtos = new HashMap<Integer, ChartGameDto>();
@@ -147,6 +149,19 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		container.getChartPointDtos().addAll(chartPointDtos);
 
 		return container;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public InfoDto getTeamPlayerInfo(TeamDto teamDto, Integer year) throws KickerLeagueException {
+		return null;
+	}
+
+	@Override
+	public ChartContainer getTeamPlayerChart(TeamDto teamDto, Integer year) throws KickerLeagueException {
+		return null;
 	}
 
 }

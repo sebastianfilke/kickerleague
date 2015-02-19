@@ -17,6 +17,7 @@ import de.kickerapp.server.persistence.JCacheFactory;
 import de.kickerapp.server.persistence.queries.PlayerBean;
 import de.kickerapp.server.services.PlayerServiceHelper.PlayerNameComparator;
 import de.kickerapp.shared.dto.PlayerDto;
+import de.kickerapp.shared.exception.KickerLeagueException;
 
 /**
  * Dienst zur Verarbeitung der PagingComboBoxen im Klienten.
@@ -26,14 +27,14 @@ import de.kickerapp.shared.dto.PlayerDto;
 public class PagingServiceImpl extends RemoteServiceServlet implements PagingService {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = 1711104572514007282L;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public PagingLoadResult<PlayerDto> getPagedPlayers(String query, boolean triggerClick, ArrayList<PlayerDto> selectedPlayers, PagingLoadConfig config)
-			throws IllegalArgumentException {
+			throws KickerLeagueException {
 		final ArrayList<PlayerDto> result = getAllUnselectedPlayers(selectedPlayers);
 		final ArrayList<PlayerDto> filteredResult = createFilteredResult(query, triggerClick, result);
 		final ArrayList<PlayerDto> sublistResult = createSubListResult(config, filteredResult);

@@ -17,7 +17,7 @@ import de.kickerapp.shared.common.Tendency;
 public class Stats extends BaseDao {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -2845433145883248609L;
+	private static final long serialVersionUID = 1L;
 
 	/** Die gewonnen Spiele des Teams bzw. Spielers. */
 	@Persistent

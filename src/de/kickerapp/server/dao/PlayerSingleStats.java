@@ -11,7 +11,7 @@ import javax.jdo.annotations.PersistenceCapable;
 public class PlayerSingleStats extends Stats {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = 8491040640642923090L;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Erzeugt eine leeren Einzelspiel-Statistik für einen Spieler.

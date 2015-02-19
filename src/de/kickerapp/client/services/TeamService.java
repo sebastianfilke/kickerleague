@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import de.kickerapp.shared.dto.TeamDto;
+import de.kickerapp.shared.exception.KickerLeagueException;
 
 /**
  * Die Schnittstelle zur Verarbeitung der Teams im Klienten.
@@ -19,8 +20,8 @@ public interface TeamService extends RemoteService {
 	 * Liefert alle Teams inklusive Statistiken.
 	 * 
 	 * @return Die Teams inklusive Statistiken.
-	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 * @throws KickerLeagueException Falls ein Fehler aufgetreten ist.
 	 */
-	ArrayList<TeamDto> getAllTeams() throws IllegalArgumentException;
+	ArrayList<TeamDto> getAllTeams() throws KickerLeagueException;
 
 }

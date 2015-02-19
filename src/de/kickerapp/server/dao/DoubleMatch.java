@@ -18,7 +18,7 @@ import de.kickerapp.server.dao.fetchplans.MatchPlan;
 public class DoubleMatch extends Match {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = 9102093829847799260L;
+	private static final long serialVersionUID = 1L;
 
 	/** Das erste Team. */
 	@Unowned

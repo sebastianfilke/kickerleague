@@ -8,7 +8,7 @@ package de.kickerapp.shared.dto;
 public class ChartPointDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -6317412684386825279L;
+	private static final long serialVersionUID = 1L;
 
 	/** Die Spielnummer. */
 	private Integer matchNumber;

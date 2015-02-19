@@ -8,7 +8,7 @@ package de.kickerapp.shared.dto;
 public class ChartOpponentDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = 9037519409303287728L;
+	private static final long serialVersionUID = 1L;
 
 	/** Der Name des Gegners bzw. des gegnerischen Teams. */
 	private String opponentName;

@@ -23,7 +23,7 @@ import de.kickerapp.server.dao.fetchplans.TeamPlan;
 public class Team extends BaseDao {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -8313199706919198932L;
+	private static final long serialVersionUID = 1L;
 
 	/** Das Datum des letzten Spiels des Teams. */
 	@Persistent

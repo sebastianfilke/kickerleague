@@ -24,7 +24,7 @@ import de.kickerapp.server.dao.fetchplans.MatchPlan;
 public class Match extends BaseDao {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -6823545529799168114L;
+	private static final long serialVersionUID = 1L;
 
 	/** Die Spielnummer. */
 	@Persistent
@@ -156,7 +156,7 @@ public class Match extends BaseDao {
 	public static class MatchPoints implements Serializable {
 
 		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = -208221150774513707L;
+		private static final long serialVersionUID = 1L;
 
 		/** Die Punkte des ersten Teams bzw. Spielers. */
 		@Persistent
@@ -259,7 +259,7 @@ public class Match extends BaseDao {
 	public static class MatchSets implements Serializable {
 
 		/** Konstante für die SerialVersionUID. */
-		private static final long serialVersionUID = -3185555094167101391L;
+		private static final long serialVersionUID = 1L;
 
 		/** Die Sätze des ersten Teams bzw. Spielers. */
 		@Persistent

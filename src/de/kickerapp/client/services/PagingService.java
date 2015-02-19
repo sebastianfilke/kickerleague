@@ -8,6 +8,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 
 import de.kickerapp.shared.dto.PlayerDto;
+import de.kickerapp.shared.exception.KickerLeagueException;
 
 /**
  * Die Schnittstelle zur Verarbeitung von paginierten-Listen im Klienten.
@@ -25,9 +26,9 @@ public interface PagingService extends RemoteService {
 	 * @param selectedPlayers Die Liste der bereits gewählten Spieler.
 	 * @param loadConfig Die Ladekonfiguration der paginierten Spielerliste.
 	 * @return Die paginierte Spielerliste.
-	 * @throws IllegalArgumentException Falls ein illegales Argument übergeben wurde.
+	 * @throws KickerLeagueException Falls ein Fehler aufgetreten ist.
 	 */
 	PagingLoadResult<PlayerDto> getPagedPlayers(String query, boolean triggerClick, ArrayList<PlayerDto> selectedPlayers, PagingLoadConfig loadConfig)
-			throws IllegalArgumentException;
+			throws KickerLeagueException;
 
 }

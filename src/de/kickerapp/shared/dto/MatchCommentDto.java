@@ -1,6 +1,5 @@
 package de.kickerapp.shared.dto;
 
-
 /**
  * Client-Datenklasse zum Halten der Kommentare für ein Spiel.
  * 
@@ -9,7 +8,7 @@ package de.kickerapp.shared.dto;
 public class MatchCommentDto extends BaseDto {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = 1965905725630960510L;
+	private static final long serialVersionUID = 1L;
 
 	/** Der Kommentar. */
 	private String comment;

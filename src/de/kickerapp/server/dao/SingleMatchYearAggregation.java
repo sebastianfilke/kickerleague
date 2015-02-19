@@ -18,7 +18,7 @@ import de.kickerapp.server.dao.fetchplans.MatchAggregationPlan;
 public class SingleMatchYearAggregation extends MatchYearAggregation {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = -4364679443905495201L;
+	private static final long serialVersionUID = 1L;
 
 	/** Der Spieler. */
 	@Unowned

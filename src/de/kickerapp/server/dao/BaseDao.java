@@ -21,8 +21,8 @@ import de.kickerapp.shared.common.BaseSerializable;
 public class BaseDao implements BaseSerializable {
 
 	/** Konstante für die SerialVersionUID. */
-	private static final long serialVersionUID = 434533353638253743L;
-
+	private static final long serialVersionUID = 1L;
+	
 	/** Der Primärschlüssel der Datenklasse (Datenspeicherentität). */
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)

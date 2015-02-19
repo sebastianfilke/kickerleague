@@ -1,6 +1,8 @@
 package de.kickerapp.server.persistence;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sf.jsr107cache.Cache;
 import net.sf.jsr107cache.CacheException;
@@ -8,6 +10,8 @@ import net.sf.jsr107cache.CacheFactory;
 import net.sf.jsr107cache.CacheManager;
 
 import com.google.appengine.api.memcache.jsr107cache.GCacheFactory;
+
+import de.kickerapp.client.exception.AppExceptionHandler;
 
 /**
  * Singeltonklasse zum Halten der Instanz des {@link Cache}s.
@@ -18,6 +22,9 @@ public final class JCacheFactory {
 
 	/** Die Liste der paginierten Spieler. */
 	public static final String PAGEDPLAYERS = "de.kickerapp.server.services.PagingServiceImpl";
+
+	/** Der Logger der Klasse. */
+	private static final transient Logger LOGGER = Logger.getLogger(AppExceptionHandler.class.getName());
 
 	/** Die einzige Instanz des {@link Cache}. */
 	private Cache instance;
@@ -33,7 +40,7 @@ public final class JCacheFactory {
 			final CacheFactory cacheFactory = CacheManager.getInstance().getCacheFactory();
 			instance = cacheFactory.createCache(props);
 		} catch (CacheException ce) {
-			ce.printStackTrace();
+			LOGGER.log(Level.SEVERE, ce.getMessage(), ce);
 		}
 	}
 
