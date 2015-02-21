@@ -254,7 +254,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 	 * 
 	 * @return Das erzeugte Grid.
 	 */
-	public Grid<MatchDto> createMatchesGrid() {
+	private Grid<MatchDto> createMatchesGrid() {
 		// Spielnummer
 		final SummaryColumnConfig<MatchDto, Integer> ccMatchNumber = new SummaryColumnConfig<MatchDto, Integer>(KickerProperties.MATCH_PROPERTY.matchNumber(),
 				65, "Nr.");

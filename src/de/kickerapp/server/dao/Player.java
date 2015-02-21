@@ -77,18 +77,6 @@ public class Player extends BaseDao {
 	}
 
 	/**
-	 * Erzeugt einen neuen Spieler mit Vor- und Nachnamen.
-	 * 
-	 * @param firstName Der Vornamen des Spielers als {@link String}.
-	 * @param lastName Der Nachname des Spielers als {@link String}.
-	 */
-	public Player(String lastName, String firstName) {
-		this();
-		this.lastName = lastName;
-		this.firstName = firstName;
-	}
-
-	/**
 	 * Liefert den Nachnamen des Spielers.
 	 * 
 	 * @return Der Nachname des Spielers als {@link String}.

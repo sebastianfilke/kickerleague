@@ -462,12 +462,12 @@ public class InsertPanel extends BasePanel implements ShowDataEventHandler {
 		});
 	}
 
-	protected void updateLabelForTeam1(Integer value, Integer value2, Integer value3) {
+	private void updateLabelForTeam1(Integer value, Integer value2, Integer value3) {
 		final int result = getResult(value, value2, value3);
 		resultLabelTeam1.setText(String.valueOf(result));
 	}
 
-	protected void updateLabelForTeam2(Integer value, Integer value2, Integer value3) {
+	private void updateLabelForTeam2(Integer value, Integer value2, Integer value3) {
 		final int result = getResult(value, value2, value3);
 		resultLabelTeam2.setText(String.valueOf(result));
 	}

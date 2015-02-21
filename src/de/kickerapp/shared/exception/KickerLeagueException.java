@@ -26,14 +26,4 @@ public class KickerLeagueException extends Exception {
 		super(message);
 	}
 
-	/**
-	 * Erstellt einen neuen Fehler mit übergebener Fehlermeldung und aufgetretenem Fehler.
-	 * 
-	 * @param message Die Fehlermeldung als {@link String}.
-	 * @param cause Der Fehler der aufgetreten ist.
-	 */
-	public KickerLeagueException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
 }

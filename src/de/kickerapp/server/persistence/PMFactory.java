@@ -36,7 +36,7 @@ public final class PMFactory {
 	 * 
 	 * @return Die Instanz.
 	 */
-	public static PersistenceManagerFactory get() {
+	private static PersistenceManagerFactory get() {
 		return INSTANCE;
 	}
 

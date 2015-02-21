@@ -220,7 +220,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 	 * 
 	 * @return Das erzeugte Grid.
 	 */
-	public Grid<PlayerDto> createSingleTableGrid() {
+	private Grid<PlayerDto> createSingleTableGrid() {
 		final RowNumbererAppearance appearance = GWT.create(RowNumbererAppearance.class);
 		final RowNumberer<PlayerDto> numberer = new RowNumberer<PlayerDto>();
 		numberer.setCell(new AbstractCell<PlayerDto>() {
@@ -577,7 +577,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 	 * 
 	 * @return Das erzeugte Grid.
 	 */
-	public Grid<TeamDto> createTeamTableGrid() {
+	private Grid<TeamDto> createTeamTableGrid() {
 		final RowNumbererAppearance appearance = GWT.create(RowNumbererAppearance.class);
 		final RowNumberer<TeamDto> numberer = new RowNumberer<TeamDto>();
 		numberer.setCell(new AbstractCell<TeamDto>() {

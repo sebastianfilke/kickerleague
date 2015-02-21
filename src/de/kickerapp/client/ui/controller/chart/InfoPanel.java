@@ -45,11 +45,11 @@ public class InfoPanel extends BaseContainer {
 	protected void initLayout() {
 		super.initLayout();
 
-		initHtml();
+		initHtmlLabels();
 		add(createClcInfoContainer());
 	}
 
-	private void initHtml() {
+	private void initHtmlLabels() {
 		winSeries = new HTML(createInfoHtml("0"));
 		defeatSeries = new HTML(createInfoHtml("0"));
 

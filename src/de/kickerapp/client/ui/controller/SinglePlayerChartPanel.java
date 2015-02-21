@@ -302,7 +302,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		return tbtnOpponentChart;
 	}
 
-	public void buttonPressed(HasValue<Boolean> value, PlayerDto selectedPlayer) {
+	private void buttonPressed(HasValue<Boolean> value, PlayerDto selectedPlayer) {
 		if (value == tbtnGameChart) {
 			clcSingleChart.setActiveWidget(gameChartPanel);
 			gameChartPanel.loadGameChart(chartContainer.getChartGameDtos());
@@ -392,7 +392,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		return matchDate.getFullYear();
 	}
 
-	protected void loadSingleInfo(PlayerDto selectedPlayer) {
+	private void loadSingleInfo(PlayerDto selectedPlayer) {
 		if (doUpdatePlayerInfo) {
 			mask("Statistik wird geladen...");
 			KickerServices.CHART_SERVICE.getSinglePlayerInfo(selectedPlayer, cbYear.getValue(), new AsyncCallback<InfoDto>() {
@@ -400,7 +400,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 				public void onSuccess(InfoDto result) {
 					infoPanel.setInfos(result);
 					doUpdatePlayerInfo = false;
-					unmaskLoading();
+					unmaskPanel();
 				}
 
 				@Override
@@ -413,7 +413,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		}
 	}
 
-	protected void loadSinglePlayerChart(PlayerDto selectedPlayer) {
+	private void loadSinglePlayerChart(PlayerDto selectedPlayer) {
 		if (doUpdateSinglePlayerChart) {
 			mask("Statistik wird geladen...");
 			KickerServices.CHART_SERVICE.getSinglePlayerChart(selectedPlayer, cbYear.getValue(), new AsyncCallback<ChartContainer>() {
@@ -437,7 +437,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 					}
 					setEnabledButtons();
 					doUpdateSinglePlayerChart = false;
-					unmaskLoading();
+					unmaskPanel();
 				}
 
 				@Override
@@ -450,13 +450,13 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		}
 	}
 
-	public void unmaskLoading() {
+	private void unmaskPanel() {
 		if (!doUpdateSinglePlayerChart && !doUpdatePlayerInfo) {
 			unmask();
 		}
 	}
 
-	protected void setEnabledButtons() {
+	private void setEnabledButtons() {
 		btnUpdate.setEnabled(true);
 		tbtnGoalChart.setEnabled(true);
 		tbtnGameChart.setEnabled(true);

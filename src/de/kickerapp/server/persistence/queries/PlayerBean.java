@@ -14,20 +14,6 @@ import de.kickerapp.server.persistence.PMFactory;
 public class PlayerBean {
 
 	/**
-	 * Liefert alle Spieler mit mindestens einem Spiel.
-	 * 
-	 * @return Alle Spieler mit mindestens einem Spiel.
-	 */
-	public static List<Player> getAllPlayersWithAtLeastOneMatch() {
-		final QueryContainer conPlayer = new QueryContainer();
-		conPlayer.setQuery("lastMatchDate != null");
-
-		final List<Player> dbPlayers = PMFactory.getList(Player.class, conPlayer);
-
-		return dbPlayers;
-	}
-
-	/**
 	 * Liefert alle Spieler welche nicht gesperrt sind.
 	 * 
 	 * @return Alle Spieler welche nicht gesperrt sind.

@@ -30,14 +30,14 @@ public class ChartServiceHelper {
 	 * @param dbHistory Der Verlauf des Spiel.
 	 * @return Eine Zahl zwischen 1 und 12 zur Representation des Monats.
 	 */
-	protected static int getMonthForMatch(MatchHistory dbHistory) {
+	private static int getMonthForMatch(MatchHistory dbHistory) {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTime(dbHistory.getMatchDate());
 
 		return calendar.get(Calendar.MONTH) + 1;
 	}
 
-	public static Integer getMatchWinSeries(List<? extends MatchHistory> dbMatchHistories) {
+	protected static Integer getMatchWinSeries(List<? extends MatchHistory> dbMatchHistories) {
 		Integer winSeries = 0;
 		Integer tempWinSeries = 0;
 
@@ -54,7 +54,7 @@ public class ChartServiceHelper {
 		return winSeries;
 	}
 
-	public static Integer getMatchDefeatSeries(List<? extends MatchHistory> dbMatchHistories) {
+	protected static Integer getMatchDefeatSeries(List<? extends MatchHistory> dbMatchHistories) {
 		Integer defeatSeries = 0;
 		Integer tempDefeatSeries = 0;
 
@@ -71,7 +71,7 @@ public class ChartServiceHelper {
 		return defeatSeries;
 	}
 
-	public static Integer getMatchMaxWinPoints(List<? extends MatchHistory> dbMatchHistories) {
+	protected static Integer getMatchMaxWinPoints(List<? extends MatchHistory> dbMatchHistories) {
 		Integer maxWinPoints = 0;
 
 		for (MatchHistory dbHistory : dbMatchHistories) {
@@ -82,7 +82,7 @@ public class ChartServiceHelper {
 		return maxWinPoints;
 	}
 
-	public static Integer getMatchMaxLostPoints(List<? extends MatchHistory> dbMatchHistories) {
+	protected static Integer getMatchMaxLostPoints(List<? extends MatchHistory> dbMatchHistories) {
 		Integer maxLostPoints = 0;
 
 		for (MatchHistory dbHistory : dbMatchHistories) {
@@ -93,7 +93,7 @@ public class ChartServiceHelper {
 		return maxLostPoints;
 	}
 
-	public static Integer getMatchMaxPoints(List<? extends MatchHistory> dbMatchHistories) {
+	protected static Integer getMatchMaxPoints(List<? extends MatchHistory> dbMatchHistories) {
 		Integer maxPoints = 1000;
 
 		for (MatchHistory dbHistory : dbMatchHistories) {
@@ -104,7 +104,7 @@ public class ChartServiceHelper {
 		return maxPoints;
 	}
 
-	public static Integer getMatchMinPoints(List<? extends MatchHistory> dbMatchHistories) {
+	protected static Integer getMatchMinPoints(List<? extends MatchHistory> dbMatchHistories) {
 		Integer minPoints = 1000;
 
 		for (MatchHistory dbHistory : dbMatchHistories) {
@@ -115,7 +115,7 @@ public class ChartServiceHelper {
 		return minPoints;
 	}
 
-	public static String getPercentageWins(Player dbPlayer, int wins, int defeats) {
+	protected static String getPercentageWins(Player dbPlayer, int wins, int defeats) {
 		final NumberFormat numberFormat = new DecimalFormat("0.0");
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
@@ -125,7 +125,7 @@ public class ChartServiceHelper {
 		return numberFormat.format(percentageWins);
 	}
 
-	public static String getAveragePoints(List<? extends MatchHistory> dbMatchHistories, Player dbPlayer, int wins, int defeats) {
+	protected static String getAveragePoints(List<? extends MatchHistory> dbMatchHistories, Player dbPlayer, int wins, int defeats) {
 		final NumberFormat numberFormat = new DecimalFormat("0.0");
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
@@ -140,7 +140,7 @@ public class ChartServiceHelper {
 		return numberFormat.format(averagePoints);
 	}
 
-	public static String getAverageTablePlace(List<? extends MatchHistory> dbMatchHistories, Player dbPlayer, int wins, int defeats) {
+	protected static String getAverageTablePlace(List<? extends MatchHistory> dbMatchHistories, Player dbPlayer, int wins, int defeats) {
 		final NumberFormat numberFormat = new DecimalFormat("0.0");
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
@@ -156,7 +156,7 @@ public class ChartServiceHelper {
 		return numberFormat.format(averageTablePlace);
 	}
 
-	public static void updateGameForMatch(MatchHistory dbHistory, HashMap<Integer, ChartGameDto> chartGameDtos) {
+	protected static void updateGameForMatch(MatchHistory dbHistory, HashMap<Integer, ChartGameDto> chartGameDtos) {
 		final int month = ChartServiceHelper.getMonthForMatch(dbHistory);
 
 		final ChartGameDto chartDataDto = chartGameDtos.get(month);
@@ -173,7 +173,7 @@ public class ChartServiceHelper {
 		chartDataDto.setDefeats(defeats);
 	}
 
-	public static void updateGoalForMatch(MatchHistory dbHistory, HashMap<Integer, ChartGoalDto> chartGoalDtos) {
+	protected static void updateGoalForMatch(MatchHistory dbHistory, HashMap<Integer, ChartGoalDto> chartGoalDtos) {
 		final int month = ChartServiceHelper.getMonthForMatch(dbHistory);
 
 		final ChartGoalDto chartDataDto = chartGoalDtos.get(month);
@@ -188,13 +188,13 @@ public class ChartServiceHelper {
 		chartDataDto.setGetGoals(getGoals);
 	}
 
-	public static void updateOpponentForMatch(SingleMatchHistory dbHistory, HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
+	protected static void updateOpponentForMatch(SingleMatchHistory dbHistory, HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
 		final Player opponentPlayer2 = dbHistory.getPlayer2();
 
 		updateOpponentForMatch(opponentPlayer2, dbHistory, chartOpponentDtos);
 	}
 
-	public static void updateOpponentForMatch(DoubleMatchHistory dbHistory, HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
+	protected static void updateOpponentForMatch(DoubleMatchHistory dbHistory, HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
 		final Player opponentPlayer3 = dbHistory.getPlayer3();
 		final Player opponentPlayer4 = dbHistory.getPlayer4();
 
@@ -251,7 +251,7 @@ public class ChartServiceHelper {
 		return sumMatches;
 	}
 
-	public static void updatePointForMatch(MatchHistory dbHistory, ArrayList<ChartPointDto> chartPointDtos) {
+	protected static void updatePointForMatch(MatchHistory dbHistory, ArrayList<ChartPointDto> chartPointDtos) {
 		final ChartPointDto chartPointDto = new ChartPointDto();
 		chartPointDto.setId(chartPointDtos.size() + 1);
 		chartPointDto.setMatchNumber(dbHistory.getMatchNumber());
@@ -260,7 +260,7 @@ public class ChartServiceHelper {
 		chartPointDtos.add(chartPointDto);
 	}
 
-	public static int getWinsForHistory(List<? extends MatchHistory> dbHistories) {
+	protected static int getWinsForHistory(List<? extends MatchHistory> dbHistories) {
 		int sumWins = 0;
 
 		for (MatchHistory dbHistory : dbHistories) {
@@ -271,7 +271,7 @@ public class ChartServiceHelper {
 		return sumWins;
 	}
 
-	public static int getDefeatsForHistory(List<? extends MatchHistory> dbHistories) {
+	protected static int getDefeatsForHistory(List<? extends MatchHistory> dbHistories) {
 		int sumDefeats = 0;
 
 		for (MatchHistory dbHistory : dbHistories) {
