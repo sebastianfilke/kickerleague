@@ -5,13 +5,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.jdo.annotations.Embedded;
-import javax.jdo.annotations.FetchGroup;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
-
-import de.kickerapp.server.dao.fetchplans.MatchPlan;
 
 /**
  * Datenklasse zum Halten der Informationen für ein Einzel- bzw. Doppelspiel.
@@ -20,7 +17,6 @@ import de.kickerapp.server.dao.fetchplans.MatchPlan;
  */
 @PersistenceCapable(detachable = "true")
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-@FetchGroup(name = MatchPlan.COMMENT, members = { @Persistent(name = "matchComment") })
 public class Match extends BaseDao {
 
 	/** Konstante für die SerialVersionUID. */

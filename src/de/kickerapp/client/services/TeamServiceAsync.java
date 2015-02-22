@@ -1,6 +1,7 @@
 package de.kickerapp.client.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -20,4 +21,10 @@ public interface TeamServiceAsync {
 	 */
 	void getAllTeams(AsyncCallback<ArrayList<TeamDto>> callback);
 
+	/**
+	 * Liefert Aggregation von Jahr und Teams mit mindestens einem Spiel für Teamspiele.
+	 * 
+	 * @param callback Der Callback-Handler.
+	 */
+	void getTeamMatchYearAggregation(AsyncCallback<HashMap<Integer, ArrayList<TeamDto>>> callback);
 }

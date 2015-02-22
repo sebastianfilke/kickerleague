@@ -1,21 +1,15 @@
 package de.kickerapp.client.properties;
 
-import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.LabelProvider;
-import com.sencha.gxt.data.shared.ModelKeyProvider;
-import com.sencha.gxt.data.shared.PropertyAccess;
 
 import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.shared.dto.PlayerDoubleStatsDto;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.PlayerSingleStatsDto;
 
-public interface PlayerProperty extends PropertyAccess<PlayerDto> {
-
-	@Path("id")
-	ModelKeyProvider<PlayerDto> id();
+public interface PlayerProperty extends BaseProperty<PlayerDto> {
 
 	LabelProvider<PlayerDto> label = new LabelProvider<PlayerDto>() {
 		@Override

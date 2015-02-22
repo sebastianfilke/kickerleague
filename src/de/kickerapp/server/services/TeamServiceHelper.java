@@ -42,9 +42,9 @@ public class TeamServiceHelper {
 	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
 	 * 
 	 * @param dbTeam Die Objekt-Datenklasse.
-	 * @return Die Client-Datenklasse.
+	 * @return Die Client-Datenklasse ohne Spielstatistiken.
 	 */
-	protected static TeamDto createDtoTeam(Team dbTeam) {
+	protected static TeamDto createTeamDto(Team dbTeam) {
 		final PlayerDto playerDto1 = PlayerServiceHelper.createPlayerDto(dbTeam.getPlayer1());
 		final PlayerDto playerDto2 = PlayerServiceHelper.createPlayerDto(dbTeam.getPlayer2());
 
@@ -52,6 +52,29 @@ public class TeamServiceHelper {
 		teamDto.setId(dbTeam.getKey().getId());
 		teamDto.setLastMatchDate(dbTeam.getLastMatchDate());
 
+		return teamDto;
+	}
+
+	/**
+	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
+	 * 
+	 * @param dbTeam Die Objekt-Datenklasse.
+	 * @return Die Client-Datenklasse mit Teamspiel-Statistik.
+	 */
+	protected static TeamDto createTeamDtoWithTeamStats(Team dbTeam) {
+		final TeamDto teamDto = createTeamDto(dbTeam);
+		teamDto.setTeamStatsDto(createTeamStats(dbTeam));
+
+		return teamDto;
+	}
+
+	/**
+	 * Erzeugt die Client-Datenklasse anhand der Objekt-Datenklasse.
+	 * 
+	 * @param dbTeam Die Objekt-Datenklasse.
+	 * @return Die Client-Datenklasse.
+	 */
+	private static TeamStatsDto createTeamStats(Team dbTeam) {
 		final TeamStats dbTeamStat = dbTeam.getTeamStats();
 
 		final TeamStatsDto teamStatsDto = new TeamStatsDto();
@@ -68,9 +91,7 @@ public class TeamServiceHelper {
 		teamStatsDto.setPoints(dbTeamStat.getPoints());
 		teamStatsDto.setTendency(dbTeamStat.getTendency());
 
-		teamDto.setTeamStatsDto(teamStatsDto);
-
-		return teamDto;
+		return teamStatsDto;
 	}
 
 	/**

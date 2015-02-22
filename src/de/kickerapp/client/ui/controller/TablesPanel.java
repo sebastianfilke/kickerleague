@@ -48,6 +48,7 @@ import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.properties.TeamProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BasePanel;
+import de.kickerapp.client.ui.dialog.AppErrorDialog;
 import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.StoreFilterToggleButton;
@@ -935,8 +936,10 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 		btnUpdate.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
-				setDoUpdate();
-				getTableForActiveTab();
+				// setDoUpdate();
+				// getTableForActiveTab();
+				AppErrorDialog.getInstance().setErrorMessage("Test");
+				AppErrorDialog.getInstance().show();
 			}
 
 			private void setDoUpdate() {

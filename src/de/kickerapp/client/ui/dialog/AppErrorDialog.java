@@ -1,10 +1,15 @@
 package de.kickerapp.client.ui.dialog;
 
 import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.MarginData;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import de.kickerapp.client.ui.base.BaseDialog;
+import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.AppContentPanel;
 
 /**
@@ -15,7 +20,13 @@ import de.kickerapp.client.widgets.AppContentPanel;
 public final class AppErrorDialog extends BaseDialog {
 
 	/** Die Fehlermeldung. */
-	private HTML errorMessage;
+	private HTML message;
+
+	private boolean detailsView;
+
+	private String errorMessage;
+
+	private String detailedErrorMessage;
 
 	/**
 	 * Erzeugt einen neuen Dialog für Fehler.
@@ -59,23 +70,76 @@ public final class AppErrorDialog extends BaseDialog {
 		setClosable(false);
 		setModal(true);
 
-		final AppContentPanel contentPanel = new AppContentPanel();
-		contentPanel.setHeaderVisible(false);
+		detailsView = false;
 
-		errorMessage = new HTML();
+		final AppContentPanel cpError = new AppContentPanel();
+		cpError.setHeaderVisible(false);
 
-		contentPanel.add(errorMessage, new MarginData(5));
+		final FlowLayoutContainer vlcError = new FlowLayoutContainer();
+		vlcError.setScrollMode(ScrollMode.AUTO);
 
-		add(contentPanel);
+		message = new HTML();
+		message.setWordWrap(false);
+
+		vlcError.add(message, new MarginData(5));
+		cpError.add(vlcError);
+
+		add(cpError);
+
+		getButtonBar().clear();
+
+		addButton(createCloseButton());
+		addButton(createDetailsButton());
 	}
 
-	/**
-	 * Setzt die Fehlermeldung.
-	 * 
-	 * @param errorMessage Die Fehlermeldung als {@link String}.
-	 */
+	@Override
+	protected void onShow() {
+		detailsView = true;
+		updateErrorMessage();
+
+		super.onShow();
+	}
+
+	private AppButton createCloseButton() {
+		final AppButton detailsButton = new AppButton("Schließen");
+		detailsButton.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				hide();
+			}
+		});
+		return detailsButton;
+	}
+
+	private AppButton createDetailsButton() {
+		final AppButton detailsButton = new AppButton("Details");
+		detailsButton.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				updateErrorMessage();
+			}
+		});
+		return detailsButton;
+	}
+
+	private void updateErrorMessage() {
+		if (!detailsView) {
+			detailsView = true;
+			setPixelSize(400, 400);
+			message.setHTML(detailedErrorMessage);
+		} else {
+			detailsView = false;
+			setPixelSize(400, 150);
+			message.setHTML(errorMessage);
+		}
+	}
+
 	public void setErrorMessage(String errorMessage) {
-		this.errorMessage.setText(errorMessage);
+		this.errorMessage = errorMessage;
+	}
+
+	public void setDetailedErrorMessage(String detailedErrorMessage) {
+		this.detailedErrorMessage = detailedErrorMessage;
 	}
 
 }

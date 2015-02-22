@@ -1,36 +1,49 @@
 package de.kickerapp.client.properties;
 
-import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.core.client.ValueProvider;
-import com.sencha.gxt.data.shared.ModelKeyProvider;
-import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.data.shared.LabelProvider;
 
 import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
 import de.kickerapp.shared.dto.TeamStatsDto;
 
-public interface TeamProperty extends PropertyAccess<TeamDto> {
+public interface TeamProperty extends BaseProperty<TeamDto> {
 
-	@Path("id")
-	ModelKeyProvider<TeamDto> id();
+	LabelProvider<TeamDto> label = new LabelProvider<TeamDto>() {
+		@Override
+		public String getLabel(TeamDto item) {
+			final StringBuilder sb = new StringBuilder();
+
+			final PlayerDto player1 = item.getPlayer1();
+			final PlayerDto player2 = item.getPlayer2();
+
+			sb.append(player1.getLastName()).append(", ");
+			sb.append(player1.getFirstName());
+			sb.append(" | ");
+			sb.append(player2.getLastName()).append(", ");
+			sb.append(player2.getFirstName());
+
+			return sb.toString();
+		}
+	};
 
 	ValueProvider<TeamDto, String> teamName = new ValueProvider<TeamDto, String>() {
 		@Override
 		public String getValue(TeamDto object) {
-			final StringBuilder builder = new StringBuilder();
+			final StringBuilder sb = new StringBuilder();
 
 			final PlayerDto player1 = object.getPlayer1();
 			final PlayerDto player2 = object.getPlayer2();
 
-			builder.append(player1.getLastName()).append(", ");
-			builder.append(player1.getFirstName());
-			builder.append(" | ");
-			builder.append(player2.getLastName()).append(", ");
-			builder.append(player2.getFirstName());
+			sb.append(player1.getLastName()).append(", ");
+			sb.append(player1.getFirstName());
+			sb.append(" | ");
+			sb.append(player2.getLastName()).append(", ");
+			sb.append(player2.getFirstName());
 
-			return builder.toString();
+			return sb.toString();
 		}
 
 		@Override

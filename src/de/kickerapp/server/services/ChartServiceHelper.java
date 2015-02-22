@@ -115,7 +115,7 @@ public class ChartServiceHelper {
 		return minPoints;
 	}
 
-	protected static String getPercentageWins(Player dbPlayer, int wins, int defeats) {
+	protected static String getPercentageWins(int wins, int defeats) {
 		final NumberFormat numberFormat = new DecimalFormat("0.0");
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
@@ -125,7 +125,7 @@ public class ChartServiceHelper {
 		return numberFormat.format(percentageWins);
 	}
 
-	protected static String getAveragePoints(List<? extends MatchHistory> dbMatchHistories, Player dbPlayer, int wins, int defeats) {
+	protected static String getAveragePoints(List<? extends MatchHistory> dbMatchHistories, int wins, int defeats) {
 		final NumberFormat numberFormat = new DecimalFormat("0.0");
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 
@@ -140,7 +140,7 @@ public class ChartServiceHelper {
 		return numberFormat.format(averagePoints);
 	}
 
-	protected static String getAverageTablePlace(List<? extends MatchHistory> dbMatchHistories, Player dbPlayer, int wins, int defeats) {
+	protected static String getAverageTablePlace(List<? extends MatchHistory> dbMatchHistories, int wins, int defeats) {
 		final NumberFormat numberFormat = new DecimalFormat("0.0");
 		numberFormat.setRoundingMode(RoundingMode.DOWN);
 

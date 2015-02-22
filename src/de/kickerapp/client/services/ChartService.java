@@ -65,7 +65,7 @@ public interface ChartService extends RemoteService {
 	 * @return Die Informationen.
 	 * @throws KickerLeagueException Falls ein Fehler aufgetreten ist.
 	 */
-	InfoDto getTeamPlayerInfo(TeamDto teamDto, Integer year) throws KickerLeagueException;
+	InfoDto getTeamInfo(TeamDto teamDto, Integer year) throws KickerLeagueException;
 
 	/**
 	 * Liefert die Teamspieler-Statistiken für das gewählte Team.
@@ -75,6 +75,6 @@ public interface ChartService extends RemoteService {
 	 * @return Die Teamspieler-Statistiken.
 	 * @throws KickerLeagueException Falls ein Fehler aufgetreten ist.
 	 */
-	ChartContainer getTeamPlayerChart(TeamDto teamDto, Integer year) throws KickerLeagueException;
+	ChartContainer getTeamChart(TeamDto teamDto, Integer year) throws KickerLeagueException;
 
 }

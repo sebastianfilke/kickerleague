@@ -57,7 +57,7 @@ public interface ChartServiceAsync {
 	 * @param year Das Jahr für welches die Informationen angezeigt werden sollen.
 	 * @param callback Der Callback-Handler.
 	 */
-	void getTeamPlayerInfo(TeamDto teamDto, Integer year, AsyncCallback<InfoDto> callback);
+	void getTeamInfo(TeamDto teamDto, Integer year, AsyncCallback<InfoDto> callback);
 
 	/**
 	 * Liefert die Teamspieler-Statistiken für das gewählte Team.
@@ -66,6 +66,6 @@ public interface ChartServiceAsync {
 	 * @param year Das Jahr für welches die Teamspieler-Statistiken angezeigt werden sollen.
 	 * @param callback Der Callback-Handler.
 	 */
-	void getTeamPlayerChart(TeamDto teamDto, Integer year, AsyncCallback<ChartContainer> callback);
+	void getTeamChart(TeamDto teamDto, Integer year, AsyncCallback<ChartContainer> callback);
 
 }

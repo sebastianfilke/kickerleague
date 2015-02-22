@@ -70,13 +70,13 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 
 	private ToggleGroup tgChart;
 
+	private HashMap<Integer, ArrayList<PlayerDto>> playerAggregation;
+
 	private ToggleButton tbtnGoalChart, tbtnGameChart, tbtnOpponentChart, tbtnPointChart;
 
 	private boolean doUpdatePlayerList, doUpdatePlayerInfo, doUpdateDoublePlayerChart;
 
 	private AppButton btnUpdate;
-
-	private HashMap<Integer, ArrayList<PlayerDto>> playerAggregation;
 
 	public DoublePlayerChartPanel() {
 		super();
@@ -435,7 +435,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 					} else if (tgChart.getValue() == tbtnOpponentChart) {
 						opponentChartPanel.loadOpponentChart(result.getChartOpponentDtos());
 					}
-					setEnabledButtons();
+					setButtonsEnabled();
 					doUpdateDoublePlayerChart = false;
 					unmaskPanel();
 				}
@@ -456,7 +456,7 @@ public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanel
 		}
 	}
 
-	private void setEnabledButtons() {
+	private void setButtonsEnabled() {
 		btnUpdate.setEnabled(true);
 		tbtnGoalChart.setEnabled(true);
 		tbtnGameChart.setEnabled(true);

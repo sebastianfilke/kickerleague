@@ -435,7 +435,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 					} else if (tgChart.getValue() == tbtnOpponentChart) {
 						opponentChartPanel.loadOpponentChart(result.getChartOpponentDtos());
 					}
-					setEnabledButtons();
+					setButtonsEnabled();
 					doUpdateSinglePlayerChart = false;
 					unmaskPanel();
 				}
@@ -456,7 +456,7 @@ public class SinglePlayerChartPanel extends BaseContainer implements UpdatePanel
 		}
 	}
 
-	private void setEnabledButtons() {
+	private void setButtonsEnabled() {
 		btnUpdate.setEnabled(true);
 		tbtnGoalChart.setEnabled(true);
 		tbtnGameChart.setEnabled(true);

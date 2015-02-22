@@ -52,72 +52,71 @@ public final class AppExceptionHandler implements UncaughtExceptionHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void onUncaughtException(Throwable cause) {
-		handleException(cause, true);
+	public void onUncaughtException(Throwable caught) {
+		handleException(caught, true);
 	}
 
 	/**
 	 * Die eigentliche Fehlerbehandlung.
 	 * 
-	 * @param cause Der Fehler der aufgetreten ist.
+	 * @param caught Der Fehler der aufgetreten ist.
 	 * @param remoteLog <code>true</code> falls der Fehler serverseitig geloggt werden soll, andernfalls <code>false</code>.
 	 */
-	public void handleException(final Throwable cause, final boolean remoteLog) {
+	public void handleException(final Throwable caught, final boolean remoteLog) {
 		if (remoteLog && GWT.isProdMode()) {
 			final SimpleRemoteLogHandler remoteLogHandler = new SimpleRemoteLogHandler();
-			final LogRecord logRecord = new LogRecord(Level.SEVERE, cause.getMessage());
-			logRecord.setThrown(cause);
+			final LogRecord logRecord = new LogRecord(Level.SEVERE, caught.getMessage());
+			logRecord.setThrown(caught);
 			remoteLogHandler.publish(logRecord);
 		} else {
-			LOGGER.log(Level.SEVERE, cause.getMessage(), cause);
+			LOGGER.log(Level.SEVERE, caught.getMessage(), caught);
 		}
 
-		final Throwable unwrapedCause = unwrap(cause);
+		final Throwable unwrapedCaught = unwrap(caught);
 
 		String errorMessage = "";
-		if (unwrapedCause.getMessage() != null) {
-			errorMessage = unwrapedCause.getLocalizedMessage();
+		if (unwrapedCaught.getMessage() != null) {
+			errorMessage = unwrapedCaught.getLocalizedMessage();
 		}
 		if (errorMessage.isEmpty()) {
-			errorMessage = unwrapedCause.getClass().getName();
+			errorMessage = unwrapedCaught.getClass().getName();
 		}
 
-		// final String errorDetails = getCustomStackTrace(caught);
 		if (errorMessage != null) {
 			AppErrorDialog.getInstance().setErrorMessage(errorMessage);
+			AppErrorDialog.getInstance().setDetailedErrorMessage(getErrorDetails(caught));
 			AppErrorDialog.getInstance().show();
 		}
-		// dialog.setErrorContents(errorDetails);
 	}
 
 	/**
 	 * Entpackt den Fehler zur besseren Anzeige.
 	 * 
-	 * @param cause Der Fehler der aufgetreten ist.
+	 * @param caught Der Fehler der aufgetreten ist.
 	 * @return Der entpackte Fehler.
 	 */
-	private Throwable unwrap(Throwable cause) {
-		if (cause instanceof UmbrellaException) {
-			final UmbrellaException umbrellaException = (UmbrellaException) cause;
+	private Throwable unwrap(Throwable caught) {
+		if (caught instanceof UmbrellaException) {
+			final UmbrellaException umbrellaException = (UmbrellaException) caught;
 			if (umbrellaException.getCauses().size() == 1) {
 				return unwrap(umbrellaException.getCauses().iterator().next());
 			}
 		}
-		return cause;
+		return caught;
 	}
 
 	/**
 	 * Liefert den StackTrace in einem HTML-Format.
 	 * 
-	 * @param cause Der Fehler der aufgetreten ist.
+	 * @param caught Der Fehler der aufgetreten ist.
 	 * @return Der StackTrace in einem HTML-Format.
 	 */
-	private String getCustomStackTrace(Throwable cause) {
+	private String getErrorDetails(Throwable caught) {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(cause.toString());
+		sb.append(caught.toString());
 		sb.append("<br>");
 
-		for (StackTraceElement element : cause.getStackTrace()) {
+		for (StackTraceElement element : caught.getStackTrace()) {
 			sb.append(element);
 			sb.append("<br>");
 		}

@@ -16,6 +16,7 @@ import de.kickerapp.server.dao.SingleMatch;
 import de.kickerapp.server.dao.SingleMatchHistory;
 import de.kickerapp.server.dao.SingleMatchYearAggregation;
 import de.kickerapp.server.dao.Team;
+import de.kickerapp.server.dao.TeamMatchHistory;
 import de.kickerapp.server.dao.TeamMatchYearAggregation;
 import de.kickerapp.server.dao.fetchplans.MatchHistoryPlan;
 import de.kickerapp.server.dao.fetchplans.MatchPlan;
@@ -23,6 +24,7 @@ import de.kickerapp.server.dao.fetchplans.TeamPlan;
 import de.kickerapp.server.persistence.PMFactory;
 import de.kickerapp.server.services.MatchServiceHelper.MatchHistoryAscendingComparator;
 import de.kickerapp.shared.dto.PlayerDto;
+import de.kickerapp.shared.dto.TeamDto;
 
 /**
  * Klasse für den Zugriff auf Instanzen und Informationen von Spielen.
@@ -53,7 +55,7 @@ public final class MatchBean {
 	 */
 	public static List<SingleMatch> getSingleMatchesFrom(Date date) {
 		final QueryContainer conMatch = new QueryContainer();
-		conMatch.setPlans(MatchPlan.COMMENT, MatchPlan.BOTHPLAYERS);
+		conMatch.setPlans(MatchPlan.BOTHPLAYERS);
 		conMatch.setQuery("matchDate >= :date");
 		conMatch.setParameter(new Object[] { clearTimeForDate(date) });
 
@@ -70,7 +72,7 @@ public final class MatchBean {
 	 */
 	public static List<DoubleMatch> getDoubleMatchesFrom(Date date) {
 		final QueryContainer conMatch = new QueryContainer();
-		conMatch.setPlans(MatchPlan.COMMENT, MatchPlan.BOTHTEAMS, TeamPlan.BOTHPLAYERS);
+		conMatch.setPlans(MatchPlan.BOTHTEAMS, TeamPlan.BOTHPLAYERS);
 		conMatch.setQuery("matchDate >= :date");
 		conMatch.setParameter(new Object[] { clearTimeForDate(date) });
 
@@ -117,6 +119,26 @@ public final class MatchBean {
 		Collections.sort(doubleMatchesPlayer, new MatchHistoryAscendingComparator());
 
 		return doubleMatchesPlayer;
+	}
+
+	/**
+	 * Liefert sämtliche Teamspiele für das übergebene Team und Jahr.
+	 * 
+	 * @param teamDto Das Team.
+	 * @param year Das Jahr.
+	 * @return Die Teamspiele.
+	 */
+	public static List<TeamMatchHistory> getTeamMatchesForTeam(final TeamDto teamDto, final Integer year) {
+		final QueryContainer conPlayer = new QueryContainer();
+		conPlayer.setPlans(MatchHistoryPlan.TEAM1);
+		conPlayer.setQuery("team1 == :id && matchDate >= :startDate && matchDate <= :lastDate");
+		conPlayer.setParameter(new Object[] { teamDto.getId(), getFirstDate(year), getLastDate(year) });
+
+		final List<TeamMatchHistory> teamMatchesTeam = PMFactory.getList(TeamMatchHistory.class, conPlayer);
+
+		Collections.sort(teamMatchesTeam, new MatchHistoryAscendingComparator());
+
+		return teamMatchesTeam;
 	}
 
 	/**

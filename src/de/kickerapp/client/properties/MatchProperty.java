@@ -3,11 +3,8 @@ package de.kickerapp.client.properties;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.core.client.ValueProvider;
-import com.sencha.gxt.data.shared.ModelKeyProvider;
-import com.sencha.gxt.data.shared.PropertyAccess;
 
 import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.shared.common.MatchType;
@@ -15,10 +12,7 @@ import de.kickerapp.shared.dto.MatchDto;
 import de.kickerapp.shared.dto.PlayerDto;
 import de.kickerapp.shared.dto.TeamDto;
 
-public interface MatchProperty extends PropertyAccess<MatchDto> {
-
-	@Path("id")
-	ModelKeyProvider<MatchDto> id();
+public interface MatchProperty extends BaseProperty<MatchDto> {
 
 	ValueProvider<MatchDto, Integer> matchNumber();
 

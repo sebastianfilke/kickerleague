@@ -1,16 +1,10 @@
 package de.kickerapp.client.properties;
 
-import com.google.gwt.editor.client.Editor.Path;
 import com.sencha.gxt.core.client.ValueProvider;
-import com.sencha.gxt.data.shared.ModelKeyProvider;
-import com.sencha.gxt.data.shared.PropertyAccess;
 
 import de.kickerapp.shared.dto.ChartOpponentDto;
 
-public interface ChartOpponentProperty extends PropertyAccess<ChartOpponentDto> {
-
-	@Path("id")
-	ModelKeyProvider<ChartOpponentDto> id();
+public interface ChartOpponentProperty extends BaseProperty<ChartOpponentDto> {
 
 	ValueProvider<ChartOpponentDto, Integer> playedMatches = new ValueProvider<ChartOpponentDto, Integer>() {
 		@Override

@@ -8,10 +8,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.kickerapp.client.services.ChartService;
 import de.kickerapp.server.dao.DoubleMatchHistory;
-import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.SingleMatchHistory;
-import de.kickerapp.server.dao.fetchplans.PlayerPlan;
-import de.kickerapp.server.persistence.PMFactory;
+import de.kickerapp.server.dao.TeamMatchHistory;
 import de.kickerapp.server.persistence.queries.MatchBean;
 import de.kickerapp.shared.container.ChartContainer;
 import de.kickerapp.shared.dto.ChartGameDto;
@@ -46,8 +44,6 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		final int wins = ChartServiceHelper.getWinsForHistory(dbSingleMatches);
 		final int defeats = ChartServiceHelper.getDefeatsForHistory(dbSingleMatches);
 
-		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId(), PlayerPlan.PLAYERSINGLESTATS);
-
 		final InfoDto infoDto = new InfoDto();
 		infoDto.setWinSeries(ChartServiceHelper.getMatchWinSeries(dbSingleMatches));
 		infoDto.setDefeatSeries(ChartServiceHelper.getMatchDefeatSeries(dbSingleMatches));
@@ -55,11 +51,11 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		infoDto.setMaxLostPoints(ChartServiceHelper.getMatchMaxLostPoints(dbSingleMatches));
 		infoDto.setMaxPoints(ChartServiceHelper.getMatchMaxPoints(dbSingleMatches));
 		infoDto.setMinPoints(ChartServiceHelper.getMatchMinPoints(dbSingleMatches));
-		infoDto.setPercentageWins(ChartServiceHelper.getPercentageWins(dbPlayer, wins, defeats));
-		infoDto.setAveragePoints(ChartServiceHelper.getAveragePoints(dbSingleMatches, dbPlayer, wins, defeats));
-		infoDto.setAverageTablePlace(ChartServiceHelper.getAverageTablePlace(dbSingleMatches, dbPlayer, wins, defeats));
+		infoDto.setPercentageWins(ChartServiceHelper.getPercentageWins(wins, defeats));
+		infoDto.setAveragePoints(ChartServiceHelper.getAveragePoints(dbSingleMatches, wins, defeats));
+		infoDto.setAverageTablePlace(ChartServiceHelper.getAverageTablePlace(dbSingleMatches, wins, defeats));
 
-		throw new KickerLeagueException("Test");
+		throw new KickerLeagueException("Blub");
 	}
 
 	/**
@@ -103,8 +99,6 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		final int wins = ChartServiceHelper.getWinsForHistory(dbDoubleMatches);
 		final int defeats = ChartServiceHelper.getDefeatsForHistory(dbDoubleMatches);
 
-		final Player dbPlayer = PMFactory.getObjectById(Player.class, playerDto.getId(), PlayerPlan.PLAYERDOUBLESTATS);
-
 		final InfoDto infoDto = new InfoDto();
 		infoDto.setWinSeries(ChartServiceHelper.getMatchWinSeries(dbDoubleMatches));
 		infoDto.setDefeatSeries(ChartServiceHelper.getMatchDefeatSeries(dbDoubleMatches));
@@ -112,9 +106,9 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 		infoDto.setMaxLostPoints(ChartServiceHelper.getMatchMaxLostPoints(dbDoubleMatches));
 		infoDto.setMaxPoints(ChartServiceHelper.getMatchMaxPoints(dbDoubleMatches));
 		infoDto.setMinPoints(ChartServiceHelper.getMatchMinPoints(dbDoubleMatches));
-		infoDto.setPercentageWins(ChartServiceHelper.getPercentageWins(dbPlayer, wins, defeats));
-		infoDto.setAveragePoints(ChartServiceHelper.getAveragePoints(dbDoubleMatches, dbPlayer, wins, defeats));
-		infoDto.setAverageTablePlace(ChartServiceHelper.getAverageTablePlace(dbDoubleMatches, dbPlayer, wins, defeats));
+		infoDto.setPercentageWins(ChartServiceHelper.getPercentageWins(wins, defeats));
+		infoDto.setAveragePoints(ChartServiceHelper.getAveragePoints(dbDoubleMatches, wins, defeats));
+		infoDto.setAverageTablePlace(ChartServiceHelper.getAverageTablePlace(dbDoubleMatches, wins, defeats));
 
 		return infoDto;
 	}
@@ -155,13 +149,52 @@ public class ChartServiceImpl extends RemoteServiceServlet implements ChartServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public InfoDto getTeamPlayerInfo(TeamDto teamDto, Integer year) throws KickerLeagueException {
-		return null;
+	public InfoDto getTeamInfo(TeamDto teamDto, Integer year) throws KickerLeagueException {
+		final List<TeamMatchHistory> dbTeamMatches = MatchBean.getTeamMatchesForTeam(teamDto, year);
+		final int wins = ChartServiceHelper.getWinsForHistory(dbTeamMatches);
+		final int defeats = ChartServiceHelper.getDefeatsForHistory(dbTeamMatches);
+
+		final InfoDto infoDto = new InfoDto();
+		infoDto.setWinSeries(ChartServiceHelper.getMatchWinSeries(dbTeamMatches));
+		infoDto.setDefeatSeries(ChartServiceHelper.getMatchDefeatSeries(dbTeamMatches));
+		infoDto.setMaxWinPoints(ChartServiceHelper.getMatchMaxWinPoints(dbTeamMatches));
+		infoDto.setMaxLostPoints(ChartServiceHelper.getMatchMaxLostPoints(dbTeamMatches));
+		infoDto.setMaxPoints(ChartServiceHelper.getMatchMaxPoints(dbTeamMatches));
+		infoDto.setMinPoints(ChartServiceHelper.getMatchMinPoints(dbTeamMatches));
+		infoDto.setPercentageWins(ChartServiceHelper.getPercentageWins(wins, defeats));
+		infoDto.setAveragePoints(ChartServiceHelper.getAveragePoints(dbTeamMatches, wins, defeats));
+		infoDto.setAverageTablePlace(ChartServiceHelper.getAverageTablePlace(dbTeamMatches, wins, defeats));
+
+		return infoDto;
 	}
 
 	@Override
-	public ChartContainer getTeamPlayerChart(TeamDto teamDto, Integer year) throws KickerLeagueException {
-		return null;
+	public ChartContainer getTeamChart(TeamDto teamDto, Integer year) throws KickerLeagueException {
+		final List<TeamMatchHistory> dbTeamMatches = MatchBean.getTeamMatchesForTeam(teamDto, year);
+
+		final HashMap<Integer, ChartGameDto> chartGameDtos = new HashMap<Integer, ChartGameDto>();
+		final HashMap<Integer, ChartGoalDto> chartGoalDtos = new HashMap<Integer, ChartGoalDto>();
+		for (int i = 1; i <= 12; i++) {
+			chartGameDtos.put(i, new ChartGameDto((long) i, MONTHS[i - 1]));
+			chartGoalDtos.put(i, new ChartGoalDto((long) i, MONTHS[i - 1]));
+		}
+		final HashMap<Long, ChartOpponentDto> chartOpponentDtos = new HashMap<Long, ChartOpponentDto>();
+		final ArrayList<ChartPointDto> chartPointDtos = new ArrayList<ChartPointDto>();
+
+		for (TeamMatchHistory dbHistory : dbTeamMatches) {
+			ChartServiceHelper.updateGameForMatch(dbHistory, chartGameDtos);
+			ChartServiceHelper.updateGoalForMatch(dbHistory, chartGoalDtos);
+			// ChartServiceHelper.updateOpponentForMatch(dbHistory, chartOpponentDtos);
+			ChartServiceHelper.updatePointForMatch(dbHistory, chartPointDtos);
+		}
+
+		final ChartContainer container = new ChartContainer();
+		container.getChartGameDtos().addAll(chartGameDtos.values());
+		container.getChartGoalDtos().addAll(chartGoalDtos.values());
+		container.getChartOpponentDtos().addAll(chartOpponentDtos.values());
+		container.getChartPointDtos().addAll(chartPointDtos);
+
+		return container;
 	}
 
 }

@@ -125,6 +125,9 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 		} else if (activeTab == 1) {
 			doublePlayerChartPanel.getPlayerList();
 			doublePlayerChartPanel.updateDoublePlayer();
+		} else if (activeTab == 2) {
+			teamChartPanel.getTeamList();
+			teamChartPanel.updateTeam();
 		}
 	}
 

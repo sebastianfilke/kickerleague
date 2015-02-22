@@ -7,8 +7,6 @@ package de.kickerapp.server.dao.fetchplans;
  */
 public final class MatchPlan {
 
-	/** Die Kommentare. */
-	public static final String COMMENT = "matchComment";
 	/** Die Spieler. */
 	public static final String BOTHPLAYERS = "bothPlayers";
 	/** Die Teams. */
