@@ -125,11 +125,11 @@ public final class AppErrorDialog extends BaseDialog {
 	private void updateErrorMessage() {
 		if (!detailsView) {
 			detailsView = true;
-			setPixelSize(400, 400);
+			setPixelSize(500, 400);
 			message.setHTML(detailedErrorMessage);
 		} else {
 			detailsView = false;
-			setPixelSize(400, 150);
+			setPixelSize(500, 150);
 			message.setHTML(errorMessage);
 		}
 	}

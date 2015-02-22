@@ -130,7 +130,7 @@ public final class MatchBean {
 	 */
 	public static List<TeamMatchHistory> getTeamMatchesForTeam(final TeamDto teamDto, final Integer year) {
 		final QueryContainer conPlayer = new QueryContainer();
-		conPlayer.setPlans(MatchHistoryPlan.TEAM1);
+		conPlayer.setPlans(MatchHistoryPlan.BOTHTEAMS, TeamPlan.BOTHPLAYERS);
 		conPlayer.setQuery("team1 == :id && matchDate >= :startDate && matchDate <= :lastDate");
 		conPlayer.setParameter(new Object[] { teamDto.getId(), getFirstDate(year), getLastDate(year) });
 

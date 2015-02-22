@@ -5,6 +5,7 @@ package de.kickerapp.server.dao.fetchplans;
  * 
  * @author Sebastian Filke
  */
+
 public class MatchHistoryPlan {
 
 	/** Die Spieler. */

@@ -689,7 +689,7 @@ public class MatchServiceHelper {
 	 */
 	protected static void createTeamMatchHistories(DoubleMatch dbMatch, boolean team1Winner) {
 		final Team dbTeam1 = PMFactory.getObjectById(Team.class, dbMatch.getTeam1().getKey().getId(), TeamPlan.TEAMSTATS, TeamPlan.BOTHPLAYERS);
-		final Team dbTeam2 = PMFactory.getObjectById(Team.class, dbMatch.getTeam1().getKey().getId(), TeamPlan.TEAMSTATS, TeamPlan.BOTHPLAYERS);
+		final Team dbTeam2 = PMFactory.getObjectById(Team.class, dbMatch.getTeam2().getKey().getId(), TeamPlan.TEAMSTATS, TeamPlan.BOTHPLAYERS);
 
 		final TeamMatchHistory teamMatchHistoryTeam1 = createTeamMatchHistory(dbMatch, team1Winner, dbTeam1, dbTeam2);
 		final TeamMatchHistory teamMatchHistoryTeam2 = createTeamMatchHistory(dbMatch, !team1Winner, dbTeam2, dbTeam1);

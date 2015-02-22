@@ -12,6 +12,8 @@ import de.kickerapp.server.dao.DoubleMatchHistory;
 import de.kickerapp.server.dao.MatchHistory;
 import de.kickerapp.server.dao.Player;
 import de.kickerapp.server.dao.SingleMatchHistory;
+import de.kickerapp.server.dao.Team;
+import de.kickerapp.server.dao.TeamMatchHistory;
 import de.kickerapp.shared.dto.ChartGameDto;
 import de.kickerapp.shared.dto.ChartGoalDto;
 import de.kickerapp.shared.dto.ChartOpponentDto;
@@ -202,6 +204,12 @@ public class ChartServiceHelper {
 		updateOpponentForMatch(opponentPlayer4, dbHistory, chartOpponentDtos);
 	}
 
+	protected static void updateOpponentForMatch(TeamMatchHistory dbHistory, HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
+		final Team opponentTeam2 = dbHistory.getTeam2();
+
+		updateOpponentForMatch(opponentTeam2, dbHistory, chartOpponentDtos);
+	}
+
 	private static void updateOpponentForMatch(Player opponent, MatchHistory dbHistory, HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
 		ChartOpponentDto chartOpponentDto = chartOpponentDtos.get(opponent.getKey().getId());
 		if (chartOpponentDto == null) {
@@ -220,6 +228,41 @@ public class ChartServiceHelper {
 			chartOpponentDto.setDefeats(defeats);
 		}
 		updatePercentages(chartOpponentDtos);
+	}
+
+	private static void updateOpponentForMatch(Team opponent, MatchHistory dbHistory, HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
+		ChartOpponentDto chartOpponentDto = chartOpponentDtos.get(opponent.getKey().getId());
+		if (chartOpponentDto == null) {
+			chartOpponentDto = new ChartOpponentDto();
+			chartOpponentDto.setId(opponent.getKey().getId());
+			chartOpponentDto.setOpponentName(createTeamName(opponent));
+
+			chartOpponentDtos.put(opponent.getKey().getId(), chartOpponentDto);
+		}
+
+		if (dbHistory.isWinner()) {
+			final int wins = chartOpponentDto.getWins() + 1;
+			chartOpponentDto.setWins(wins);
+		} else {
+			final int defeats = chartOpponentDto.getDefeats() + 1;
+			chartOpponentDto.setDefeats(defeats);
+		}
+		updatePercentages(chartOpponentDtos);
+	}
+
+	private static String createTeamName(Team opponent) {
+		final StringBuilder sb = new StringBuilder();
+
+		final Player player1 = opponent.getPlayer1();
+		final Player player2 = opponent.getPlayer2();
+
+		sb.append(player1.getLastName()).append(", ");
+		sb.append(player1.getFirstName());
+		sb.append(" | ");
+		sb.append(player2.getLastName()).append(", ");
+		sb.append(player2.getFirstName());
+
+		return sb.toString();
 	}
 
 	private static void updatePercentages(HashMap<Long, ChartOpponentDto> chartOpponentDtos) {
