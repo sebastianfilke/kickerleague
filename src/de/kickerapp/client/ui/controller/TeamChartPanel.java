@@ -46,6 +46,11 @@ import de.kickerapp.shared.container.ChartContainer;
 import de.kickerapp.shared.dto.InfoDto;
 import de.kickerapp.shared.dto.TeamDto;
 
+/**
+ * Controller-Klasse für die Ansicht der Teamstatistiken.
+ * 
+ * @author Sebastian Filke
+ */
 public class TeamChartPanel extends BaseContainer implements UpdatePanelEventHandler {
 
 	private SimpleComboBox<Integer> cbYear;

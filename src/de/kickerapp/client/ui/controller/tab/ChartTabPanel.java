@@ -9,6 +9,7 @@ import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.container.MarginData;
 
 import de.kickerapp.client.event.AppEventBus;
+import de.kickerapp.client.event.SelectNavigationElementEvent;
 import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.event.ShowDataEventHandler;
 import de.kickerapp.client.event.TabPanelEvent;
@@ -17,6 +18,7 @@ import de.kickerapp.client.ui.base.BasePanel;
 import de.kickerapp.client.ui.controller.DoublePlayerChartPanel;
 import de.kickerapp.client.ui.controller.SinglePlayerChartPanel;
 import de.kickerapp.client.ui.controller.TeamChartPanel;
+import de.kickerapp.client.ui.navigation.NavigationElement;
 import de.kickerapp.client.ui.resources.IconProvider;
 
 /**
@@ -26,10 +28,11 @@ import de.kickerapp.client.ui.resources.IconProvider;
  */
 public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, TabPanelEventHandler {
 
+	/** Controller-Klasse für die Ansicht der Einzelstatistiken. */
 	private SinglePlayerChartPanel singlePlayerChartPanel;
-
+	/** Controller-Klasse für die Ansicht der Doppelstatistiken. */
 	private DoublePlayerChartPanel doublePlayerChartPanel;
-
+	/** Controller-Klasse für die Ansicht der Teamstatistiken. */
 	private TeamChartPanel teamChartPanel;
 	/** Der TabPanel zum Anzeigen der verschiedenen Statistiken. */
 	private TabPanel tabPanel;
@@ -136,8 +139,12 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 	 */
 	@Override
 	public void showData(ShowDataEvent event) {
-		tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
-		AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.CHARTS_NAV, activeTab));
+		final NavigationElement navigationElement = event.getNavigationElement();
+		if (navigationElement != NavigationElement.UNKOWN) {
+			activeTab = navigationElement.getTabIndex();
+			tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
+		}
+		AppEventBus.fireEvent(new SelectNavigationElementEvent(SelectNavigationElementEvent.CHARTS, activeTab));
 		getChartForActiveTab();
 	}
 
@@ -146,7 +153,7 @@ public class ChartTabPanel extends BasePanel implements ShowDataEventHandler, Ta
 	 */
 	@Override
 	public void setActiveWidget(TabPanelEvent event) {
-		activeTab = event.getActiveTab();
+		activeTab = event.getTabIndex();
 	}
 
 }

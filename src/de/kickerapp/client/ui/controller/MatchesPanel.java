@@ -115,7 +115,7 @@ public class MatchesPanel extends BasePanel implements ShowDataEventHandler, Upd
 	protected void initHandlers() {
 		super.initHandlers();
 
-		AppEventBus.addHandler(ShowDataEvent.MATCHES, this);
+		AppEventBus.addHandler(ShowDataEvent.RESULTS, this);
 		AppEventBus.addHandler(UpdatePanelEvent.ALL, this);
 		AppEventBus.addHandler(UpdatePanelEvent.MATCHES, this);
 	}

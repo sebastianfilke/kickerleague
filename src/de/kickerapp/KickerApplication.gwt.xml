@@ -30,14 +30,13 @@
 	<!-- Set the Logging properties -->
 	<set-property name="gwt.logging.enabled" value="TRUE" />
 	<set-property name="gwt.logging.logLevel" value="INFO" />
-	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
 	<set-property name="gwt.logging.consoleHandler" value="DISABLED" />
 	<set-property name="gwt.logging.simpleRemoteHandler" value="ENABLED" />
 	<set-property name="gwt.logging.developmentModeHandler" value="DISABLED" />
 	<set-property name="gxt.logging.enabled" value="true" />
 
 	<!-- Super Dev Mode -->
-	<add-linker name="xsiframe" />
-	<collapse-all-properties />
+	<!-- <add-linker name="xsiframe" />
+	<collapse-all-properties /> -->
 
 </module>

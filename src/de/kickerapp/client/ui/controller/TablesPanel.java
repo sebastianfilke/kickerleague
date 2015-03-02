@@ -36,6 +36,7 @@ import com.sencha.gxt.widget.core.client.toolbar.SeparatorToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 import de.kickerapp.client.event.AppEventBus;
+import de.kickerapp.client.event.SelectNavigationElementEvent;
 import de.kickerapp.client.event.ShowDataEvent;
 import de.kickerapp.client.event.ShowDataEventHandler;
 import de.kickerapp.client.event.TabPanelEvent;
@@ -48,7 +49,7 @@ import de.kickerapp.client.properties.PlayerProperty;
 import de.kickerapp.client.properties.TeamProperty;
 import de.kickerapp.client.services.KickerServices;
 import de.kickerapp.client.ui.base.BasePanel;
-import de.kickerapp.client.ui.dialog.AppErrorDialog;
+import de.kickerapp.client.ui.navigation.NavigationElement;
 import de.kickerapp.client.ui.resources.IconProvider;
 import de.kickerapp.client.widgets.AppButton;
 import de.kickerapp.client.widgets.StoreFilterToggleButton;
@@ -936,10 +937,8 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 		btnUpdate.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
-				// setDoUpdate();
-				// getTableForActiveTab();
-				AppErrorDialog.getInstance().setErrorMessage("Test");
-				AppErrorDialog.getInstance().show();
+				setDoUpdate();
+				getTableForActiveTab();
 			}
 
 			private void setDoUpdate() {
@@ -960,8 +959,12 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 	 */
 	@Override
 	public void showData(ShowDataEvent event) {
-		tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
-		AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES_NAV, activeTab));
+		final NavigationElement navigationElement = event.getNavigationElement();
+		if (navigationElement != NavigationElement.UNKOWN) {
+			activeTab = navigationElement.getTabIndex();
+			tabPanel.setActiveWidget(tabPanel.getWidget(activeTab));
+		}
+		AppEventBus.fireEvent(new SelectNavigationElementEvent(SelectNavigationElementEvent.TABLES, activeTab));
 		getTableForActiveTab();
 	}
 
@@ -970,7 +973,7 @@ public class TablesPanel extends BasePanel implements ShowDataEventHandler, TabP
 	 */
 	@Override
 	public void setActiveWidget(TabPanelEvent event) {
-		activeTab = event.getActiveTab();
+		activeTab = event.getTabIndex();
 	}
 
 	/**

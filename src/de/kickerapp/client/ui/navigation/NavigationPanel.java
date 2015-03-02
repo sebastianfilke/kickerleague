@@ -1,4 +1,4 @@
-package de.kickerapp.client.ui;
+package de.kickerapp.client.ui.navigation;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -8,27 +8,28 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
-import com.google.gwt.event.shared.GwtEvent.Type;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.widget.core.client.container.HtmlLayoutContainer;
 import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 import de.kickerapp.client.event.AppEventBus;
-import de.kickerapp.client.event.NavigationEvent;
-import de.kickerapp.client.event.NavigationEventHandler;
-import de.kickerapp.client.event.TabPanelEvent;
-import de.kickerapp.client.event.TabPanelEventHandler;
+import de.kickerapp.client.event.SelectNavigationElementEvent;
+import de.kickerapp.client.event.SelectNavigationElementEventHandler;
 import de.kickerapp.client.ui.base.BaseContainer;
 import de.kickerapp.client.ui.resources.TemplateProvider;
+import de.kickerapp.client.ui.token.Tokenizer;
 
 /**
  * Controller-Klasse für die Navigationsleiste der Applikation.
  * 
  * @author Sebastian Filke
  */
-public class NavigationPanel extends BaseContainer implements TabPanelEventHandler {
+public class NavigationPanel extends BaseContainer implements SelectNavigationElementEventHandler {
 
 	/** Der aktuell ausgewählte Navigationspunkt für das Hauptmenü. */
 	private Element selectedElement;
@@ -60,8 +61,15 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 	protected void initHandlers() {
 		super.initHandlers();
 
-		AppEventBus.addHandler(TabPanelEvent.TABLES_NAV, this);
-		AppEventBus.addHandler(TabPanelEvent.CHARTS_NAV, this);
+		AppEventBus.addHandler(SelectNavigationElementEvent.TABLES, this);
+		AppEventBus.addHandler(SelectNavigationElementEvent.CHARTS, this);
+
+		History.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				handleHistoryChange(event);
+			}
+		});
 	}
 
 	/**
@@ -74,15 +82,15 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 				if (event.getNativeEvent().getCtrlKey()) {
 					final int keyCode = event.getNativeKeyCode();
 					if (keyCode == KeyCodes.KEY_T) {
-						handleKeyCode("tables", event, NavigationEvent.TABLES);
+						handleKeyCode(event, NavigationElement.TABLES);
 					} else if (keyCode == KeyCodes.KEY_R) {
-						handleKeyCode("results", event, NavigationEvent.MATCHES);
+						handleKeyCode(event, NavigationElement.RESULTS);
 					} else if (keyCode == KeyCodes.KEY_I) {
-						handleKeyCode("insert", event, NavigationEvent.INSERT);
+						handleKeyCode(event, NavigationElement.INSERT);
 					} else if (keyCode == KeyCodes.KEY_S) {
-						handleKeyCode("charts", event, NavigationEvent.CHARTS);
+						handleKeyCode(event, NavigationElement.CHARTS);
 					} else if (keyCode == KeyCodes.KEY_P) {
-						handleKeyCode("player", event, NavigationEvent.PLAYER);
+						handleKeyCode(event, NavigationElement.PLAYER);
 					}
 				}
 			}
@@ -92,18 +100,15 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 	/**
 	 * Führt die Methode aus falls Shift und eine entsprechende Taste gedrückt wurde.
 	 * 
-	 * @param elementId Die Element-ID des anzuzeigenden Elements.
 	 * @param event Das {@link KeyDownEvent}.
-	 * @param navEvent Das Navigations-Ereignis.
+	 * @param navigationElement Das zu selektierende Element der Navigationsleiste.
 	 */
-	private void handleKeyCode(String elementId, KeyDownEvent event, Type<NavigationEventHandler> navEvent) {
+	private void handleKeyCode(KeyDownEvent event, NavigationElement navigationElement) {
 		event.stopPropagation();
 		event.preventDefault();
 
-		selectedElement.removeClassName("active");
-		selectedElement = DOM.getElementById(elementId);
-		selectedElement.addClassName("active");
-		AppEventBus.fireEvent(new NavigationEvent(navEvent));
+		selectMainElement(navigationElement.getIdentificator());
+		History.newItem(navigationElement.getIdentificator());
 	}
 
 	/**
@@ -117,8 +122,8 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 		htmlLcNavigation.addAttachHandler(new Handler() {
 			@Override
 			public void onAttachOrDetach(AttachEvent event) {
-				selectedElement = DOM.getElementById("tables");
-				selectedSubElement = DOM.getElementById("singleTable");
+				selectedElement = DOM.getElementById(NavigationElement.TABLES.getIdentificator());
+				selectedSubElement = DOM.getElementById(NavigationElement.SINGLETABLE.getIdentificator());
 			}
 		});
 		htmlLcNavigation.addDomHandler(new ClickHandler() {
@@ -127,7 +132,7 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 				final Element clickedElement = DOM.eventGetTarget(Event.as(event.getNativeEvent()));
 				if (clickedElement != null) {
 					handleClickEvent(clickedElement);
-					fireNavigationEvent(clickedElement);
+					handleHistoryEvent(clickedElement);
 				}
 			}
 		}, ClickEvent.getType());
@@ -141,7 +146,7 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 	 * 
 	 * @param clickedElement Das selektierte Element in der Navigationsleiste.
 	 */
-	private void fireNavigationEvent(final Element clickedElement) {
+	private void handleHistoryEvent(final Element clickedElement) {
 		final Element element = getElement(clickedElement);
 		final Element subElement = getSubElement(clickedElement);
 
@@ -150,35 +155,10 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 			elementId = subElement.getAttribute("id");
 		}
 
-		if ("tables".equals(elementId)) {
-			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
-		} else if ("singleTable".equals(elementId)) {
-			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 0));
-			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
-		} else if ("doubleTable".equals(elementId)) {
-			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 1));
-			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
-		} else if ("teamTable".equals(elementId)) {
-			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.TABLES, 2));
-			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.TABLES));
-		} else if ("results".equals(elementId)) {
-			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.MATCHES));
-		} else if ("insert".equals(elementId)) {
-			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.INSERT));
-		} else if ("charts".equals(elementId)) {
-			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.CHARTS));
-		} else if ("singleChart".equals(elementId)) {
-			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.CHARTS, 0));
-			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.CHARTS));
-		} else if ("doubleChart".equals(elementId)) {
-			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.CHARTS, 1));
-			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.CHARTS));
-		} else if ("teamChart".equals(elementId)) {
-			AppEventBus.fireEvent(new TabPanelEvent(TabPanelEvent.CHARTS, 2));
-			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.CHARTS));
-		} else if ("player".equals(elementId)) {
-			AppEventBus.fireEvent(new NavigationEvent(NavigationEvent.PLAYER));
-		}
+		final Tokenizer tokenizer = new Tokenizer(elementId);
+		final NavigationElement navigationElement = tokenizer.getNavigationElement();
+
+		History.newItem(navigationElement.getIdentificator());
 	}
 
 	/**
@@ -263,31 +243,58 @@ public class NavigationPanel extends BaseContainer implements TabPanelEventHandl
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Überprüft welches Navigationselement selektiert wurde und selektiert es.
+	 * 
+	 * @param event Das {@link ValueChangeEvent} mit veränderter URL.
 	 */
-	@Override
-	public void setActiveWidget(TabPanelEvent event) {
+	private void handleHistoryChange(ValueChangeEvent<String> event) {
+		final Tokenizer tokenizer = new Tokenizer(event.getValue());
+		final NavigationElement navigationElement = tokenizer.getNavigationElement();
+
+		if (navigationElement.getType() == NavigationType.MAIN) {
+			selectMainElement(navigationElement.getIdentificator());
+		}
+
+		if (navigationElement.getType() == NavigationType.SUB) {
+			selectMainElement(navigationElement.getParent().getIdentificator());
+			selectSubElement(navigationElement.getIdentificator());
+		}
+	}
+
+	/**
+	 * Selektiert den Menü-Hauptpunkt.
+	 * 
+	 * @param identificator Der Identifikator für den Menü-Hauptpunkt, welcher zu selektieren ist.
+	 */
+	private void selectMainElement(final String identificator) {
+		if (selectedElement != null) {
+			selectedElement.removeClassName("active");
+		}
+		selectedElement = DOM.getElementById(identificator);
+		selectedElement.addClassName("active");
+	}
+
+	/**
+	 * Selektiert den Menü-Unterpunkt.
+	 * 
+	 * @param identificator Der Identifikator für den Menü-Unterpunkt, welcher zu selektieren ist.
+	 */
+	private void selectSubElement(final String identificator) {
 		if (selectedSubElement != null) {
 			selectedSubElement.removeClassName("active");
 		}
-		if (event.getAssociatedType() == TabPanelEvent.TABLES_NAV) {
-			if (event.getActiveTab() == 0) {
-				selectedSubElement = DOM.getElementById("singleTable");
-			} else if (event.getActiveTab() == 1) {
-				selectedSubElement = DOM.getElementById("doubleTable");
-			} else if (event.getActiveTab() == 2) {
-				selectedSubElement = DOM.getElementById("teamTable");
-			}
-		} else if (event.getAssociatedType() == TabPanelEvent.CHARTS_NAV) {
-			if (event.getActiveTab() == 0) {
-				selectedSubElement = DOM.getElementById("singleChart");
-			} else if (event.getActiveTab() == 1) {
-				selectedSubElement = DOM.getElementById("doubleChart");
-			} else if (event.getActiveTab() == 2) {
-				selectedSubElement = DOM.getElementById("teamChart");
-			}
-		}
+		selectedSubElement = DOM.getElementById(identificator);
 		selectedSubElement.addClassName("active");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void selectElement(SelectNavigationElementEvent event) {
+		final NavigationElement navigationElement = event.getNavigationElement();
+
+		selectSubElement(navigationElement.getIdentificator());
 	}
 
 }

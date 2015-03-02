@@ -3,6 +3,7 @@ package de.kickerapp.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -36,6 +37,8 @@ public class KickerApplication implements IsWidget, EntryPoint {
 		final Viewport viewport = new Viewport();
 		viewport.add(asWidget(), new MarginData());
 		RootPanel.get().add(viewport, 0, 0);
+
+		History.fireCurrentHistoryState();
 	}
 
 }

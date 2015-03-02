@@ -46,6 +46,11 @@ import de.kickerapp.shared.container.ChartContainer;
 import de.kickerapp.shared.dto.InfoDto;
 import de.kickerapp.shared.dto.PlayerDto;
 
+/**
+ * Controller-Klasse für die Ansicht der Doppelstatistiken.
+ * 
+ * @author Sebastian Filke
+ */
 public class DoublePlayerChartPanel extends BaseContainer implements UpdatePanelEventHandler {
 
 	private SimpleComboBox<Integer> cbYear;
